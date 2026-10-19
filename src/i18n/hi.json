@@ -410,5 +410,21 @@
   "checklist.ev.5": "TODO_COPY_HI",
   "fuel.petrolCar": "TODO_COPY_HI",
   "fuel.cngCar": "TODO_COPY_HI",
-  "fuel.evCar": "TODO_COPY_HI"
+  "fuel.evCar": "TODO_COPY_HI",
+  "hero.tab.cng": "TODO_COPY_HI",
+  "hero.tab.solar": "TODO_COPY_HI",
+  "hero.tab.rent": "TODO_COPY_HI",
+  "hero.tablist": "TODO_COPY_HI",
+  "hero.locked": "TODO_COPY_HI",
+  "hero.context": "TODO_COPY_HI",
+  "hero.verdict.payback": "TODO_COPY_HI",
+  "hero.verdict.never": "TODO_COPY_HI",
+  "hero.slider": "TODO_COPY_HI",
+  "hero.sliderValue": "TODO_COPY_HI",
+  "hero.flip": "TODO_COPY_HI",
+  "hero.footnote": "TODO_COPY_HI",
+  "hero.cta": "TODO_COPY_HI",
+  "hero.solarLocked": "TODO_COPY_HI",
+  "hero.solarCta": "TODO_COPY_HI",
+  "hero.rentLocked": "TODO_COPY_HI"
 }

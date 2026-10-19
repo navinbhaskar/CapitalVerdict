@@ -410,5 +410,21 @@
   "checklist.ev.5": "Range on long trips",
   "fuel.petrolCar": "Petrol car",
   "fuel.cngCar": "CNG car",
-  "fuel.evCar": "EV"
+  "fuel.evCar": "EV",
+  "hero.tab.cng": "Petrol vs CNG",
+  "hero.tab.solar": "Rooftop solar",
+  "hero.tab.rent": "Rent vs buy",
+  "hero.tablist": "Example decisions",
+  "hero.locked": "(locked)",
+  "hero.context": "Lucknow prices, {date}",
+  "hero.verdict.payback": "CNG pays back in {months} months",
+  "hero.verdict.never": "Petrol stays cheaper over 10 years",
+  "hero.slider": "Distance you drive a month",
+  "hero.sliderValue": "{n} km a month",
+  "hero.flip": "Below {km} a month, petrol wins.",
+  "hero.footnote": "Illustrative: {gap} extra for the CNG car at {rate} interest, 18 km/L vs 26 km/kg.",
+  "hero.cta": "Use your own numbers",
+  "hero.solarLocked": "Unlocks once the UP electricity tariff and solar data are verified. The full tool already works with your own bill.",
+  "hero.solarCta": "Open the solar tool",
+  "hero.rentLocked": "Coming next: rent or buy a home, with your own numbers."
 }

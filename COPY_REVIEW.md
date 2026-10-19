@@ -42,3 +42,4 @@ switch.
 | [ ] `solar.metaDescription`                                                                               | Meta description for the solar tool           |
 | [ ] `tool.carFuel.question`, `nav.carFuel`, `carFuel.metaDescription`, `site.description`                 | Updated for EV                                |
 | [ ] EV labels and notes (`input.ev*`, `note.ev*`, `input.homeRate`, `input.publicRate`, `checklist.ev.*`) | Car tool, EV option                           |
+| [ ] `hero.*`                                                                                              | Home hero live example and its tabs           |
