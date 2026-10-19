@@ -1,0 +1,64 @@
+<!--
+  Scroll reveals and count-ups. Inline and tiny (no module request), so a failed bundle can never
+  leave content hidden. Elements with [data-reveal] fade up once when they enter the viewport;
+  [data-countup] numbers count from zero to their rendered value. Reduced motion skips the counting.
+-->
+<script is:inline>
+  (function () {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function countUp(el) {
+      if (reduce || el.dataset.counted) return;
+      el.dataset.counted = '1';
+      const final = el.textContent;
+      const match = /\d[\d,]*(\.\d+)?/.exec(final);
+      if (!match) return;
+      const target = parseFloat(match[0].replace(/,/g, ''));
+      const decimals = match[1] ? match[1].length - 1 : 0;
+      const grouped = match[0].indexOf(',') !== -1;
+      const before = final.slice(0, match.index);
+      const after = final.slice(match.index + match[0].length);
+      const format = function (n) {
+        return grouped
+          ? n.toLocaleString('en-IN', {
+              minimumFractionDigits: decimals,
+              maximumFractionDigits: decimals,
+            })
+          : n.toFixed(decimals);
+      };
+      const start = performance.now();
+      const duration = 900;
+      el.setAttribute('aria-label', final.trim());
+      function frame(now) {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 4);
+        el.textContent = t < 1 ? before + format(target * eased) + after : final;
+        if (t < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    const counters = document.querySelectorAll('[data-countup]');
+    const reveals = document.querySelectorAll('[data-reveal]');
+    if (!('IntersectionObserver' in window)) return;
+
+    const io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          const el = entry.target;
+          if (el.hasAttribute('data-reveal')) el.classList.add('is-revealed');
+          if (el.hasAttribute('data-countup')) countUp(el);
+          io.unobserve(el);
+        });
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+    );
+    reveals.forEach(function (el) {
+      io.observe(el);
+    });
+    counters.forEach(function (el) {
+      io.observe(el);
+    });
+  })();
+</script>

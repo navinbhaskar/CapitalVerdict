@@ -13,16 +13,16 @@ const { locale, path } = Astro.props;
 const home = localizePath('/', locale);
 const switchTo = otherLocale(locale);
 const linkClass =
-  'inline-flex min-h-11 items-center rounded-md px-3 transition-colors duration-200 hover:bg-surface hover:text-ink';
+  'inline-flex min-h-11 items-center rounded-md px-3 transition-colors duration-(--duration-fast) ease-out-quart hover:bg-surface hover:text-ink';
 ---
 
-<header class="sticky top-0 z-40 border-b border-line bg-page/85 backdrop-blur-md">
+<header class="glass sticky top-0 z-40 border-b border-line">
   <div class="container-page flex h-16 items-center justify-between gap-2">
-    <a href={home} aria-label={t(locale, 'a11y.home')} class="-mx-1 shrink-0 rounded px-1 py-1">
-      <Logo />
+    <a href={home} aria-label={t(locale, 'a11y.home')} class="-mx-1 shrink-0 rounded-sm px-1 py-1">
+      <Logo intro />
     </a>
     <nav aria-label={t(locale, 'nav.primary')}>
-      <ul class="flex items-center text-[0.9375rem] text-ink-muted">
+      <ul class="flex items-center text-sm text-ink-muted sm:text-base">
         <li>
           <a href={`${home}#tools`} class={linkClass}>
             {t(locale, 'nav.tools')}

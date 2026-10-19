@@ -2,9 +2,12 @@
 import '@/styles/global.css';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
+import Motion from '@/components/layout/Motion.astro';
 import { htmlLang, t, type Locale } from '@/i18n/t';
 import { alternates, splitLocale } from '@/i18n/routes';
 import { validateAllData } from '@/data/schema';
+import displayFont from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2?url';
+import bodyFont from '@fontsource-variable/ibm-plex-sans/files/ibm-plex-sans-latin-wght-normal.woff2?url';
 
 // Server-only: a malformed data file fails the build.
 validateAllData();
@@ -17,7 +20,7 @@ interface Props {
 const { locale, title, description } = Astro.props;
 const { path } = splitLocale(Astro.url.pathname);
 const siteName = t(locale, 'site.name');
-const pageTitle = title ? `${title} · ${siteName}` : `${siteName} · ${t(locale, 'site.tagline')}`;
+const pageTitle = title ? `${title} | ${siteName}` : `${siteName}: ${t(locale, 'site.tagline')}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -26,14 +29,33 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
     <script is:inline>
-      try {
-        if (localStorage.getItem('dw.theme') === 'dark')
-          document.documentElement.dataset.theme = 'dark';
-      } catch {
-        // Storage blocked: stay on the light theme.
-      }
+      (function () {
+        const root = document.documentElement;
+        try {
+          if (localStorage.getItem('dw.theme') === 'dark') {
+            root.dataset.theme = 'dark';
+            document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0e1621');
+          }
+        } catch {
+          // Storage blocked: stay on the light theme.
+        }
+        // Logo intro plays on the first page of a visit only.
+        try {
+          if (!sessionStorage.getItem('dw.logoIntro')) {
+            root.classList.add('logo-intro');
+            sessionStorage.setItem('dw.logoIntro', '1');
+          }
+        } catch {
+          // Storage blocked: skip the intro rather than replay it on every page.
+        }
+        // Scroll reveals hide content only when the observer exists to show it again.
+        if ('IntersectionObserver' in window) root.classList.add('js-reveal');
+      })();
     </script>
     <title>{pageTitle}</title>
     <meta name="description" content={description ?? t(locale, 'site.description')} />
@@ -55,5 +77,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       <slot />
     </main>
     <Footer locale={locale} />
+    <Motion />
   </body>
 </html>

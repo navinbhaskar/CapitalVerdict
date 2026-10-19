@@ -15,7 +15,7 @@ interface Props {
 export default function SensitivityList({ locale, lines }: Props) {
   return (
     <section aria-labelledby="flips-heading">
-      <h2 id="flips-heading" class="text-lg font-semibold">
+      <h2 id="flips-heading" class="font-display text-xl font-semibold">
         {t(locale, 'flips.heading')}
       </h2>
       <p class="mt-1 text-sm text-ink-muted">{t(locale, 'flips.intro')}</p>

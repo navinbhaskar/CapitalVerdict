@@ -9,10 +9,10 @@ describe('i18n dictionaries', () => {
   });
 
   it('fills placeholders', () => {
-    expect(t('en', 'footer.copyright', { year: 2026 })).toBe('© 2026 Decidewise');
+    expect(t('en', 'footer.copyright', { year: 2026 })).toBe('© 2026 Decidewise');
   });
 
   it('leaves unknown placeholders untouched', () => {
-    expect(t('en', 'footer.copyright')).toBe('© {year} Decidewise');
+    expect(t('en', 'footer.copyright')).toBe('© {year} Decidewise');
   });
 });

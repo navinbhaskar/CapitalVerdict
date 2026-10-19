@@ -1,3 +1,4 @@
+@import '@fontsource-variable/bricolage-grotesque/wght.css';
 @import '@fontsource-variable/ibm-plex-sans/wght.css';
 @import '@fontsource/ibm-plex-sans-devanagari/devanagari-400.css';
 @import '@fontsource/ibm-plex-sans-devanagari/devanagari-500.css';
@@ -7,99 +8,192 @@
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
 /*
- * Design tokens. Minimal, light, mostly white.
+ * Design tokens. Every colour, size, radius, shadow and motion value used by components lives here.
+ * Light is the default; dark is opt-in (data-theme="dark" on <html>) and overrides the same tokens.
  * Ink and accent come from the logo (brand/). Contrast ratios are against the page colour.
- * Light is the default; dark is opt-in via the header toggle (data-theme="dark" on <html>).
- * Devanagari glyphs fall through to IBM Plex Sans Devanagari; it only downloads when Hindi text is on screen.
+ * Devanagari glyphs fall through to IBM Plex Sans Devanagari; it only downloads when Hindi is on screen.
  */
 @theme {
+  /* Type: display voice for headings and verdicts, Plex for body, UI and numbers. */
+  --font-display:
+    'Bricolage Grotesque Variable', 'IBM Plex Sans Devanagari', 'IBM Plex Sans Variable', system-ui,
+    sans-serif;
   --font-sans:
     'IBM Plex Sans Variable', 'IBM Plex Sans', 'IBM Plex Sans Devanagari', system-ui, -apple-system,
     'Segoe UI', sans-serif;
 
+  /* One type scale (roughly a major third). Line heights tighten as size grows. */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.125rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.375rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.625rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.375rem;
+  --text-xl--line-height: 1.875rem;
+  --text-2xl: 1.75rem;
+  --text-2xl--line-height: 2.125rem;
+  --text-3xl: 2.25rem;
+  --text-3xl--line-height: 2.5rem;
+  --text-4xl: 2.75rem;
+  --text-4xl--line-height: 3rem;
+  --text-display: clamp(2.5rem, 1.6rem + 3.2vw, 3.75rem);
+  --text-display--line-height: 1.02;
+  --tracking-display: -0.03em;
+  --tracking-heading: -0.02em;
+
+  /* Colour */
   --color-page: #ffffff;
-  --color-surface: #f7f9fa;
+  --color-surface: #f6f8f7;
+  --color-raised: #ffffff; /* cards that sit above the page */
   --color-ink: #1c2b39; /* 14.4:1 */
   --color-ink-muted: #52606d; /* 6.5:1 */
-  --color-ink-subtle: #8a96a3; /* 3.0:1, large text and icons only */
-  --color-line: #e5e9ed;
-  --color-line-strong: #d0d7de;
+  --color-ink-subtle: #8a96a3; /* 3.0:1, large text, icons and chart axes only */
+  --color-line: #e3e8e6;
+  --color-line-strong: #cdd5d3;
   --color-accent: #2e8b6a; /* 4.2:1, graphics and large text only */
   --color-accent-strong: #1f6e52; /* 6.2:1, links and small text */
-  --color-accent-soft: #eef6f2;
-  --color-primary: #1c2b39; /* filled buttons */
+  --color-accent-soft: #eaf5ef;
+  --color-primary: #1c2b39;
   --color-primary-hover: #2a3d4f;
   --color-on-primary: #ffffff;
   --color-danger: #b42318; /* 6.5:1 */
-  --color-warn: #8a5300; /* TODO_VERIFY badges */
+  --color-warn: #8a5300;
   --color-warn-soft: #fff6e5;
+  --color-scrim: rgb(28 43 57 / 0.32);
+  --color-glass: rgb(255 255 255 / 0.72);
+  --color-glass-edge: rgb(255 255 255 / 0.9);
+  --color-selection: #cfeadc;
 
-  --shadow-card: 0 1px 2px rgb(16 24 40 / 0.04), 0 1px 3px rgb(16 24 40 / 0.05);
-  --shadow-raised: 0 2px 4px rgb(16 24 40 / 0.04), 0 12px 32px -8px rgb(16 24 40 / 0.12);
-  --radius-card: 0.75rem;
+  /* Shape and depth. Elevation is declared once: a border or a shadow, not both. */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --shadow-card: 0 1px 2px rgb(16 24 40 / 0.05), 0 2px 6px -1px rgb(16 24 40 / 0.06);
+  --shadow-raised: 0 2px 4px rgb(16 24 40 / 0.04), 0 14px 32px -10px rgb(16 24 40 / 0.16);
+  --shadow-float: 0 8px 16px -6px rgb(16 24 40 / 0.12), 0 24px 56px -16px rgb(16 24 40 / 0.22);
+
+  /* Motion curves (Tailwind ease-* utilities). Durations are :root tokens below. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Layout */
   --container-content: 72rem;
+  --container-prose: 42rem;
+}
+
+:root {
+  --duration-instant: 120ms;
+  --duration-fast: 180ms;
+  --duration-base: 240ms;
+  --duration-enter: 450ms;
+  --duration-focal: 700ms;
+  --stagger: 70ms;
+  /* Distance for entrances and lifts. Reduced motion sets these to 0 and keeps the fades. */
+  --motion-rise: 0.75rem;
+  --motion-lift: -2px;
+  --motion-nudge: 3px;
+  --glass-blur: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-rise: 0px;
+    --motion-lift: 0px;
+    --motion-nudge: 0px;
+    --duration-enter: 200ms;
+    --duration-focal: 200ms;
+    --stagger: 0ms;
+  }
 }
 
 @layer base {
   :root[data-theme='dark'] {
     color-scheme: dark;
     --color-page: #0e1621;
-    --color-surface: #151f2b;
+    --color-surface: #141e29;
+    --color-raised: #172331;
     --color-ink: #e8ecef; /* 15.3:1 */
     --color-ink-muted: #a3b0bd; /* 8.2:1 */
     --color-ink-subtle: #6f7d8a; /* 4.3:1 */
-    --color-line: #24313e;
+    --color-line: #233140;
     --color-line-strong: #33424f;
     --color-accent: #5cc59a;
     --color-accent-strong: #7dd3ae; /* 10.2:1 */
-    --color-accent-soft: #14302a;
+    --color-accent-soft: #13302a;
     --color-primary: #e8ecef;
     --color-primary-hover: #ffffff;
     --color-on-primary: #0e1621;
     --color-danger: #f97066;
     --color-warn: #f5b94a;
     --color-warn-soft: #2b2111;
-    --shadow-card: 0 0 0 1px rgb(255 255 255 / 0.02);
-    --shadow-raised: 0 16px 40px -12px rgb(0 0 0 / 0.6);
+    --color-scrim: rgb(0 0 0 / 0.5);
+    --color-glass: rgb(20 30 41 / 0.72);
+    --color-glass-edge: rgb(255 255 255 / 0.08);
+    --color-selection: #1f4d3c;
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-raised: 0 16px 40px -12px rgb(0 0 0 / 0.65);
+    --shadow-float: 0 24px 56px -16px rgb(0 0 0 / 0.75);
   }
 
   html {
+    color-scheme: light;
+    /* Keep focused fields and anchors clear of the sticky header (and the mobile result bar). */
+    scroll-padding-top: 5rem;
+    scroll-padding-bottom: 6rem;
+    -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
+    scrollbar-color: var(--color-line-strong) transparent;
   }
 
   body {
-    @apply bg-page font-sans text-ink antialiased;
-    font-size: 1rem;
-    line-height: 1.6;
+    @apply bg-page font-sans text-base text-ink antialiased;
+  }
+
+  ::selection {
+    background: var(--color-selection);
+    color: var(--color-ink);
   }
 
   h1,
   h2,
   h3 {
     @apply text-ink;
-    letter-spacing: -0.015em;
+    letter-spacing: var(--tracking-heading);
     text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  input {
+    caret-color: var(--color-accent-strong);
+  }
+
+  :is(a, button, input, select, label, summary) {
+    touch-action: manipulation;
   }
 
   :focus-visible {
     outline: 2px solid var(--color-accent-strong);
     outline-offset: 2px;
-    border-radius: 2px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      transition-duration: 0.01ms !important;
-      animation-duration: 0.01ms !important;
-    }
+    border-radius: var(--radius-sm);
   }
 }
 
 @utility num {
   font-variant-numeric: tabular-nums;
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
 }
 
 @utility container-page {
@@ -112,11 +206,293 @@
   }
 }
 
-/* Faint graph-paper backdrop for the hero, fading out towards the edges. */
-@utility bg-graph {
-  background-image:
-    linear-gradient(to right, var(--color-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--color-line) 1px, transparent 1px);
-  background-size: 40px 40px;
-  mask-image: radial-gradient(ellipse 70% 60% at 70% 40%, #000 30%, transparent 75%);
+/* Glass: only the sticky nav, the hero preview and floating panels. */
+@utility glass {
+  background: var(--color-glass);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+}
+
+/* ---------- Interaction primitives ---------- */
+
+@layer components {
+  .btn {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-md);
+    padding-inline: 1.5rem;
+    font-weight: 500;
+    transition:
+      transform var(--duration-fast) var(--ease-out-quart),
+      background-color var(--duration-fast) var(--ease-out-quart),
+      box-shadow var(--duration-fast) var(--ease-out-quart),
+      color var(--duration-fast) var(--ease-out-quart);
+  }
+  .btn:hover {
+    transform: translateY(var(--motion-lift));
+  }
+  .btn:active {
+    transform: translateY(0) scale(0.97);
+    transition-duration: var(--duration-instant);
+  }
+  .btn-primary {
+    background: var(--color-primary);
+    color: var(--color-on-primary);
+    box-shadow: var(--shadow-card);
+  }
+  .btn-primary:hover {
+    background: var(--color-primary-hover);
+    box-shadow: var(--shadow-raised);
+  }
+  .btn-quiet {
+    color: var(--color-ink-muted);
+  }
+  .btn-quiet:hover {
+    color: var(--color-ink);
+    background: var(--color-surface);
+  }
+  .btn-outline {
+    min-height: 2.75rem;
+    padding-inline: 1rem;
+    font-size: var(--text-sm);
+    border: 1px solid var(--color-line-strong);
+  }
+  .btn-outline:hover {
+    background: var(--color-surface);
+  }
+
+  /* Text links that live in prose or small print. */
+  .link {
+    color: var(--color-accent-strong);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    transition: text-decoration-color var(--duration-fast) var(--ease-out-quart);
+  }
+  .link:hover {
+    text-decoration-color: currentColor;
+  }
+
+  /* Cards that are links: small lift and a deeper shadow on hover. */
+  .card-lift {
+    transition:
+      transform var(--duration-base) var(--ease-out-expo),
+      box-shadow var(--duration-base) var(--ease-out-expo);
+  }
+  .card-lift:hover {
+    transform: translateY(calc(var(--motion-lift) * 2));
+    box-shadow: var(--shadow-float);
+  }
+  .card-lift:active {
+    transform: translateY(var(--motion-lift));
+    transition-duration: var(--duration-instant);
+  }
+
+  /* An icon inside a hovered control nudges in its direction. */
+  .nudge,
+  .nudge-diag {
+    transition: transform var(--duration-base) var(--ease-out-back);
+  }
+  :is(a, button, .group):hover .nudge {
+    transform: translateX(var(--motion-nudge));
+  }
+  :is(a, button, .group):hover .nudge-diag {
+    transform: translate(var(--motion-nudge), calc(var(--motion-nudge) * -1));
+  }
+}
+
+/* ---------- Entrances ---------- */
+
+@keyframes dw-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-rise));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes dw-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Hero: children fade and rise in a short stagger. Pure CSS, so it needs no script. */
+.stagger > * {
+  animation: dw-rise var(--duration-enter) var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * var(--stagger) + 80ms);
+}
+
+/* Scroll reveal. Hidden only while the reveal script runs (html.js-reveal), so content is always
+   visible without JS. */
+.js-reveal [data-reveal]:not(.is-revealed) {
+  opacity: 0;
+  transform: translateY(var(--motion-rise));
+}
+.js-reveal [data-reveal] {
+  transition:
+    opacity var(--duration-enter) var(--ease-out-expo),
+    transform var(--duration-enter) var(--ease-out-expo);
+}
+
+/* A value that just changed gives one small tick, so recalculation is visible. */
+@keyframes dw-tick {
+  from {
+    opacity: 0.35;
+    transform: translateY(calc(var(--motion-rise) * -0.4));
+  }
+}
+.tick {
+  animation: dw-tick var(--duration-base) var(--ease-out-expo);
+}
+
+/* ---------- Logo ---------- */
+
+.logo-mark .logo-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform var(--duration-base) var(--ease-out-back);
+}
+a:hover .logo-mark .logo-dot {
+  transform: translateY(-3px) scale(1.12);
+}
+
+@keyframes dw-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes dw-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.2);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes dw-word {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+}
+
+/* Plays once per visit: the head script adds .logo-intro only when it has not played yet. */
+.logo-intro [data-logo-intro] :is(.logo-bowl, .logo-stem) {
+  stroke-dasharray: 1;
+}
+.logo-intro [data-logo-intro] .logo-bowl {
+  animation: dw-draw var(--duration-focal) var(--ease-out-quart) both;
+}
+.logo-intro [data-logo-intro] .logo-stem {
+  animation: dw-draw var(--duration-enter) var(--ease-out-quart) 250ms both;
+}
+.logo-intro [data-logo-intro] .logo-dot {
+  animation: dw-pop var(--duration-enter) var(--ease-out-back) 620ms both;
+}
+.logo-intro [data-logo-intro] .logo-word {
+  animation: dw-word var(--duration-enter) var(--ease-out-expo) 420ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-intro [data-logo-intro] :is(.logo-bowl, .logo-stem, .logo-dot) {
+    stroke-dasharray: none;
+    animation: dw-fade var(--duration-enter) ease-out both;
+  }
+}
+
+/* ---------- Line drawing (hero preview chart) ---------- */
+
+.draw {
+  stroke-dasharray: 1;
+  animation: dw-draw var(--duration-focal) var(--ease-out-quart) both;
+  animation-delay: var(--delay, 0ms);
+}
+.pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: dw-pop var(--duration-enter) var(--ease-out-back) both;
+  animation-delay: var(--delay, 0ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .draw {
+    stroke-dasharray: none;
+  }
+  .draw,
+  .pop {
+    animation: dw-fade var(--duration-enter) ease-out both;
+  }
+}
+
+/* ---------- Feedback ---------- */
+
+@keyframes dw-shake {
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-2px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+}
+.shake {
+  animation: dw-shake 320ms var(--ease-out-quart);
+}
+@media (prefers-reduced-motion: reduce) {
+  .shake {
+    animation: none;
+  }
+}
+
+.check-draw path {
+  stroke-dasharray: 1;
+  animation: dw-draw var(--duration-base) var(--ease-out-quart) both;
+}
+
+/* ---------- Loading ---------- */
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--color-page) 70%, transparent),
+    transparent
+  );
+  animation: dw-shimmer 1.2s var(--ease-out-quart) infinite;
+}
+@keyframes dw-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+  }
 }

@@ -1,24 +1,52 @@
 ---
+/**
+ * Inline SVG logo. With `intro`, the mark draws itself on the first page of a visit: the bowl and
+ * stem draw in, the dot drops onto the stem, the wordmark slides in (see .logo-intro in global.css).
+ * Paths use pathLength="1" so stroke drawing works at any size.
+ */
 interface Props {
   size?: number;
   withWordmark?: boolean;
+  intro?: boolean;
 }
-const { size = 28, withWordmark = true } = Astro.props;
+const { size = 28, withWordmark = true, intro = false } = Astro.props;
 ---
 
-<span class="inline-flex items-center gap-2 text-ink">
-  <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-    <circle cx="29" cy="42" r="14" fill="none" stroke="currentColor" stroke-width="4.5"></circle>
-    <line
-      x1="43"
-      y1="56"
-      x2="43"
-      y2="22"
+<span class="inline-flex items-center gap-2 text-ink" data-logo-intro={intro ? '' : undefined}>
+  <svg
+    class="logo-mark overflow-visible"
+    width={size}
+    height={size}
+    viewBox="0 0 64 64"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path
+      class="logo-stroke logo-bowl"
+      pathLength="1"
+      d="M43 42a14 14 0 1 0-28 0a14 14 0 1 0 28 0"
+      fill="none"
       stroke="currentColor"
       stroke-width="4.5"
       stroke-linecap="round"
-    ></line>
-    <circle cx="43" cy="11" r="5" class="fill-accent"></circle>
+    ></path>
+    <path
+      class="logo-stroke logo-stem"
+      pathLength="1"
+      d="M43 56V22"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="4.5"
+      stroke-linecap="round"
+    ></path>
+    <circle class="logo-dot fill-accent" cx="43" cy="11" r="5"></circle>
   </svg>
-  {withWordmark && <span class="text-[1.125rem] font-medium tracking-[0.01em]">decidewise</span>}
+  {withWordmark && (
+    <span
+      translate="no"
+      class="logo-word font-display text-lg font-semibold tracking-(--tracking-heading)"
+    >
+      decidewise
+    </span>
+  )}
 </span>

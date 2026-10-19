@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'preact/hooks';
+import { useEffect, useId, useRef, useState } from 'preact/hooks';
 import { t, type Locale } from '@/i18n/t';
 import {
   displayBounds,
@@ -21,6 +21,8 @@ interface Props extends NumberRules {
    * (from the sm breakpoint), like a row of an inputs table.
    */
   layout?: 'stack' | 'row';
+  /** Form field name, e.g. the share-link key. */
+  name?: string;
   value: number | null;
   /** Called with the parsed value, or null while the text is invalid. */
   onChange: (value: number | null) => void;
@@ -32,6 +34,16 @@ export default function NumberField(props: Props) {
   const [text, setText] = useState(formatNumberText(value, rules));
   const [error, setError] = useState<string | null>(null);
   const [focused, setFocused] = useState(false);
+  const shakeRef = useRef<HTMLDivElement>(null);
+
+  /** Restart the shake animation on the field wrapper (not a remount, so focus stays put). */
+  const shake = () => {
+    const el = shakeRef.current;
+    if (!el) return;
+    el.classList.remove('shake');
+    void el.offsetWidth;
+    el.classList.add('shake');
+  };
 
   // Follow outside changes (reset, shared link, global assumptions) unless the user is typing here.
   useEffect(() => {
@@ -50,6 +62,7 @@ export default function NumberField(props: Props) {
       onChange(parsed.value);
       return;
     }
+    if (!error) shake();
     setError(
       parsed.reason === 'required'
         ? t(locale, 'input.error.required')
@@ -70,7 +83,7 @@ export default function NumberField(props: Props) {
       }
     >
       <div>
-        <label for={id} class={`block text-[0.9375rem] font-medium ${row ? '' : 'mb-1.5'}`}>
+        <label for={id} class={`block font-medium ${row ? '' : 'mb-1.5'}`}>
           {label}
           {flagged && (
             <span class="ml-2 inline-block rounded-full bg-warn-soft px-2 py-0.5 align-[1px] text-xs font-medium text-warn">
@@ -85,12 +98,13 @@ export default function NumberField(props: Props) {
         )}
       </div>
       <div>
-        <div class="relative">
+        <div ref={shakeRef} class="relative">
           <input
             id={id}
             type="text"
             inputMode="decimal"
             autoComplete="off"
+            name={props.name}
             value={text}
             onInput={(e) => onInput(e.currentTarget.value)}
             onFocus={() => setFocused(true)}
@@ -100,7 +114,7 @@ export default function NumberField(props: Props) {
             }}
             aria-invalid={error ? true : undefined}
             aria-describedby={describedBy || undefined}
-            class={`min-h-12 w-full rounded-lg border px-3.5 text-[1.0625rem] text-ink num transition-colors duration-200 hover:border-ink-subtle focus:border-accent-strong ${
+            class={`min-h-12 w-full rounded-md border px-3.5 text-lg text-ink num transition-colors duration-(--duration-fast) ease-out-quart hover:border-ink-subtle focus:border-accent-strong ${
               unit ? 'pr-16' : ''
             } ${error ? 'border-danger' : 'border-line-strong'} ${
               flagged ? 'bg-warn-soft/60' : 'bg-page'

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import type uPlotType from 'uplot';
 import 'uplot/dist/uPlot.min.css';
 import { t, type Locale } from '@/i18n/t';
@@ -38,6 +38,7 @@ export default function NetPositionChart(props: Props) {
   } = props;
   const box = useRef<HTMLDivElement>(null);
   const plot = useRef<uPlotType | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -139,6 +140,7 @@ export default function NetPositionChart(props: Props) {
         box.current,
       );
 
+      setLoaded(true);
       resize = new ResizeObserver(() => {
         if (box.current) plot.current?.setSize({ width: box.current.clientWidth, height: HEIGHT });
       });
@@ -171,7 +173,7 @@ export default function NetPositionChart(props: Props) {
 
   return (
     <figure>
-      <figcaption class="text-lg font-semibold">{title}</figcaption>
+      <figcaption class="font-display text-xl font-semibold">{title}</figcaption>
       <div class="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm text-ink-muted" aria-hidden="true">
         <span class="inline-flex items-center gap-2">
           <span class="h-0.5 w-5 rounded bg-ink" />
@@ -186,7 +188,10 @@ export default function NetPositionChart(props: Props) {
           {t(locale, 'chart.netBand')}
         </span>
       </div>
-      <div ref={box} class="mt-4 w-full" style={{ height: `${HEIGHT}px` }} aria-hidden="true" />
+      <div class="relative mt-4" style={{ height: `${HEIGHT}px` }} aria-hidden="true">
+        <div ref={box} class="h-full w-full" />
+        {!loaded && <div class="skeleton absolute inset-0" />}
+      </div>
     </figure>
   );
 }

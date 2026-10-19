@@ -44,20 +44,25 @@ export default function VerdictCard({ locale, input, result, runs, baseName, alt
       : { label: t(locale, 'stat.netHorizon', { years }), net: result.netAtHorizon.withInterest },
   ];
 
+  const headline = be
+    ? t(locale, 'verdict.paysBack', { alt: altName, months: be.months })
+    : t(locale, 'verdict.never', { base: baseName, years });
+
   return (
     <section
       aria-labelledby="verdict-heading"
-      class="rounded-2xl border border-line bg-page p-5 shadow-[var(--shadow-raised)] sm:p-7"
+      id="verdict"
+      class="scroll-mt-24 rounded-xl bg-raised p-5 shadow-raised sm:p-7"
     >
       <p class="text-sm font-medium text-ink-muted">{t(locale, 'verdict.label')}</p>
       <h2
         id="verdict-heading"
-        class="mt-2 text-[1.625rem] leading-tight font-semibold tracking-[-0.015em] sm:text-[1.875rem]"
+        class="mt-2 font-display text-2xl font-semibold sm:text-3xl"
         aria-live="polite"
       >
-        {be
-          ? t(locale, 'verdict.paysBack', { alt: altName, months: be.months })
-          : t(locale, 'verdict.never', { base: baseName, years })}
+        <span key={headline} class="tick block">
+          {headline}
+        </span>
       </h2>
       <p class="mt-2 text-ink-muted">
         {be

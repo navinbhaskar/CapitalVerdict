@@ -32,9 +32,9 @@ const sections = [
 ---
 
 <BaseLayout locale={locale} title={title} description={description}>
-  <article class="container-page pt-10 sm:pt-14">
+  <article class="container-page pt-10 pb-20 sm:pt-14 sm:pb-24">
     <header class="max-w-3xl">
-      <h1 class="text-[2rem] leading-tight font-semibold sm:text-[2.5rem]">{title}</h1>
+      <h1 class="font-display text-3xl font-semibold sm:text-4xl">{title}</h1>
       <p class="mt-4 border-l-2 border-line-strong pl-3 text-sm text-ink-muted">
         {t(locale, 'tool.disclaimer')}
       </p>
@@ -46,7 +46,7 @@ const sections = [
 
     {sections.map(({ slot, heading }) => (
       <section class="mt-16 max-w-3xl border-t border-line pt-10" aria-labelledby={`s-${slot}`}>
-        <h2 id={`s-${slot}`} class="text-xl font-semibold">
+        <h2 id={`s-${slot}`} class="font-display text-2xl font-semibold">
           {heading}
         </h2>
         <div class="mt-4 space-y-4 text-ink-muted">
@@ -60,7 +60,7 @@ const sections = [
 
     {related.length > 0 && (
       <nav class="mt-16 border-t border-line pt-10" aria-labelledby="s-related">
-        <h2 id="s-related" class="text-xl font-semibold">
+        <h2 id="s-related" class="font-display text-2xl font-semibold">
           {t(locale, 'tool.section.related')}
         </h2>
         <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" role="list">
@@ -68,7 +68,7 @@ const sections = [
             <li>
               <a
                 href={r.href}
-                class="flex min-h-11 items-center rounded-[var(--radius-card)] border border-line px-4 py-3 font-medium transition-colors duration-200 hover:border-line-strong hover:bg-surface"
+                class="flex min-h-11 items-center rounded-lg border border-line px-4 py-3 font-medium transition-colors duration-(--duration-fast) ease-out-quart hover:border-line-strong hover:bg-surface"
               >
                 {r.label}
               </a>

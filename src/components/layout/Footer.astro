@@ -9,7 +9,7 @@ const { locale } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-<footer class="mt-24 border-t border-line">
+<footer class="border-t border-line">
   <div class="container-page flex flex-col gap-6 py-10 text-sm text-ink-muted sm:flex-row sm:items-start sm:justify-between">
     <div class="flex flex-col gap-3">
       <Logo size={22} />
@@ -46,6 +46,9 @@ const year = new Date().getFullYear();
     const dark = root.dataset.theme !== 'dark';
     if (dark) root.dataset.theme = 'dark';
     else delete root.dataset.theme;
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', dark ? '#0e1621' : '#ffffff');
     try {
       localStorage.setItem('dw.theme', dark ? 'dark' : 'light');
     } catch {

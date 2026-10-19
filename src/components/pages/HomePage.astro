@@ -12,18 +12,12 @@ interface Props {
 }
 const { locale } = Astro.props;
 
-const tools: {
-  title: MessageKey;
-  question: MessageKey;
-  icon: 'fuel' | 'home' | 'sun';
-  href?: string;
-}[] = [
-  {
-    title: 'tool.carFuel.title',
-    question: 'tool.carFuel.question',
-    icon: 'fuel',
-    href: localizePath('/tools/car-fuel/', locale),
-  },
+const liveTool = {
+  title: 'tool.carFuel.title' as MessageKey,
+  question: 'tool.carFuel.question' as MessageKey,
+  href: localizePath('/tools/car-fuel/', locale),
+};
+const upcoming: { title: MessageKey; question: MessageKey; icon: 'home' | 'sun' }[] = [
   { title: 'tool.rentVsBuy.title', question: 'tool.rentVsBuy.question', icon: 'home' },
   { title: 'tool.solar.title', question: 'tool.solar.question', icon: 'sun' },
 ];
@@ -77,27 +71,40 @@ const stats = [
 
 <BaseLayout locale={locale}>
   <section class="relative overflow-hidden">
-    <div class="bg-graph pointer-events-none absolute inset-0 opacity-70" aria-hidden="true"></div>
-    <div class="container-page relative grid items-center gap-14 pt-14 pb-20 sm:pt-20 sm:pb-24 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
-      <div>
-        <h1 class="max-w-xl text-[2.375rem] leading-[1.08] font-semibold tracking-[-0.025em] sm:text-[3.25rem]">
+    <!-- Two cost lines run behind the glass preview and cross where it sits: the break-even motif. -->
+    <svg
+      class="pointer-events-none absolute inset-0 hidden h-full w-full text-line-strong lg:block"
+      viewBox="0 0 1200 640"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+      fill="none"
+    >
+      <path d="M560 600 L1240 150" stroke="currentColor" stroke-width="1.5"></path>
+      <path
+        d="M640 330 L1240 470"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-dasharray="6 8"
+      ></path>
+    </svg>
+
+    <div class="container-page relative grid items-center gap-12 pt-14 pb-20 sm:pt-20 sm:pb-24 lg:grid-cols-[1.4fr_1fr] lg:gap-16">
+      <div class="stagger">
+        <h1
+          class="max-w-2xl font-display text-display font-semibold tracking-(--tracking-display)"
+          style="--i: 0"
+        >
           {t(locale, 'site.tagline')}
         </h1>
-        <p class="mt-6 max-w-lg text-lg leading-relaxed text-ink-muted">
+        <p class="mt-6 max-w-lg text-lg text-ink-muted" style="--i: 1">
           {t(locale, 'home.intro')}
         </p>
-        <div class="mt-10 flex flex-wrap items-center gap-3">
-          <a
-            href="#tools"
-            class="inline-flex min-h-12 items-center gap-2 rounded-lg bg-primary px-6 font-medium text-on-primary shadow-[var(--shadow-card)] transition-colors duration-200 hover:bg-primary-hover"
-          >
+        <div class="mt-10 flex flex-wrap items-center gap-3" style="--i: 2">
+          <a href="#tools" class="btn btn-primary">
             {t(locale, 'home.cta')}
-            <Icon name="arrowRight" size={18} />
+            <Icon name="arrowRight" size={18} class="nudge" />
           </a>
-          <a
-            href="#principles"
-            class="inline-flex min-h-12 items-center rounded-lg px-5 font-medium text-ink-muted transition-colors duration-200 hover:bg-surface hover:text-ink"
-          >
+          <a href="#principles" class="btn btn-quiet">
             {t(locale, 'home.secondaryCta')}
           </a>
         </div>
@@ -105,16 +112,16 @@ const stats = [
 
       <!-- Product preview. Decorative: the same numbers are explained on the tool page. -->
       <figure
-        class="relative w-full max-w-md justify-self-center rounded-2xl border border-line bg-page p-5 shadow-[var(--shadow-raised)] sm:p-6 lg:justify-self-end"
+        class="glass stagger relative w-full max-w-md justify-self-center rounded-xl p-5 shadow-float sm:p-6 lg:justify-self-end"
         aria-hidden="true"
       >
-        <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center justify-between gap-3" style="--i: 2">
           <span class="text-sm font-medium text-ink-muted">{t(locale, 'home.preview.title')}</span>
-          <span class="rounded-full border border-line px-2.5 py-0.5 text-xs font-medium text-ink-muted">
+          <span class="rounded-full bg-surface px-2.5 py-0.5 text-xs font-medium text-ink-muted">
             {t(locale, 'home.preview.label')}
           </span>
         </div>
-        <p class="mt-3 text-[1.375rem] leading-snug font-semibold tracking-[-0.01em]">
+        <p class="mt-3 font-display text-xl font-semibold" style="--i: 3">
           {t(locale, 'home.preview.verdict', { months: breakeven.months })}
         </p>
 
@@ -122,46 +129,59 @@ const stats = [
           {[0.25, 0.5, 0.75].map((f) => (
             <line x1="0" x2={W} y1={H * f} y2={H * f} stroke="var(--color-line)" />
           ))}
-          <line x1="0" x2={W} y1={H} y2={H} stroke="var(--color-line-strong)" />
-          <path d={savingArea} fill="var(--color-accent)" fill-opacity="0.08"></path>
+          <line x1="0" x2={W} y1={H} y2={H} stroke="var(--color-line-strong)"></line>
+          <path
+            d={savingArea}
+            fill="var(--color-accent)"
+            fill-opacity="0.08"
+            class="pop"
+            style="--delay: 700ms"
+          ></path>
           <path
             d={costPath}
+            pathLength="1"
+            class="draw"
+            style="--delay: 300ms"
             stroke="var(--color-ink-subtle)"
             stroke-width="2"
-            stroke-dasharray="5 5"
             stroke-linecap="round"
           ></path>
           <path
             d={savingPath}
+            pathLength="1"
+            class="draw"
+            style="--delay: 380ms"
             stroke="var(--color-ink)"
             stroke-width="2.25"
             stroke-linecap="round"
           ></path>
-          <line
-            x1={beX}
-            x2={beX}
-            y1={beY}
-            y2={H}
-            stroke="var(--color-accent)"
-            stroke-width="1.5"
-            stroke-dasharray="2 4"
-          ></line>
-          <circle cx={beX} cy={beY} r="11" fill="var(--color-accent)" fill-opacity="0.15"></circle>
-          <circle cx={beX} cy={beY} r="5" fill="var(--color-accent)"></circle>
-          <text
-            x="0"
-            y={H + 15}
-            font-size="11"
-            fill="var(--color-ink-subtle)"
-            font-family="inherit"
-          >
+          <g class="pop" style="--delay: 900ms">
+            <line
+              x1={beX}
+              x2={beX}
+              y1={beY}
+              y2={H}
+              stroke="var(--color-accent)"
+              stroke-width="1.5"
+              stroke-dasharray="2 4"
+            ></line>
+            <circle
+              cx={beX}
+              cy={beY}
+              r="11"
+              fill="var(--color-accent)"
+              fill-opacity="0.15"
+            ></circle>
+            <circle cx={beX} cy={beY} r="5" fill="var(--color-accent)"></circle>
+          </g>
+          <text x="0" y={H + 15} font-size="11" fill="var(--color-ink-muted)" font-family="inherit">
             0
           </text>
           <text
             x={W}
             y={H + 15}
             font-size="11"
-            fill="var(--color-ink-subtle)"
+            fill="var(--color-ink-muted)"
             text-anchor="end"
             font-family="inherit"
           >
@@ -171,11 +191,11 @@ const stats = [
 
         <div class="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs text-ink-muted">
           <span class="inline-flex items-center gap-2">
-            <span class="h-0.5 w-4 rounded bg-ink"></span>
+            <span class="h-0.5 w-4 rounded-full bg-ink"></span>
             {t(locale, 'home.preview.legendSaving')}
           </span>
           <span class="inline-flex items-center gap-2">
-            <span class="w-4 border-t-2 border-dashed border-ink-subtle"></span>
+            <span class="w-4 border-t-2 border-ink-subtle"></span>
             {t(locale, 'home.preview.legendCost')}
           </span>
         </div>
@@ -184,7 +204,9 @@ const stats = [
           {stats.map((s) => (
             <div>
               <dt class="text-xs text-ink-muted">{s.label}</dt>
-              <dd class="num mt-1 text-base font-semibold sm:text-lg">{s.value}</dd>
+              <dd class="num mt-1 font-semibold sm:text-lg" data-countup>
+                {s.value}
+              </dd>
             </div>
           ))}
         </dl>
@@ -192,75 +214,56 @@ const stats = [
     </div>
   </section>
 
-  <section id="tools" class="scroll-mt-20 border-y border-line bg-surface">
+  <section id="tools" class="scroll-mt-20 border-t border-line bg-surface">
     <div class="container-page py-16 sm:py-24">
-      <h2 class="text-[1.75rem] font-semibold tracking-[-0.02em] sm:text-[2rem]">
+      <h2 class="font-display text-2xl font-semibold sm:text-3xl" data-reveal>
         {t(locale, 'home.tools.heading')}
       </h2>
-      <ul class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" role="list">
-        {tools.map((tool) => (
-          <li>
-            <article class="group relative flex h-full flex-col rounded-[var(--radius-card)] border border-line bg-page p-6 shadow-[var(--shadow-card)] transition-[border-color,box-shadow] duration-200 has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-accent-strong hover:border-line-strong hover:shadow-[var(--shadow-raised)]">
-              <span class="inline-flex size-11 items-center justify-center rounded-lg border border-line bg-surface text-ink">
-                <Icon name={tool.icon} size={22} />
-              </span>
-              <h3 class="mt-6 text-lg font-semibold">
-                {tool.href ? (
-                  <a
-                    href={tool.href}
-                    class="outline-none after:absolute after:inset-0 after:content-['']"
-                  >
-                    {t(locale, tool.title)}
-                  </a>
-                ) : (
-                  t(locale, tool.title)
-                )}
-              </h3>
-              <p class="mt-1.5 flex-1 text-[0.9375rem] text-ink-muted">
-                {t(locale, tool.question)}
-              </p>
-              <div class="mt-6 flex items-center justify-between border-t border-line pt-4">
-                {tool.href ? (
-                  <span class="text-sm font-medium text-accent-strong">
-                    {t(locale, 'home.tools.status.live')}
-                  </span>
-                ) : (
-                  <span class="inline-flex items-center gap-2 text-sm font-medium text-ink-muted">
-                    <span class="size-1.5 rounded-full bg-line-strong" />
-                    {t(locale, 'home.tools.status.soon')}
-                  </span>
-                )}
-                <Icon
-                  name="arrowUpRight"
-                  size={18}
-                  class={
-                    tool.href
-                      ? 'text-accent-strong transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5'
-                      : 'text-ink-subtle'
-                  }
-                />
+      <div class="mt-10 grid gap-5 lg:grid-cols-3" data-reveal>
+        <a
+          href={liveTool.href}
+          class="card-lift group flex flex-col rounded-xl bg-raised p-6 shadow-raised sm:p-8 lg:col-span-2"
+        >
+          <span class="inline-flex size-12 items-center justify-center rounded-lg bg-accent-soft text-accent-strong">
+            <Icon name="fuel" size={24} />
+          </span>
+          <span class="mt-8 text-sm font-medium text-ink-muted">{t(locale, liveTool.title)}</span>
+          <span class="mt-1 font-display text-2xl font-semibold text-balance sm:text-3xl">
+            {t(locale, liveTool.question)}
+          </span>
+          <span class="mt-8 inline-flex items-center gap-2 self-start font-medium text-accent-strong">
+            {t(locale, 'home.tools.status.live')}
+            <Icon name="arrowRight" size={18} class="nudge" />
+          </span>
+        </a>
+
+        <ul class="grid gap-5" role="list">
+          {upcoming.map((tool) => (
+            <li class="flex h-full flex-col rounded-xl border border-dashed border-line-strong p-6">
+              <div class="flex items-center justify-between gap-3">
+                <Icon name={tool.icon} size={22} class="text-ink-muted" />
+                <span class="text-sm text-ink-muted">{t(locale, 'home.tools.status.soon')}</span>
               </div>
-            </article>
-          </li>
-        ))}
-      </ul>
+              <h3 class="mt-6 font-semibold">{t(locale, tool.title)}</h3>
+              <p class="mt-1 text-sm text-ink-muted">{t(locale, tool.question)}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   </section>
 
   <section id="principles" class="container-page scroll-mt-20 py-16 sm:py-24">
-    <h2 class="text-[1.75rem] font-semibold tracking-[-0.02em] sm:text-[2rem]">
+    <h2 class="font-display text-2xl font-semibold sm:text-3xl" data-reveal>
       {t(locale, 'home.principles.heading')}
     </h2>
-    <ol class="mt-10 grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4" role="list">
-      {principles.map((p, i) => (
+    <ul class="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2" role="list" data-reveal>
+      {principles.map((p) => (
         <li class="border-t border-line-strong pt-5">
-          <span class="num text-sm font-medium text-accent-strong">
-            {String(i + 1).padStart(2, '0')}
-          </span>
-          <h3 class="mt-3 font-semibold">{t(locale, p.title)}</h3>
-          <p class="mt-2 text-[0.9375rem] leading-relaxed text-ink-muted">{t(locale, p.body)}</p>
+          <h3 class="font-semibold">{t(locale, p.title)}</h3>
+          <p class="mt-2 max-w-(--container-prose) text-sm text-ink-muted">{t(locale, p.body)}</p>
         </li>
       ))}
-    </ol>
+    </ul>
   </section>
 </BaseLayout>

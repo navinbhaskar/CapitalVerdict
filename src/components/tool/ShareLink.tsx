@@ -29,19 +29,35 @@ export default function ShareLink({ locale, url }: Props) {
 
   return (
     <div class="flex flex-col gap-2">
-      <button
-        type="button"
-        onClick={copy}
-        class="inline-flex min-h-11 items-center gap-2 self-start rounded-md border border-line-strong px-4 text-sm font-medium transition-colors duration-200 hover:bg-surface"
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path
-            d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"
-            stroke="currentColor"
-            stroke-width="1.75"
-            stroke-linecap="round"
-          />
-        </svg>
+      <button type="button" onClick={copy} class="btn btn-outline self-start">
+        {status === 'copied' ? (
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+            class="check-draw text-accent-strong"
+          >
+            <path
+              pathLength={1}
+              d="m5 12.5 4.5 4.5L19 7.5"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        ) : (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+            />
+          </svg>
+        )}
         {status === 'copied' ? t(locale, 'share.copied') : t(locale, 'share.copy')}
       </button>
       <p class="sr-only" aria-live="polite">

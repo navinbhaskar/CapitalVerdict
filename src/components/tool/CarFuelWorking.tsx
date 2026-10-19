@@ -113,7 +113,7 @@ export default function CarFuelWorking({ locale, input, result }: Props) {
 
   return (
     <section aria-labelledby="working-heading">
-      <h2 id="working-heading" class="text-xl font-semibold">
+      <h2 id="working-heading" class="font-display text-2xl font-semibold">
         {t(locale, 'working.heading')}
       </h2>
       <div class="mt-6 grid gap-5 lg:grid-cols-2">
@@ -147,7 +147,7 @@ function Block({
   children?: ComponentChildren;
 }) {
   return (
-    <div class="rounded-xl border border-line bg-page">
+    <div class="rounded-xl border border-line bg-raised">
       <h3 class="border-b border-line bg-surface px-4 py-3 text-sm font-semibold sm:px-5">
         {title}
       </h3>

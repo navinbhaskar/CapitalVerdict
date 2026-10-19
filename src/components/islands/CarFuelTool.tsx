@@ -48,6 +48,8 @@ export default function CarFuelTool({ locale }: Props) {
   const [form, setForm] = useState<CarFuelForm>(CAR_FUEL_EXAMPLE_FORM);
   const [ready, setReady] = useState(false);
   const [shareHref, setShareHref] = useState('');
+  /** Mobile only: a floating summary while the verdict is still below the fold. */
+  const [showBar, setShowBar] = useState(false);
   /** Fields the user (or a shared link) has set; global assumptions never overwrite these. */
   const pinned = useRef(new Set<keyof CarFuelForm>());
   const { assumptions } = useGlobalAssumptions();
@@ -89,6 +91,18 @@ export default function CarFuelTool({ locale }: Props) {
     }, 250);
     return () => clearTimeout(timer);
   }, [form, ready]);
+
+  useEffect(() => {
+    const verdict = document.getElementById('verdict-anchor');
+    const wide = window.matchMedia('(min-width: 64rem)');
+    if (!verdict || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(([entry]) => {
+      if (!entry) return;
+      setShowBar(!wide.matches && !entry.isIntersecting && entry.boundingClientRect.top > 0);
+    });
+    io.observe(verdict);
+    return () => io.disconnect();
+  }, []);
 
   const input = useMemo(() => toCarFuelInput(form), [form]);
   const computed = useMemo(() => {
@@ -140,6 +154,7 @@ export default function CarFuelTool({ locale }: Props) {
     <NumberField
       locale={locale}
       layout="row"
+      name={key}
       label={t(locale, label)}
       unit={unit}
       note={note}
@@ -227,7 +242,7 @@ export default function CarFuelTool({ locale }: Props) {
       <div class="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-12">
         <section aria-labelledby="inputs-heading">
           <div class="flex flex-wrap items-baseline justify-between gap-3">
-            <h2 id="inputs-heading" class="text-xl font-semibold">
+            <h2 id="inputs-heading" class="font-display text-2xl font-semibold">
               {t(locale, 'inputs.heading')}
             </h2>
             <button
@@ -324,7 +339,7 @@ export default function CarFuelTool({ locale }: Props) {
           </Group>
         </section>
 
-        <div class="lg:sticky lg:top-24">
+        <div id="verdict-anchor" class="lg:sticky lg:top-24">
           {computed && input ? (
             <VerdictCard
               locale={locale}
@@ -336,7 +351,7 @@ export default function CarFuelTool({ locale }: Props) {
             />
           ) : (
             <div
-              class="rounded-2xl border border-dashed border-line-strong p-7 text-ink-muted"
+              class="rounded-xl border border-dashed border-line-strong p-7 text-ink-muted"
               role="status"
             >
               {t(locale, 'carFuel.incomplete')}
@@ -368,7 +383,7 @@ export default function CarFuelTool({ locale }: Props) {
               breakevenNoInterest={result.breakevenNoInterest?.months ?? null}
             />
             <section aria-labelledby="scenarios-heading">
-              <h2 id="scenarios-heading" class="text-lg font-semibold">
+              <h2 id="scenarios-heading" class="font-display text-xl font-semibold">
                 {t(locale, 'scenario.heading')}
               </h2>
               <ul class="mt-4 space-y-3" role="list">
@@ -415,6 +430,24 @@ export default function CarFuelTool({ locale }: Props) {
           </div>
         </>
       )}
+
+      {computed && showBar && (
+        <div class="stagger fixed inset-x-3 bottom-3 z-30 lg:hidden">
+          <div class="flex items-center justify-between gap-3 rounded-xl py-2 pr-2 pl-4 shadow-float glass">
+            <p class="font-display font-semibold">
+              {computed.result.breakevenWithInterest
+                ? t(locale, 'verdict.paysBack', {
+                    alt: cng,
+                    months: computed.result.breakevenWithInterest.months,
+                  })
+                : t(locale, 'verdict.never', { base: petrol, years: input!.horizonMonths / 12 })}
+            </p>
+            <a href="#verdict" class="btn btn-primary min-h-11 shrink-0 px-4 text-sm">
+              {t(locale, 'carFuel.resultBar.cta')}
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -422,7 +455,7 @@ export default function CarFuelTool({ locale }: Props) {
 function Group({ title, children }: { title: string; children: ComponentChildren }) {
   return (
     <fieldset class="mt-6">
-      <legend class="w-full border-b border-line-strong pb-2 text-xs font-medium tracking-[0.08em] text-ink-muted uppercase">
+      <legend class="w-full border-b border-line-strong pb-2 font-display text-lg font-semibold">
         {title}
       </legend>
       <div class="divide-y divide-line">{children}</div>

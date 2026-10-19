@@ -18,9 +18,14 @@ export default function AssumptionsPanel({ locale }: Props) {
   const { assumptions, update, reset } = useGlobalAssumptions();
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [formKey, setFormKey] = useState(0);
+  /** Bumped on each save so the checkmark redraws. */
+  const [savedTick, setSavedTick] = useState(0);
   const titleId = useId();
 
-  const commit = (next: GlobalAssumptions) => setSaveState(update(next) ? 'saved' : 'notSaved');
+  const commit = (next: GlobalAssumptions) => {
+    setSaveState(update(next) ? 'saved' : 'notSaved');
+    setSavedTick((n) => n + 1);
+  };
   const set = <K extends keyof GlobalAssumptions>(key: K, value: GlobalAssumptions[K]) =>
     commit({ ...assumptions, [key]: value });
 
@@ -48,7 +53,7 @@ export default function AssumptionsPanel({ locale }: Props) {
         type="button"
         onClick={open}
         aria-haspopup="dialog"
-        class="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-md px-3 text-ink-muted transition-colors duration-200 hover:bg-surface hover:text-ink"
+        class="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-md px-3 text-ink-muted transition-colors duration-(--duration-fast) ease-out-quart hover:bg-surface hover:text-ink"
       >
         <SlidersIcon />
         <span class="sr-only sm:not-sr-only">{t(locale, 'assumptions.open')}</span>
@@ -58,11 +63,11 @@ export default function AssumptionsPanel({ locale }: Props) {
         ref={dialogRef}
         aria-labelledby={titleId}
         onClick={(e) => e.target === dialogRef.current && close()}
-        class="fixed inset-y-0 right-0 left-auto m-0 h-dvh max-h-dvh w-full max-w-md overflow-y-auto border-l border-line bg-page p-0 text-ink backdrop:bg-[#1c2b39]/30"
+        class="fixed inset-y-0 right-0 left-auto m-0 h-dvh max-h-dvh w-full max-w-md overflow-y-auto overscroll-contain p-0 text-ink shadow-float glass backdrop:bg-scrim"
       >
         <div class="flex min-h-full flex-col">
-          <div class="sticky top-0 z-10 flex items-center justify-between border-b border-line bg-page px-5 py-4">
-            <h2 id={titleId} class="text-lg font-semibold">
+          <div class="sticky top-0 z-10 flex items-center justify-between border-b border-line px-5 py-4">
+            <h2 id={titleId} class="font-display text-xl font-semibold">
               {t(locale, 'assumptions.title')}
             </h2>
             <button
@@ -76,7 +81,7 @@ export default function AssumptionsPanel({ locale }: Props) {
           </div>
 
           <div class="flex-1 space-y-8 px-5 py-6">
-            <p class="text-[0.9375rem] text-ink-muted">{t(locale, 'assumptions.intro')}</p>
+            <p class="text-sm text-ink-muted">{t(locale, 'assumptions.intro')}</p>
 
             <Group title={t(locale, 'assumptions.group.location')}>
               <SelectField
@@ -124,8 +129,28 @@ export default function AssumptionsPanel({ locale }: Props) {
             </Group>
           </div>
 
-          <div class="sticky bottom-0 flex flex-wrap items-center justify-between gap-3 border-t border-line bg-page px-5 py-4">
-            <p class="text-sm text-ink-muted" aria-live="polite">
+          <div class="sticky bottom-0 flex flex-wrap items-center justify-between gap-3 border-t border-line px-5 py-4">
+            <p class="inline-flex items-center gap-1.5 text-sm text-ink-muted" aria-live="polite">
+              {saveState === 'saved' && (
+                <svg
+                  key={savedTick}
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                  class="check-draw shrink-0 text-accent-strong"
+                >
+                  <path
+                    pathLength={1}
+                    d="m5 12.5 4.5 4.5L19 7.5"
+                    stroke="currentColor"
+                    stroke-width="2.25"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              )}
               {saveState === 'saved' && t(locale, 'assumptions.saved')}
               {saveState === 'notSaved' && t(locale, 'assumptions.notSaved')}
               {saveState === 'idle' && t(locale, 'assumptions.privacy')}
@@ -150,16 +175,14 @@ export default function AssumptionsPanel({ locale }: Props) {
 function Group({ title, children }: { title: string; children: ComponentChildren }) {
   return (
     <fieldset class="space-y-4">
-      <legend class="mb-3 text-xs font-medium tracking-[0.08em] text-ink-muted uppercase">
-        {title}
-      </legend>
+      <legend class="mb-3 font-display text-lg font-semibold">{title}</legend>
       {children}
     </fieldset>
   );
 }
 
 const inputClass =
-  'min-h-11 w-full rounded-md border border-line-strong bg-page px-3 text-ink transition-colors duration-200 hover:border-ink-subtle focus:border-accent-strong';
+  'min-h-11 w-full rounded-md border border-line-strong bg-page px-3 text-ink transition-colors duration-(--duration-fast) ease-out-quart hover:border-ink-subtle focus:border-accent-strong';
 
 function SelectField(props: {
   label: string;
@@ -170,7 +193,7 @@ function SelectField(props: {
   const id = useId();
   return (
     <div>
-      <label for={id} class="mb-1.5 block text-[0.9375rem] font-medium">
+      <label for={id} class="mb-1.5 block text-sm font-medium">
         {props.label}
       </label>
       <select
@@ -226,7 +249,7 @@ function PercentField(props: {
 
   return (
     <div>
-      <label for={id} class="mb-1.5 block text-[0.9375rem] font-medium">
+      <label for={id} class="mb-1.5 block text-sm font-medium">
         {label}
       </label>
       <div class="relative">
