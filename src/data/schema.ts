@@ -1,10 +1,14 @@
 /**
+ * Zod schemas for data files. Used at build time (BaseLayout) and in tests, never shipped to the
+ * browser: client code reads data through ./index.ts.
+ *
  * Schemas for data files. Every number that comes from the outside world carries its unit, source,
  * effective date and verification status. Unverified values are `TODO_VERIFY` and must not be shown
  * as facts.
  */
 import { z } from 'zod';
 import defaultsJson from './defaults.json';
+import fuelPricesJson from './fuelPrices.json';
 
 export const verificationStatus = z.enum(['TODO_VERIFY', 'verified']);
 
@@ -45,5 +49,23 @@ export const defaultsSchema = z.object({
 });
 export type Defaults = z.infer<typeof defaultsSchema>;
 
-/** Parsed and validated at import time, so a malformed file fails the build and the tests. */
-export const defaults: Defaults = defaultsSchema.parse(defaultsJson);
+export const fuelPricesSchema = z.object({
+  cities: z
+    .array(
+      z.object({
+        id: z.string().regex(/^[a-z]+$/),
+        state: z.enum(['UP']),
+        petrol: dataRecord,
+        cng: dataRecord,
+      }),
+    )
+    .min(1),
+});
+export type FuelPrices = z.infer<typeof fuelPricesSchema>;
+export type CityId = FuelPrices['cities'][number]['id'];
+
+/** Throws on any malformed data file. Called from BaseLayout so a bad file fails the build. */
+export function validateAllData(): void {
+  defaultsSchema.parse(defaultsJson);
+  fuelPricesSchema.parse(fuelPricesJson);
+}

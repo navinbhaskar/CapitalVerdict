@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Icon from '@/components/layout/Icon.astro';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
+import { localizePath } from '@/i18n/routes';
 import { compareCarFuel } from '@/models/carFuel';
 import { carFuelExample } from '@/models/carFuel.example';
 import { formatLakhCrore } from '@/lib/format';
@@ -11,8 +12,18 @@ interface Props {
 }
 const { locale } = Astro.props;
 
-const tools: { title: MessageKey; question: MessageKey; icon: 'fuel' | 'home' | 'sun' }[] = [
-  { title: 'tool.carFuel.title', question: 'tool.carFuel.question', icon: 'fuel' },
+const tools: {
+  title: MessageKey;
+  question: MessageKey;
+  icon: 'fuel' | 'home' | 'sun';
+  href?: string;
+}[] = [
+  {
+    title: 'tool.carFuel.title',
+    question: 'tool.carFuel.question',
+    icon: 'fuel',
+    href: localizePath('/tools/car-fuel/', locale),
+  },
   { title: 'tool.rentVsBuy.title', question: 'tool.rentVsBuy.question', icon: 'home' },
   { title: 'tool.solar.title', question: 'tool.solar.question', icon: 'sun' },
 ];
@@ -189,20 +200,45 @@ const stats = [
       <ul class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" role="list">
         {tools.map((tool) => (
           <li>
-            <article class="group flex h-full flex-col rounded-[var(--radius-card)] border border-line bg-page p-6 shadow-[var(--shadow-card)] transition-[border-color,box-shadow] duration-200 hover:border-line-strong hover:shadow-[var(--shadow-raised)]">
+            <article class="group relative flex h-full flex-col rounded-[var(--radius-card)] border border-line bg-page p-6 shadow-[var(--shadow-card)] transition-[border-color,box-shadow] duration-200 has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-accent-strong hover:border-line-strong hover:shadow-[var(--shadow-raised)]">
               <span class="inline-flex size-11 items-center justify-center rounded-lg border border-line bg-surface text-ink">
                 <Icon name={tool.icon} size={22} />
               </span>
-              <h3 class="mt-6 text-lg font-semibold">{t(locale, tool.title)}</h3>
+              <h3 class="mt-6 text-lg font-semibold">
+                {tool.href ? (
+                  <a
+                    href={tool.href}
+                    class="outline-none after:absolute after:inset-0 after:content-['']"
+                  >
+                    {t(locale, tool.title)}
+                  </a>
+                ) : (
+                  t(locale, tool.title)
+                )}
+              </h3>
               <p class="mt-1.5 flex-1 text-[0.9375rem] text-ink-muted">
                 {t(locale, tool.question)}
               </p>
               <div class="mt-6 flex items-center justify-between border-t border-line pt-4">
-                <span class="inline-flex items-center gap-2 text-sm font-medium text-ink-muted">
-                  <span class="size-1.5 rounded-full bg-accent" />
-                  {t(locale, 'home.tools.status.soon')}
-                </span>
-                <Icon name="arrowUpRight" size={18} class="text-ink-subtle" />
+                {tool.href ? (
+                  <span class="text-sm font-medium text-accent-strong">
+                    {t(locale, 'home.tools.status.live')}
+                  </span>
+                ) : (
+                  <span class="inline-flex items-center gap-2 text-sm font-medium text-ink-muted">
+                    <span class="size-1.5 rounded-full bg-line-strong" />
+                    {t(locale, 'home.tools.status.soon')}
+                  </span>
+                )}
+                <Icon
+                  name="arrowUpRight"
+                  size={18}
+                  class={
+                    tool.href
+                      ? 'text-accent-strong transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5'
+                      : 'text-ink-subtle'
+                  }
+                />
               </div>
             </article>
           </li>

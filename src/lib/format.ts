@@ -6,7 +6,8 @@ const inr = new Intl.NumberFormat('en-IN', {
 
 /** ₹ with Indian digit grouping, rounded to the rupee: 206236 → "₹2,06,236". */
 export function formatINR(amount: number): string {
-  return inr.format(Math.round(amount) || 0);
+  const rounded = Math.round(amount) || 0;
+  return `${rounded < 0 ? '−' : ''}${inr.format(Math.abs(rounded))}`;
 }
 
 const LAKH = 1e5;

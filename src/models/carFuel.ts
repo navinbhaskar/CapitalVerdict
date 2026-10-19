@@ -13,6 +13,7 @@
  * savings themselves are not reinvested. This matches the spec's reference example.
  */
 import { breakeven, cumulative } from '@/engine/breakeven';
+import { runScenarios } from '@/engine/scenarios';
 import { findFlip, type Flip } from '@/engine/sensitivity';
 import { growthFactor, nominalToMonthly, yearlySteppedPrice } from '@/engine/timeValue';
 
@@ -192,4 +193,42 @@ export function carFuelFlips(input: CarFuelInput): CarFuelFlip[] {
     if (flip) flips.push({ variable, ...flip });
   }
   return flips;
+}
+
+export interface CarFuelScenarioShifts {
+  /** Added to both fuels' yearly price rise (usually negative). Results are clamped at 0%. */
+  pessimistic: number;
+  optimistic: number;
+}
+
+/**
+ * Base = the input as entered. Pessimistic / optimistic shift both fuels' yearly price rise.
+ * Equal rises widen the rupee gap between a cheaper and a dearer fuel, so a lower rise is the
+ * pessimistic case for the cheaper-to-run option.
+ */
+export function carFuelScenarios(input: CarFuelInput, shifts: CarFuelScenarioShifts) {
+  const shifted = (delta: number): Partial<CarFuelInput> => ({
+    base: { ...input.base, annualPriceRise: Math.max(0, input.base.annualPriceRise + delta) },
+    alternative: {
+      ...input.alternative,
+      annualPriceRise: Math.max(0, input.alternative.annualPriceRise + delta),
+    },
+  });
+  return runScenarios(compareCarFuel, input, {
+    pessimistic: shifted(shifts.pessimistic),
+    base: {},
+    optimistic: shifted(shifts.optimistic),
+  });
+}
+
+/** Shifts implied by the default scenario table: pessimistic − base and optimistic − base. */
+export function defaultPriceRiseShifts(values: {
+  pessimistic: number;
+  base: number;
+  optimistic: number;
+}): CarFuelScenarioShifts {
+  return {
+    pessimistic: values.pessimistic - values.base,
+    optimistic: values.optimistic - values.base,
+  };
 }

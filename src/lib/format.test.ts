@@ -7,6 +7,10 @@ describe('formatINR', () => {
     expect(formatINR(12500000)).toBe('₹1,25,00,000');
   });
 
+  it('uses a true minus sign for negatives', () => {
+    expect(formatINR(-72518)).toBe('−₹72,518');
+  });
+
   it('rounds to the nearest rupee', () => {
     expect(formatINR(3557.15)).toBe('₹3,557');
     expect(formatINR(3557.5)).toBe('₹3,558');

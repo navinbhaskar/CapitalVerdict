@@ -1,0 +1,57 @@
+---
+import { t, type Locale } from '@/i18n/t';
+
+export interface AssumptionRow {
+  label: string;
+  value: string;
+  source: string;
+  date: string;
+  verified: boolean;
+}
+
+interface Props {
+  locale: Locale;
+  rows: AssumptionRow[];
+}
+const { locale, rows } = Astro.props;
+---
+
+<div class="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+  <table class="w-full min-w-[36rem] text-left text-sm">
+    <thead class="text-ink-muted">
+      <tr class="border-b border-line-strong">
+        <th scope="col" class="py-2.5 pr-4 font-medium">
+          {t(locale, 'assumptionsTable.item')}
+        </th>
+        <th scope="col" class="py-2.5 pr-4 font-medium">
+          {t(locale, 'assumptionsTable.value')}
+        </th>
+        <th scope="col" class="py-2.5 pr-4 font-medium">
+          {t(locale, 'assumptionsTable.source')}
+        </th>
+        <th scope="col" class="py-2.5 font-medium">
+          {t(locale, 'assumptionsTable.date')}
+        </th>
+      </tr>
+    </thead>
+    <tbody class="text-ink">
+      {rows.map((row) => (
+        <tr class="border-b border-line align-top">
+          <th scope="row" class="py-3 pr-4 font-medium">
+            {row.label}
+          </th>
+          <td class="num py-3 pr-4">
+            {row.value}
+            {!row.verified && (
+              <span class="ml-2 inline-block rounded-full bg-warn-soft px-2 py-0.5 text-xs font-medium text-warn">
+                {t(locale, 'assumptionsTable.unverified')}
+              </span>
+            )}
+          </td>
+          <td class="py-3 pr-4 text-ink-muted">{row.source}</td>
+          <td class="num py-3 whitespace-nowrap text-ink-muted">{row.date}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

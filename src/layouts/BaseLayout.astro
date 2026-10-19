@@ -4,6 +4,10 @@ import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import { htmlLang, t, type Locale } from '@/i18n/t';
 import { alternates, splitLocale } from '@/i18n/routes';
+import { validateAllData } from '@/data/schema';
+
+// Server-only: a malformed data file fails the build.
+validateAllData();
 
 interface Props {
   locale: Locale;

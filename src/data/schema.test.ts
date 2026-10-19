@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { dataRecord, defaults } from './schema';
+import { dataRecord, validateAllData } from './schema';
+import { defaults, fuelPrices, verifiedFuelPrices } from './index';
+
+describe('data files', () => {
+  it('all validate against their schemas', () => {
+    expect(() => validateAllData()).not.toThrow();
+  });
+});
 
 describe('defaults.json', () => {
   it('matches the spec scenario table', () => {
@@ -35,5 +42,22 @@ describe('dataRecord', () => {
       dataRecord.safeParse({ ...base, effectiveDate: '19/10/2026', value: 1, status: 'verified' })
         .success,
     ).toBe(false);
+  });
+});
+
+describe('fuelPrices.json', () => {
+  it('has no invented prices: every value is either verified or null + TODO_VERIFY', () => {
+    for (const city of fuelPrices.cities) {
+      for (const record of [city.petrol, city.cng]) {
+        if (record.status === 'TODO_VERIFY') expect(record.value).toBeNull();
+        else expect(record.value).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it('returns null for unverified or unknown cities', () => {
+    expect(verifiedFuelPrices('lucknow')).toBeNull();
+    expect(verifiedFuelPrices('nowhere')).toBeNull();
+    expect(verifiedFuelPrices(null)).toBeNull();
   });
 });

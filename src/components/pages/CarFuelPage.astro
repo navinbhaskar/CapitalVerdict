@@ -1,0 +1,114 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import AssumptionsTable, { type AssumptionRow } from '@/components/tool/AssumptionsTable.astro';
+import CarFuelTool from '@/components/islands/CarFuelTool';
+import { t, type Locale } from '@/i18n/t';
+import { localizePath } from '@/i18n/routes';
+import { defaults, fuelPrices } from '@/data';
+import { compareCarFuel } from '@/models/carFuel';
+import { carFuelExample } from '@/models/carFuel.example';
+import { formatMoney, formatNumber, formatPercent, formatRupeesPrecise } from '@/lib/formatTool';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const rise = defaults.scenarioVariables.energyPriceRise;
+const loan = defaults.globalAssumptions.carLoanRate;
+const cityPrice = fuelPrices.cities[0]!.petrol;
+const rows: AssumptionRow[] = [
+  {
+    label: t(locale, 'assumptionsTable.examplePrices'),
+    value: `${t(locale, 'unit.perLitre', { n: carFuelExample.base.energyPrice })} · ${t(locale, 'unit.perKg', { n: carFuelExample.alternative.energyPrice })}`,
+    source: t(locale, 'assumptionsTable.examplePricesSource'),
+    date: '—',
+    verified: true,
+  },
+  {
+    label: t(locale, 'assumptionsTable.priceRise'),
+    value: [rise.values.pessimistic, rise.values.base, rise.values.optimistic]
+      .map(formatPercent)
+      .join(' / '),
+    source: rise.source,
+    date: rise.effectiveDate,
+    verified: rise.status === 'verified',
+  },
+  {
+    label: t(locale, 'assumptionsTable.carLoanRate'),
+    value: loan.value === null ? '—' : formatPercent(loan.value),
+    source: loan.source,
+    date: loan.effectiveDate,
+    verified: loan.status === 'verified',
+  },
+  {
+    label: t(locale, 'assumptionsTable.cityPrices'),
+    value: '—',
+    source: cityPrice.source,
+    date: cityPrice.effectiveDate,
+    verified: fuelPrices.cities.every(
+      (c) => c.petrol.status === 'verified' && c.cng.status === 'verified',
+    ),
+  },
+];
+
+const ex = compareCarFuel(carFuelExample);
+const worked: [string, string][] = [
+  [
+    t(locale, 'input.monthlyKm'),
+    t(locale, 'unit.km', { n: formatNumber(carFuelExample.monthlyKm) }),
+  ],
+  [t(locale, 'input.extraPrice'), formatMoney(carFuelExample.extraPrice)],
+  [t(locale, 'input.interestRate'), formatPercent(carFuelExample.interestRate)],
+  [
+    t(locale, 'stat.costPerKm'),
+    t(locale, 'stat.costPerKmValue', {
+      base: formatRupeesPrecise(ex.costPerKm.base),
+      alt: formatRupeesPrecise(ex.costPerKm.alternative),
+    }),
+  ],
+  [t(locale, 'stat.monthlySaving'), formatMoney(ex.firstMonthSaving)],
+  [
+    t(locale, 'stat.breakevenNoInterest'),
+    t(locale, 'unit.months', { n: formatNumber(ex.breakevenNoInterest!.fractionalMonths, 1) }),
+  ],
+  [
+    t(locale, 'home.preview.breakeven'),
+    `${t(locale, 'unit.months', { n: ex.breakevenWithInterest!.months })} · ${t(locale, 'unit.km', { n: formatNumber(ex.breakevenWithInterest!.km) })}`,
+  ],
+  [t(locale, 'stat.net10'), formatMoney(ex.netAt10Years!.withInterest)],
+];
+
+const home = localizePath('/', locale);
+const related = [
+  { href: `${home}#tools`, label: t(locale, 'tool.solar.title') },
+  { href: `${home}#tools`, label: t(locale, 'tool.rentVsBuy.title') },
+];
+---
+
+<ToolLayout
+  locale={locale}
+  title={t(locale, 'tool.carFuel.question')}
+  description={t(locale, 'carFuel.metaDescription')}
+  related={related}
+>
+  <CarFuelTool client:load locale={locale} />
+
+  <p slot="explanation">{t(locale, 'carFuel.explanation')}</p>
+
+  <Fragment slot="worked-example">
+    <p>{t(locale, 'carFuel.workedExample.intro')}</p>
+    <dl class="grid gap-x-8 sm:grid-cols-2">
+      {worked.map(([label, value]) => (
+        <div class="flex items-baseline justify-between gap-4 border-b border-line py-2.5">
+          <dt>{label}</dt>
+          <dd class="num font-medium text-ink">{value}</dd>
+        </div>
+      ))}
+    </dl>
+  </Fragment>
+
+  <AssumptionsTable slot="assumptions" locale={locale} rows={rows} />
+
+  <p slot="faq">{t(locale, 'carFuel.faq')}</p>
+</ToolLayout>

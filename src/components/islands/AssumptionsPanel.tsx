@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
+import { cityIds } from '@/data';
 import { RATE_LIMITS, type GlobalAssumptions } from '@/lib/assumptions';
 import { parsePercent, toPercentText } from '@/lib/percent';
 import { useGlobalAssumptions } from '@/lib/useAssumptions';
@@ -83,6 +84,18 @@ export default function AssumptionsPanel({ locale }: Props) {
                 value={assumptions.state}
                 options={[{ value: 'UP', label: t(locale, 'state.UP') }]}
                 onChange={(v) => set('state', v as GlobalAssumptions['state'])}
+              />
+              <SelectField
+                label={t(locale, 'assumptions.city')}
+                value={assumptions.city ?? ''}
+                options={[
+                  { value: '', label: t(locale, 'assumptions.cityNone') },
+                  ...cityIds.map((id) => ({
+                    value: id,
+                    label: t(locale, `city.${id}` as MessageKey),
+                  })),
+                ]}
+                onChange={(v) => set('city', v === '' ? null : v)}
               />
             </Group>
 

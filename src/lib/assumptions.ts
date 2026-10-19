@@ -2,24 +2,20 @@
  * Global assumptions: set once, read by every tool, kept only in this browser.
  * Rates are decimals. Storage access is always wrapped; a broken or blocked store means defaults.
  */
-import { z } from 'zod';
-import { defaults } from '@/data/schema';
+import { cityIds, defaults } from '@/data';
 
-const rate = (max: number) => z.number().min(0).max(max);
-
-export const assumptionsSchema = z.object({
-  state: z.enum(['UP']),
-  taxRegime: z.enum(['new', 'old']),
+export interface GlobalAssumptions {
+  state: 'UP';
+  city: string | null;
+  taxRegime: 'new' | 'old';
   /** Including cess. Entered by the user; null until they do. */
-  marginalTaxRate: rate(0.5).nullable(),
-  inflation: rate(0.2),
-  equityReturn: rate(0.3),
-  fdRate: rate(0.2).nullable(),
-  homeLoanRate: rate(0.25).nullable(),
-  carLoanRate: rate(0.3),
-});
-
-export type GlobalAssumptions = z.infer<typeof assumptionsSchema>;
+  marginalTaxRate: number | null;
+  inflation: number;
+  equityReturn: number;
+  fdRate: number | null;
+  homeLoanRate: number | null;
+  carLoanRate: number;
+}
 export type AssumptionKey = keyof GlobalAssumptions;
 
 /** Limits for the rate fields, as decimals. Used for validation messages. */
@@ -34,6 +30,7 @@ export const RATE_LIMITS = {
 
 export const DEFAULT_ASSUMPTIONS: GlobalAssumptions = {
   state: 'UP',
+  city: null,
   taxRegime: 'new',
   marginalTaxRate: null,
   inflation: defaults.scenarioVariables.inflation.values.base,
@@ -42,6 +39,26 @@ export const DEFAULT_ASSUMPTIONS: GlobalAssumptions = {
   homeLoanRate: defaults.globalAssumptions.homeLoanRate.value,
   carLoanRate: defaults.globalAssumptions.carLoanRate.value ?? 0.09,
 };
+
+const isRate = (max: number, nullable: boolean) => (v: unknown) =>
+  (nullable && v === null) || (typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= max);
+
+/** One validator per field. Hand-written so the browser bundle does not need a schema library. */
+const validators: { [K in AssumptionKey]: (v: unknown) => boolean } = {
+  state: (v) => v === 'UP',
+  city: (v) => v === null || (typeof v === 'string' && cityIds.includes(v)),
+  taxRegime: (v) => v === 'new' || v === 'old',
+  marginalTaxRate: isRate(RATE_LIMITS.marginalTaxRate, true),
+  inflation: isRate(RATE_LIMITS.inflation, false),
+  equityReturn: isRate(RATE_LIMITS.equityReturn, false),
+  fdRate: isRate(RATE_LIMITS.fdRate, true),
+  homeLoanRate: isRate(RATE_LIMITS.homeLoanRate, true),
+  carLoanRate: isRate(RATE_LIMITS.carLoanRate, false),
+};
+
+export function isValidAssumptions(value: GlobalAssumptions): boolean {
+  return (Object.keys(validators) as AssumptionKey[]).every((k) => validators[k](value[k]));
+}
 
 export const STORAGE_KEY = 'dw.assumptions.v1';
 export const ASSUMPTIONS_EVENT = 'dw:assumptions';
@@ -61,13 +78,12 @@ export function parseStored(raw: string | null): GlobalAssumptions {
   if (typeof data !== 'object' || data === null) return { ...DEFAULT_ASSUMPTIONS };
 
   const merged: Record<string, unknown> = { ...DEFAULT_ASSUMPTIONS };
-  const shape = assumptionsSchema.shape;
-  for (const key of Object.keys(shape) as AssumptionKey[]) {
+  for (const key of Object.keys(validators) as AssumptionKey[]) {
     if (!(key in data)) continue;
-    const result = shape[key].safeParse((data as Record<string, unknown>)[key]);
-    if (result.success) merged[key] = result.data;
+    const value = (data as Record<string, unknown>)[key];
+    if (validators[key](value)) merged[key] = value;
   }
-  return merged as GlobalAssumptions;
+  return merged as unknown as GlobalAssumptions;
 }
 
 export function loadAssumptions(storage: ReadableStorage | null): GlobalAssumptions {
@@ -84,8 +100,12 @@ export function saveAssumptions(
   value: GlobalAssumptions,
 ): boolean {
   if (!storage) return false;
+  if (!isValidAssumptions(value)) return false;
   try {
-    storage.setItem(STORAGE_KEY, JSON.stringify(assumptionsSchema.parse(value)));
+    const clean = Object.fromEntries(
+      (Object.keys(validators) as AssumptionKey[]).map((k) => [k, value[k]]),
+    );
+    storage.setItem(STORAGE_KEY, JSON.stringify(clean));
     return true;
   } catch {
     return false;

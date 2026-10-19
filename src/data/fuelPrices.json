@@ -1,0 +1,130 @@
+{
+  "cities": [
+    {
+      "id": "lucknow",
+      "state": "UP",
+      "petrol": {
+        "value": null,
+        "unit": "₹/L",
+        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
+        "effectiveDate": "2026-10-19",
+        "status": "TODO_VERIFY"
+      },
+      "cng": {
+        "value": null,
+        "unit": "₹/kg",
+        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
+        "effectiveDate": "2026-10-19",
+        "status": "TODO_VERIFY"
+      }
+    },
+    {
+      "id": "kanpur",
+      "state": "UP",
+      "petrol": {
+        "value": null,
+        "unit": "₹/L",
+        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
+        "effectiveDate": "2026-10-19",
+        "status": "TODO_VERIFY"
+      },
+      "cng": {
+        "value": null,
+        "unit": "₹/kg",
+        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
+        "effectiveDate": "2026-10-19",
+        "status": "TODO_VERIFY"
+      }
+    },
+    {
+      "id": "noida",
+      "state": "UP",
+      "petrol": {
+        "value": null,
+        "unit": "₹/L",
+        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
+        "effectiveDate": "2026-10-19",
+        "status": "TODO_VERIFY"
+      },
+      "cng": {
+        "value": null,
+        "unit": "₹/kg",
+        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
+        "effectiveDate": "2026-10-19",
+        "status": "TODO_VERIFY"
+      }
+    },
+    {
+      "id": "ghaziabad",
+      "state": "UP",
+      "petrol": {
+        "value": null,
+        "unit": "₹/L",
+        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
+        "effectiveDate": "2026-10-19",
+        "status": "TODO_VERIFY"
+      },
+      "cng": {
+        "value": null,
+        "unit": "₹/kg",
+        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
+        "effectiveDate": "2026-10-19",
+        "status": "TODO_VERIFY"
+      }
+    },
+    {
+      "id": "agra",
+      "state": "UP",
+      "petrol": {
+        "value": null,
+        "unit": "₹/L",
+        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
+        "effectiveDate": "2026-10-19",
+        "status": "TODO_VERIFY"
+      },
+      "cng": {
+        "value": null,
+        "unit": "₹/kg",
+        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
+        "effectiveDate": "2026-10-19",
+        "status": "TODO_VERIFY"
+      }
+    },
+    {
+      "id": "varanasi",
+      "state": "UP",
+      "petrol": {
+        "value": null,
+        "unit": "₹/L",
+        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
+        "effectiveDate": "2026-10-19",
+        "status": "TODO_VERIFY"
+      },
+      "cng": {
+        "value": null,
+        "unit": "₹/kg",
+        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
+        "effectiveDate": "2026-10-19",
+        "status": "TODO_VERIFY"
+      }
+    },
+    {
+      "id": "prayagraj",
+      "state": "UP",
+      "petrol": {
+        "value": null,
+        "unit": "₹/L",
+        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
+        "effectiveDate": "2026-10-19",
+        "status": "TODO_VERIFY"
+      },
+      "cng": {
+        "value": null,
+        "unit": "₹/kg",
+        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
+        "effectiveDate": "2026-10-19",
+        "status": "TODO_VERIFY"
+      }
+    }
+  ]
+}
