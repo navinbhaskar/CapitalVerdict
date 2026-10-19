@@ -1,9 +1,7 @@
 /**
  * The car fuel tool's form: flat, nullable fields that map 1:1 to URL params and to CarFuelInput.
- * Starts from the illustrative spec example (prices are not current market data) and the default
- * base-scenario price rise.
+ * Starts from the spec / workbook example: flat fuel prices (0% rise), no extra upkeep.
  */
-import { defaults } from '@/data';
 import type { ShareSchema } from '@/lib/shareLink';
 import type { CarFuelInput } from './carFuel';
 import { carFuelExample } from './carFuel.example';
@@ -24,8 +22,6 @@ export interface CarFuelForm {
   horizonYears: number | null;
 }
 
-const baseRise = defaults.scenarioVariables.energyPriceRise.values.base;
-
 export const CAR_FUEL_EXAMPLE_FORM: CarFuelForm = {
   monthlyKm: carFuelExample.monthlyKm,
   extraPrice: carFuelExample.extraPrice,
@@ -34,8 +30,8 @@ export const CAR_FUEL_EXAMPLE_FORM: CarFuelForm = {
   petrolMileage: carFuelExample.base.mileage,
   cngMileage: carFuelExample.alternative.mileage,
   interestRate: carFuelExample.interestRate,
-  petrolPriceRise: baseRise,
-  cngPriceRise: baseRise,
+  petrolPriceRise: carFuelExample.base.annualPriceRise,
+  cngPriceRise: carFuelExample.alternative.annualPriceRise,
   petrolUpkeep: 0,
   cngUpkeep: 0,
   horizonYears: carFuelExample.horizonMonths / 12,

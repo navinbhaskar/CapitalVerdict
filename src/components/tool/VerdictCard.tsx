@@ -7,14 +7,16 @@ import type { CarFuelInput, CarFuelResult } from '@/models/carFuel';
 interface Props {
   locale: Locale;
   input: CarFuelInput;
+  /** The user's own result. */
+  result: CarFuelResult;
+  /** Price-rise scenarios, for the range line. */
   runs: Record<ScenarioName, ScenarioRun<CarFuelInput, CarFuelResult>>;
   baseName: string;
   altName: string;
 }
 
-/** Verdict, break-even badge, scenario range and headline numbers. Uses the base scenario. */
-export default function VerdictCard({ locale, input, runs, baseName, altName }: Props) {
-  const result = runs.base.output;
+/** Verdict, break-even badge, scenario range and headline numbers. */
+export default function VerdictCard({ locale, input, result, runs, baseName, altName }: Props) {
   const years = input.horizonMonths / 12;
   const be = result.breakevenWithInterest;
   const km = (n: number) => t(locale, 'unit.km', { n: formatNumber(n) });

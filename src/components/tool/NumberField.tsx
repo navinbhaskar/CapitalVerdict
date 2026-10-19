@@ -12,14 +12,22 @@ interface Props extends NumberRules {
   label: string;
   /** Unit shown inside the field on the right, e.g. "km", "₹/L", "%". */
   unit?: string;
-  help?: string;
+  /** Source or note shown under the label, like a spreadsheet's "Source / note" column. */
+  note?: string;
+  /** Marks the value as an assumption the user should check. */
+  flagged?: boolean;
+  /**
+   * `stack`: label above the field. `row`: label and note on the left, field on the right
+   * (from the sm breakpoint), like a row of an inputs table.
+   */
+  layout?: 'stack' | 'row';
   value: number | null;
   /** Called with the parsed value, or null while the text is invalid. */
   onChange: (value: number | null) => void;
 }
 
 export default function NumberField(props: Props) {
-  const { locale, label, unit, help, value, onChange, ...rules } = props;
+  const { locale, label, unit, note, flagged, layout = 'stack', value, onChange, ...rules } = props;
   const id = useId();
   const [text, setText] = useState(formatNumberText(value, rules));
   const [error, setError] = useState<string | null>(null);
@@ -42,59 +50,79 @@ export default function NumberField(props: Props) {
       onChange(parsed.value);
       return;
     }
-    const bounds = displayBounds(rules);
     setError(
       parsed.reason === 'required'
         ? t(locale, 'input.error.required')
         : parsed.reason === 'notInteger'
           ? t(locale, 'input.error.integer')
-          : t(locale, 'input.error.range', bounds),
+          : t(locale, 'input.error.range', displayBounds(rules)),
     );
     onChange(null);
   };
 
-  const describedBy = [error && `${id}-err`, help && `${id}-help`].filter(Boolean).join(' ');
+  const describedBy = [error && `${id}-err`, note && `${id}-note`].filter(Boolean).join(' ');
+  const row = layout === 'row';
 
   return (
-    <div>
-      <label for={id} class="mb-1.5 block text-[0.9375rem] font-medium">
-        {label}
-      </label>
-      <div class="relative">
-        <input
-          id={id}
-          type="text"
-          inputMode="decimal"
-          autoComplete="off"
-          value={text}
-          onInput={(e) => onInput(e.currentTarget.value)}
-          onFocus={() => setFocused(true)}
-          onBlur={() => {
-            setFocused(false);
-            if (value !== null) setText(formatNumberText(value, rules));
-          }}
-          aria-invalid={error ? true : undefined}
-          aria-describedby={describedBy || undefined}
-          class={`min-h-12 w-full rounded-lg border bg-page px-3.5 text-[1.0625rem] text-ink num transition-colors duration-200 hover:border-ink-subtle focus:border-accent-strong ${
-            unit ? 'pr-20' : ''
-          } ${error ? 'border-danger' : 'border-line-strong'}`}
-        />
-        {unit && (
-          <span class="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-sm text-ink-muted">
-            {unit}
-          </span>
+    <div
+      class={
+        row ? 'grid gap-x-6 gap-y-2 py-4 sm:grid-cols-[minmax(0,1fr)_11rem] sm:items-start' : ''
+      }
+    >
+      <div>
+        <label for={id} class={`block text-[0.9375rem] font-medium ${row ? '' : 'mb-1.5'}`}>
+          {label}
+          {flagged && (
+            <span class="ml-2 inline-block rounded-full bg-warn-soft px-2 py-0.5 align-[1px] text-xs font-medium text-warn">
+              {t(locale, 'inputs.flag')}
+            </span>
+          )}
+        </label>
+        {row && note && (
+          <p id={`${id}-note`} class="mt-1 text-sm text-ink-muted">
+            {note}
+          </p>
         )}
       </div>
-      {help && !error && (
-        <p id={`${id}-help`} class="mt-1.5 text-sm text-ink-muted">
-          {help}
-        </p>
-      )}
-      {error && (
-        <p id={`${id}-err`} class="mt-1.5 text-sm text-danger">
-          {error}
-        </p>
-      )}
+      <div>
+        <div class="relative">
+          <input
+            id={id}
+            type="text"
+            inputMode="decimal"
+            autoComplete="off"
+            value={text}
+            onInput={(e) => onInput(e.currentTarget.value)}
+            onFocus={() => setFocused(true)}
+            onBlur={() => {
+              setFocused(false);
+              if (value !== null) setText(formatNumberText(value, rules));
+            }}
+            aria-invalid={error ? true : undefined}
+            aria-describedby={describedBy || undefined}
+            class={`min-h-12 w-full rounded-lg border px-3.5 text-[1.0625rem] text-ink num transition-colors duration-200 hover:border-ink-subtle focus:border-accent-strong ${
+              unit ? 'pr-16' : ''
+            } ${error ? 'border-danger' : 'border-line-strong'} ${
+              flagged ? 'bg-warn-soft/60' : 'bg-page'
+            }`}
+          />
+          {unit && (
+            <span class="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-sm text-ink-muted">
+              {unit}
+            </span>
+          )}
+        </div>
+        {!row && note && !error && (
+          <p id={`${id}-note`} class="mt-1.5 text-sm text-ink-muted">
+            {note}
+          </p>
+        )}
+        {error && (
+          <p id={`${id}-err`} class="mt-1.5 text-sm text-danger">
+            {error}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

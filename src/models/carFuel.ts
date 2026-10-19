@@ -63,6 +63,8 @@ export interface CarFuelResult {
   firstMonthSaving: number;
   /** Per month, index 0 = month 1. */
   monthlyCost: { base: number[]; alternative: number[] };
+  /** Energy price per unit in each month, index 0 = month 1. */
+  monthlyPrice: { base: number[]; alternative: number[] };
   /** Index = month, index 0 = start (0). */
   cumulativeSaving: number[];
   /** Index = month: extra price with interest accrued to that month. */
@@ -99,6 +101,12 @@ export function compareCarFuel(input: CarFuelInput): CarFuelResult {
   const r = nominalToMonthly(interestRate);
 
   const months = Array.from({ length: horizonMonths }, (_, i) => i + 1);
+  const basePrice = months.map((m) =>
+    yearlySteppedPrice(base.energyPrice, base.annualPriceRise, m),
+  );
+  const altPrice = months.map((m) =>
+    yearlySteppedPrice(alternative.energyPrice, alternative.annualPriceRise, m),
+  );
   const baseCost = months.map((m) => monthlyCost(base, monthlyKm, m));
   const altCost = months.map((m) => monthlyCost(alternative, monthlyKm, m));
   const cumulativeSaving = cumulative(baseCost.map((cost, i) => cost - altCost[i]!));
@@ -128,6 +136,7 @@ export function compareCarFuel(input: CarFuelInput): CarFuelResult {
     },
     firstMonthSaving: baseCost[0]! - altCost[0]!,
     monthlyCost: { base: baseCost, alternative: altCost },
+    monthlyPrice: { base: basePrice, alternative: altPrice },
     cumulativeSaving,
     extraPriceWithInterest,
     breakevenNoInterest: detail(breakeven(cumulativeSaving, flatExtra)),
@@ -195,40 +204,26 @@ export function carFuelFlips(input: CarFuelInput): CarFuelFlip[] {
   return flips;
 }
 
-export interface CarFuelScenarioShifts {
-  /** Added to both fuels' yearly price rise (usually negative). Results are clamped at 0%. */
+export interface CarFuelScenarioRates {
   pessimistic: number;
+  base: number;
   optimistic: number;
 }
 
 /**
- * Base = the input as entered. Pessimistic / optimistic shift both fuels' yearly price rise.
- * Equal rises widen the rupee gap between a cheaper and a dearer fuel, so a lower rise is the
- * pessimistic case for the cheaper-to-run option.
+ * Price-rise scenarios: the same comparison with both fuels' yearly price rise set to each rate
+ * from the default scenario table. Equal rises widen the rupee gap between a cheaper and a dearer
+ * fuel, so the lowest rise is the pessimistic case for the cheaper-to-run option.
+ * These sit beside the user's own result; they do not replace it.
  */
-export function carFuelScenarios(input: CarFuelInput, shifts: CarFuelScenarioShifts) {
-  const shifted = (delta: number): Partial<CarFuelInput> => ({
-    base: { ...input.base, annualPriceRise: Math.max(0, input.base.annualPriceRise + delta) },
-    alternative: {
-      ...input.alternative,
-      annualPriceRise: Math.max(0, input.alternative.annualPriceRise + delta),
-    },
+export function carFuelScenarios(input: CarFuelInput, rates: CarFuelScenarioRates) {
+  const withRise = (rise: number): Partial<CarFuelInput> => ({
+    base: { ...input.base, annualPriceRise: rise },
+    alternative: { ...input.alternative, annualPriceRise: rise },
   });
   return runScenarios(compareCarFuel, input, {
-    pessimistic: shifted(shifts.pessimistic),
-    base: {},
-    optimistic: shifted(shifts.optimistic),
+    pessimistic: withRise(rates.pessimistic),
+    base: withRise(rates.base),
+    optimistic: withRise(rates.optimistic),
   });
-}
-
-/** Shifts implied by the default scenario table: pessimistic − base and optimistic − base. */
-export function defaultPriceRiseShifts(values: {
-  pessimistic: number;
-  base: number;
-  optimistic: number;
-}): CarFuelScenarioShifts {
-  return {
-    pessimistic: values.pessimistic - values.base,
-    optimistic: values.optimistic - values.base,
-  };
 }

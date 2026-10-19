@@ -158,3 +158,61 @@ describe('car fuel: edge cases', () => {
     );
   });
 });
+
+describe('car fuel: matches the CNG_vs_Petrol_Lucknow.xlsx workbook cell by cell', () => {
+  // Values copied from the workbook's Monthly sheet (Excel's own calculation), same inputs.
+  const r = compareCarFuel({ ...carFuelExample, horizonMonths: 240 });
+  const net = (m: number) => r.cumulativeSaving[m]! - r.extraPriceWithInterest[m]!;
+  const rows = [
+    { month: 1, H: 3557.15384615385, I: 90675, J: -86442.8461538462, K: -87117.8461538462 },
+    { month: 2, H: 7114.30769230769, I: 91355.0625, J: -82885.6923076923, K: -84240.7548076923 },
+    {
+      month: 3,
+      H: 10671.4615384615,
+      I: 92040.22546875,
+      J: -79328.5384615385,
+      K: -81368.7639302885,
+    },
+    {
+      month: 60,
+      H: 213429.230769231,
+      I: 140911.292424741,
+      J: 123429.230769231,
+      K: 72517.9383444893,
+    },
+    {
+      month: 120,
+      H: 426858.461538463,
+      I: 220622.137031233,
+      J: 336858.461538463,
+      K: 206236.32450723,
+    },
+    {
+      month: 240,
+      H: 853716.923076927,
+      I: 540823.637202535,
+      J: 763716.923076927,
+      K: 312893.285874392,
+    },
+  ];
+
+  it.each(rows)('month $month', ({ month, H, I, J, K }) => {
+    expect(r.cumulativeSaving[month]).toBeCloseTo(H, 6);
+    expect(r.extraPriceWithInterest[month]).toBeCloseTo(I, 6);
+    expect(r.cumulativeSaving[month]! - 90_000).toBeCloseTo(J, 6);
+    expect(net(month)).toBeCloseTo(K, 6);
+  });
+
+  it('monthly costs and prices (row 5)', () => {
+    expect(r.monthlyCost.base[0]).toBeCloseTo(10186, 8);
+    expect(r.monthlyCost.alternative[0]).toBeCloseTo(6628.84615384615, 8);
+    expect(r.monthlyPrice.base[0]).toBe(101.86);
+    expect(r.monthlyPrice.alternative[239]).toBe(95.75);
+  });
+
+  it('Result 1 and Result 2 cells', () => {
+    expect(r.breakevenNoInterest!.fractionalMonths).toBeCloseTo(25.3011266570075, 9);
+    expect(r.breakevenWithInterest!.months).toBe(33);
+    expect(r.breakevenWithInterest!.km).toBe(59400);
+  });
+});

@@ -55,8 +55,12 @@ describe('fuelPrices.json', () => {
     }
   });
 
+  it('returns verified Lucknow prices from the workbook', () => {
+    expect(verifiedFuelPrices('lucknow')).toEqual({ petrol: 101.86, cng: 95.75 });
+  });
+
   it('returns null for unverified or unknown cities', () => {
-    expect(verifiedFuelPrices('lucknow')).toBeNull();
+    expect(verifiedFuelPrices('kanpur')).toBeNull();
     expect(verifiedFuelPrices('nowhere')).toBeNull();
     expect(verifiedFuelPrices(null)).toBeNull();
   });

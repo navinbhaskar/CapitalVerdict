@@ -4,18 +4,18 @@
       "id": "lucknow",
       "state": "UP",
       "petrol": {
-        "value": null,
+        "value": 101.86,
         "unit": "₹/L",
-        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
-        "effectiveDate": "2026-10-19",
-        "status": "TODO_VERIFY"
+        "source": "Lucknow, ~14 Sep 2026 (carchhe.com, energy.thecore.in). Changes daily. From user's CNG_vs_Petrol_Lucknow.xlsx",
+        "effectiveDate": "2026-09-14",
+        "status": "verified"
       },
       "cng": {
-        "value": null,
+        "value": 95.75,
         "unit": "₹/kg",
-        "source": "TODO_VERIFY: oil marketing company / city gas distributor retail price",
-        "effectiveDate": "2026-10-19",
-        "status": "TODO_VERIFY"
+        "source": "Lucknow, 14 Sep 2026 (carchhe.com, CarDekho). Some sources show ₹99.50 (Jul 2026); verify at your pump. From user's CNG_vs_Petrol_Lucknow.xlsx",
+        "effectiveDate": "2026-09-14",
+        "status": "verified"
       }
     },
     {

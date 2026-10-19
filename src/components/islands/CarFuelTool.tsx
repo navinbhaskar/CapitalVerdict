@@ -1,26 +1,29 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import type { ComponentChildren } from 'preact';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
-import { defaults, verifiedFuelPrices } from '@/data';
+import { defaults, fuelPrices, verifiedFuelPrices } from '@/data';
 import { decodeShare, encodeShare } from '@/lib/shareLink';
 import { formatNumber, formatPercent } from '@/lib/formatTool';
 import { useGlobalAssumptions } from '@/lib/useAssumptions';
 import {
   carFuelFlips,
   carFuelScenarios,
-  defaultPriceRiseShifts,
+  compareCarFuel,
+  type CarFuelResult,
   type CarFuelVariable,
 } from '@/models/carFuel';
 import {
   CAR_FUEL_EXAMPLE_FORM,
   CAR_FUEL_LIMITS,
   carFuelShareSchema,
-  invalidFields,
   toCarFuelInput,
   type CarFuelForm,
 } from '@/models/carFuelForm';
 import NumberField from '@/components/tool/NumberField';
 import VerdictCard from '@/components/tool/VerdictCard';
-import CumulativeChart from '@/components/tool/CumulativeChart';
+import CarFuelWorking from '@/components/tool/CarFuelWorking';
+import NetPositionChart from '@/components/tool/NetPositionChart';
+import MonthlyTable, { type MonthlyColumn } from '@/components/tool/MonthlyTable';
 import SensitivityList, { type FlipLine } from '@/components/tool/SensitivityList';
 import NonMoneyChecklist from '@/components/tool/NonMoneyChecklist';
 import ShareLink from '@/components/tool/ShareLink';
@@ -29,14 +32,17 @@ interface Props {
   locale: Locale;
 }
 
-const SHIFTS = defaultPriceRiseShifts(defaults.scenarioVariables.energyPriceRise.values);
+const RISE_RATES = defaults.scenarioVariables.energyPriceRise.values;
 const CHECKLIST: MessageKey[] = [
   'checklist.carFuel.1',
   'checklist.carFuel.2',
   'checklist.carFuel.3',
   'checklist.carFuel.4',
-  'checklist.carFuel.5',
 ];
+
+/** Net position by month: cumulative saving minus the extra price (flat or with interest). */
+const netSeries = (r: CarFuelResult, extra: number[] | number) =>
+  r.cumulativeSaving.map((v, m) => v - (typeof extra === 'number' ? extra : extra[m]!));
 
 export default function CarFuelTool({ locale }: Props) {
   const [form, setForm] = useState<CarFuelForm>(CAR_FUEL_EXAMPLE_FORM);
@@ -87,34 +93,60 @@ export default function CarFuelTool({ locale }: Props) {
   const input = useMemo(() => toCarFuelInput(form), [form]);
   const computed = useMemo(() => {
     if (!input) return null;
-    return { runs: carFuelScenarios(input, SHIFTS), flips: carFuelFlips(input) };
+    const result = compareCarFuel(input);
+    const runs = carFuelScenarios(input, RISE_RATES);
+    const scenarioNets = (['pessimistic', 'base', 'optimistic'] as const).map((s) =>
+      netSeries(runs[s].output, runs[s].output.extraPriceWithInterest),
+    );
+    return {
+      result,
+      runs,
+      flips: carFuelFlips(input),
+      netWithInterest: netSeries(result, result.extraPriceWithInterest),
+      netNoInterest: netSeries(result, input.extraPrice),
+      bandLow: scenarioNets[0]!.map((_, m) => Math.min(...scenarioNets.map((s) => s[m]!))),
+      bandHigh: scenarioNets[0]!.map((_, m) => Math.max(...scenarioNets.map((s) => s[m]!))),
+    };
   }, [input]);
 
   const petrol = t(locale, 'fuel.petrol');
   const cng = t(locale, 'fuel.cng');
-  const invalid = new Set(invalidFields(form));
 
   const reset = () => {
     pinned.current.clear();
-    setForm({ ...CAR_FUEL_EXAMPLE_FORM, interestRate: assumptions.carLoanRate });
+    setForm({
+      ...CAR_FUEL_EXAMPLE_FORM,
+      interestRate: assumptions.carLoanRate,
+      ...(cityPrices ? { petrolPrice: cityPrices.petrol, cngPrice: cityPrices.cng } : {}),
+    });
   };
+
+  const city = fuelPrices.cities.find((c) => c.id === assumptions.city);
+  const priceNote = (fuel: 'petrol' | 'cng') =>
+    city && cityPrices && !pinned.current.has(fuel === 'petrol' ? 'petrolPrice' : 'cngPrice')
+      ? t(locale, 'note.fuelPriceCity', {
+          city: t(locale, `city.${city.id}` as MessageKey),
+          date: city[fuel].effectiveDate,
+        })
+      : t(locale, 'note.fuelPriceExample');
 
   const field = (
     key: keyof CarFuelForm,
     label: MessageKey,
     unit: string,
-    extra: { percent?: boolean; integer?: boolean; help?: MessageKey } = {},
+    note: string,
+    extra: { percent?: boolean; integer?: boolean; flagged?: boolean } = {},
   ) => (
     <NumberField
       locale={locale}
+      layout="row"
       label={t(locale, label)}
       unit={unit}
+      note={note}
       value={form[key]}
       onChange={set(key)}
       {...CAR_FUEL_LIMITS[key]}
-      percent={extra.percent}
-      integer={extra.integer}
-      help={extra.help ? t(locale, extra.help) : undefined}
+      {...extra}
     />
   );
 
@@ -133,84 +165,171 @@ export default function CarFuelTool({ locale }: Props) {
         })
       : [];
 
-  const base = computed?.runs.base.output;
+  const result = computed?.result;
+  const monthlyColumns: MonthlyColumn[] =
+    computed && result && input
+      ? [
+          {
+            label: t(locale, 'monthly.col.km'),
+            kind: 'count',
+            values: result.monthlyCost.base.map((_, i) => (i + 1) * input.monthlyKm),
+          },
+          {
+            label: t(locale, 'monthly.col.petrolPrice'),
+            kind: 'price',
+            values: result.monthlyPrice.base,
+          },
+          {
+            label: t(locale, 'monthly.col.cngPrice'),
+            kind: 'price',
+            values: result.monthlyPrice.alternative,
+          },
+          {
+            label: t(locale, 'monthly.col.petrolCost'),
+            kind: 'money',
+            values: result.monthlyCost.base,
+          },
+          {
+            label: t(locale, 'monthly.col.cngCost'),
+            kind: 'money',
+            values: result.monthlyCost.alternative,
+          },
+          {
+            label: t(locale, 'monthly.col.saving'),
+            kind: 'money',
+            values: result.monthlyCost.base.map((c, i) => c - result.monthlyCost.alternative[i]!),
+          },
+          {
+            label: t(locale, 'monthly.col.cumSaving'),
+            kind: 'money',
+            values: result.cumulativeSaving.slice(1),
+          },
+          {
+            label: t(locale, 'monthly.col.extra'),
+            kind: 'money',
+            values: result.extraPriceWithInterest.slice(1),
+          },
+          {
+            label: t(locale, 'monthly.col.netNoInt'),
+            kind: 'money',
+            values: computed.netNoInterest.slice(1),
+          },
+          {
+            label: t(locale, 'monthly.col.netInt'),
+            kind: 'money',
+            values: computed.netWithInterest.slice(1),
+          },
+        ]
+      : [];
 
   return (
     <div>
-      <div class="grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-start lg:gap-12">
-        <div>
-          <div class="flex flex-wrap items-start justify-between gap-3 rounded-xl border border-line bg-surface px-4 py-3 text-sm text-ink-muted">
-            <p class="max-w-sm">
-              {assumptions.city && !cityPrices
-                ? t(locale, 'carFuel.cityPriceUnverified', {
-                    city: t(locale, `city.${assumptions.city}` as MessageKey),
-                  })
-                : t(locale, 'carFuel.exampleNotice')}
-            </p>
+      <div class="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-12">
+        <section aria-labelledby="inputs-heading">
+          <div class="flex flex-wrap items-baseline justify-between gap-3">
+            <h2 id="inputs-heading" class="text-xl font-semibold">
+              {t(locale, 'inputs.heading')}
+            </h2>
             <button
               type="button"
               onClick={reset}
-              class="-my-1 inline-flex min-h-10 items-center rounded-md px-2 font-medium text-accent-strong hover:bg-page"
+              class="inline-flex min-h-11 items-center rounded-md px-2 text-sm font-medium text-accent-strong hover:bg-surface"
             >
               {t(locale, 'carFuel.resetExample')}
             </button>
           </div>
-
-          <h2 class="mt-8 text-lg font-semibold">{t(locale, 'carFuel.quickInputs')}</h2>
-          <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-            {field('monthlyKm', 'input.monthlyKm', t(locale, 'input.monthlyKm.unit'))}
-            {field('extraPrice', 'input.extraPrice', t(locale, 'input.extraPrice.unit'))}
-            {field('petrolMileage', 'input.petrolMileage', t(locale, 'input.petrolMileage.unit'))}
-            {field('cngMileage', 'input.cngMileage', t(locale, 'input.cngMileage.unit'))}
-          </div>
-
-          <details
-            class="group mt-6 border-t border-line pt-2"
-            open={invalid.size > 0 ? true : undefined}
-          >
-            <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between font-medium">
-              {t(locale, 'carFuel.moreInputs')}
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-                class="text-ink-muted transition-transform duration-200 group-open:rotate-180"
-              >
-                <path
-                  d="m6 9 6 6 6-6"
-                  stroke="currentColor"
-                  stroke-width="1.75"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </summary>
-            <div class="mt-3 grid gap-5 pb-2 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-              {field('petrolPrice', 'input.petrolPrice', t(locale, 'input.petrolPrice.unit'))}
-              {field('cngPrice', 'input.cngPrice', t(locale, 'input.cngPrice.unit'))}
-              <div class="sm:col-span-2 lg:col-span-1 xl:col-span-2">
-                {field('interestRate', 'input.interestRate', '%', {
-                  percent: true,
-                  help: 'input.interestRate.help',
-                })}
-              </div>
-              {field('petrolPriceRise', 'input.petrolPriceRise', '%', { percent: true })}
-              {field('cngPriceRise', 'input.cngPriceRise', '%', { percent: true })}
-              {field('petrolUpkeep', 'input.petrolUpkeep', t(locale, 'input.upkeep.unit'))}
-              {field('cngUpkeep', 'input.cngUpkeep', t(locale, 'input.upkeep.unit'))}
-              {field('horizonYears', 'input.horizonYears', t(locale, 'input.horizonYears.unit'), {
-                integer: true,
+          <p class="mt-1 text-sm text-ink-muted">{t(locale, 'inputs.legend')}</p>
+          {assumptions.city && !cityPrices && (
+            <p class="mt-3 rounded-lg bg-warn-soft px-3 py-2 text-sm text-warn">
+              {t(locale, 'carFuel.cityPriceUnverified', {
+                city: t(locale, `city.${assumptions.city}` as MessageKey),
               })}
-            </div>
-          </details>
-        </div>
+            </p>
+          )}
+
+          <Group title={t(locale, 'inputs.group.prices')}>
+            {field(
+              'petrolPrice',
+              'input.petrolPrice',
+              t(locale, 'input.petrolPrice.unit'),
+              priceNote('petrol'),
+            )}
+            {field(
+              'cngPrice',
+              'input.cngPrice',
+              t(locale, 'input.cngPrice.unit'),
+              priceNote('cng'),
+            )}
+          </Group>
+          <Group title={t(locale, 'inputs.group.cars')}>
+            {field(
+              'petrolMileage',
+              'input.petrolMileage',
+              t(locale, 'input.petrolMileage.unit'),
+              t(locale, 'note.mileage'),
+              { flagged: true },
+            )}
+            {field(
+              'cngMileage',
+              'input.cngMileage',
+              t(locale, 'input.cngMileage.unit'),
+              t(locale, 'note.mileage'),
+              { flagged: true },
+            )}
+            {field(
+              'extraPrice',
+              'input.extraPrice',
+              t(locale, 'input.extraPrice.unit'),
+              t(locale, 'note.extraPrice'),
+              { flagged: true },
+            )}
+          </Group>
+          <Group title={t(locale, 'inputs.group.usage')}>
+            {field(
+              'monthlyKm',
+              'input.monthlyKm',
+              t(locale, 'input.monthlyKm.unit'),
+              t(locale, 'note.monthlyKm'),
+            )}
+            {field('interestRate', 'input.interestRate', '%', t(locale, 'note.interestRate'), {
+              percent: true,
+            })}
+          </Group>
+          <Group title={t(locale, 'inputs.group.optional')}>
+            {field('petrolPriceRise', 'input.petrolPriceRise', '%', t(locale, 'note.priceRise'), {
+              percent: true,
+            })}
+            {field('cngPriceRise', 'input.cngPriceRise', '%', t(locale, 'note.priceRise'), {
+              percent: true,
+            })}
+            {field(
+              'cngUpkeep',
+              'input.cngUpkeep',
+              t(locale, 'input.upkeep.unit'),
+              t(locale, 'note.cngUpkeep'),
+            )}
+            {field(
+              'petrolUpkeep',
+              'input.petrolUpkeep',
+              t(locale, 'input.upkeep.unit'),
+              t(locale, 'note.petrolUpkeep'),
+            )}
+            {field(
+              'horizonYears',
+              'input.horizonYears',
+              t(locale, 'input.horizonYears.unit'),
+              t(locale, 'note.horizon'),
+              { integer: true },
+            )}
+          </Group>
+        </section>
 
         <div class="lg:sticky lg:top-24">
           {computed && input ? (
             <VerdictCard
               locale={locale}
               input={input}
+              result={computed.result}
               runs={computed.runs}
               baseName={petrol}
               altName={cng}
@@ -231,16 +350,22 @@ export default function CarFuelTool({ locale }: Props) {
         </div>
       </div>
 
-      {computed && input && base && (
+      {computed && input && result && (
         <>
+          <div class="mt-16 border-t border-line pt-10">
+            <CarFuelWorking locale={locale} input={input} result={result} />
+          </div>
+
           <div class="mt-16 grid gap-10 border-t border-line pt-10 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12">
-            <CumulativeChart
+            <NetPositionChart
               locale={locale}
-              saving={base.cumulativeSaving}
-              cost={base.extraPriceWithInterest}
-              bandLow={computed.runs.pessimistic.output.cumulativeSaving}
-              bandHigh={computed.runs.optimistic.output.cumulativeSaving}
-              breakevenMonth={base.breakevenWithInterest?.months ?? null}
+              title={t(locale, 'chart.netTitle')}
+              netWithInterest={computed.netWithInterest}
+              netNoInterest={computed.netNoInterest}
+              bandLow={computed.bandLow}
+              bandHigh={computed.bandHigh}
+              breakevenWithInterest={result.breakevenWithInterest?.months ?? null}
+              breakevenNoInterest={result.breakevenNoInterest?.months ?? null}
             />
             <section aria-labelledby="scenarios-heading">
               <h2 id="scenarios-heading" class="text-lg font-semibold">
@@ -251,10 +376,7 @@ export default function CarFuelTool({ locale }: Props) {
                   const run = computed.runs[name];
                   const months = run.output.breakevenWithInterest?.months;
                   return (
-                    <li
-                      key={name}
-                      class={`rounded-xl border p-4 ${name === 'base' ? 'border-line-strong bg-page' : 'border-line'}`}
-                    >
+                    <li key={name} class="rounded-xl border border-line p-4">
                       <div class="flex items-baseline justify-between gap-3">
                         <span class="font-medium">{t(locale, `scenario.${name}`)}</span>
                         <span class="font-semibold num">
@@ -275,6 +397,18 @@ export default function CarFuelTool({ locale }: Props) {
             </section>
           </div>
 
+          <div class="mt-16 border-t border-line pt-10">
+            <MonthlyTable
+              locale={locale}
+              columns={monthlyColumns}
+              highlight={[
+                result.breakevenNoInterest?.months,
+                result.breakevenWithInterest?.months,
+              ].filter((m): m is number => typeof m === 'number' && m > 0)}
+              csvFilename="decidewise-cng-vs-petrol.csv"
+            />
+          </div>
+
           <div class="mt-16 grid gap-12 border-t border-line pt-10 lg:grid-cols-2">
             <SensitivityList locale={locale} lines={flipLines} />
             <NonMoneyChecklist locale={locale} items={CHECKLIST.map((k) => t(locale, k))} />
@@ -282,6 +416,17 @@ export default function CarFuelTool({ locale }: Props) {
         </>
       )}
     </div>
+  );
+}
+
+function Group({ title, children }: { title: string; children: ComponentChildren }) {
+  return (
+    <fieldset class="mt-6">
+      <legend class="w-full border-b border-line-strong pb-2 text-xs font-medium tracking-[0.08em] text-ink-muted uppercase">
+        {title}
+      </legend>
+      <div class="divide-y divide-line">{children}</div>
+    </fieldset>
   );
 }
 

@@ -2,7 +2,7 @@
 import ToolLayout from '@/layouts/ToolLayout.astro';
 import AssumptionsTable, { type AssumptionRow } from '@/components/tool/AssumptionsTable.astro';
 import CarFuelTool from '@/components/islands/CarFuelTool';
-import { t, type Locale } from '@/i18n/t';
+import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { localizePath } from '@/i18n/routes';
 import { defaults, fuelPrices } from '@/data';
 import { compareCarFuel } from '@/models/carFuel';
@@ -16,15 +16,23 @@ const { locale } = Astro.props;
 
 const rise = defaults.scenarioVariables.energyPriceRise;
 const loan = defaults.globalAssumptions.carLoanRate;
-const cityPrice = fuelPrices.cities[0]!.petrol;
+const cityPrice =
+  fuelPrices.cities.find((c) => c.petrol.status !== 'verified')?.petrol ??
+  fuelPrices.cities[0]!.petrol;
+const verifiedCities = fuelPrices.cities.filter(
+  (c) => c.petrol.status === 'verified' && c.cng.status === 'verified',
+);
+const unverifiedCities = fuelPrices.cities.filter((c) => !verifiedCities.includes(c));
 const rows: AssumptionRow[] = [
-  {
-    label: t(locale, 'assumptionsTable.examplePrices'),
-    value: `${t(locale, 'unit.perLitre', { n: carFuelExample.base.energyPrice })} · ${t(locale, 'unit.perKg', { n: carFuelExample.alternative.energyPrice })}`,
-    source: t(locale, 'assumptionsTable.examplePricesSource'),
-    date: '—',
+  ...verifiedCities.map((c) => ({
+    label: t(locale, 'assumptionsTable.cityPricesFor', {
+      city: t(locale, `city.${c.id}` as MessageKey),
+    }),
+    value: `${t(locale, 'unit.perLitre', { n: c.petrol.value! })} · ${t(locale, 'unit.perKg', { n: c.cng.value! })}`,
+    source: `${c.petrol.source} ${c.cng.source}`,
+    date: c.petrol.effectiveDate,
     verified: true,
-  },
+  })),
   {
     label: t(locale, 'assumptionsTable.priceRise'),
     value: [rise.values.pessimistic, rise.values.base, rise.values.optimistic]
@@ -41,15 +49,17 @@ const rows: AssumptionRow[] = [
     date: loan.effectiveDate,
     verified: loan.status === 'verified',
   },
-  {
-    label: t(locale, 'assumptionsTable.cityPrices'),
-    value: '—',
-    source: cityPrice.source,
-    date: cityPrice.effectiveDate,
-    verified: fuelPrices.cities.every(
-      (c) => c.petrol.status === 'verified' && c.cng.status === 'verified',
-    ),
-  },
+  ...(unverifiedCities.length > 0
+    ? [
+        {
+          label: t(locale, 'assumptionsTable.otherCities'),
+          value: unverifiedCities.map((c) => t(locale, `city.${c.id}` as MessageKey)).join(', '),
+          source: cityPrice.source,
+          date: cityPrice.effectiveDate,
+          verified: false,
+        },
+      ]
+    : []),
 ];
 
 const ex = compareCarFuel(carFuelExample);
