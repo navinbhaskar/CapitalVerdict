@@ -1,0 +1,77 @@
+@import '@fontsource-variable/ibm-plex-sans/wght.css';
+@import 'tailwindcss';
+
+/*
+ * Design tokens. Minimal, light, mostly white.
+ * Ink and accent come from the logo (brand/). Contrast ratios are against #FFFFFF.
+ * Dark theme tokens arrive in M2.
+ */
+@theme {
+  --font-sans:
+    'IBM Plex Sans Variable', 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-page: #ffffff;
+  --color-surface: #f7f9fa;
+  --color-ink: #1c2b39; /* 14.4:1 */
+  --color-ink-hover: #2a3d4f;
+  --color-ink-muted: #52606d; /* 6.5:1 */
+  --color-ink-subtle: #8a96a3; /* 3.0:1, large text and icons only */
+  --color-line: #e5e9ed;
+  --color-line-strong: #d0d7de;
+  --color-accent: #2e8b6a; /* 4.2:1, graphics and large text only */
+  --color-accent-strong: #1f6e52; /* 6.2:1, links and small text */
+  --color-accent-soft: #eef6f2;
+
+  --radius-card: 0.75rem;
+  --container-content: 72rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-page font-sans text-ink antialiased;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply text-ink;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent-strong);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility num {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility container-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-content);
+  padding-inline: 1rem;
+  @media (width >= 40rem) {
+    padding-inline: 1.5rem;
+  }
+}
