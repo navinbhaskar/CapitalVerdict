@@ -178,7 +178,6 @@
   "checklist.carFuel.4": "TODO_COPY_HI",
   "carFuel.explanation": "TODO_COPY_HI",
   "carFuel.workedExample.intro": "TODO_COPY_HI",
-  "carFuel.faq": "TODO_COPY_HI",
   "assumptionsTable.item": "TODO_COPY_HI",
   "assumptionsTable.value": "TODO_COPY_HI",
   "assumptionsTable.source": "TODO_COPY_HI",
@@ -246,5 +245,13 @@
   "monthly.breakevenRow": "TODO_COPY_HI",
   "assumptionsTable.cityPricesFor": "TODO_COPY_HI",
   "assumptionsTable.otherCities": "TODO_COPY_HI",
-  "carFuel.resultBar.cta": "TODO_COPY_HI"
+  "carFuel.resultBar.cta": "TODO_COPY_HI",
+  "carFuel.faq.1.q": "TODO_COPY_HI",
+  "carFuel.faq.1.a": "TODO_COPY_HI",
+  "carFuel.faq.2.q": "TODO_COPY_HI",
+  "carFuel.faq.2.a": "TODO_COPY_HI",
+  "carFuel.faq.3.q": "TODO_COPY_HI",
+  "carFuel.faq.3.a": "TODO_COPY_HI",
+  "carFuel.faq.4.q": "TODO_COPY_HI",
+  "carFuel.faq.4.a": "TODO_COPY_HI"
 }

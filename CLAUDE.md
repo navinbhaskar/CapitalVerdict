@@ -11,6 +11,8 @@ Astro + TypeScript (static), Preact islands, Tailwind v4, Vitest. English at `/`
   a spreadsheet, add golden tests that match its cells.
 - Never invent data values (prices, tariffs, subsidies, tax rules). Use `TODO_VERIFY` with a source field.
 - UI copy the user has not written is `TODO_COPY` (English) / `TODO_COPY_HI` (Hindi). No bulk SEO text.
+  When the user asks for drafts, write plain, specific copy and list each drafted key in
+  `COPY_REVIEW.md` for their approval. Never state facts (prices, rules, business model) not in the data.
 - All UI strings live in `src/i18n/en.json` and `hi.json`; no hardcoded strings in components.
 - Tools follow the spreadsheet style of the car fuel page: all inputs visible with a source/note per row,
   "how the answer is worked out" with formulas, net-position chart, month-by-month table with CSV.

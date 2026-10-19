@@ -89,6 +89,8 @@ const worked: [string, string][] = [
   [t(locale, 'stat.net10'), formatMoney(ex.netAt10Years!.withInterest)],
 ];
 
+const FAQ = [1, 2, 3, 4] as const;
+
 const home = localizePath('/', locale);
 const related = [
   { href: `${home}#tools`, label: t(locale, 'tool.solar.title') },
@@ -120,5 +122,14 @@ const related = [
 
   <AssumptionsTable slot="assumptions" locale={locale} rows={rows} />
 
-  <p slot="faq">{t(locale, 'carFuel.faq')}</p>
+  <dl slot="faq" class="divide-y divide-line border-y border-line">
+    {FAQ.map((n) => (
+      <div class="py-5">
+        <dt class="font-medium text-ink">{t(locale, `carFuel.faq.${n}.q` as MessageKey)}</dt>
+        <dd class="mt-2 max-w-(--container-prose)">
+          {t(locale, `carFuel.faq.${n}.a` as MessageKey)}
+        </dd>
+      </div>
+    ))}
+  </dl>
 </ToolLayout>
