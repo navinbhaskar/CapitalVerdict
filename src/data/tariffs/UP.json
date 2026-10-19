@@ -1,0 +1,11 @@
+{
+  "state": "UP",
+  "category": "Domestic, urban, metered",
+  "method": null,
+  "slabs": [],
+  "fixedCharges": [],
+  "levies": [],
+  "source": "TODO_VERIFY: UPERC tariff order in force (domestic urban metered category): energy slabs, fixed charge per kW, electricity duty",
+  "effectiveDate": "2026-10-19",
+  "status": "TODO_VERIFY"
+}

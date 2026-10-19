@@ -1,0 +1,31 @@
+{
+  "state": "UP",
+  "subsidy": {
+    "value": null,
+    "unit": "₹ for the system size",
+    "source": "TODO_VERIFY: PM Surya Ghar central subsidy for residential rooftop solar, plus any UP state top-up",
+    "effectiveDate": "2026-10-19",
+    "status": "TODO_VERIFY"
+  },
+  "generationPerKWPerDay": {
+    "value": null,
+    "unit": "kWh per kW per day",
+    "source": "TODO_VERIFY: average daily output per kW for UP (e.g. MNRE or PVWatts estimate)",
+    "effectiveDate": "2026-10-19",
+    "status": "TODO_VERIFY"
+  },
+  "degradationPerYear": {
+    "value": null,
+    "unit": "decimal per year",
+    "source": "TODO_VERIFY: panel manufacturer's performance warranty",
+    "effectiveDate": "2026-10-19",
+    "status": "TODO_VERIFY"
+  },
+  "exportRatePerKWh": {
+    "value": null,
+    "unit": "₹/kWh",
+    "source": "TODO_VERIFY: UPERC net-metering regulation (credit for units exported to the grid)",
+    "effectiveDate": "2026-10-19",
+    "status": "TODO_VERIFY"
+  }
+}

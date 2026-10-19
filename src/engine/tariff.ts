@@ -118,3 +118,21 @@ export function marginalRatePerKWh(
   if (extraKWh <= 0) throw new RangeError('extraKWh must be positive');
   return incrementalCost(baseKWh, extraKWh, tariff, options) / extraKWh;
 }
+
+/**
+ * A one-rate tariff for when the state's slab tariff is not available: every unit at `ratePerKWh`,
+ * plus a flat monthly fixed charge. Saving units then saves exactly `ratePerKWh` each.
+ */
+export function simpleTariff(ratePerKWh: number, fixedPerMonth: number): Tariff {
+  return {
+    state: 'custom',
+    category: 'user-entered average rate',
+    method: 'telescopic',
+    slabs: [{ upTo: null, rate: ratePerKWh }],
+    fixedCharges: fixedPerMonth > 0 ? [{ basis: 'perConnection', amount: fixedPerMonth }] : [],
+    levies: [],
+    source: 'Entered by the user',
+    effectiveDate: '2000-01-01',
+    status: 'verified',
+  };
+}

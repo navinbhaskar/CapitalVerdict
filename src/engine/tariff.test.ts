@@ -5,6 +5,7 @@ import {
   incrementalCost,
   marginalRatePerKWh,
   savingFromReduction,
+  simpleTariff,
   validateTariff,
   type Tariff,
 } from './tariff';
@@ -113,5 +114,18 @@ describe('validateTariff', () => {
     expect(() => validateTariff({ ...synthetic, slabs: [{ upTo: 100, rate: 3 }] })).toThrow(
       'open-ended',
     );
+  });
+});
+
+describe('simpleTariff', () => {
+  it('charges every unit at one rate plus a flat fixed charge', () => {
+    const t = simpleTariff(7, 120);
+    expect(bill(400, t).total).toBe(400 * 7 + 120);
+    expect(bill(0, t).total).toBe(120);
+    expect(savingFromReduction(400, 100, t)).toBe(700);
+  });
+
+  it('omits a zero fixed charge', () => {
+    expect(simpleTariff(6.5, 0).fixedCharges).toEqual([]);
   });
 });

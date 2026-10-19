@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { dataRecord, validateAllData } from './schema';
-import { defaults, fuelPrices, verifiedFuelPrices } from './index';
+import { dataRecord, tariffSchema, validateAllData } from './schema';
+import {
+  defaults,
+  fuelPrices,
+  solarData,
+  upTariff,
+  verifiedFuelPrices,
+  verifiedSolarValue,
+  verifiedTariff,
+} from './index';
 
 describe('data files', () => {
   it('all validate against their schemas', () => {
@@ -63,5 +71,31 @@ describe('fuelPrices.json', () => {
     expect(verifiedFuelPrices('kanpur')).toBeNull();
     expect(verifiedFuelPrices('nowhere')).toBeNull();
     expect(verifiedFuelPrices(null)).toBeNull();
+  });
+});
+
+describe('tariffs/UP.json and solar.json', () => {
+  it('have no invented values while TODO_VERIFY', () => {
+    expect(upTariff.status).toBe('TODO_VERIFY');
+    expect(upTariff.slabs).toEqual([]);
+    expect(verifiedTariff()).toBeNull();
+    for (const key of [
+      'subsidy',
+      'generationPerKWPerDay',
+      'degradationPerYear',
+      'exportRatePerKWh',
+    ] as const) {
+      expect(solarData[key].value).toBeNull();
+      expect(verifiedSolarValue(key)).toBeNull();
+    }
+  });
+
+  it('a verified tariff must have a method and slabs', () => {
+    const base = { ...upTariff, status: 'verified' as const };
+    expect(tariffSchema.safeParse(base).success).toBe(false);
+    expect(
+      tariffSchema.safeParse({ ...base, method: 'telescopic', slabs: [{ upTo: null, rate: 5 }] })
+        .success,
+    ).toBe(true);
   });
 });

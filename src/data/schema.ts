@@ -9,6 +9,8 @@
 import { z } from 'zod';
 import defaultsJson from './defaults.json';
 import fuelPricesJson from './fuelPrices.json';
+import upTariffJson from './tariffs/UP.json';
+import solarJson from './solar.json';
 
 export const verificationStatus = z.enum(['TODO_VERIFY', 'verified']);
 
@@ -64,8 +66,48 @@ export const fuelPricesSchema = z.object({
 export type FuelPrices = z.infer<typeof fuelPricesSchema>;
 export type CityId = FuelPrices['cities'][number]['id'];
 
+/**
+ * A state's domestic tariff. While TODO_VERIFY the method is null and the lists are empty; a
+ * verified tariff must have a method and at least one slab.
+ */
+export const tariffSchema = z
+  .object({
+    state: z.string().min(1),
+    category: z.string().min(1),
+    method: z.enum(['telescopic', 'wholeUnitsAtSlabRate']).nullable(),
+    slabs: z.array(z.object({ upTo: z.number().positive().nullable(), rate: z.number().min(0) })),
+    fixedCharges: z.array(
+      z.object({ basis: z.enum(['perConnection', 'perKW']), amount: z.number().min(0) }),
+    ),
+    levies: z.array(
+      z.object({
+        name: z.string().min(1),
+        rate: z.number().min(0),
+        on: z.enum(['energy', 'energyAndFixed']),
+      }),
+    ),
+    source: z.string().min(1),
+    effectiveDate: z.iso.date(),
+    status: verificationStatus,
+  })
+  .refine((t) => t.status === 'TODO_VERIFY' || (t.method !== null && t.slabs.length > 0), {
+    message: 'a verified tariff needs a slab method and slabs',
+  });
+export type TariffData = z.infer<typeof tariffSchema>;
+
+export const solarSchema = z.object({
+  state: z.string().min(1),
+  subsidy: dataRecord,
+  generationPerKWPerDay: dataRecord,
+  degradationPerYear: dataRecord,
+  exportRatePerKWh: dataRecord,
+});
+export type SolarData = z.infer<typeof solarSchema>;
+
 /** Throws on any malformed data file. Called from BaseLayout so a bad file fails the build. */
 export function validateAllData(): void {
   defaultsSchema.parse(defaultsJson);
   fuelPricesSchema.parse(fuelPricesJson);
+  tariffSchema.parse(upTariffJson);
+  solarSchema.parse(solarJson);
 }
