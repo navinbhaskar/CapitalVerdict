@@ -279,5 +279,14 @@
   "assumptions.resetConfirm": "TODO_COPY_HI",
   "assumptions.changedCount": "TODO_COPY_HI",
   "assumptions.allDefaults": "TODO_COPY_HI",
-  "nav.carFuel": "TODO_COPY_HI"
+  "nav.carFuel": "TODO_COPY_HI",
+  "home.tools.upcomingHeading": "TODO_COPY_HI",
+  "tool.prepay.title": "TODO_COPY_HI",
+  "tool.prepay.question": "TODO_COPY_HI",
+  "tool.carLoan.title": "TODO_COPY_HI",
+  "tool.carLoan.question": "TODO_COPY_HI",
+  "tool.ac.title": "TODO_COPY_HI",
+  "tool.ac.question": "TODO_COPY_HI",
+  "tool.taxRegime.title": "TODO_COPY_HI",
+  "tool.taxRegime.question": "TODO_COPY_HI"
 }

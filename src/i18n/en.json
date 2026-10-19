@@ -279,5 +279,14 @@
   "assumptions.resetConfirm": "Confirm reset all",
   "assumptions.changedCount": "{n} changed from the defaults",
   "assumptions.allDefaults": "All values are the defaults",
-  "nav.carFuel": "Petrol vs CNG"
+  "nav.carFuel": "Petrol vs CNG",
+  "home.tools.upcomingHeading": "Coming next",
+  "tool.prepay.title": "Prepay or invest",
+  "tool.prepay.question": "Should I prepay my home loan or invest the money?",
+  "tool.carLoan.title": "Cash or car loan",
+  "tool.carLoan.question": "Should I pay cash for the car or take a loan?",
+  "tool.ac.title": "Inverter AC payback",
+  "tool.ac.question": "Is a 5-star inverter AC worth the extra price?",
+  "tool.taxRegime.title": "Old or new tax regime",
+  "tool.taxRegime.question": "Which income tax regime leaves me more money?"
 }
