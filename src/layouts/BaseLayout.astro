@@ -4,7 +4,7 @@ import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import Motion from '@/components/layout/Motion.astro';
 import { htmlLang, t, type Locale } from '@/i18n/t';
-import { alternates, splitLocale } from '@/i18n/routes';
+import { PUBLISHED_LOCALES, alternates, splitLocale } from '@/i18n/routes';
 import { validateAllData } from '@/data/schema';
 import displayFont from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-opsz-normal.woff2?url';
 import bodyFont from '@fontsource-variable/ibm-plex-sans/files/ibm-plex-sans-latin-wght-normal.woff2?url';
@@ -60,9 +60,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <title>{pageTitle}</title>
     <meta name="description" content={description ?? t(locale, 'site.description')} />
     <link rel="canonical" href={canonical} />
-    {alternates(path, Astro.site!).map((a) => (
-      <link rel="alternate" hreflang={a.hreflang} href={a.href} />
-    ))}
+    {PUBLISHED_LOCALES.length > 1 &&
+      alternates(path, Astro.site!, PUBLISHED_LOCALES).map((a) => (
+        <link rel="alternate" hreflang={a.hreflang} href={a.href} />
+      ))}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body class="flex min-h-dvh flex-col">

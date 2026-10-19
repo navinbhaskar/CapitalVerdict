@@ -2,6 +2,9 @@ import { locales, type Locale } from './t';
 
 export const defaultLocale: Locale = 'en';
 
+/** Locales with built pages. Hindi strings stay in hi.json, but its pages are paused. */
+export const PUBLISHED_LOCALES: readonly Locale[] = ['en'];
+
 /**
  * Locale-neutral path → path for `locale`. English lives at the root, other locales under /<locale>/.
  * `localizePath('/tools/car-fuel/', 'hi')` → `/hi/tools/car-fuel/`.
@@ -31,8 +34,12 @@ export interface Alternate {
 }
 
 /** hreflang links for every locale plus x-default, as absolute URLs. */
-export function alternates(path: string, site: URL | string): Alternate[] {
-  const links: Alternate[] = locales.map((locale) => ({
+export function alternates(
+  path: string,
+  site: URL | string,
+  published: readonly Locale[] = locales,
+): Alternate[] {
+  const links: Alternate[] = published.map((locale) => ({
     hreflang: locale === 'hi' ? 'hi-IN' : 'en-IN',
     href: new URL(localizePath(path, locale), site).href,
   }));

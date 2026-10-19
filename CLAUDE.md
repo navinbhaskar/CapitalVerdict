@@ -1,7 +1,8 @@
 # Decidewise
 
 Honest money-decision calculators for India. "Big money decisions, honest maths, assumptions shown."
-Astro + TypeScript (static), Preact islands, Tailwind v4, Vitest. English at `/`, Hindi at `/hi/`.
+Astro + TypeScript (static), Preact islands, Tailwind v4, Vitest. English at `/`. Hindi (`/hi/`) is
+paused: strings stay in `hi.json`, but no Hindi pages are built (see `PUBLISHED_LOCALES`).
 
 ## Working rules
 

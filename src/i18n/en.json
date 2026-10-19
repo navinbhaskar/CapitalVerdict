@@ -278,5 +278,6 @@
   "assumptions.resetOne": "Reset",
   "assumptions.resetConfirm": "Confirm reset all",
   "assumptions.changedCount": "{n} changed from the defaults",
-  "assumptions.allDefaults": "All values are the defaults"
+  "assumptions.allDefaults": "All values are the defaults",
+  "nav.carFuel": "Petrol vs CNG"
 }

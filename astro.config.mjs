@@ -13,15 +13,12 @@ export default defineConfig({
   trailingSlash: 'ignore',
   integrations: [
     preact(),
-    sitemap({
-      i18n: {
-        defaultLocale: 'en',
-        locales: { en: 'en-IN', hi: 'hi-IN' },
-      },
-    }),
+    // Hindi is paused: only English pages are built. Re-add 'hi' here and in
+    // PUBLISHED_LOCALES (src/i18n/routes.ts) when the Hindi copy is ready.
+    sitemap(),
   ],
   i18n: {
-    locales: ['en', 'hi'],
+    locales: ['en'],
     defaultLocale: 'en',
     routing: { prefixDefaultLocale: false },
   },

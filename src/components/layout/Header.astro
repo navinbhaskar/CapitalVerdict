@@ -2,51 +2,51 @@
 import Logo from './Logo.astro';
 import AssumptionsPanel from '@/components/islands/AssumptionsPanel';
 import { t, type Locale } from '@/i18n/t';
-import { localizePath, otherLocale } from '@/i18n/routes';
+import { localizePath } from '@/i18n/routes';
 
 interface Props {
   locale: Locale;
-  /** Locale-neutral path of the current page, for the language switch. */
+  /** Locale-neutral path of the current page, for the active link. */
   path: string;
 }
 const { locale, path } = Astro.props;
 const home = localizePath('/', locale);
-const switchTo = otherLocale(locale);
-const linkClass =
-  'inline-flex min-h-11 items-center rounded-md px-3 transition-colors duration-(--duration-fast) ease-out-quart hover:bg-surface hover:text-ink';
+const carFuel = localizePath('/tools/car-fuel/', locale);
+const onCarFuel = path.startsWith('/tools/car-fuel');
 ---
 
-<header class="glass sticky top-0 z-40 border-b border-line">
-  <div class="container-page flex h-14 items-center justify-between gap-2">
-    <a href={home} aria-label={t(locale, 'a11y.home')} class="-mx-1 shrink-0 rounded-sm px-1 py-1">
-      <Logo intro />
-    </a>
-    <nav aria-label={t(locale, 'nav.primary')}>
-      <ul class="flex items-center text-sm text-ink-muted sm:text-base">
-        <li>
-          <a href={`${home}#tools`} class={linkClass}>
-            {t(locale, 'nav.tools')}
-          </a>
-        </li>
-        <li class="hidden md:block">
-          <a href={`${home}#principles`} class={linkClass}>
-            {t(locale, 'nav.principles')}
-          </a>
-        </li>
-        <li>
-          <a
-            href={localizePath(path, switchTo)}
-            hreflang={switchTo}
-            lang={switchTo}
-            class={linkClass}
-          >
-            {t(locale, 'nav.switchLanguage')}
-          </a>
-        </li>
-        <li>
-          <AssumptionsPanel client:idle locale={locale} />
-        </li>
-      </ul>
-    </nav>
+<!--
+  Floating bar: transparent over the top of the page, then a glass pill with a soft shadow once
+  the page scrolls (html[data-scrolled], set in Motion.astro). Only opacity animates.
+-->
+<header class="site-header sticky top-0 z-40 isolate pt-2 sm:pt-3">
+  <div class="container-page">
+    <div class="nav-bar -mx-2 flex h-14 items-center justify-between gap-2 rounded-xl pr-1.5 pl-2 sm:-mx-3 sm:pl-3">
+      <a href={home} aria-label={t(locale, 'a11y.home')} class="shrink-0 rounded-sm py-1">
+        <Logo intro />
+      </a>
+      <nav aria-label={t(locale, 'nav.primary')}>
+        <ul class="flex items-center gap-0.5">
+          <li class="sm:hidden">
+            <a href={`${home}#tools`} class="nav-link">
+              {t(locale, 'nav.tools')}
+            </a>
+          </li>
+          <li class="hidden sm:block">
+            <a href={carFuel} class="nav-link" aria-current={onCarFuel ? 'page' : undefined}>
+              {t(locale, 'nav.carFuel')}
+            </a>
+          </li>
+          <li class="hidden md:block">
+            <a href={`${home}#principles`} class="nav-link">
+              {t(locale, 'nav.principles')}
+            </a>
+          </li>
+          <li class="ml-1 sm:ml-2">
+            <AssumptionsPanel client:idle locale={locale} />
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </header>

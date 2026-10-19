@@ -38,6 +38,25 @@
       requestAnimationFrame(frame);
     }
 
+    // Top nav turns into a glass pill once the page has scrolled.
+    let ticking = false;
+    const markScrolled = () => {
+      ticking = false;
+      if (window.scrollY > 8) document.documentElement.dataset.scrolled = '';
+      else delete document.documentElement.dataset.scrolled;
+    };
+    markScrolled();
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(markScrolled);
+        }
+      },
+      { passive: true },
+    );
+
     const counters = document.querySelectorAll('[data-countup]');
     const reveals = document.querySelectorAll('[data-reveal]');
     if (!('IntersectionObserver' in window)) return;
