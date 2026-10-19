@@ -21,7 +21,7 @@ Astro + TypeScript (static), Preact islands, Tailwind v4, Vitest. English at `/`
 ## Design rules
 
 - **Type.** Two self-hosted families via `@fontsource` (never a Google Fonts link): Bricolage Grotesque
-  for display (h1, h2, verdicts) and IBM Plex Sans + IBM Plex Sans Devanagari for body, UI and numbers.
+  (optical-size cut, weight 500 at display sizes) for display (h1, h2, verdicts) and IBM Plex Sans + IBM Plex Sans Devanagari for body, UI and numbers.
   Use the one type scale defined as `--text-*` tokens in `src/styles/global.css`; no arbitrary font
   sizes in components. Tabular figures (`.num`) for every number that can change.
 - **Tokens.** Colours, spacing, radius, shadows and motion (durations and easing curves) are CSS custom

@@ -103,7 +103,7 @@ export default function VerdictCard(props: Props) {
       <p class="text-sm font-medium text-ink-muted">{t(locale, 'verdict.label')}</p>
       <h2
         id="verdict-heading"
-        class="mt-1 font-display text-xl font-semibold sm:text-2xl"
+        class="mt-1 font-display text-xl font-semibold sm:text-2xl sm:font-medium"
         aria-live="polite"
       >
         <span key={headline} class="tick block">
