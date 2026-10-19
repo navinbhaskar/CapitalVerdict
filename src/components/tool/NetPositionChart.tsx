@@ -68,15 +68,16 @@ export default function NetPositionChart(props: Props) {
         const r = devicePixelRatio;
         ctx.save();
         ctx.fillStyle = accent;
+        ctx.strokeStyle = accent;
         if (filled) {
-          ctx.globalAlpha = 0.18;
+          // Thin ring around the with-interest break-even, like the home page chart.
+          ctx.lineWidth = 0.75 * r;
           ctx.beginPath();
-          ctx.arc(x, y, 11 * r, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.globalAlpha = 1;
+          ctx.arc(x, y, 7 * r, 0, Math.PI * 2);
+          ctx.stroke();
         }
         ctx.beginPath();
-        ctx.arc(x, y, (filled ? 5 : 3.5) * r, 0, Math.PI * 2);
+        ctx.arc(x, y, (filled ? 2.75 : 2) * r, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       };
@@ -92,14 +93,14 @@ export default function NetPositionChart(props: Props) {
             {
               stroke: muted,
               grid: { show: false },
-              ticks: { stroke: line },
+              ticks: { stroke: line, width: 0.6, size: 4 },
               incrs: [12, 24, 60],
               values: (_u, ticks) =>
                 ticks.map((v) => (v % 12 === 0 ? t(locale, 'unit.yearsShort', { n: v / 12 }) : '')),
             },
             {
               stroke: muted,
-              grid: { stroke: line, width: 1 },
+              grid: { stroke: line, width: 0.6, dash: [2, 4] },
               ticks: { show: false },
               size: 60,
               values: (_u, ticks) => ticks.map(lakh),
@@ -107,8 +108,8 @@ export default function NetPositionChart(props: Props) {
           ],
           series: [
             {},
-            { stroke: ink, width: 2.25 },
-            { stroke: muted, width: 2, dash: [6, 6] },
+            { stroke: ink, width: 1.25 },
+            { stroke: muted, width: 1, dash: [4, 4] },
             { stroke: 'transparent', width: 0, points: { show: false } },
             { stroke: 'transparent', width: 0, points: { show: false } },
           ],
@@ -120,7 +121,7 @@ export default function NetPositionChart(props: Props) {
                 const ctx = u.ctx;
                 ctx.save();
                 ctx.strokeStyle = strong;
-                ctx.lineWidth = 1.5 * devicePixelRatio;
+                ctx.lineWidth = 0.75 * devicePixelRatio;
                 ctx.beginPath();
                 ctx.moveTo(u.bbox.left, y);
                 ctx.lineTo(u.bbox.left + u.bbox.width, y);
@@ -176,11 +177,11 @@ export default function NetPositionChart(props: Props) {
       <figcaption class="font-display text-xl font-semibold">{title}</figcaption>
       <div class="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm text-ink-muted" aria-hidden="true">
         <span class="inline-flex items-center gap-2">
-          <span class="h-0.5 w-5 rounded bg-ink" />
+          <span class="h-px w-5 bg-ink" />
           {t(locale, 'chart.netWithInterest')}
         </span>
         <span class="inline-flex items-center gap-2">
-          <span class="w-5 border-t-2 border-dashed border-ink-subtle" />
+          <span class="w-5 border-t border-dashed border-ink-subtle" />
           {t(locale, 'chart.netNoInterest')}
         </span>
         <span class="inline-flex items-center gap-2">
