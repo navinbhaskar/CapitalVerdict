@@ -149,11 +149,15 @@ export default function CarFuelTool({ locale }: Props) {
     label: MessageKey,
     unit: string,
     note: string,
-    extra: { percent?: boolean; integer?: boolean; flagged?: boolean } = {},
+    extra: {
+      percent?: boolean;
+      integer?: boolean;
+      flagged?: boolean;
+      layout?: 'row' | 'stack';
+    } = {},
   ) => (
     <NumberField
       locale={locale}
-      layout="row"
       name={key}
       label={t(locale, label)}
       unit={unit}
@@ -162,6 +166,7 @@ export default function CarFuelTool({ locale }: Props) {
       onChange={set(key)}
       {...CAR_FUEL_LIMITS[key]}
       {...extra}
+      layout={extra.layout ?? 'row'}
     />
   );
 
@@ -239,10 +244,10 @@ export default function CarFuelTool({ locale }: Props) {
 
   return (
     <div>
-      <div class="grid gap-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-12">
+      <div class="grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-10">
         <section aria-labelledby="inputs-heading">
           <div class="flex flex-wrap items-baseline justify-between gap-3">
-            <h2 id="inputs-heading" class="font-display text-2xl font-semibold">
+            <h2 id="inputs-heading" class="font-display text-xl font-semibold">
               {t(locale, 'inputs.heading')}
             </h2>
             <button
@@ -310,36 +315,40 @@ export default function CarFuelTool({ locale }: Props) {
               percent: true,
             })}
           </Group>
-          <Group title={t(locale, 'inputs.group.optional')}>
+          <Group title={t(locale, 'inputs.group.optional')} columns>
             {field('petrolPriceRise', 'input.petrolPriceRise', '%', t(locale, 'note.priceRise'), {
               percent: true,
+              layout: 'stack',
             })}
             {field('cngPriceRise', 'input.cngPriceRise', '%', t(locale, 'note.priceRise'), {
               percent: true,
+              layout: 'stack',
             })}
             {field(
               'cngUpkeep',
               'input.cngUpkeep',
               t(locale, 'input.upkeep.unit'),
               t(locale, 'note.cngUpkeep'),
+              { layout: 'stack' },
             )}
             {field(
               'petrolUpkeep',
               'input.petrolUpkeep',
               t(locale, 'input.upkeep.unit'),
               t(locale, 'note.petrolUpkeep'),
+              { layout: 'stack' },
             )}
             {field(
               'horizonYears',
               'input.horizonYears',
               t(locale, 'input.horizonYears.unit'),
               t(locale, 'note.horizon'),
-              { integer: true },
+              { integer: true, layout: 'stack' },
             )}
           </Group>
         </section>
 
-        <div id="verdict-anchor" class="lg:sticky lg:top-24">
+        <div id="verdict-anchor" class="lg:sticky lg:top-20">
           {computed && input ? (
             <VerdictCard
               locale={locale}
@@ -351,7 +360,7 @@ export default function CarFuelTool({ locale }: Props) {
             />
           ) : (
             <div
-              class="rounded-xl border border-dashed border-line-strong p-7 text-ink-muted"
+              class="rounded-xl border border-dashed border-line-strong p-5 text-ink-muted"
               role="status"
             >
               {t(locale, 'carFuel.incomplete')}
@@ -367,11 +376,11 @@ export default function CarFuelTool({ locale }: Props) {
 
       {computed && input && result && (
         <>
-          <div class="mt-16 border-t border-line pt-10">
+          <div class="mt-10 border-t border-line pt-6">
             <CarFuelWorking locale={locale} input={input} result={result} />
           </div>
 
-          <div class="mt-16 grid gap-10 border-t border-line pt-10 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12">
+          <div class="mt-10 grid gap-6 border-t border-line pt-6 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12">
             <NetPositionChart
               locale={locale}
               title={t(locale, 'chart.netTitle')}
@@ -412,7 +421,7 @@ export default function CarFuelTool({ locale }: Props) {
             </section>
           </div>
 
-          <div class="mt-16 border-t border-line pt-10">
+          <div class="mt-10 border-t border-line pt-6">
             <MonthlyTable
               locale={locale}
               columns={monthlyColumns}
@@ -424,7 +433,7 @@ export default function CarFuelTool({ locale }: Props) {
             />
           </div>
 
-          <div class="mt-16 grid gap-12 border-t border-line pt-10 lg:grid-cols-2">
+          <div class="mt-10 grid gap-8 border-t border-line pt-6 lg:grid-cols-2">
             <SensitivityList locale={locale} lines={flipLines} />
             <NonMoneyChecklist locale={locale} items={CHECKLIST.map((k) => t(locale, k))} />
           </div>
@@ -452,13 +461,24 @@ export default function CarFuelTool({ locale }: Props) {
   );
 }
 
-function Group({ title, children }: { title: string; children: ComponentChildren }) {
+/** `columns`: short optional fields sit two to a row (label above) instead of one table row each. */
+function Group({
+  title,
+  children,
+  columns = false,
+}: {
+  title: string;
+  children: ComponentChildren;
+  columns?: boolean;
+}) {
   return (
-    <fieldset class="mt-6">
-      <legend class="w-full border-b border-line-strong pb-2 font-display text-lg font-semibold">
+    <fieldset class="mt-4">
+      <legend class="w-full border-b border-line-strong pb-1.5 font-display text-base font-semibold">
         {title}
       </legend>
-      <div class="divide-y divide-line">{children}</div>
+      <div class={columns ? 'grid gap-x-4 gap-y-3 pt-3 sm:grid-cols-2' : 'divide-y divide-line'}>
+        {children}
+      </div>
     </fieldset>
   );
 }

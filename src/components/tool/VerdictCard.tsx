@@ -56,12 +56,12 @@ export default function VerdictCard({ locale, input, result, runs, baseName, alt
     <section
       aria-labelledby="verdict-heading"
       id="verdict"
-      class="scroll-mt-24 rounded-xl bg-raised p-5 shadow-raised sm:p-7"
+      class="scroll-mt-24 rounded-xl bg-raised p-4 shadow-raised sm:p-5"
     >
       <p class="text-sm font-medium text-ink-muted">{t(locale, 'verdict.label')}</p>
       <h2
         id="verdict-heading"
-        class="mt-2 font-display text-2xl font-semibold sm:text-3xl"
+        class="mt-1 font-display text-xl font-semibold sm:text-2xl"
         aria-live="polite"
       >
         <span key={headline} class="tick block">
@@ -77,12 +77,12 @@ export default function VerdictCard({ locale, input, result, runs, baseName, alt
           : t(locale, 'verdict.neverDetail', { alt: altName, years })}
       </p>
       {range && (
-        <p class="mt-3 inline-flex rounded-full bg-surface px-3 py-1 text-sm text-ink-muted">
+        <p class="mt-2 inline-flex rounded-full bg-surface px-3 py-1 text-sm text-ink-muted">
           {range}
         </p>
       )}
 
-      <dl class="mt-6 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-line pt-6">
+      <dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-line pt-4">
         <Stat label={t(locale, 'stat.monthlySaving')}>{formatMoney(result.firstMonthSaving)}</Stat>
         <Stat label={t(locale, 'stat.costPerKm')}>
           <span class="text-base">
@@ -107,7 +107,7 @@ export default function VerdictCard({ locale, input, result, runs, baseName, alt
             : t(locale, 'stat.notReached')}
         </Stat>
       </dl>
-      <p class="mt-5 text-xs text-ink-muted">{t(locale, 'stat.netHelp')}</p>
+      <p class="mt-3 text-xs text-ink-muted">{t(locale, 'stat.netHelp')}</p>
     </section>
   );
 }
@@ -116,7 +116,7 @@ function Stat({ label, children }: { label: string; children: ComponentChildren 
   return (
     <div>
       <dt class="text-sm text-ink-muted">{label}</dt>
-      <dd class="mt-1 text-lg font-semibold num">{children}</dd>
+      <dd class="mt-0.5 font-semibold num">{children}</dd>
     </div>
   );
 }

@@ -35,11 +35,11 @@
   --text-xl--line-height: 1.875rem;
   --text-2xl: 1.75rem;
   --text-2xl--line-height: 2.125rem;
-  --text-3xl: 2.25rem;
-  --text-3xl--line-height: 2.5rem;
-  --text-4xl: 2.75rem;
-  --text-4xl--line-height: 3rem;
-  --text-display: clamp(2.5rem, 1.6rem + 3.2vw, 3.75rem);
+  --text-3xl: 2rem;
+  --text-3xl--line-height: 2.375rem;
+  --text-4xl: 2.375rem;
+  --text-4xl--line-height: 2.75rem;
+  --text-display: clamp(2.125rem, 1.5rem + 2.6vw, 3.25rem);
   --text-display--line-height: 1.02;
   --tracking-display: -0.03em;
   --tracking-heading: -0.02em;
@@ -143,7 +143,7 @@
   html {
     color-scheme: light;
     /* Keep focused fields and anchors clear of the sticky header (and the mobile result bar). */
-    scroll-padding-top: 5rem;
+    scroll-padding-top: 4.5rem;
     scroll-padding-bottom: 6rem;
     -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: 100%;
@@ -218,11 +218,11 @@
 @layer components {
   .btn {
     display: inline-flex;
-    min-height: 3rem;
+    min-height: 2.75rem;
     align-items: center;
     gap: 0.5rem;
     border-radius: var(--radius-md);
-    padding-inline: 1.5rem;
+    padding-inline: 1.25rem;
     font-weight: 500;
     transition:
       transform var(--duration-fast) var(--ease-out-quart),

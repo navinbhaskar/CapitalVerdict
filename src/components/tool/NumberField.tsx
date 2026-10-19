@@ -79,11 +79,13 @@ export default function NumberField(props: Props) {
   return (
     <div
       class={
-        row ? 'grid gap-x-6 gap-y-2 py-4 sm:grid-cols-[minmax(0,1fr)_11rem] sm:items-start' : ''
+        row
+          ? 'grid gap-x-4 gap-y-1.5 py-2.5 sm:grid-cols-[minmax(0,1fr)_10rem] sm:items-center sm:items-start'
+          : ''
       }
     >
       <div>
-        <label for={id} class={`block font-medium ${row ? '' : 'mb-1.5'}`}>
+        <label for={id} class={`block text-sm font-medium ${row ? '' : 'mb-1.5'}`}>
           {label}
           {flagged && (
             <span class="ml-2 inline-block rounded-full bg-warn-soft px-2 py-0.5 align-[1px] text-xs font-medium text-warn">
@@ -92,7 +94,7 @@ export default function NumberField(props: Props) {
           )}
         </label>
         {row && note && (
-          <p id={`${id}-note`} class="mt-1 text-sm text-ink-muted">
+          <p id={`${id}-note`} class="mt-0.5 text-xs text-ink-muted">
             {note}
           </p>
         )}
@@ -114,7 +116,7 @@ export default function NumberField(props: Props) {
             }}
             aria-invalid={error ? true : undefined}
             aria-describedby={describedBy || undefined}
-            class={`min-h-12 w-full rounded-md border px-3.5 text-lg text-ink num transition-colors duration-(--duration-fast) ease-out-quart hover:border-ink-subtle focus:border-accent-strong ${
+            class={`min-h-11 w-full rounded-md border px-3 text-base text-ink num transition-colors duration-(--duration-fast) ease-out-quart hover:border-ink-subtle focus:border-accent-strong ${
               unit ? 'pr-16' : ''
             } ${error ? 'border-danger' : 'border-line-strong'} ${
               flagged ? 'bg-warn-soft/60' : 'bg-page'
@@ -127,7 +129,7 @@ export default function NumberField(props: Props) {
           )}
         </div>
         {!row && note && !error && (
-          <p id={`${id}-note`} class="mt-1.5 text-sm text-ink-muted">
+          <p id={`${id}-note`} class="mt-1 text-xs text-ink-muted">
             {note}
           </p>
         )}

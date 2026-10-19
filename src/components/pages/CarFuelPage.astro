@@ -1,5 +1,6 @@
 ---
 import ToolLayout from '@/layouts/ToolLayout.astro';
+import Icon from '@/components/layout/Icon.astro';
 import AssumptionsTable, { type AssumptionRow } from '@/components/tool/AssumptionsTable.astro';
 import CarFuelTool from '@/components/islands/CarFuelTool';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
@@ -122,14 +123,21 @@ const related = [
 
   <AssumptionsTable slot="assumptions" locale={locale} rows={rows} />
 
-  <dl slot="faq" class="divide-y divide-line border-y border-line">
+  <div slot="faq" class="divide-y divide-line border-y border-line">
     {FAQ.map((n) => (
-      <div class="py-5">
-        <dt class="font-medium text-ink">{t(locale, `carFuel.faq.${n}.q` as MessageKey)}</dt>
-        <dd class="mt-2 max-w-(--container-prose)">
+      <details class="group">
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-2.5 font-medium text-ink">
+          {t(locale, `carFuel.faq.${n}.q` as MessageKey)}
+          <Icon
+            name="chevronDown"
+            size={18}
+            class="shrink-0 text-ink-muted transition-transform duration-(--duration-base) ease-out-quart group-open:rotate-180"
+          />
+        </summary>
+        <p class="max-w-(--container-prose) pb-3 text-sm">
           {t(locale, `carFuel.faq.${n}.a` as MessageKey)}
-        </dd>
-      </div>
+        </p>
+      </details>
     ))}
-  </dl>
+  </div>
 </ToolLayout>

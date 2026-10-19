@@ -26,7 +26,7 @@ export default function SensitivityList({ locale, lines }: Props) {
           {lines.map((line) => (
             <li
               key={line.text}
-              class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-3.5"
+              class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 py-2.5"
             >
               <span>{line.text}</span>
               <span class="text-sm text-ink-muted num">

@@ -113,12 +113,12 @@ export default function CarFuelWorking({ locale, input, result }: Props) {
 
   return (
     <section aria-labelledby="working-heading">
-      <h2 id="working-heading" class="font-display text-2xl font-semibold">
+      <h2 id="working-heading" class="font-display text-xl font-semibold">
         {t(locale, 'working.heading')}
       </h2>
-      <div class="mt-6 grid gap-5 lg:grid-cols-2">
+      <div class="mt-4 grid gap-4 lg:grid-cols-2">
         <Block title={t(locale, 'working.runningCost')} rows={running} />
-        <div class="grid gap-5">
+        <div class="grid gap-4">
           <Block title={t(locale, 'working.result1')} rows={result1}>
             {t(locale, 'working.result1Note')}
           </Block>
@@ -148,12 +148,10 @@ function Block({
 }) {
   return (
     <div class="rounded-xl border border-line bg-raised">
-      <h3 class="border-b border-line bg-surface px-4 py-3 text-sm font-semibold sm:px-5">
-        {title}
-      </h3>
-      <dl class="divide-y divide-line px-4 sm:px-5">
+      <h3 class="border-b border-line bg-surface px-4 py-2 text-sm font-semibold">{title}</h3>
+      <dl class="divide-y divide-line px-4">
         {rows.map((row) => (
-          <div key={row.label} class="flex items-baseline justify-between gap-4 py-3">
+          <div key={row.label} class="flex items-baseline justify-between gap-4 py-2">
             <dt class="min-w-0">
               <span class={row.strong ? 'font-medium' : ''}>{row.label}</span>
               {row.formula && (
@@ -170,7 +168,7 @@ function Block({
           </div>
         ))}
       </dl>
-      {children && <p class="px-4 pb-4 text-xs text-ink-muted sm:px-5">{children}</p>}
+      {children && <p class="px-4 pb-3 text-xs text-ink-muted">{children}</p>}
     </div>
   );
 }

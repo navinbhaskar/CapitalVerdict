@@ -15,10 +15,10 @@ export default function NonMoneyChecklist({ locale, items }: Props) {
       <h2 id={`${id}-h`} class="font-display text-xl font-semibold">
         {t(locale, 'checklist.heading')}
       </h2>
-      <ul class="mt-4 space-y-1" role="list">
+      <ul class="mt-3" role="list">
         {items.map((item, i) => (
           <li key={i}>
-            <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-md py-2">
+            <label class="flex min-h-11 cursor-pointer items-center gap-3 rounded-md py-1">
               <span class="relative mt-0.5 inline-flex size-5 shrink-0">
                 <input
                   type="checkbox"

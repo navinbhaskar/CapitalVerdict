@@ -16,7 +16,7 @@ interface Props {
   breakevenNoInterest: number | null;
 }
 
-const HEIGHT = 300;
+const HEIGHT = 240;
 const cssVar = (name: string) =>
   getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
