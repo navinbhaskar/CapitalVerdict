@@ -37,11 +37,15 @@ export default function VerdictCard({ locale, input, result, runs, baseName, alt
             high: monthsText(reached.length < 3 ? null : Math.max(...reached)),
           });
 
+  // The 5-year row only when the horizon is longer; the horizon row always (10 years by default).
   const netRows: { label: string; net: number | null }[] = [
-    { label: t(locale, 'stat.net5'), net: result.netAt5Years?.withInterest ?? null },
-    years === 10
-      ? { label: t(locale, 'stat.net10'), net: result.netAt10Years?.withInterest ?? null }
-      : { label: t(locale, 'stat.netHorizon', { years }), net: result.netAtHorizon.withInterest },
+    ...(years > 5 && result.netAt5Years
+      ? [{ label: t(locale, 'stat.net5'), net: result.netAt5Years.withInterest }]
+      : []),
+    {
+      label: years === 10 ? t(locale, 'stat.net10') : t(locale, 'stat.netHorizon', { years }),
+      net: result.netAtHorizon.withInterest,
+    },
   ];
 
   const headline = be
