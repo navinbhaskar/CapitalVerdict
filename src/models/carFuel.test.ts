@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { formatINR, formatLakhCrore } from '@/lib/format';
 import { carFuelFlips, compareCarFuel, type CarFuelInput } from './carFuel';
+import { carFuelExample } from './carFuel.example';
 
 /**
  * Reference fixture from the project spec (must match):
@@ -18,14 +19,7 @@ import { carFuelFlips, compareCarFuel, type CarFuelInput } from './carFuel';
  *                  month 33 → 117,386 ≥ 90,000 × 1.0075^33 = 115,174   ⇒ 33 months, 59,400 km
  *   10 years:      3,557.15 × 120 − 90,000 × 1.0075^120 = 426,858 − 220,622 = ₹2,06,236
  */
-const fixture: CarFuelInput = {
-  monthlyKm: 1800,
-  horizonMonths: 120,
-  base: { mileage: 18, energyPrice: 101.86, annualPriceRise: 0, annualUpkeep: 0 },
-  alternative: { mileage: 26, energyPrice: 95.75, annualPriceRise: 0, annualUpkeep: 0 },
-  extraPrice: 90_000,
-  interestRate: 0.09,
-};
+const fixture: CarFuelInput = carFuelExample;
 
 describe('car fuel: spec fixture (petrol vs CNG)', () => {
   const result = compareCarFuel(fixture);

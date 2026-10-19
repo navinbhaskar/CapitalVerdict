@@ -66,5 +66,18 @@
   "share.copy": "TODO_COPY_HI",
   "share.copied": "TODO_COPY_HI",
   "share.failed": "TODO_COPY_HI",
-  "share.linkLabel": "TODO_COPY_HI"
+  "share.linkLabel": "TODO_COPY_HI",
+  "home.secondaryCta": "TODO_COPY_HI",
+  "home.preview.label": "TODO_COPY_HI",
+  "home.preview.title": "TODO_COPY_HI",
+  "home.preview.verdict": "TODO_COPY_HI",
+  "home.preview.breakeven": "TODO_COPY_HI",
+  "home.preview.distance": "TODO_COPY_HI",
+  "home.preview.net10": "TODO_COPY_HI",
+  "home.preview.legendSaving": "TODO_COPY_HI",
+  "home.preview.legendCost": "TODO_COPY_HI",
+  "home.tools.open": "TODO_COPY_HI",
+  "unit.monthsShort": "TODO_COPY_HI",
+  "unit.km": "TODO_COPY_HI",
+  "unit.yearsShort": "TODO_COPY_HI"
 }

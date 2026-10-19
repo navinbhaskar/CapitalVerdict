@@ -66,5 +66,18 @@
   "share.copy": "Copy link to this result",
   "share.copied": "Link copied",
   "share.failed": "Could not copy. Select the link and copy it.",
-  "share.linkLabel": "Link to this result"
+  "share.linkLabel": "Link to this result",
+  "home.secondaryCta": "How we work",
+  "home.preview.label": "Illustrative example",
+  "home.preview.title": "Petrol vs CNG",
+  "home.preview.verdict": "CNG wins after {months} months",
+  "home.preview.breakeven": "Break-even",
+  "home.preview.distance": "Distance",
+  "home.preview.net10": "Net after 10 years",
+  "home.preview.legendSaving": "Cumulative fuel saving",
+  "home.preview.legendCost": "Extra price + interest",
+  "home.tools.open": "Open",
+  "unit.monthsShort": "{n} mo",
+  "unit.km": "{n} km",
+  "unit.yearsShort": "{n} yr"
 }
