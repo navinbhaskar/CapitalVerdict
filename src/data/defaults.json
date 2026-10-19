@@ -2,38 +2,81 @@
   "scenarioVariables": {
     "inflation": {
       "unit": "decimal per year",
-      "values": { "pessimistic": 0.07, "base": 0.06, "optimistic": 0.05 },
+      "values": {
+        "pessimistic": 0.07,
+        "base": 0.06,
+        "optimistic": 0.05
+      },
       "source": "Decidewise default assumption from project spec; user-editable, not a forecast",
       "effectiveDate": "2026-10-19",
       "status": "verified"
     },
     "equityReturnNominal": {
       "unit": "decimal per year",
-      "values": { "pessimistic": 0.07, "base": 0.1, "optimistic": 0.12 },
+      "values": {
+        "pessimistic": 0.07,
+        "base": 0.1,
+        "optimistic": 0.12
+      },
       "source": "Decidewise default assumption from project spec; user-editable, not a forecast",
       "effectiveDate": "2026-10-19",
       "status": "verified"
     },
     "propertyAppreciation": {
       "unit": "decimal per year",
-      "values": { "pessimistic": 0.03, "base": 0.05, "optimistic": 0.07 },
+      "values": {
+        "pessimistic": 0.03,
+        "base": 0.05,
+        "optimistic": 0.07
+      },
       "source": "Decidewise default assumption from project spec; user-editable, not a forecast",
       "effectiveDate": "2026-10-19",
       "status": "verified"
     },
     "rentGrowth": {
       "unit": "decimal per year",
-      "values": { "pessimistic": 0.07, "base": 0.05, "optimistic": 0.04 },
+      "values": {
+        "pessimistic": 0.07,
+        "base": 0.05,
+        "optimistic": 0.04
+      },
       "source": "Decidewise default assumption from project spec; user-editable, not a forecast",
       "effectiveDate": "2026-10-19",
       "status": "verified"
     },
     "energyPriceRise": {
       "unit": "decimal per year",
-      "values": { "pessimistic": 0, "base": 0.03, "optimistic": 0.05 },
+      "values": {
+        "pessimistic": 0,
+        "base": 0.03,
+        "optimistic": 0.05
+      },
       "source": "Decidewise default assumption from project spec (fuel/tariff rise); user-editable, not a forecast",
       "effectiveDate": "2026-10-19",
       "status": "verified"
+    }
+  },
+  "globalAssumptions": {
+    "carLoanRate": {
+      "value": 0.09,
+      "unit": "decimal per year",
+      "source": "Project spec default for interest on the extra car price; user-editable",
+      "effectiveDate": "2026-10-19",
+      "status": "verified"
+    },
+    "homeLoanRate": {
+      "value": null,
+      "unit": "decimal per year",
+      "source": "TODO_VERIFY: typical home-loan rate, cite bank or RBI data",
+      "effectiveDate": "2026-10-19",
+      "status": "TODO_VERIFY"
+    },
+    "fdRate": {
+      "value": null,
+      "unit": "decimal per year",
+      "source": "TODO_VERIFY: typical bank FD rate, cite bank or RBI data",
+      "effectiveDate": "2026-10-19",
+      "status": "TODO_VERIFY"
     }
   }
 }

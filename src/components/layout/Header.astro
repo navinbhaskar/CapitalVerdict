@@ -1,36 +1,50 @@
 ---
 import Logo from './Logo.astro';
+import AssumptionsPanel from '@/components/islands/AssumptionsPanel';
 import { t, type Locale } from '@/i18n/t';
+import { localizePath, otherLocale } from '@/i18n/routes';
 
 interface Props {
   locale: Locale;
+  /** Locale-neutral path of the current page, for the language switch. */
+  path: string;
 }
-const { locale } = Astro.props;
-const home = locale === 'en' ? '/' : `/${locale}/`;
+const { locale, path } = Astro.props;
+const home = localizePath('/', locale);
+const switchTo = otherLocale(locale);
+const linkClass =
+  'inline-flex min-h-11 items-center rounded-md px-3 transition-colors duration-200 hover:bg-surface hover:text-ink';
 ---
 
-<header class="border-b border-line bg-page/90 backdrop-blur supports-[backdrop-filter]:bg-page/80">
-  <div class="container-page flex h-16 items-center justify-between">
-    <a href={home} aria-label={t(locale, 'a11y.home')} class="-mx-1 rounded px-1 py-1">
+<header class="border-b border-line bg-page">
+  <div class="container-page flex h-16 items-center justify-between gap-2">
+    <a href={home} aria-label={t(locale, 'a11y.home')} class="-mx-1 shrink-0 rounded px-1 py-1">
       <Logo />
     </a>
     <nav aria-label={t(locale, 'nav.primary')}>
-      <ul class="flex items-center gap-1 text-[0.9375rem] text-ink-muted">
+      <ul class="flex items-center text-[0.9375rem] text-ink-muted">
         <li>
-          <a
-            href={`${home}#tools`}
-            class="inline-flex min-h-11 items-center rounded-md px-3 transition-colors duration-200 hover:bg-surface hover:text-ink"
-          >
+          <a href={`${home}#tools`} class={linkClass}>
             {t(locale, 'nav.tools')}
+          </a>
+        </li>
+        <li class="hidden md:block">
+          <a href={`${home}#principles`} class={linkClass}>
+            {t(locale, 'nav.principles')}
           </a>
         </li>
         <li>
           <a
-            href={`${home}#principles`}
-            class="inline-flex min-h-11 items-center rounded-md px-3 transition-colors duration-200 hover:bg-surface hover:text-ink"
+            href={localizePath(path, switchTo)}
+            hreflang={switchTo}
+            lang={switchTo}
+            class={linkClass}
           >
-            {t(locale, 'nav.principles')}
+            {t(locale, 'nav.switchLanguage')}
           </a>
+        </li>
+        <li>
+          <AssumptionsPanel client:idle locale={locale} />
         </li>
       </ul>
     </nav>

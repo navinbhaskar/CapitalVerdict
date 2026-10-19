@@ -1,0 +1,90 @@
+---
+/**
+ * Fixed anatomy for every tool page:
+ *   1. H1 = the question          (title prop)
+ *   2–7. Interactive tool         (default slot: an island with quick inputs, verdict + range,
+ *                                  advanced inputs, chart + scenario band, what flips the answer,
+ *                                  non-money checklist)
+ *   8. Explanation, worked example, assumptions table, FAQ   (named slots, rendered when filled)
+ *   9. Related tools              (related prop)
+ * Plus a visible short disclaimer and a "Report an error" link on every tool page.
+ */
+import BaseLayout from './BaseLayout.astro';
+import { t, type Locale } from '@/i18n/t';
+import { reportErrorHref } from '@/config/site';
+
+interface Props {
+  locale: Locale;
+  /** The question the tool answers. Used as the H1. */
+  title: string;
+  description?: string;
+  related?: { href: string; label: string }[];
+}
+const { locale, title, description, related = [] } = Astro.props;
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+
+const sections = [
+  { slot: 'explanation', heading: t(locale, 'tool.section.explanation') },
+  { slot: 'worked-example', heading: t(locale, 'tool.section.workedExample') },
+  { slot: 'assumptions', heading: t(locale, 'tool.section.assumptions') },
+  { slot: 'faq', heading: t(locale, 'tool.section.faq') },
+].filter((s) => Astro.slots.has(s.slot));
+---
+
+<BaseLayout locale={locale} title={title} description={description}>
+  <article class="container-page pt-10 sm:pt-14">
+    <header class="max-w-3xl">
+      <h1 class="text-[2rem] leading-tight font-semibold sm:text-[2.5rem]">{title}</h1>
+      <p class="mt-4 border-l-2 border-line-strong pl-3 text-sm text-ink-muted">
+        {t(locale, 'tool.disclaimer')}
+      </p>
+    </header>
+
+    <div class="mt-8">
+      <slot />
+    </div>
+
+    {sections.map(({ slot, heading }) => (
+      <section class="mt-16 max-w-3xl border-t border-line pt-10" aria-labelledby={`s-${slot}`}>
+        <h2 id={`s-${slot}`} class="text-xl font-semibold">
+          {heading}
+        </h2>
+        <div class="mt-4 space-y-4 text-ink-muted">
+          {slot === 'explanation' && <slot name="explanation" />}
+          {slot === 'worked-example' && <slot name="worked-example" />}
+          {slot === 'assumptions' && <slot name="assumptions" />}
+          {slot === 'faq' && <slot name="faq" />}
+        </div>
+      </section>
+    ))}
+
+    {related.length > 0 && (
+      <nav class="mt-16 border-t border-line pt-10" aria-labelledby="s-related">
+        <h2 id="s-related" class="text-xl font-semibold">
+          {t(locale, 'tool.section.related')}
+        </h2>
+        <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" role="list">
+          {related.map((r) => (
+            <li>
+              <a
+                href={r.href}
+                class="flex min-h-11 items-center rounded-[var(--radius-card)] border border-line px-4 py-3 font-medium transition-colors duration-200 hover:border-line-strong hover:bg-surface"
+              >
+                {r.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+
+    <p class="mt-12 text-sm">
+      <a
+        href={reportErrorHref(pageUrl)}
+        class="text-accent-strong underline decoration-1 underline-offset-4 hover:decoration-2"
+      >
+        {t(locale, 'tool.reportError')}
+      </a>
+    </p>
+  </article>
+</BaseLayout>

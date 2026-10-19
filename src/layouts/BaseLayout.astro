@@ -3,6 +3,7 @@ import '@/styles/global.css';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import { htmlLang, t, type Locale } from '@/i18n/t';
+import { alternates, splitLocale } from '@/i18n/routes';
 
 interface Props {
   locale: Locale;
@@ -10,6 +11,7 @@ interface Props {
   description?: string;
 }
 const { locale, title, description } = Astro.props;
+const { path } = splitLocale(Astro.url.pathname);
 const siteName = t(locale, 'site.name');
 const pageTitle = title ? `${title} · ${siteName}` : `${siteName} · ${t(locale, 'site.tagline')}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -20,21 +22,31 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="color-scheme" content="light dark" />
+    <script is:inline>
+      try {
+        if (localStorage.getItem('dw.theme') === 'dark')
+          document.documentElement.dataset.theme = 'dark';
+      } catch {
+        // Storage blocked: stay on the light theme.
+      }
+    </script>
     <title>{pageTitle}</title>
     <meta name="description" content={description ?? t(locale, 'site.description')} />
     <link rel="canonical" href={canonical} />
+    {alternates(path, Astro.site!).map((a) => (
+      <link rel="alternate" hreflang={a.hreflang} href={a.href} />
+    ))}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body class="flex min-h-dvh flex-col">
     <a
       href="#main"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-ink focus:px-4 focus:py-2 focus:text-white"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-on-primary"
     >
       {t(locale, 'a11y.skipToContent')}
     </a>
-    <Header locale={locale} />
+    <Header locale={locale} path={path} />
     <main id="main" class="flex-1">
       <slot />
     </main>

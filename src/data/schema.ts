@@ -37,6 +37,11 @@ export const defaultsSchema = z.object({
     rentGrowth: scenarioVariable,
     energyPriceRise: scenarioVariable,
   }),
+  globalAssumptions: z.object({
+    carLoanRate: dataRecord,
+    homeLoanRate: dataRecord,
+    fdRate: dataRecord,
+  }),
 });
 export type Defaults = z.infer<typeof defaultsSchema>;
 

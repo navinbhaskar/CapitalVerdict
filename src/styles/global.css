@@ -1,19 +1,25 @@
 @import '@fontsource-variable/ibm-plex-sans/wght.css';
+@import '@fontsource/ibm-plex-sans-devanagari/devanagari-400.css';
+@import '@fontsource/ibm-plex-sans-devanagari/devanagari-500.css';
+@import '@fontsource/ibm-plex-sans-devanagari/devanagari-600.css';
 @import 'tailwindcss';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
 /*
  * Design tokens. Minimal, light, mostly white.
- * Ink and accent come from the logo (brand/). Contrast ratios are against #FFFFFF.
- * Dark theme tokens arrive in M2.
+ * Ink and accent come from the logo (brand/). Contrast ratios are against the page colour.
+ * Light is the default; dark is opt-in via the header toggle (data-theme="dark" on <html>).
+ * Devanagari glyphs fall through to IBM Plex Sans Devanagari; it only downloads when Hindi text is on screen.
  */
 @theme {
   --font-sans:
-    'IBM Plex Sans Variable', 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    'IBM Plex Sans Variable', 'IBM Plex Sans', 'IBM Plex Sans Devanagari', system-ui, -apple-system,
+    'Segoe UI', sans-serif;
 
   --color-page: #ffffff;
   --color-surface: #f7f9fa;
   --color-ink: #1c2b39; /* 14.4:1 */
-  --color-ink-hover: #2a3d4f;
   --color-ink-muted: #52606d; /* 6.5:1 */
   --color-ink-subtle: #8a96a3; /* 3.0:1, large text and icons only */
   --color-line: #e5e9ed;
@@ -21,12 +27,38 @@
   --color-accent: #2e8b6a; /* 4.2:1, graphics and large text only */
   --color-accent-strong: #1f6e52; /* 6.2:1, links and small text */
   --color-accent-soft: #eef6f2;
+  --color-primary: #1c2b39; /* filled buttons */
+  --color-primary-hover: #2a3d4f;
+  --color-on-primary: #ffffff;
+  --color-danger: #b42318; /* 6.5:1 */
+  --color-warn: #8a5300; /* TODO_VERIFY badges */
+  --color-warn-soft: #fff6e5;
 
   --radius-card: 0.75rem;
   --container-content: 72rem;
 }
 
 @layer base {
+  :root[data-theme='dark'] {
+    color-scheme: dark;
+    --color-page: #0e1621;
+    --color-surface: #151f2b;
+    --color-ink: #e8ecef; /* 15.3:1 */
+    --color-ink-muted: #a3b0bd; /* 8.2:1 */
+    --color-ink-subtle: #6f7d8a; /* 4.3:1 */
+    --color-line: #24313e;
+    --color-line-strong: #33424f;
+    --color-accent: #5cc59a;
+    --color-accent-strong: #7dd3ae; /* 10.2:1 */
+    --color-accent-soft: #14302a;
+    --color-primary: #e8ecef;
+    --color-primary-hover: #ffffff;
+    --color-on-primary: #0e1621;
+    --color-danger: #f97066;
+    --color-warn: #f5b94a;
+    --color-warn-soft: #2b2111;
+  }
+
   html {
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
