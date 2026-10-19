@@ -8,12 +8,15 @@ interface Props {
   title: string;
   /** Index = month (0 … horizon). Net = cumulative saving − extra price (± interest). */
   netWithInterest: number[];
-  netNoInterest: number[];
+  /** Optional dashed comparison line (e.g. ignoring interest). */
+  netNoInterest?: number[];
   /** Scenario envelope for the with-interest line. */
   bandLow: number[];
   bandHigh: number[];
   breakevenWithInterest: number | null;
-  breakevenNoInterest: number | null;
+  breakevenNoInterest?: number | null;
+  /** Legend text; defaults to the car fuel wording. */
+  labels?: { main: string; secondary?: string; band: string };
 }
 
 const HEIGHT = 240;
@@ -34,18 +37,32 @@ export default function NetPositionChart(props: Props) {
     bandLow,
     bandHigh,
     breakevenWithInterest,
-    breakevenNoInterest,
+    breakevenNoInterest = null,
+    labels,
   } = props;
+  const legend = labels ?? {
+    main: t(locale, 'chart.netWithInterest'),
+    secondary: t(locale, 'chart.netNoInterest'),
+    band: t(locale, 'chart.netBand'),
+  };
   const box = useRef<HTMLDivElement>(null);
   const plot = useRef<uPlotType | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     let resize: ResizeObserver | undefined;
 
     const build = async () => {
-      const { default: uPlot } = await import('uplot');
+      let uPlot: typeof uPlotType;
+      try {
+        ({ default: uPlot } = await import('uplot'));
+      } catch {
+        // Script failed to load (offline, blocked): say so instead of shimmering forever.
+        if (!cancelled) setFailed(true);
+        return;
+      }
       if (cancelled || !box.current) return;
       plot.current?.destroy();
 
@@ -131,13 +148,19 @@ export default function NetPositionChart(props: Props) {
             ],
             draw: [
               (u) => {
-                dot(u, breakevenNoInterest, netNoInterest, false);
+                if (netNoInterest) dot(u, breakevenNoInterest, netNoInterest, false);
                 dot(u, breakevenWithInterest, netWithInterest, true);
               },
             ],
           },
         },
-        [months, netWithInterest, netNoInterest, bandLow, bandHigh],
+        [
+          months,
+          netWithInterest,
+          netNoInterest ?? netWithInterest.map(() => null),
+          bandLow,
+          bandHigh,
+        ],
         box.current,
       );
 
@@ -178,20 +201,27 @@ export default function NetPositionChart(props: Props) {
       <div class="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm text-ink-muted" aria-hidden="true">
         <span class="inline-flex items-center gap-2">
           <span class="h-px w-5 bg-ink" />
-          {t(locale, 'chart.netWithInterest')}
+          {legend.main}
         </span>
-        <span class="inline-flex items-center gap-2">
-          <span class="w-5 border-t border-dashed border-ink-subtle" />
-          {t(locale, 'chart.netNoInterest')}
-        </span>
+        {legend.secondary && netNoInterest && (
+          <span class="inline-flex items-center gap-2">
+            <span class="w-5 border-t border-dashed border-ink-subtle" />
+            {legend.secondary}
+          </span>
+        )}
         <span class="inline-flex items-center gap-2">
           <span class="h-3 w-5 rounded-sm bg-accent/15" />
-          {t(locale, 'chart.netBand')}
+          {legend.band}
         </span>
       </div>
       <div class="relative mt-4" style={{ height: `${HEIGHT}px` }} aria-hidden="true">
         <div ref={box} class="h-full w-full" />
-        {!loaded && <div class="skeleton absolute inset-0" />}
+        {!loaded && !failed && <div class="skeleton absolute inset-0" />}
+        {failed && (
+          <p class="absolute inset-0 flex items-center justify-center rounded-lg bg-surface px-6 text-center text-sm text-ink-muted">
+            {t(locale, 'chart.failed')}
+          </p>
+        )}
       </div>
     </figure>
   );

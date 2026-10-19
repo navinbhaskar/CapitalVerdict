@@ -13,7 +13,8 @@ export function t(
   key: MessageKey,
   params: Record<string, string | number> = {},
 ): string {
-  const template = dictionaries[locale][key] ?? en[key];
+  // A missing key shows itself rather than crashing the page; the parity test catches it in CI.
+  const template: string = dictionaries[locale][key] ?? en[key] ?? key;
   return template.replace(/\{(\w+)\}/g, (match, name: string) =>
     name in params ? String(params[name]) : match,
   );

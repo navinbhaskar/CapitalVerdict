@@ -94,7 +94,7 @@ const FAQ = [1, 2, 3, 4] as const;
 
 const home = localizePath('/', locale);
 const related = [
-  { href: `${home}#tools`, label: t(locale, 'tool.solar.title') },
+  { href: localizePath('/tools/solar/', locale), label: t(locale, 'tool.solar.title') },
   { href: `${home}#tools`, label: t(locale, 'tool.rentVsBuy.title') },
 ];
 ---

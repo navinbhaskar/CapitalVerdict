@@ -1,5 +1,5 @@
-import type { ComponentChildren } from 'preact';
 import { t, type Locale } from '@/i18n/t';
+import Block, { type WorkingRow as Row } from './WorkingBlock';
 import { formatINR } from '@/lib/format';
 import { formatMoney, formatNumber, formatPercent, formatRupeesPrecise } from '@/lib/formatTool';
 import type { CarFuelInput, CarFuelResult } from '@/models/carFuel';
@@ -8,15 +8,6 @@ interface Props {
   locale: Locale;
   input: CarFuelInput;
   result: CarFuelResult;
-}
-
-interface Row {
-  label: string;
-  /** The calculation in plain symbols, with the user's numbers. */
-  formula?: string;
-  value: string;
-  strong?: boolean;
-  negative?: boolean;
 }
 
 /** "Show the working": every intermediate number, with the arithmetic that produced it. */
@@ -178,41 +169,5 @@ export default function CarFuelWorking({ locale, input, result }: Props) {
         </div>
       </div>
     </section>
-  );
-}
-
-function Block({
-  title,
-  rows,
-  children,
-}: {
-  title: string;
-  rows: Row[];
-  children?: ComponentChildren;
-}) {
-  return (
-    <div class="rounded-xl border border-line bg-raised">
-      <h3 class="border-b border-line bg-surface px-4 py-2 text-sm font-semibold">{title}</h3>
-      <dl class="divide-y divide-line px-4">
-        {rows.map((row) => (
-          <div key={row.label} class="flex items-baseline justify-between gap-4 py-2">
-            <dt class="min-w-0">
-              <span class={row.strong ? 'font-medium' : ''}>{row.label}</span>
-              {row.formula && (
-                <span class="mt-0.5 block text-xs text-ink-muted num">{row.formula}</span>
-              )}
-            </dt>
-            <dd
-              class={`shrink-0 text-right num ${row.strong ? 'text-base font-semibold' : ''} ${
-                row.negative ? 'text-danger' : ''
-              }`}
-            >
-              {row.value}
-            </dd>
-          </div>
-        ))}
-      </dl>
-      {children && <p class="px-4 pb-3 text-xs text-ink-muted">{children}</p>}
-    </div>
   );
 }
