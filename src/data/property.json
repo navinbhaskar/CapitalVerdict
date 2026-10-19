@@ -1,0 +1,10 @@
+{
+  "state": "UP",
+  "stampDutyAndRegistration": {
+    "value": null,
+    "unit": "decimal of the property price",
+    "source": "TODO_VERIFY: UP stamp duty and registration fee for residential property (IGRSUP)",
+    "effectiveDate": "2026-10-19",
+    "status": "TODO_VERIFY"
+  }
+}

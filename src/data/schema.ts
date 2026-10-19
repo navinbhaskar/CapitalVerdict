@@ -11,6 +11,7 @@ import defaultsJson from './defaults.json';
 import fuelPricesJson from './fuelPrices.json';
 import upTariffJson from './tariffs/UP.json';
 import solarJson from './solar.json';
+import propertyJson from './property.json';
 
 export const verificationStatus = z.enum(['TODO_VERIFY', 'verified']);
 
@@ -104,10 +105,17 @@ export const solarSchema = z.object({
 });
 export type SolarData = z.infer<typeof solarSchema>;
 
+export const propertySchema = z.object({
+  state: z.string().min(1),
+  stampDutyAndRegistration: dataRecord,
+});
+export type PropertyData = z.infer<typeof propertySchema>;
+
 /** Throws on any malformed data file. Called from BaseLayout so a bad file fails the build. */
 export function validateAllData(): void {
   defaultsSchema.parse(defaultsJson);
   fuelPricesSchema.parse(fuelPricesJson);
   tariffSchema.parse(upTariffJson);
   solarSchema.parse(solarJson);
+  propertySchema.parse(propertyJson);
 }

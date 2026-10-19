@@ -28,9 +28,8 @@ const liveTools: { title: MessageKey; question: MessageKey; href: string; icon: 
 const upcoming: {
   title: MessageKey;
   question: MessageKey;
-  icon: 'home' | 'banknote' | 'car' | 'snowflake' | 'percent';
+  icon: 'banknote' | 'car' | 'snowflake' | 'percent';
 }[] = [
-  { title: 'tool.rentVsBuy.title', question: 'tool.rentVsBuy.question', icon: 'home' },
   { title: 'tool.prepay.title', question: 'tool.prepay.question', icon: 'banknote' },
   { title: 'tool.carLoan.title', question: 'tool.carLoan.question', icon: 'car' },
   { title: 'tool.ac.title', question: 'tool.ac.question', icon: 'snowflake' },
@@ -98,7 +97,7 @@ const principles: { title: MessageKey; body: MessageKey }[] = [
       <h2 class="font-display text-2xl font-medium sm:text-3xl" data-reveal>
         {t(locale, 'home.tools.heading')}
       </h2>
-      <div class="mt-6 grid gap-4 md:grid-cols-2" data-reveal>
+      <div class="mt-6 grid gap-4 md:grid-cols-3" data-reveal>
         {liveTools.map((tool) => (
           <a
             href={tool.href}

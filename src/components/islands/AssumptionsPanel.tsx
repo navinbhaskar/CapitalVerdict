@@ -23,6 +23,8 @@ interface Props {
 const USED_BY: Partial<Record<AssumptionKey, MessageKey>> = {
   city: 'tool.carFuel.title',
   carLoanRate: 'tool.carFuel.title',
+  homeLoanRate: 'tool.rentVsBuy.title',
+  inflation: 'tool.rentVsBuy.title',
 };
 
 /** Fields the user has changed from the defaults. */

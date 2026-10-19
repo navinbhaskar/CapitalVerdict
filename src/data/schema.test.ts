@@ -4,9 +4,11 @@ import {
   defaults,
   fuelPrices,
   solarData,
+  propertyData,
   upTariff,
   verifiedFuelPrices,
   verifiedSolarValue,
+  verifiedStampDuty,
   verifiedTariff,
 } from './index';
 
@@ -97,5 +99,12 @@ describe('tariffs/UP.json and solar.json', () => {
       tariffSchema.safeParse({ ...base, method: 'telescopic', slabs: [{ upTo: null, rate: 5 }] })
         .success,
     ).toBe(true);
+  });
+});
+
+describe('property.json', () => {
+  it('has no invented stamp duty while TODO_VERIFY', () => {
+    expect(propertyData.stampDutyAndRegistration.value).toBeNull();
+    expect(verifiedStampDuty()).toBeNull();
   });
 });

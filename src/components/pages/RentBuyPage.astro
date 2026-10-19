@@ -1,0 +1,88 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import Icon from '@/components/layout/Icon.astro';
+import AssumptionsTable, { type AssumptionRow } from '@/components/tool/AssumptionsTable.astro';
+import RentBuyTool from '@/components/islands/RentBuyTool';
+import { t, type Locale, type MessageKey } from '@/i18n/t';
+import { localizePath } from '@/i18n/routes';
+import { defaults, propertyData } from '@/data';
+import { formatPercent } from '@/lib/formatTool';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const stamp = propertyData.stampDutyAndRegistration;
+const loan = defaults.globalAssumptions.homeLoanRate;
+const v = defaults.scenarioVariables;
+const triple = (x: { pessimistic: number; base: number; optimistic: number }) =>
+  [x.pessimistic, x.base, x.optimistic].map(formatPercent).join(' / ');
+const rows: AssumptionRow[] = [
+  {
+    label: t(locale, 'assumptionsTable.stampDuty'),
+    value: stamp.value === null ? '—' : formatPercent(stamp.value),
+    source: stamp.source,
+    date: stamp.effectiveDate,
+    verified: stamp.status === 'verified',
+  },
+  {
+    label: t(locale, 'assumptionsTable.homeLoanRate'),
+    value: loan.value === null ? '—' : formatPercent(loan.value),
+    source: loan.source,
+    date: loan.effectiveDate,
+    verified: loan.status === 'verified',
+  },
+  {
+    label: t(locale, 'assumptionsTable.propertyGrowth'),
+    value: triple(v.propertyAppreciation.values),
+    source: v.propertyAppreciation.source,
+    date: v.propertyAppreciation.effectiveDate,
+    verified: v.propertyAppreciation.status === 'verified',
+  },
+  {
+    label: t(locale, 'assumptionsTable.rentGrowth'),
+    value: triple(v.rentGrowth.values),
+    source: v.rentGrowth.source,
+    date: v.rentGrowth.effectiveDate,
+    verified: v.rentGrowth.status === 'verified',
+  },
+];
+
+const FAQ = [1, 2, 3] as const;
+const related = [
+  { href: localizePath('/tools/car-fuel/', locale), label: t(locale, 'tool.carFuel.title') },
+  { href: localizePath('/tools/solar/', locale), label: t(locale, 'tool.solar.title') },
+];
+---
+
+<ToolLayout
+  locale={locale}
+  title={t(locale, 'tool.rentVsBuy.question')}
+  description={t(locale, 'rentBuy.metaDescription')}
+  related={related}
+>
+  <RentBuyTool client:load locale={locale} />
+
+  <p slot="explanation">{t(locale, 'rentBuy.explanation')}</p>
+
+  <AssumptionsTable slot="assumptions" locale={locale} rows={rows} />
+
+  <div slot="faq" class="divide-y divide-line border-y border-line">
+    {FAQ.map((n) => (
+      <details class="group">
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-2.5 font-medium text-ink">
+          {t(locale, `rentBuy.faq.${n}.q` as MessageKey)}
+          <Icon
+            name="chevronDown"
+            size={18}
+            class="shrink-0 text-ink-muted transition-transform duration-(--duration-base) ease-out-quart group-open:rotate-180"
+          />
+        </summary>
+        <p class="max-w-(--container-prose) pb-3 text-sm">
+          {t(locale, `rentBuy.faq.${n}.a` as MessageKey)}
+        </p>
+      </details>
+    ))}
+  </div>
+</ToolLayout>

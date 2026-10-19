@@ -96,10 +96,9 @@ const worked: [string, string][] = [
 
 const FAQ = [1, 2, 3, 4] as const;
 
-const home = localizePath('/', locale);
 const related = [
   { href: localizePath('/tools/solar/', locale), label: t(locale, 'tool.solar.title') },
-  { href: `${home}#tools`, label: t(locale, 'tool.rentVsBuy.title') },
+  { href: localizePath('/tools/rent-vs-buy/', locale), label: t(locale, 'tool.rentVsBuy.title') },
 ];
 ---
 

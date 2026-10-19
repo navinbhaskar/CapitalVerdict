@@ -6,7 +6,8 @@ import defaultsJson from './defaults.json';
 import fuelPricesJson from './fuelPrices.json';
 import upTariffJson from './tariffs/UP.json';
 import solarJson from './solar.json';
-import type { Defaults, FuelPrices, SolarData, TariffData } from './schema';
+import propertyJson from './property.json';
+import type { Defaults, FuelPrices, PropertyData, SolarData, TariffData } from './schema';
 import type { Tariff } from '@/engine/tariff';
 
 export const defaults = defaultsJson as unknown as Defaults;
@@ -34,4 +35,12 @@ export function verifiedTariff(data: TariffData = upTariff): Tariff | null {
 export function verifiedSolarValue(key: Exclude<keyof SolarData, 'state'>): number | null {
   const record = solarData[key];
   return record.status === 'verified' ? record.value : null;
+}
+
+export const propertyData = propertyJson as unknown as PropertyData;
+
+/** Stamp duty and registration as a decimal of the price, once verified; null before. */
+export function verifiedStampDuty(): number | null {
+  const r = propertyData.stampDutyAndRegistration;
+  return r.status === 'verified' ? r.value : null;
 }

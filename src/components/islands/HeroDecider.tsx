@@ -281,7 +281,10 @@ export default function HeroDecider({ locale }: Props) {
             link={
               tab === 'solar'
                 ? { href: localizePath('/tools/solar/', locale), label: t(locale, 'hero.solarCta') }
-                : null
+                : {
+                    href: localizePath('/tools/rent-vs-buy/', locale),
+                    label: t(locale, 'hero.rentCta'),
+                  }
             }
           />
         )}

@@ -43,3 +43,5 @@ switch.
 | [ ] `tool.carFuel.question`, `nav.carFuel`, `carFuel.metaDescription`, `site.description`                 | Updated for EV                                |
 | [ ] EV labels and notes (`input.ev*`, `note.ev*`, `input.homeRate`, `input.publicRate`, `checklist.ev.*`) | Car tool, EV option                           |
 | [ ] `hero.*`                                                                                              | Home hero live example and its tabs           |
+| [ ] `rentBuy.*` (labels, notes, verdicts, working, flips, checklist, explanation, FAQ)                    | Rent vs buy tool                              |
+| [ ] `hero.rentLocked`, `hero.rentCta`                                                                     | Home hero, Rent vs buy tab                    |
