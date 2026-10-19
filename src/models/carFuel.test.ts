@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { formatINR, formatLakhCrore } from '@/lib/format';
-import { carFuelFlips, compareCarFuel, type CarFuelInput } from './carFuel';
+import { carFuelFlips, carFuelVerdict, compareCarFuel, type CarFuelInput } from './carFuel';
 import { carFuelExample } from './carFuel.example';
 
 /**
@@ -214,5 +214,80 @@ describe('car fuel: matches the CNG_vs_Petrol_Lucknow.xlsx workbook cell by cell
     expect(r.breakevenNoInterest!.fractionalMonths).toBeCloseTo(25.3011266570075, 9);
     expect(r.breakevenWithInterest!.months).toBe(33);
     expect(r.breakevenWithInterest!.km).toBe(59400);
+  });
+});
+
+describe('car fuel: on-road prices and total cost of ownership', () => {
+  // Test prices only (not market data): petrol ₹7,00,000, CNG ₹7,90,000 → the fixture's ₹90,000 gap.
+  // Hand check at 10 years: growth 1.0075^120 = 2.451357078
+  //   petrol: 7,00,000 × 2.451357 + 10,186 × 120  = ₹29,38,269.95
+  //   CNG:    7,90,000 × 2.451357 + 6,628.85 × 120 = ₹27,32,033.63
+  //   difference ₹2,06,236.32 = the with-interest net position.
+  const withPrices: CarFuelInput = {
+    ...fixture,
+    purchasePrices: { base: 700_000, alternative: 790_000 },
+  };
+  const r = compareCarFuel(withPrices);
+
+  it('totals each car', () => {
+    expect(r.totalCost!.base[120]).toBeCloseTo(2_938_269.95, 1);
+    expect(r.totalCost!.alternative[120]).toBeCloseTo(2_732_033.63, 1);
+    expect(r.totalCost!.base[0]).toBe(700_000);
+  });
+
+  it('difference of totals equals the net position every month', () => {
+    for (const m of [0, 1, 33, 60, 120]) {
+      const net = r.cumulativeSaving[m]! - r.extraPriceWithInterest[m]!;
+      expect(r.totalCost!.base[m]! - r.totalCost!.alternative[m]!).toBeCloseTo(net, 6);
+    }
+  });
+
+  it('is null without purchase prices', () => {
+    expect(compareCarFuel(fixture).totalCost).toBeNull();
+  });
+
+  it('rejects prices that disagree with extraPrice', () => {
+    expect(() =>
+      compareCarFuel({ ...fixture, purchasePrices: { base: 700_000, alternative: 800_000 } }),
+    ).toThrow(RangeError);
+  });
+});
+
+describe('car fuel verdict, whichever car costs more to buy', () => {
+  it('CNG dearer and cheaper to run: CNG pays back (spec fixture, 33 months)', () => {
+    const v = carFuelVerdict(fixture);
+    expect(v.verdict).toEqual({ kind: 'payback', payer: 'alternative', months: 33, km: 59_400 });
+    expect(v.swapped).toBe(false);
+  });
+
+  it('CNG dearer but never earns it back: petrol wins', () => {
+    const v = carFuelVerdict({ ...fixture, monthlyKm: 300 });
+    expect(v.verdict).toEqual({ kind: 'never', winner: 'base' });
+  });
+
+  it('CNG cheaper to buy and to run: CNG wins from day one', () => {
+    const v = carFuelVerdict({ ...fixture, extraPrice: -20_000 });
+    expect(v.verdict).toEqual({ kind: 'dominant', winner: 'alternative' });
+    expect(v.swapped).toBe(true);
+  });
+
+  it('petrol dearer but cheaper to run: petrol pays back', () => {
+    // Petrol at 40 km/L costs ₹2.55/km against CNG ₹3.68/km: ₹2,045.15 a month less.
+    // ₹20,000 gap at 9%: month 10 → 20,451 < 20,000 × 1.0075^10 = 21,552; month 11 → 22,497 ≥ 21,713.
+    const input = { ...fixture, extraPrice: -20_000, base: { ...fixture.base, mileage: 40 } };
+    const v = carFuelVerdict(input);
+    expect(v.verdict).toMatchObject({ kind: 'payback', payer: 'base', months: 11 });
+  });
+
+  it('same price: the cheaper-to-run car wins outright', () => {
+    expect(carFuelVerdict({ ...fixture, extraPrice: 0 }).verdict).toEqual({
+      kind: 'dominant',
+      winner: 'alternative',
+    });
+  });
+
+  it('same price and same running cost: tie', () => {
+    const same = { ...fixture, extraPrice: 0, alternative: fixture.base };
+    expect(carFuelVerdict(same).verdict).toEqual({ kind: 'tie' });
   });
 });

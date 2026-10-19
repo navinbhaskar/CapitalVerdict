@@ -3,12 +3,15 @@ import type { ComponentChildren } from 'preact';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { defaults, fuelPrices, verifiedFuelPrices } from '@/data';
 import { decodeShare, encodeShare } from '@/lib/shareLink';
+import { formatINR } from '@/lib/format';
 import { formatNumber, formatPercent } from '@/lib/formatTool';
 import { useGlobalAssumptions } from '@/lib/useAssumptions';
 import {
   carFuelFlips,
   carFuelScenarios,
+  carFuelVerdict,
   compareCarFuel,
+  swapOptions,
   type CarFuelResult,
   type CarFuelVariable,
 } from '@/models/carFuel';
@@ -16,11 +19,13 @@ import {
   CAR_FUEL_EXAMPLE_FORM,
   CAR_FUEL_LIMITS,
   carFuelShareSchema,
+  extraPriceOf,
+  onlyPricesMissing,
   toCarFuelInput,
   type CarFuelForm,
 } from '@/models/carFuelForm';
 import NumberField from '@/components/tool/NumberField';
-import VerdictCard from '@/components/tool/VerdictCard';
+import VerdictCard, { verdictHeadline } from '@/components/tool/VerdictCard';
 import CarFuelWorking from '@/components/tool/CarFuelWorking';
 import NetPositionChart from '@/components/tool/NetPositionChart';
 import MonthlyTable, { type MonthlyColumn } from '@/components/tool/MonthlyTable';
@@ -105,15 +110,20 @@ export default function CarFuelTool({ locale }: Props) {
   }, []);
 
   const input = useMemo(() => toCarFuelInput(form), [form]);
+  const extraPrice = extraPriceOf(form);
   const computed = useMemo(() => {
     if (!input) return null;
     const result = compareCarFuel(input);
-    const runs = carFuelScenarios(input, RISE_RATES);
+    // The headline is asked of whichever car costs more to buy; scenarios use the same basis.
+    const { verdict, basis, swapped } = carFuelVerdict(input);
+    const runs = carFuelScenarios(swapped ? swapOptions(input) : input, RISE_RATES);
     const scenarioNets = (['pessimistic', 'base', 'optimistic'] as const).map((s) =>
       netSeries(runs[s].output, runs[s].output.extraPriceWithInterest),
     );
     return {
       result,
+      verdict,
+      basis,
       runs,
       flips: carFuelFlips(input),
       netWithInterest: netSeries(result, result.extraPriceWithInterest),
@@ -239,6 +249,20 @@ export default function CarFuelTool({ locale }: Props) {
             kind: 'money',
             values: computed.netWithInterest.slice(1),
           },
+          ...(result.totalCost
+            ? [
+                {
+                  label: t(locale, 'monthly.col.petrolTotal'),
+                  kind: 'money' as const,
+                  values: result.totalCost.base.slice(1),
+                },
+                {
+                  label: t(locale, 'monthly.col.cngTotal'),
+                  kind: 'money' as const,
+                  values: result.totalCost.alternative.slice(1),
+                },
+              ]
+            : []),
         ]
       : [];
 
@@ -283,6 +307,27 @@ export default function CarFuelTool({ locale }: Props) {
           </Group>
           <Group title={t(locale, 'inputs.group.cars')}>
             {field(
+              'petrolCarPrice',
+              'input.petrolCarPrice',
+              t(locale, 'input.carPrice.unit'),
+              t(locale, 'note.carPrice'),
+            )}
+            {field(
+              'cngCarPrice',
+              'input.cngCarPrice',
+              t(locale, 'input.carPrice.unit'),
+              t(locale, 'note.carPrice'),
+            )}
+            <div class="grid gap-x-4 gap-y-1 py-2.5 sm:grid-cols-[minmax(0,1fr)_10rem] sm:items-center">
+              <div>
+                <p class="text-sm font-medium">{t(locale, 'input.extraPrice')}</p>
+                <p class="mt-0.5 text-xs text-ink-muted">{t(locale, 'note.extraPriceDerived')}</p>
+              </div>
+              <p class="px-3 text-base font-semibold num" aria-live="polite">
+                {extraPrice === null ? '—' : formatINR(extraPrice)}
+              </p>
+            </div>
+            {field(
               'petrolMileage',
               'input.petrolMileage',
               t(locale, 'input.petrolMileage.unit'),
@@ -294,13 +339,6 @@ export default function CarFuelTool({ locale }: Props) {
               'input.cngMileage',
               t(locale, 'input.cngMileage.unit'),
               t(locale, 'note.mileage'),
-              { flagged: true },
-            )}
-            {field(
-              'extraPrice',
-              'input.extraPrice',
-              t(locale, 'input.extraPrice.unit'),
-              t(locale, 'note.extraPrice'),
               { flagged: true },
             )}
           </Group>
@@ -354,6 +392,8 @@ export default function CarFuelTool({ locale }: Props) {
               locale={locale}
               input={input}
               result={computed.result}
+              verdict={computed.verdict}
+              basis={computed.basis}
               runs={computed.runs}
               baseName={petrol}
               altName={cng}
@@ -363,7 +403,9 @@ export default function CarFuelTool({ locale }: Props) {
               class="rounded-xl border border-dashed border-line-strong p-5 text-ink-muted"
               role="status"
             >
-              {t(locale, 'carFuel.incomplete')}
+              {onlyPricesMissing(form)
+                ? t(locale, 'carFuel.needPrices')
+                : t(locale, 'carFuel.incomplete')}
             </div>
           )}
           {shareHref && computed && (
@@ -444,12 +486,12 @@ export default function CarFuelTool({ locale }: Props) {
         <div class="stagger fixed inset-x-3 bottom-3 z-30 lg:hidden">
           <div class="flex items-center justify-between gap-3 rounded-xl py-2 pr-2 pl-4 shadow-float glass">
             <p class="font-display font-semibold">
-              {computed.result.breakevenWithInterest
-                ? t(locale, 'verdict.paysBack', {
-                    alt: cng,
-                    months: computed.result.breakevenWithInterest.months,
-                  })
-                : t(locale, 'verdict.never', { base: petrol, years: input!.horizonMonths / 12 })}
+              {verdictHeadline(
+                locale,
+                computed.verdict,
+                { base: petrol, alternative: cng },
+                input!.horizonMonths / 12,
+              )}
             </p>
             <a href="#verdict" class="btn btn-primary min-h-11 shrink-0 px-4 text-sm">
               {t(locale, 'carFuel.resultBar.cta')}

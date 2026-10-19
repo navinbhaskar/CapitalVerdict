@@ -6,28 +6,48 @@ import { carFuelExample } from './carFuel.example';
 import {
   CAR_FUEL_EXAMPLE_FORM,
   carFuelShareSchema,
+  extraPriceOf,
   invalidFields,
+  onlyPricesMissing,
   toCarFuelInput,
 } from './carFuelForm';
 
 describe('car fuel form', () => {
-  it('example form starts valid', () => {
-    expect(invalidFields(CAR_FUEL_EXAMPLE_FORM)).toEqual([]);
+  // Test prices only (not market data), chosen to reproduce the spec's ₹90,000 gap.
+  const priced = { ...CAR_FUEL_EXAMPLE_FORM, petrolCarPrice: 700_000, cngCarPrice: 790_000 };
+
+  it('starts with both car prices empty, so no result yet', () => {
+    expect(CAR_FUEL_EXAMPLE_FORM.petrolCarPrice).toBeNull();
+    expect(CAR_FUEL_EXAMPLE_FORM.cngCarPrice).toBeNull();
+    expect(invalidFields(CAR_FUEL_EXAMPLE_FORM).sort()).toEqual(['cngCarPrice', 'petrolCarPrice']);
+    expect(onlyPricesMissing(CAR_FUEL_EXAMPLE_FORM)).toBe(true);
+    expect(toCarFuelInput(CAR_FUEL_EXAMPLE_FORM)).toBeNull();
   });
 
-  it('maps exactly to the spec / workbook example (flat prices)', () => {
-    expect(toCarFuelInput(CAR_FUEL_EXAMPLE_FORM)).toEqual(carFuelExample);
+  it('maps to the spec / workbook example once prices are in', () => {
+    expect(toCarFuelInput(priced)).toEqual({
+      ...carFuelExample,
+      purchasePrices: { base: 700_000, alternative: 790_000 },
+    });
+    expect(extraPriceOf(priced)).toBe(90_000);
+  });
+
+  it('allows the CNG car to be the cheaper one', () => {
+    const cheaperCng = { ...priced, cngCarPrice: 680_000 };
+    expect(extraPriceOf(cheaperCng)).toBe(-20_000);
+    expect(toCarFuelInput(cheaperCng)?.extraPrice).toBe(-20_000);
   });
 
   it('reports empty and out-of-range fields and refuses to map', () => {
-    const form = { ...CAR_FUEL_EXAMPLE_FORM, cngMileage: null, horizonYears: 2.5, monthlyKm: -5 };
+    const form = { ...priced, cngMileage: null, horizonYears: 2.5, monthlyKm: -5 };
     expect(invalidFields(form).sort()).toEqual(['cngMileage', 'horizonYears', 'monthlyKm']);
+    expect(onlyPricesMissing(form)).toBe(false);
     expect(toCarFuelInput(form)).toBeNull();
   });
 
   it('round-trips through a share link', () => {
-    const encoded = encodeShare(CAR_FUEL_EXAMPLE_FORM, carFuelShareSchema);
-    expect(decodeShare(encoded, carFuelShareSchema)).toEqual(CAR_FUEL_EXAMPLE_FORM);
+    const encoded = encodeShare(priced, carFuelShareSchema);
+    expect(decodeShare(encoded, carFuelShareSchema)).toEqual(priced);
   });
 });
 

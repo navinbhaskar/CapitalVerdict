@@ -1,6 +1,7 @@
 /**
  * The car fuel tool's form: flat, nullable fields that map 1:1 to URL params and to CarFuelInput.
  * Starts from the spec / workbook example: flat fuel prices (0% rise), no extra upkeep.
+ * The two on-road car prices start empty: they are the user's own quotes, never example data.
  */
 import type { ShareSchema } from '@/lib/shareLink';
 import type { CarFuelInput } from './carFuel';
@@ -8,7 +9,10 @@ import { carFuelExample } from './carFuel.example';
 
 export interface CarFuelForm {
   monthlyKm: number | null;
-  extraPrice: number | null;
+  /** On-road price of the petrol car, ₹. */
+  petrolCarPrice: number | null;
+  /** On-road price of the CNG car, ₹. */
+  cngCarPrice: number | null;
   petrolPrice: number | null;
   cngPrice: number | null;
   petrolMileage: number | null;
@@ -24,7 +28,8 @@ export interface CarFuelForm {
 
 export const CAR_FUEL_EXAMPLE_FORM: CarFuelForm = {
   monthlyKm: carFuelExample.monthlyKm,
-  extraPrice: carFuelExample.extraPrice,
+  petrolCarPrice: null,
+  cngCarPrice: null,
   petrolPrice: carFuelExample.base.energyPrice,
   cngPrice: carFuelExample.alternative.energyPrice,
   petrolMileage: carFuelExample.base.mileage,
@@ -40,7 +45,8 @@ export const CAR_FUEL_EXAMPLE_FORM: CarFuelForm = {
 /** Bounds shared by validation and URL decoding. */
 export const CAR_FUEL_LIMITS = {
   monthlyKm: { min: 0, max: 20_000 },
-  extraPrice: { min: 0, max: 5_000_000 },
+  petrolCarPrice: { min: 1, max: 1_00_00_000 },
+  cngCarPrice: { min: 1, max: 1_00_00_000 },
   petrolPrice: { min: 1, max: 1_000 },
   cngPrice: { min: 1, max: 1_000 },
   petrolMileage: { min: 1, max: 100 },
@@ -62,7 +68,8 @@ const num = (param: string, key: keyof CarFuelForm, integer = false) => ({
 
 export const carFuelShareSchema: ShareSchema<CarFuelForm> = {
   monthlyKm: num('km', 'monthlyKm'),
-  extraPrice: num('x', 'extraPrice'),
+  petrolCarPrice: num('pcp', 'petrolCarPrice'),
+  cngCarPrice: num('ccp', 'cngCarPrice'),
   petrolPrice: num('pp', 'petrolPrice'),
   cngPrice: num('cp', 'cngPrice'),
   petrolMileage: num('pm', 'petrolMileage'),
@@ -92,7 +99,8 @@ export function toCarFuelInput(form: CarFuelForm): CarFuelInput | null {
   return {
     monthlyKm: f.monthlyKm,
     horizonMonths: f.horizonYears * 12,
-    extraPrice: f.extraPrice,
+    extraPrice: f.cngCarPrice - f.petrolCarPrice,
+    purchasePrices: { base: f.petrolCarPrice, alternative: f.cngCarPrice },
     interestRate: f.interestRate,
     base: {
       mileage: f.petrolMileage,
@@ -107,4 +115,20 @@ export function toCarFuelInput(form: CarFuelForm): CarFuelInput | null {
       annualUpkeep: f.cngUpkeep,
     },
   };
+}
+
+/** CNG on-road price minus petrol on-road price, or null until both are entered and valid. */
+export function extraPriceOf(form: CarFuelForm): number | null {
+  const bad = invalidFields(form);
+  if (bad.includes('petrolCarPrice') || bad.includes('cngCarPrice')) return null;
+  return form.cngCarPrice! - form.petrolCarPrice!;
+}
+
+/** True when the only thing missing is one or both car prices (the usual first-visit state). */
+export function onlyPricesMissing(form: CarFuelForm): boolean {
+  const bad = invalidFields(form);
+  return (
+    bad.length > 0 &&
+    bad.every((k) => (k === 'petrolCarPrice' || k === 'cngCarPrice') && form[k] === null)
+  );
 }

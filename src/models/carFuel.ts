@@ -33,8 +33,16 @@ export interface CarFuelInput {
   horizonMonths: number;
   base: FuelOption;
   alternative: FuelOption;
-  /** How much more the alternative costs to buy, ₹. */
+  /**
+   * How much more the alternative costs to buy, ₹. Negative when the alternative is cheaper to buy
+   * (use carFuelVerdict for the headline in that case).
+   */
   extraPrice: number;
+  /**
+   * On-road price of each car, ₹. Optional: only needed for total cost of ownership. When given,
+   * extraPrice must equal alternative − base.
+   */
+  purchasePrices?: { base: number; alternative: number };
   /** Annual rate charged on the extra price (loan or forgone return), nominal with monthly compounding. */
   interestRate: number;
 }
@@ -67,6 +75,14 @@ export interface CarFuelResult {
   monthlyPrice: { base: number[]; alternative: number[] };
   /** Index = month, index 0 = start (0). */
   cumulativeSaving: number[];
+  /**
+   * Total cost of owning each car by month (index = month, 0 = purchase): on-road price grown at the
+   * interest rate plus fuel and upkeep paid so far. null without purchasePrices.
+   * base − alternative at any month equals the with-interest net position.
+   */
+  totalCost: { base: number[]; alternative: number[] } | null;
+  /** Fuel and upkeep paid so far, by month (index 0 = 0). */
+  cumulativeRunningCost: { base: number[]; alternative: number[] };
   /** Index = month: extra price with interest accrued to that month. */
   extraPriceWithInterest: number[];
   breakevenNoInterest: BreakevenDetail | null;
@@ -83,7 +99,16 @@ function validate(input: CarFuelInput): void {
     throw new RangeError('horizonMonths must be a positive whole number');
   }
   if (monthlyKm < 0) throw new RangeError('monthlyKm must not be negative');
-  if (extraPrice < 0) throw new RangeError('extraPrice must not be negative');
+  if (!Number.isFinite(extraPrice)) throw new RangeError('extraPrice must be a number');
+  const prices = input.purchasePrices;
+  if (prices) {
+    if (!(prices.base >= 0 && prices.alternative >= 0)) {
+      throw new RangeError('purchase prices must not be negative');
+    }
+    if (Math.abs(prices.alternative - prices.base - extraPrice) > 1e-6) {
+      throw new RangeError('extraPrice must equal the difference of the purchase prices');
+    }
+  }
   for (const option of [base, alternative]) {
     if (!(option.mileage > 0)) throw new RangeError('mileage must be positive');
     if (option.energyPrice < 0) throw new RangeError('energyPrice must not be negative');
@@ -111,7 +136,18 @@ export function compareCarFuel(input: CarFuelInput): CarFuelResult {
   const altCost = months.map((m) => monthlyCost(alternative, monthlyKm, m));
   const cumulativeSaving = cumulative(baseCost.map((cost, i) => cost - altCost[i]!));
   const flatExtra = cumulativeSaving.map(() => extraPrice);
-  const extraPriceWithInterest = cumulativeSaving.map((_, m) => extraPrice * growthFactor(r, m));
+  const growth = cumulativeSaving.map((_, m) => growthFactor(r, m));
+  const cumulativeRunningCost = { base: cumulative(baseCost), alternative: cumulative(altCost) };
+  const prices = input.purchasePrices;
+  const totalCost = prices
+    ? {
+        base: growth.map((g, m) => prices.base * g + cumulativeRunningCost.base[m]!),
+        alternative: growth.map(
+          (g, m) => prices.alternative * g + cumulativeRunningCost.alternative[m]!,
+        ),
+      }
+    : null;
+  const extraPriceWithInterest = growth.map((g) => extraPrice * g);
 
   const detail = (b: ReturnType<typeof breakeven>): BreakevenDetail | null =>
     b && {
@@ -138,6 +174,8 @@ export function compareCarFuel(input: CarFuelInput): CarFuelResult {
     monthlyCost: { base: baseCost, alternative: altCost },
     monthlyPrice: { base: basePrice, alternative: altPrice },
     cumulativeSaving,
+    totalCost,
+    cumulativeRunningCost,
     extraPriceWithInterest,
     breakevenNoInterest: detail(breakeven(cumulativeSaving, flatExtra)),
     breakevenWithInterest: detail(breakeven(cumulativeSaving, extraPriceWithInterest)),
@@ -226,4 +264,65 @@ export function carFuelScenarios(input: CarFuelInput, rates: CarFuelScenarioRate
     base: withRise(rates.base),
     optimistic: withRise(rates.optimistic),
   });
+}
+
+export type CarFuelVerdict =
+  /** The dearer car earns back its extra price within the horizon. */
+  | { kind: 'payback'; payer: 'base' | 'alternative'; months: number; km: number }
+  /** The dearer car never earns back its extra price; the cheaper one wins over the horizon. */
+  | { kind: 'never'; winner: 'base' | 'alternative' }
+  /** One car costs no more to buy and less to run: it wins from day one. */
+  | { kind: 'dominant'; winner: 'base' | 'alternative' }
+  /** Same price and same running cost. */
+  | { kind: 'tie' };
+
+/** Swap the two options so the dearer car is always the "alternative". */
+export function swapOptions(input: CarFuelInput): CarFuelInput {
+  return {
+    ...input,
+    base: input.alternative,
+    alternative: input.base,
+    extraPrice: -input.extraPrice,
+    purchasePrices: input.purchasePrices && {
+      base: input.purchasePrices.alternative,
+      alternative: input.purchasePrices.base,
+    },
+  };
+}
+
+/**
+ * Headline answer. The break-even question is always asked of the car that costs more to buy:
+ * does its lower running cost earn back the difference (with interest) within the horizon?
+ * Returns the verdict and the comparison it was based on (swapped when petrol is the dearer car).
+ */
+export function carFuelVerdict(input: CarFuelInput): {
+  verdict: CarFuelVerdict;
+  /** Comparison with the dearer car as the alternative. */
+  basis: CarFuelResult;
+  swapped: boolean;
+} {
+  const swapped = input.extraPrice < 0;
+  const basisInput = swapped ? swapOptions(input) : input;
+  const basis = compareCarFuel(basisInput);
+  const dearer = swapped ? 'base' : 'alternative';
+  const cheaper = swapped ? 'alternative' : 'base';
+  const saving = basis.firstMonthSaving;
+
+  if (basisInput.extraPrice === 0) {
+    if (Math.abs(saving) < 1e-9) return { verdict: { kind: 'tie' }, basis, swapped };
+    return {
+      verdict: { kind: 'dominant', winner: saving > 0 ? dearer : cheaper },
+      basis,
+      swapped,
+    };
+  }
+  const be = basis.breakevenWithInterest;
+  if (be)
+    return {
+      verdict: { kind: 'payback', payer: dearer, months: be.months, km: be.km },
+      basis,
+      swapped,
+    };
+  if (saving <= 0) return { verdict: { kind: 'dominant', winner: cheaper }, basis, swapped };
+  return { verdict: { kind: 'never', winner: cheaper }, basis, swapped };
 }

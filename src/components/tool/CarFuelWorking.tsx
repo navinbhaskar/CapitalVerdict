@@ -97,6 +97,43 @@ export default function CarFuelWorking({ locale, input, result }: Props) {
       ]
     : [{ label: t(locale, 'working.months'), value: never, strong: true }];
 
+  const end = horizonMonths;
+  const total = result.totalCost;
+  const prices = input.purchasePrices;
+  const growth = (1 + interestRate / 12) ** end;
+  const tcoRows = (side: 'base' | 'alternative', name: string): Row[] =>
+    !total || !prices
+      ? []
+      : [
+          {
+            label: t(locale, 'working.tcoPrice', { car: name }),
+            formula: `${formatINR(prices[side])} × (1 + ${formatPercent(interestRate)} ÷ 12)^${end}`,
+            value: formatMoney(prices[side] * growth),
+          },
+          {
+            label: t(locale, 'working.tcoRunning', { car: name }),
+            value: formatMoney(result.cumulativeRunningCost[side][end]!),
+          },
+          {
+            label: t(locale, 'working.tcoTotal', { car: name }),
+            value: formatMoney(total[side][end]!),
+            strong: true,
+          },
+        ];
+  const tco: Row[] = total
+    ? [
+        ...tcoRows('base', t(locale, 'fuel.petrol')),
+        ...tcoRows('alternative', t(locale, 'fuel.cng')),
+        {
+          label: t(locale, 'working.tcoDifference'),
+          formula: `${formatMoney(total.base[end]!)} − ${formatMoney(total.alternative[end]!)}`,
+          value: formatMoney(total.base[end]! - total.alternative[end]!),
+          strong: true,
+          negative: total.base[end]! - total.alternative[end]! < 0,
+        },
+      ]
+    : [];
+
   const longRun: Row[] = [
     result.netAt5Years && {
       label: t(locale, 'stat.net5'),
@@ -117,7 +154,14 @@ export default function CarFuelWorking({ locale, input, result }: Props) {
         {t(locale, 'working.heading')}
       </h2>
       <div class="mt-4 grid gap-4 lg:grid-cols-2">
-        <Block title={t(locale, 'working.runningCost')} rows={running} />
+        <div class="grid content-start gap-4">
+          <Block title={t(locale, 'working.runningCost')} rows={running} />
+          {tco.length > 0 && (
+            <Block title={t(locale, 'working.tco', { years })} rows={tco}>
+              {t(locale, 'working.tcoNote')}
+            </Block>
+          )}
+        </div>
         <div class="grid gap-4">
           <Block title={t(locale, 'working.result1')} rows={result1}>
             {t(locale, 'working.result1Note')}
