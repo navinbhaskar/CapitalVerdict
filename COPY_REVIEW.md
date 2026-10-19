@@ -19,24 +19,26 @@ switch.
 
 ## Strings
 
-| Key                                                                                  | Where it shows                                |
-| ------------------------------------------------------------------------------------ | --------------------------------------------- |
-| [ ] `site.description`                                                               | Meta description for the home page            |
-| [ ] `home.intro`                                                                     | Home hero, under the headline                 |
-| [ ] `tool.rentVsBuy.question`                                                        | Home decisions list (coming soon)             |
-| [ ] `tool.solar.question`                                                            | Home decisions list (coming soon)             |
-| [ ] `principle.assumptions.body`                                                     | Home, "How we work"                           |
-| [ ] `principle.conservative.body`                                                    | Home, "How we work"                           |
-| [ ] `principle.realTerms.body`                                                       | Home, "How we work" (see note above)          |
-| [ ] `principle.noProducts.body`                                                      | Home, "How we work" (see note above)          |
-| [ ] `footer.disclaimer`                                                              | Footer on every page                          |
-| [ ] `assumptions.intro`                                                              | Top of the assumptions panel                  |
-| [ ] `tool.disclaimer`                                                                | Under every tool's question                   |
-| [ ] `carFuel.metaDescription`                                                        | Meta description for the car fuel tool        |
-| [ ] `carFuel.explanation`                                                            | Car fuel tool, "How this works"               |
-| [ ] `carFuel.workedExample.intro`                                                    | Car fuel tool, "Worked example"               |
-| [ ] `carFuel.faq.1.q` – `carFuel.faq.4.a`                                            | Car fuel tool, "Questions" (4 pairs)          |
-| [ ] `home.tools.upcomingHeading`                                                     | Home, heading above upcoming decisions        |
-| [ ] `tool.prepay.*`, `tool.carLoan.*`, `tool.ac.*`, `tool.taxRegime.*`               | Home, upcoming decisions (title and question) |
-| [ ] `solar.*` (labels, notes, verdicts, working, flips, checklist, explanation, FAQ) | Rooftop solar tool                            |
-| [ ] `solar.metaDescription`                                                          | Meta description for the solar tool           |
+| Key                                                                                                       | Where it shows                                |
+| --------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| [ ] `site.description`                                                                                    | Meta description for the home page            |
+| [ ] `home.intro`                                                                                          | Home hero, under the headline                 |
+| [ ] `tool.rentVsBuy.question`                                                                             | Home decisions list (coming soon)             |
+| [ ] `tool.solar.question`                                                                                 | Home decisions list (coming soon)             |
+| [ ] `principle.assumptions.body`                                                                          | Home, "How we work"                           |
+| [ ] `principle.conservative.body`                                                                         | Home, "How we work"                           |
+| [ ] `principle.realTerms.body`                                                                            | Home, "How we work" (see note above)          |
+| [ ] `principle.noProducts.body`                                                                           | Home, "How we work" (see note above)          |
+| [ ] `footer.disclaimer`                                                                                   | Footer on every page                          |
+| [ ] `assumptions.intro`                                                                                   | Top of the assumptions panel                  |
+| [ ] `tool.disclaimer`                                                                                     | Under every tool's question                   |
+| [ ] `carFuel.metaDescription`                                                                             | Meta description for the car fuel tool        |
+| [ ] `carFuel.explanation`                                                                                 | Car fuel tool, "How this works"               |
+| [ ] `carFuel.workedExample.intro`                                                                         | Car fuel tool, "Worked example"               |
+| [ ] `carFuel.faq.1.q` – `carFuel.faq.4.a`                                                                 | Car fuel tool, "Questions" (4 pairs)          |
+| [ ] `home.tools.upcomingHeading`                                                                          | Home, heading above upcoming decisions        |
+| [ ] `tool.prepay.*`, `tool.carLoan.*`, `tool.ac.*`, `tool.taxRegime.*`                                    | Home, upcoming decisions (title and question) |
+| [ ] `solar.*` (labels, notes, verdicts, working, flips, checklist, explanation, FAQ)                      | Rooftop solar tool                            |
+| [ ] `solar.metaDescription`                                                                               | Meta description for the solar tool           |
+| [ ] `tool.carFuel.question`, `nav.carFuel`, `carFuel.metaDescription`, `site.description`                 | Updated for EV                                |
+| [ ] EV labels and notes (`input.ev*`, `note.ev*`, `input.homeRate`, `input.publicRate`, `checklist.ev.*`) | Car tool, EV option                           |

@@ -6,10 +6,12 @@ import { carFuelExample } from './carFuel.example';
 import {
   CAR_FUEL_EXAMPLE_FORM,
   carFuelShareSchema,
+  evEnergyPrice,
   extraPriceOf,
   invalidFields,
   onlyPricesMissing,
   toCarFuelInput,
+  type CarFuelForm,
 } from './carFuelForm';
 
 describe('car fuel form', () => {
@@ -47,7 +49,10 @@ describe('car fuel form', () => {
 
   it('round-trips through a share link', () => {
     const encoded = encodeShare(priced, carFuelShareSchema);
-    expect(decodeShare(encoded, carFuelShareSchema)).toEqual(priced);
+    // Empty fields are not written to the link, so they come back absent.
+    expect(decodeShare(encoded, carFuelShareSchema)).toEqual(
+      Object.fromEntries(Object.entries(priced).filter(([, v]) => v !== null)),
+    );
   });
 });
 
@@ -72,5 +77,64 @@ describe('car fuel price-rise scenarios (0% / 3% / 5% on both fuels)', () => {
     expect(runs.base.output.netAt10Years!.withInterest).toBeCloseTo(268_723.25, 0);
     expect(runs.optimistic.output.breakevenWithInterest?.months).toBe(31);
     expect(runs.optimistic.output.netAt10Years!.withInterest).toBeCloseTo(316_275.85, 0);
+  });
+});
+
+describe('car fuel form: EV as the alternative', () => {
+  // Test values only (not market data).
+  const ev: CarFuelForm = {
+    ...CAR_FUEL_EXAMPLE_FORM,
+    alt: 'ev',
+    petrolCarPrice: 700_000,
+    evCarPrice: 1_100_000,
+    evEfficiency: 7,
+    homeChargingShare: 0.8,
+    homeRate: 8,
+    publicRate: 20,
+  };
+
+  it('blends home and public charging: 0.8 × ₹8 + 0.2 × ₹20 = ₹10.40/kWh', () => {
+    expect(evEnergyPrice(ev)).toBeCloseTo(10.4, 12);
+  });
+
+  it('does not need a public price when all charging is at home', () => {
+    const home = { ...ev, homeChargingShare: 1, publicRate: null };
+    expect(invalidFields(home)).toEqual([]);
+    expect(evEnergyPrice(home)).toBe(8);
+  });
+
+  it('ignores CNG fields when EV is chosen, and EV fields when CNG is', () => {
+    expect(invalidFields(ev)).toEqual([]);
+    expect(invalidFields({ ...CAR_FUEL_EXAMPLE_FORM, petrolCarPrice: 1, cngCarPrice: 2 })).toEqual(
+      [],
+    );
+  });
+
+  it('starts with every EV value empty', () => {
+    const fresh = { ...CAR_FUEL_EXAMPLE_FORM, alt: 'ev' as const };
+    expect(invalidFields(fresh).sort()).toEqual([
+      'evCarPrice',
+      'evEfficiency',
+      'homeChargingShare',
+      'homeRate',
+      'petrolCarPrice',
+      'publicRate',
+    ]);
+  });
+
+  it('maps to an EV alternative: ₹10.40/kWh ÷ 7 km/kWh, ₹4,00,000 extra price', () => {
+    const input = toCarFuelInput(ev)!;
+    expect(input.alternative).toEqual({
+      mileage: 7,
+      energyPrice: expect.closeTo(10.4, 12),
+      annualPriceRise: 0,
+      annualUpkeep: 0,
+    });
+    expect(input.extraPrice).toBe(400_000);
+    expect(extraPriceOf(ev)).toBe(400_000);
+  });
+
+  it('round-trips the choice through a share link', () => {
+    expect(decodeShare(encodeShare(ev, carFuelShareSchema), carFuelShareSchema).alt).toBe('ev');
   });
 });

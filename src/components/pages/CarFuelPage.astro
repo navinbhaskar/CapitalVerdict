@@ -64,12 +64,16 @@ const rows: AssumptionRow[] = [
 ];
 
 const ex = compareCarFuel(carFuelExample);
+const cngName = { alt: t(locale, 'fuel.cng') };
 const worked: [string, string][] = [
   [
     t(locale, 'input.monthlyKm'),
     t(locale, 'unit.km', { n: formatNumber(carFuelExample.monthlyKm) }),
   ],
-  [t(locale, 'input.extraPrice'), formatMoney(carFuelExample.extraPrice)],
+  [
+    t(locale, 'input.extraPrice', { altCar: t(locale, 'fuel.cngCar') }),
+    formatMoney(carFuelExample.extraPrice),
+  ],
   [t(locale, 'input.interestRate'), formatPercent(carFuelExample.interestRate)],
   [
     t(locale, 'stat.costPerKm'),
@@ -78,7 +82,7 @@ const worked: [string, string][] = [
       alt: formatRupeesPrecise(ex.costPerKm.alternative),
     }),
   ],
-  [t(locale, 'stat.monthlySaving'), formatMoney(ex.firstMonthSaving)],
+  [t(locale, 'stat.monthlySaving', cngName), formatMoney(ex.firstMonthSaving)],
   [
     t(locale, 'stat.breakevenNoInterest'),
     t(locale, 'unit.months', { n: formatNumber(ex.breakevenNoInterest!.fractionalMonths, 1) }),
@@ -87,7 +91,7 @@ const worked: [string, string][] = [
     t(locale, 'home.preview.breakeven'),
     `${t(locale, 'unit.months', { n: ex.breakevenWithInterest!.months })}, ${t(locale, 'unit.km', { n: formatNumber(ex.breakevenWithInterest!.km) })}`,
   ],
-  [t(locale, 'stat.net10'), formatMoney(ex.netAt10Years!.withInterest)],
+  [t(locale, 'stat.net10', cngName), formatMoney(ex.netAt10Years!.withInterest)],
 ];
 
 const FAQ = [1, 2, 3, 4] as const;

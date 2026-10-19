@@ -19,10 +19,13 @@ import {
   CAR_FUEL_EXAMPLE_FORM,
   CAR_FUEL_LIMITS,
   carFuelShareSchema,
+  altCarPriceField,
   extraPriceOf,
   onlyPricesMissing,
   toCarFuelInput,
+  type AltKind,
   type CarFuelForm,
+  type NumericField,
 } from '@/models/carFuelForm';
 import NumberField from '@/components/tool/NumberField';
 import VerdictCard, { verdictHeadline } from '@/components/tool/VerdictCard';
@@ -38,12 +41,10 @@ interface Props {
 }
 
 const RISE_RATES = defaults.scenarioVariables.energyPriceRise.values;
-const CHECKLIST: MessageKey[] = [
-  'checklist.carFuel.1',
-  'checklist.carFuel.2',
-  'checklist.carFuel.3',
-  'checklist.carFuel.4',
-];
+const CHECKLIST: Record<AltKind, MessageKey[]> = {
+  cng: ['checklist.carFuel.1', 'checklist.carFuel.2', 'checklist.carFuel.3', 'checklist.carFuel.4'],
+  ev: ['checklist.ev.1', 'checklist.ev.2', 'checklist.ev.3', 'checklist.ev.4', 'checklist.ev.5'],
+};
 
 /** Net position by month: cumulative saving minus the extra price (flat or with interest). */
 const netSeries = (r: CarFuelResult, extra: number[] | number) =>
@@ -57,9 +58,10 @@ export default function CarFuelTool({ locale }: Props) {
   const [showBar, setShowBar] = useState(false);
   /** Fields the user (or a shared link) has set; global assumptions never overwrite these. */
   const pinned = useRef(new Set<keyof CarFuelForm>());
+  const setAlt = (alt: AltKind) => setForm((f) => ({ ...f, alt }));
   const { assumptions } = useGlobalAssumptions();
 
-  const set = (key: keyof CarFuelForm) => (value: number | null) => {
+  const set = (key: NumericField) => (value: number | null) => {
     pinned.current.add(key);
     setForm((f) => ({ ...f, [key]: value }));
   };
@@ -134,7 +136,14 @@ export default function CarFuelTool({ locale }: Props) {
   }, [input]);
 
   const petrol = t(locale, 'fuel.petrol');
-  const cng = t(locale, 'fuel.cng');
+  const altKind = form.alt;
+  const altName = t(locale, altKind === 'cng' ? 'fuel.cng' : 'fuel.ev');
+  // Kept as `cng` below: the alternative's display name, whichever it is.
+  const cng = altName;
+  const altFuel = altKind === 'cng' ? altName : t(locale, 'fuel.charging');
+  const altCar = t(locale, altKind === 'cng' ? 'fuel.cngCar' : 'fuel.evCar');
+  const altPriceUnit = altKind === 'cng' ? 'unit.perKg' : 'unit.perKWh';
+  const altMileageUnit = altKind === 'cng' ? 'unit.kmPerKg' : 'unit.kmPerKWh';
 
   const reset = () => {
     pinned.current.clear();
@@ -155,7 +164,7 @@ export default function CarFuelTool({ locale }: Props) {
       : t(locale, 'note.fuelPriceExample');
 
   const field = (
-    key: keyof CarFuelForm,
+    key: NumericField,
     label: MessageKey,
     unit: string,
     note: string,
@@ -184,10 +193,13 @@ export default function CarFuelTool({ locale }: Props) {
     computed && input
       ? computed.flips.map((flip) => {
           const side = flip.signBelow === -1 ? 'below' : 'above';
-          const fmt = formatFlipValue(locale, flip.variable);
+          const fmt = formatFlipValue(locale, flip.variable, altPriceUnit, altMileageUnit);
           return {
             text: t(locale, `flip.${flip.variable}.${side}` as MessageKey, {
               base: petrol,
+              alt: altName,
+              altCar,
+              altFuel,
               value: fmt(flip.threshold),
             }),
             current: fmt(currentValue(input, flip.variable)),
@@ -210,7 +222,10 @@ export default function CarFuelTool({ locale }: Props) {
             values: result.monthlyPrice.base,
           },
           {
-            label: t(locale, 'monthly.col.cngPrice'),
+            label: t(locale, 'monthly.col.altPrice', {
+              alt: altName,
+              unit: altKind === 'cng' ? '₹/kg' : '₹/kWh',
+            }),
             kind: 'price',
             values: result.monthlyPrice.alternative,
           },
@@ -220,7 +235,7 @@ export default function CarFuelTool({ locale }: Props) {
             values: result.monthlyCost.base,
           },
           {
-            label: t(locale, 'monthly.col.cngCost'),
+            label: t(locale, 'monthly.col.altCost', { alt: altName }),
             kind: 'money',
             values: result.monthlyCost.alternative,
           },
@@ -257,7 +272,7 @@ export default function CarFuelTool({ locale }: Props) {
                   values: result.totalCost.base.slice(1),
                 },
                 {
-                  label: t(locale, 'monthly.col.cngTotal'),
+                  label: t(locale, 'monthly.col.altTotal', { alt: altName }),
                   kind: 'money' as const,
                   values: result.totalCost.alternative.slice(1),
                 },
@@ -291,18 +306,63 @@ export default function CarFuelTool({ locale }: Props) {
             </p>
           )}
 
-          <Group title={t(locale, 'inputs.group.prices')}>
+          <div class="mt-4">
+            <p class="text-sm font-medium" id="compare-with">
+              {t(locale, 'carFuel.compareWith')}
+            </p>
+            <div
+              role="radiogroup"
+              aria-labelledby="compare-with"
+              class="mt-2 grid max-w-xs grid-cols-2 gap-1 rounded-md bg-surface p-1"
+            >
+              {(['cng', 'ev'] as const).map((kind) => (
+                <label
+                  key={kind}
+                  class="flex min-h-10 cursor-pointer items-center justify-center rounded-sm text-sm font-medium text-ink-muted transition-colors duration-(--duration-fast) ease-out-quart has-[:checked]:bg-raised has-[:checked]:text-ink has-[:checked]:shadow-card has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent-strong"
+                >
+                  <input
+                    type="radio"
+                    name="compare-with"
+                    value={kind}
+                    checked={altKind === kind}
+                    onChange={() => setAlt(kind)}
+                    class="sr-only"
+                  />
+                  {t(locale, kind === 'cng' ? 'fuel.cng' : 'fuel.ev')}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <Group
+            title={t(locale, altKind === 'cng' ? 'inputs.group.prices' : 'inputs.group.pricesEv')}
+          >
             {field(
               'petrolPrice',
               'input.petrolPrice',
               t(locale, 'input.petrolPrice.unit'),
               priceNote('petrol'),
             )}
-            {field(
-              'cngPrice',
-              'input.cngPrice',
-              t(locale, 'input.cngPrice.unit'),
-              priceNote('cng'),
+            {altKind === 'cng' ? (
+              field(
+                'cngPrice',
+                'input.cngPrice',
+                t(locale, 'input.cngPrice.unit'),
+                priceNote('cng'),
+              )
+            ) : (
+              <>
+                {field('homeRate', 'input.homeRate', '₹/kWh', t(locale, 'note.homeRate'))}
+                {field(
+                  'homeChargingShare',
+                  'input.homeChargingShare',
+                  '%',
+                  t(locale, 'note.homeChargingShare'),
+                  { percent: true },
+                )}
+                {form.homeChargingShare !== 1 &&
+                  field('publicRate', 'input.publicRate', '₹/kWh', t(locale, 'note.publicRate'))}
+              </>
             )}
           </Group>
           <Group title={t(locale, 'inputs.group.cars')}>
@@ -313,15 +373,17 @@ export default function CarFuelTool({ locale }: Props) {
               t(locale, 'note.carPrice'),
             )}
             {field(
-              'cngCarPrice',
-              'input.cngCarPrice',
+              altCarPriceField(altKind),
+              altKind === 'cng' ? 'input.cngCarPrice' : 'input.evCarPrice',
               t(locale, 'input.carPrice.unit'),
               t(locale, 'note.carPrice'),
             )}
             <div class="grid gap-x-4 gap-y-1 py-2.5 sm:grid-cols-[minmax(0,1fr)_10rem] sm:items-center">
               <div>
-                <p class="text-sm font-medium">{t(locale, 'input.extraPrice')}</p>
-                <p class="mt-0.5 text-xs text-ink-muted">{t(locale, 'note.extraPriceDerived')}</p>
+                <p class="text-sm font-medium">{t(locale, 'input.extraPrice', { altCar })}</p>
+                <p class="mt-0.5 text-xs text-ink-muted">
+                  {t(locale, 'note.extraPriceDerived', { altCar })}
+                </p>
               </div>
               <p class="px-3 text-base font-semibold num" aria-live="polite">
                 {extraPrice === null ? '—' : formatINR(extraPrice)}
@@ -334,13 +396,21 @@ export default function CarFuelTool({ locale }: Props) {
               t(locale, 'note.mileage'),
               { flagged: true },
             )}
-            {field(
-              'cngMileage',
-              'input.cngMileage',
-              t(locale, 'input.cngMileage.unit'),
-              t(locale, 'note.mileage'),
-              { flagged: true },
-            )}
+            {altKind === 'cng'
+              ? field(
+                  'cngMileage',
+                  'input.cngMileage',
+                  t(locale, 'input.cngMileage.unit'),
+                  t(locale, 'note.mileage'),
+                  { flagged: true },
+                )
+              : field(
+                  'evEfficiency',
+                  'input.evEfficiency',
+                  t(locale, 'input.evEfficiency.unit'),
+                  t(locale, 'note.evEfficiency'),
+                  { flagged: true },
+                )}
           </Group>
           <Group title={t(locale, 'inputs.group.usage')}>
             {field(
@@ -358,17 +428,30 @@ export default function CarFuelTool({ locale }: Props) {
               percent: true,
               layout: 'stack',
             })}
-            {field('cngPriceRise', 'input.cngPriceRise', '%', t(locale, 'note.priceRise'), {
-              percent: true,
-              layout: 'stack',
-            })}
-            {field(
-              'cngUpkeep',
-              'input.cngUpkeep',
-              t(locale, 'input.upkeep.unit'),
-              t(locale, 'note.cngUpkeep'),
-              { layout: 'stack' },
-            )}
+            {altKind === 'cng'
+              ? field('cngPriceRise', 'input.cngPriceRise', '%', t(locale, 'note.priceRise'), {
+                  percent: true,
+                  layout: 'stack',
+                })
+              : field('evPriceRise', 'input.evPriceRise', '%', t(locale, 'note.priceRise'), {
+                  percent: true,
+                  layout: 'stack',
+                })}
+            {altKind === 'cng'
+              ? field(
+                  'cngUpkeep',
+                  'input.cngUpkeep',
+                  t(locale, 'input.upkeep.unit'),
+                  t(locale, 'note.cngUpkeep'),
+                  { layout: 'stack' },
+                )
+              : field(
+                  'evUpkeep',
+                  'input.evUpkeep',
+                  t(locale, 'input.upkeep.unit'),
+                  t(locale, 'note.evUpkeep'),
+                  { layout: 'stack' },
+                )}
             {field(
               'petrolUpkeep',
               'input.petrolUpkeep',
@@ -397,6 +480,8 @@ export default function CarFuelTool({ locale }: Props) {
               runs={computed.runs}
               baseName={petrol}
               altName={cng}
+              baseCar={t(locale, 'fuel.petrolCar')}
+              altCar={altCar}
             />
           ) : (
             <div
@@ -419,13 +504,28 @@ export default function CarFuelTool({ locale }: Props) {
       {computed && input && result && (
         <>
           <div class="mt-10 border-t border-line pt-6">
-            <CarFuelWorking locale={locale} input={input} result={result} />
+            <CarFuelWorking
+              locale={locale}
+              input={input}
+              result={result}
+              altName={altName}
+              altKind={altKind}
+              evBlend={
+                altKind === 'ev'
+                  ? {
+                      homeShare: form.homeChargingShare!,
+                      homeRate: form.homeRate!,
+                      publicRate: form.publicRate,
+                    }
+                  : undefined
+              }
+            />
           </div>
 
           <div class="mt-10 grid gap-6 border-t border-line pt-6 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12">
             <NetPositionChart
               locale={locale}
-              title={t(locale, 'chart.netTitle')}
+              title={t(locale, 'chart.netTitle', { alt: altName })}
               netWithInterest={computed.netWithInterest}
               netNoInterest={computed.netNoInterest}
               bandLow={computed.bandLow}
@@ -477,7 +577,11 @@ export default function CarFuelTool({ locale }: Props) {
 
           <div class="mt-10 grid gap-8 border-t border-line pt-6 lg:grid-cols-2">
             <SensitivityList locale={locale} lines={flipLines} />
-            <NonMoneyChecklist locale={locale} items={CHECKLIST.map((k) => t(locale, k))} />
+            <NonMoneyChecklist
+              key={altKind}
+              locale={locale}
+              items={CHECKLIST[altKind].map((k) => t(locale, k))}
+            />
           </div>
         </>
       )}
@@ -525,16 +629,21 @@ function Group({
   );
 }
 
-function formatFlipValue(locale: Locale, variable: CarFuelVariable): (v: number) => string {
+function formatFlipValue(
+  locale: Locale,
+  variable: CarFuelVariable,
+  priceUnit: 'unit.perKg' | 'unit.perKWh',
+  mileageUnit: 'unit.kmPerKg' | 'unit.kmPerKWh',
+): (v: number) => string {
   switch (variable) {
     case 'monthlyKm':
       return (v) => t(locale, 'unit.km', { n: formatNumber(v) });
     case 'baseEnergyPrice':
       return (v) => t(locale, 'unit.perLitre', { n: formatNumber(v, 2) });
     case 'alternativeEnergyPrice':
-      return (v) => t(locale, 'unit.perKg', { n: formatNumber(v, 2) });
+      return (v) => t(locale, priceUnit, { n: formatNumber(v, 2) });
     case 'alternativeMileage':
-      return (v) => t(locale, 'unit.kmPerKg', { n: formatNumber(v, 1) });
+      return (v) => t(locale, mileageUnit, { n: formatNumber(v, 1) });
   }
 }
 

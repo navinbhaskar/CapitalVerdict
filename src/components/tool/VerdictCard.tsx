@@ -17,6 +17,9 @@ interface Props {
   runs: Record<ScenarioName, ScenarioRun<CarFuelInput, CarFuelResult>>;
   baseName: string;
   altName: string;
+  /** Names with "car" where it reads naturally ("CNG car", "EV"). */
+  baseCar?: string;
+  altCar?: string;
 }
 
 /** The one-line answer, shared by the verdict card and the mobile result bar. */
@@ -41,6 +44,8 @@ export function verdictHeadline(
 /** Verdict, scenario range and headline numbers. */
 export default function VerdictCard(props: Props) {
   const { locale, input, result, verdict, basis, runs, baseName, altName } = props;
+  const baseCar = props.baseCar ?? baseName;
+  const altCar = props.altCar ?? altName;
   const years = input.horizonMonths / 12;
   const dearer = input.extraPrice < 0 ? baseName : altName;
   const km = (n: number) => t(locale, 'unit.km', { n: formatNumber(n) });
@@ -84,10 +89,13 @@ export default function VerdictCard(props: Props) {
   // The 5-year row only when the horizon is longer; the horizon row always (10 years by default).
   const netRows: { label: string; net: number }[] = [
     ...(years > 5 && result.netAt5Years
-      ? [{ label: t(locale, 'stat.net5'), net: result.netAt5Years.withInterest }]
+      ? [{ label: t(locale, 'stat.net5', { alt: altName }), net: result.netAt5Years.withInterest }]
       : []),
     {
-      label: years === 10 ? t(locale, 'stat.net10') : t(locale, 'stat.netHorizon', { years }),
+      label:
+        years === 10
+          ? t(locale, 'stat.net10', { alt: altName })
+          : t(locale, 'stat.netHorizon', { years, alt: altName }),
       net: result.netAtHorizon.withInterest,
     },
   ];
@@ -120,15 +128,15 @@ export default function VerdictCard(props: Props) {
       <dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-line pt-4">
         {total && (
           <>
-            <Stat label={t(locale, 'stat.totalCost', { car: baseName, years })}>
+            <Stat label={t(locale, 'stat.totalCost', { car: baseCar, years })}>
               {formatMoney(total.base[end]!)}
             </Stat>
-            <Stat label={t(locale, 'stat.totalCost', { car: altName, years })}>
+            <Stat label={t(locale, 'stat.totalCost', { car: altCar, years })}>
               {formatMoney(total.alternative[end]!)}
             </Stat>
           </>
         )}
-        <Stat label={t(locale, 'stat.monthlySaving')}>
+        <Stat label={t(locale, 'stat.monthlySaving', { alt: altName })}>
           <span class={result.firstMonthSaving < 0 ? 'text-danger' : ''}>
             {formatMoney(result.firstMonthSaving)}
           </span>

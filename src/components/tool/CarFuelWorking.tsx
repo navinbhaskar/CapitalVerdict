@@ -8,10 +8,18 @@ interface Props {
   locale: Locale;
   input: CarFuelInput;
   result: CarFuelResult;
+  /** Name of the alternative ("CNG" or "EV") and its units. */
+  altName: string;
+  altKind: 'cng' | 'ev';
+  /** EV only: how the charging price per unit was blended. */
+  evBlend?: { homeShare: number; homeRate: number; publicRate: number | null };
 }
 
 /** "Show the working": every intermediate number, with the arithmetic that produced it. */
-export default function CarFuelWorking({ locale, input, result }: Props) {
+export default function CarFuelWorking(props: Props) {
+  const { locale, input, result, altName, altKind, evBlend } = props;
+  const alt = { alt: altName };
+  const altPerKmUnit = altKind === 'cng' ? 'unit.kmPerKg' : 'unit.kmPerKWh';
   const { monthlyKm, base, alternative, interestRate, horizonMonths } = input;
   const years = horizonMonths / 12;
   const km = (n: number) => t(locale, 'unit.km', { n: formatNumber(n) });
@@ -19,19 +27,34 @@ export default function CarFuelWorking({ locale, input, result }: Props) {
   const cngMonthly = result.monthlyCost.alternative[0]!;
   const savingPerKm = result.costPerKm.base - result.costPerKm.alternative;
 
+  const blend: Row[] =
+    altKind === 'ev' && evBlend
+      ? [
+          {
+            label: t(locale, 'working.chargingPrice'),
+            formula:
+              evBlend.homeShare === 1 || evBlend.publicRate === null
+                ? formatRupeesPrecise(evBlend.homeRate)
+                : `${formatPercent(evBlend.homeShare)} × ${formatRupeesPrecise(evBlend.homeRate)} + ${formatPercent(1 - evBlend.homeShare)} × ${formatRupeesPrecise(evBlend.publicRate)}`,
+            value: t(locale, 'unit.perKWh', { n: formatNumber(alternative.energyPrice, 2) }),
+          },
+        ]
+      : [];
+
   const running: Row[] = [
+    ...blend,
     {
       label: t(locale, 'working.petrolPerKm'),
       formula: `${formatRupeesPrecise(base.energyPrice)} ÷ ${t(locale, 'unit.kmPerLitre', { n: formatNumber(base.mileage, 2) })}`,
       value: formatRupeesPrecise(result.costPerKm.base),
     },
     {
-      label: t(locale, 'working.cngPerKm'),
-      formula: `${formatRupeesPrecise(alternative.energyPrice)} ÷ ${t(locale, 'unit.kmPerKg', { n: formatNumber(alternative.mileage, 2) })}`,
+      label: t(locale, 'working.altPerKm', alt),
+      formula: `${formatRupeesPrecise(alternative.energyPrice)} ÷ ${t(locale, altPerKmUnit, { n: formatNumber(alternative.mileage, 2) })}`,
       value: formatRupeesPrecise(result.costPerKm.alternative),
     },
     {
-      label: t(locale, 'working.savingPerKm'),
+      label: t(locale, 'working.savingPerKm', alt),
       formula: `${formatRupeesPrecise(result.costPerKm.base)} − ${formatRupeesPrecise(result.costPerKm.alternative)}`,
       value: formatRupeesPrecise(savingPerKm),
       negative: savingPerKm < 0,
@@ -44,19 +67,19 @@ export default function CarFuelWorking({ locale, input, result }: Props) {
       value: formatINR(petrolMonthly),
     },
     {
-      label: t(locale, 'working.cngMonthly'),
+      label: t(locale, 'working.altMonthly', alt),
       formula: `${km(monthlyKm)} ÷ ${formatNumber(alternative.mileage, 2)} × ${formatRupeesPrecise(alternative.energyPrice)} + ${formatINR(alternative.annualUpkeep)} ÷ 12`,
       value: formatINR(cngMonthly),
     },
     {
-      label: t(locale, 'working.monthlySaving'),
+      label: t(locale, 'working.monthlySaving', alt),
       formula: `${formatINR(petrolMonthly)} − ${formatINR(cngMonthly)}`,
       value: formatINR(result.firstMonthSaving),
       strong: true,
       negative: result.firstMonthSaving < 0,
     },
     {
-      label: t(locale, 'working.yearlySaving'),
+      label: t(locale, 'working.yearlySaving', alt),
       formula: `${formatINR(result.firstMonthSaving)} × 12`,
       value: formatINR(result.firstMonthSaving * 12),
       negative: result.firstMonthSaving < 0,
@@ -65,7 +88,7 @@ export default function CarFuelWorking({ locale, input, result }: Props) {
 
   const never =
     result.firstMonthSaving <= 0
-      ? t(locale, 'working.cngNeverCheaper')
+      ? t(locale, 'working.altNeverCheaper', alt)
       : t(locale, 'working.notWithin', { years });
   const r1 = result.breakevenNoInterest;
   const r2 = result.breakevenWithInterest;
@@ -114,9 +137,9 @@ export default function CarFuelWorking({ locale, input, result }: Props) {
   const tco: Row[] = total
     ? [
         ...tcoRows('base', t(locale, 'fuel.petrol')),
-        ...tcoRows('alternative', t(locale, 'fuel.cng')),
+        ...tcoRows('alternative', altName),
         {
-          label: t(locale, 'working.tcoDifference'),
+          label: t(locale, 'working.tcoDifference', alt),
           formula: `${formatMoney(total.base[end]!)} − ${formatMoney(total.alternative[end]!)}`,
           value: formatMoney(total.base[end]! - total.alternative[end]!),
           strong: true,
@@ -127,12 +150,15 @@ export default function CarFuelWorking({ locale, input, result }: Props) {
 
   const longRun: Row[] = [
     result.netAt5Years && {
-      label: t(locale, 'stat.net5'),
+      label: t(locale, 'stat.net5', alt),
       value: formatMoney(result.netAt5Years.withInterest),
       negative: result.netAt5Years.withInterest < 0,
     },
     years !== 5 && {
-      label: years === 10 ? t(locale, 'stat.net10') : t(locale, 'stat.netHorizon', { years }),
+      label:
+        years === 10
+          ? t(locale, 'stat.net10', alt)
+          : t(locale, 'stat.netHorizon', { years, ...alt }),
       value: formatMoney(result.netAtHorizon.withInterest),
       negative: result.netAtHorizon.withInterest < 0,
       strong: true,
