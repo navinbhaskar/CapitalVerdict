@@ -24,8 +24,11 @@ interface Props extends NumberRules {
   /** Form field name, e.g. the share-link key. */
   name?: string;
   value: number | null;
-  /** Called with the parsed value, or null while the text is invalid. */
-  onChange: (value: number | null) => void;
+  /**
+   * Called with the parsed value, or null while the text is invalid. `valid` tells an empty
+   * optional field (valid null) apart from bad input (invalid null).
+   */
+  onChange: (value: number | null, valid: boolean) => void;
 }
 
 export default function NumberField(props: Props) {
@@ -59,7 +62,7 @@ export default function NumberField(props: Props) {
     const parsed = parseNumberText(raw, rules);
     if (parsed.ok) {
       setError(null);
-      onChange(parsed.value);
+      onChange(parsed.value, true);
       return;
     }
     if (!error) shake();
@@ -70,7 +73,7 @@ export default function NumberField(props: Props) {
           ? t(locale, 'input.error.integer')
           : t(locale, 'input.error.range', displayBounds(rules)),
     );
-    onChange(null);
+    onChange(null, false);
   };
 
   const describedBy = [error && `${id}-err`, note && `${id}-note`].filter(Boolean).join(' ');

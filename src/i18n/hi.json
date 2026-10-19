@@ -54,8 +54,6 @@
   "assumptions.homeLoanRate": "TODO_COPY_HI",
   "assumptions.carLoanRate": "TODO_COPY_HI",
   "assumptions.perYear": "TODO_COPY_HI",
-  "assumptions.notSet": "TODO_COPY_HI",
-  "assumptions.error.range": "TODO_COPY_HI",
   "tool.disclaimer": "TODO_COPY_HI",
   "tool.reportError": "TODO_COPY_HI",
   "tool.section.explanation": "TODO_COPY_HI",
@@ -269,5 +267,16 @@
   "working.tcoDifference": "TODO_COPY_HI",
   "working.tcoNote": "TODO_COPY_HI",
   "monthly.col.petrolTotal": "TODO_COPY_HI",
-  "monthly.col.cngTotal": "TODO_COPY_HI"
+  "monthly.col.cngTotal": "TODO_COPY_HI",
+  "assumptions.usedIn": "TODO_COPY_HI",
+  "assumptions.notUsedYet": "TODO_COPY_HI",
+  "assumptions.default": "TODO_COPY_HI",
+  "assumptions.noDefault": "TODO_COPY_HI",
+  "assumptions.stateNote": "TODO_COPY_HI",
+  "assumptions.cityUnverified": "TODO_COPY_HI",
+  "assumptions.changed": "TODO_COPY_HI",
+  "assumptions.resetOne": "TODO_COPY_HI",
+  "assumptions.resetConfirm": "TODO_COPY_HI",
+  "assumptions.changedCount": "TODO_COPY_HI",
+  "assumptions.allDefaults": "TODO_COPY_HI"
 }

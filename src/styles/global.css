@@ -435,6 +435,26 @@ a:hover .logo-mark .logo-dot {
   }
 }
 
+/* ---------- Assumptions sheet ---------- */
+
+/* Slides in from the right when opened; the backdrop fades. Closing is instant (exit faster). */
+@keyframes dw-sheet-in {
+  from {
+    transform: translateX(var(--sheet-shift, 100%));
+  }
+}
+.assumptions-sheet[open] {
+  animation: dw-sheet-in var(--duration-enter) var(--ease-out-expo);
+}
+.assumptions-sheet[open]::backdrop {
+  animation: dw-fade var(--duration-base) ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .assumptions-sheet[open] {
+    animation: dw-fade var(--duration-base) ease-out;
+  }
+}
+
 /* ---------- Feedback ---------- */
 
 @keyframes dw-shake {
