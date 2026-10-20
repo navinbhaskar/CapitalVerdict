@@ -69,13 +69,13 @@ const jsonLd = [
       {t(locale, 'blog.minutes', { n: readingMinutes(post.body ?? '') })}
     </p>
   </PageIntro>
-  <article class="container-page pt-2 pb-12 sm:pb-16">
-    <div class="prose-dw mt-8 max-w-(--container-prose) text-lg">
+  <article class="container-page pt-2 pb-10 sm:pb-12">
+    <div class="prose-dw mt-6 max-w-(--container-prose) sm:text-lg">
       <Content />
     </div>
 
     {tool && (
-      <aside class="mt-10 max-w-(--container-prose) rounded-xl border border-line p-5">
+      <aside class="mt-8 max-w-(--container-prose) rounded-xl border border-line p-5">
         <p class="text-sm text-ink-muted">{t(locale, 'blog.tryTool')}</p>
         <p class="mt-1 font-display text-xl font-semibold">{t(locale, toolTitle[tool])}</p>
         <a href={TOOL_PATHS[tool]} class="btn btn-primary mt-4 min-h-11 px-4 text-sm">
@@ -89,7 +89,7 @@ const jsonLd = [
     </p>
 
     {more.length > 0 && (
-      <nav class="mt-10 max-w-3xl border-t border-line pt-6" aria-labelledby="more-posts">
+      <nav class="mt-8 max-w-3xl border-t border-line pt-5" aria-labelledby="more-posts">
         <h2 id="more-posts" class="font-display text-xl font-semibold">
           {t(locale, 'blog.more')}
         </h2>

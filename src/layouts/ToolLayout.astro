@@ -62,21 +62,21 @@ const sections = [
 
 <BaseLayout locale={locale} title={title} description={description} jsonLd={jsonLd}>
   <header class="band-dark">
-    <div class="container-page pt-8 pb-10 sm:pt-12 sm:pb-14">
+    <div class="container-page pt-6 pb-7 sm:pt-8 sm:pb-9">
       <span class="rule-brass" aria-hidden="true"></span>
-      <h1 class="mt-5 max-w-3xl font-display text-3xl font-medium tracking-(--tracking-display) sm:text-4xl lg:text-5xl">
+      <h1 class="mt-4 max-w-3xl font-display text-2xl font-medium tracking-(--tracking-display) sm:text-3xl lg:text-4xl">
         {title}
       </h1>
-      <p class="mt-4 max-w-2xl text-sm text-ink-muted">{t(locale, 'tool.disclaimer')}</p>
+      <p class="mt-3 max-w-2xl text-sm text-ink-muted">{t(locale, 'tool.disclaimer')}</p>
     </div>
   </header>
-  <article class="container-page pt-8 pb-12 sm:pt-10 sm:pb-14">
+  <article class="container-page pt-5 pb-10 sm:pt-6 sm:pb-12">
     <div>
       <slot />
     </div>
 
     {sections.map(({ slot, heading }) => (
-      <section class="mt-10 max-w-3xl border-t border-line pt-6" aria-labelledby={`s-${slot}`}>
+      <section class="mt-8 max-w-3xl border-t border-line pt-5" aria-labelledby={`s-${slot}`}>
         <h2 id={`s-${slot}`} class="font-display text-xl font-semibold">
           {heading}
         </h2>
@@ -90,7 +90,7 @@ const sections = [
     ))}
 
     {related.length > 0 && (
-      <nav class="mt-10 border-t border-line pt-6" aria-labelledby="s-related">
+      <nav class="mt-8 border-t border-line pt-5" aria-labelledby="s-related">
         <h2 id="s-related" class="font-display text-xl font-semibold">
           {t(locale, 'tool.section.related')}
         </h2>
@@ -110,7 +110,7 @@ const sections = [
     )}
 
     {reportHref && (
-      <p class="mt-8 text-sm">
+      <p class="mt-6 text-sm">
         <a href={reportHref} class="link">
           {t(locale, 'tool.reportError')}
         </a>

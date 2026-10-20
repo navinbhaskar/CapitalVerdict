@@ -373,12 +373,12 @@ export default function SolarTool({ locale }: Props) {
             <section
               id="verdict"
               aria-labelledby="solar-verdict-heading"
-              class="band-dark scroll-mt-24 rounded-xl p-5 shadow-raised sm:p-7"
+              class="band-dark scroll-mt-24 rounded-xl p-5 shadow-raised sm:p-6"
             >
               <p class="text-sm font-medium text-ink-muted">{t(locale, 'verdict.label')}</p>
               <h2
                 id="solar-verdict-heading"
-                class="mt-2 font-display text-2xl font-medium tracking-(--tracking-heading) sm:text-3xl"
+                class="mt-1 font-display text-xl font-medium tracking-(--tracking-heading) sm:text-2xl"
                 aria-live="polite"
               >
                 <span key={headline} class="tick block">
@@ -489,12 +489,12 @@ export default function SolarTool({ locale }: Props) {
 
       {computed && r && input && (
         <>
-          <div class="mt-10 grid gap-8 border-t border-line pt-6 lg:grid-cols-2">
+          <div class="mt-8 grid gap-6 border-t border-line pt-5 lg:grid-cols-2">
             <SensitivityList locale={locale} lines={flipLines} />
             <NonMoneyChecklist locale={locale} items={CHECKLIST.map((k) => t(locale, k))} />
           </div>
 
-          <div class="mt-8 border-t border-line">
+          <div class="mt-6 border-t border-line">
             <MoreDetail title={t(locale, 'detail.working')} hint={t(locale, 'detail.workingHint')}>
               <div class="grid gap-4 lg:grid-cols-2">
                 <WorkingBlock title={t(locale, 'solar.w.costTitle')} rows={costRows} />

@@ -303,7 +303,7 @@ export default function HeroDecider({ locale }: Props) {
       </div>
 
       <div
-        class="relative mt-2.5 grid rounded-xl border border-line-strong bg-raised px-4 pt-4 pb-1 shadow-float sm:px-5 sm:pt-5"
+        class="relative mt-2 grid rounded-xl border border-line-strong bg-raised px-4 pt-4 pb-1 shadow-float sm:px-5 sm:pt-5"
         role="tabpanel"
         id={`${id}-panel`}
         aria-labelledby={`${id}-tab-${tab}`}
@@ -313,10 +313,10 @@ export default function HeroDecider({ locale }: Props) {
           const p = panels[key];
           return (
             <div key={key} class={panelClass(tab === key)}>
-              <p class="font-display text-lg leading-loose sm:text-xl">{p.sentence}</p>
+              <p class="font-display text-base leading-loose sm:text-lg">{p.sentence}</p>
               <div class="mt-3 border-t border-line pt-3">
                 <p
-                  class="font-display text-xl font-medium tracking-(--tracking-heading) text-accent-strong sm:text-2xl"
+                  class="font-display text-lg font-medium tracking-(--tracking-heading) text-accent-strong sm:text-xl"
                   aria-live="polite"
                 >
                   <span key={p.head} class="tick block">
@@ -324,7 +324,7 @@ export default function HeroDecider({ locale }: Props) {
                   </span>
                 </p>
                 {(p.sub || p.flip) && (
-                  <p class="mt-1.5 text-sm text-ink-muted">
+                  <p class="mt-1 text-xs text-ink-muted sm:text-sm">
                     {p.sub && <span class="text-ink">{p.sub}</span>}
                     {p.sub && p.flip ? ' ' : ''}
                     {p.flip}

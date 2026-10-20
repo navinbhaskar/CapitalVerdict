@@ -833,7 +833,7 @@ export default function CarFuelTool({ locale }: Props) {
       </div>
 
       {hasResult && (
-        <div class="mt-10 grid gap-8 border-t border-line pt-6 lg:grid-cols-2">
+        <div class="mt-8 grid gap-6 border-t border-line pt-5 lg:grid-cols-2">
           <SensitivityList locale={locale} lines={flipLines} />
           <NonMoneyChecklist
             key={form.alt}
@@ -844,7 +844,7 @@ export default function CarFuelTool({ locale }: Props) {
       )}
 
       {hasResult && (
-        <div class="mt-8 border-t border-line">
+        <div class="mt-6 border-t border-line">
           <MoreDetail title={t(locale, 'detail.working')} hint={t(locale, 'detail.workingHint')}>
             {computed && input && result ? (
               <CarFuelWorking

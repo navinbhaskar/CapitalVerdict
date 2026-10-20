@@ -41,7 +41,7 @@ export default function Refine({ locale, storageKey, hint, forceOpen = false, ch
 
   return (
     <details
-      class="group mt-6 rounded-xl border border-line"
+      class="group mt-5 rounded-xl border border-line"
       open={shown}
       onToggle={(e) => toggle((e.currentTarget as HTMLDetailsElement).open)}
     >

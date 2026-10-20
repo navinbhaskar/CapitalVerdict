@@ -20,9 +20,9 @@ export default function MoreDetail({ title, hint, children }: Props) {
       open={open}
       onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}
     >
-      <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 py-3 hover:text-accent-strong">
+      <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-2.5 hover:text-accent-strong">
         <span>
-          <span class="block font-display text-lg font-semibold">{title}</span>
+          <span class="block font-display text-base font-semibold sm:text-lg">{title}</span>
           {hint && <span class="mt-0.5 block text-sm text-ink-muted">{hint}</span>}
         </span>
         <svg
@@ -42,7 +42,7 @@ export default function MoreDetail({ title, hint, children }: Props) {
           />
         </svg>
       </summary>
-      {open && <div class="pb-6">{children}</div>}
+      {open && <div class="pb-5">{children}</div>}
     </details>
   );
 }

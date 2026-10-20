@@ -40,9 +40,9 @@
   --text-4xl--line-height: 2.75rem;
   --text-5xl: 3rem;
   --text-5xl--line-height: 3.125rem;
-  --text-display: clamp(2.5rem, 1.55rem + 3.9vw, 4.5rem);
+  --text-display: clamp(2.125rem, 1.5rem + 2.6vw, 3.5rem);
   --text-display--line-height: 1.04;
-  --text-figure: clamp(2.25rem, 1.7rem + 2.2vw, 3.25rem); /* the answer's headline number */
+  --text-figure: clamp(2rem, 1.6rem + 1.6vw, 2.75rem); /* the answer's headline number */
   --text-figure--line-height: 1.05;
   --tracking-display: -0.025em; /* Fraunces needs far less tightening than a grotesque */
   --tracking-heading: -0.01em;

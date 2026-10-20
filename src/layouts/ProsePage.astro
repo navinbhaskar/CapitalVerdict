@@ -26,9 +26,9 @@ const shown = sections
 
 <BaseLayout locale={locale} title={k('title')} description={k('description')} noindex={noindex}>
   <PageIntro title={k('title')} lead={k('intro')} />
-  <article class="container-page pt-4 pb-12 sm:pt-6 sm:pb-16">
+  <article class="container-page pt-2 pb-10 sm:pb-12">
     {shown.map(({ key, formula, body }) => (
-      <section class="mt-8 max-w-3xl border-t border-line pt-6" aria-labelledby={`s-${key}`}>
+      <section class="mt-6 max-w-3xl border-t border-line pt-5" aria-labelledby={`s-${key}`}>
         <h2 id={`s-${key}`} class="font-display text-xl font-semibold">
           {k(`${key}.title`)}
         </h2>

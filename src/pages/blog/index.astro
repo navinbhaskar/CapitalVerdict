@@ -27,12 +27,12 @@ const dateFormat = new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeZ
       </a>
     </p>
   </PageIntro>
-  <div class="container-page pt-2 pb-12 sm:pb-16">
+  <div class="container-page pt-2 pb-10 sm:pb-12">
     {kinds.map(({ kind, heading }) => {
       const list = posts.filter((p) => p.data.kind === kind);
       return (
         list.length > 0 && (
-          <section class="mt-10 max-w-3xl" aria-labelledby={`k-${kind}`}>
+          <section class="mt-6 max-w-3xl" aria-labelledby={`k-${kind}`}>
             <h2 id={`k-${kind}`} class="font-display text-xl font-semibold">
               {heading}
             </h2>
