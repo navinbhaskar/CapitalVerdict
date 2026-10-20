@@ -49,6 +49,11 @@ export interface RentBuyInput {
   /** Used for property tax growth and today's-rupees figures. */
   inflation: number;
   horizonYears: number;
+  /**
+   * Extra paid towards the loan at the end of every year, ₹ (optional). The EMI stays the same,
+   * so the loan ends sooner. It is part of the buyer's outflow, so the renter invests it too.
+   */
+  prepayYearly?: number;
 }
 
 export interface RentBuyResult {
@@ -68,6 +73,12 @@ export interface RentBuyResult {
   /** First month the buyer's net worth reaches the renter's, if it does. */
   crossover: { months: number; years: number } | null;
   atHorizon: { buyer: number; renter: number; difference: number; differenceToday: number };
+  /** Prepayment made each month (non-zero at year ends only), index 0 = month 1. */
+  prepaid: number[];
+  /** Interest paid on the loan within the horizon, ₹. */
+  interestPaid: number;
+  /** Month the loan is fully repaid; null if it runs past the horizon (0 without a loan). */
+  loanPaidOffMonth: number | null;
   /** Components at the horizon, for the working. */
   end: {
     homeValue: number;
@@ -100,6 +111,9 @@ function validate(i: RentBuyInput): void {
   if (i.downPayment < 1 && !(Number.isInteger(i.loanYears) && i.loanYears >= 1)) {
     throw new RangeError('loanYears must be a positive whole number');
   }
+  if (i.prepayYearly !== undefined && !(i.prepayYearly >= 0)) {
+    throw new RangeError('prepayYearly must not be negative');
+  }
 }
 
 export function rentVsBuy(input: RentBuyInput): RentBuyResult {
@@ -122,6 +136,9 @@ export function rentVsBuy(input: RentBuyInput): RentBuyResult {
   const rent: number[] = [];
   const buyerNetWorth: number[] = [];
   const renterNetWorth: number[] = [];
+  const prepaid: number[] = [];
+  let interestPaid = 0;
+  let loanPaidOffMonth: number | null = loanAmount > 0 ? null : 0;
   const difference = [
     input.homePrice * (1 - input.sellingCost) - loanAmount - (renterPot + input.securityDeposit),
   ];
@@ -134,11 +151,23 @@ export function rentVsBuy(input: RentBuyInput): RentBuyResult {
     let payment = 0;
     if (balance > 1e-9) {
       const interest = balance * r;
+      interestPaid += interest;
       payment = Math.min(emi, balance + interest);
-      balance = Math.max(0, balance + interest - payment);
+      balance = balance + interest - payment;
+      // Under a paisa left is rounding, not debt.
+      if (balance < 0.01) balance = 0;
     }
+    // Yearly prepayment, after the twelfth EMI of each year.
+    let extra = 0;
+    if (input.prepayYearly && m % 12 === 0 && balance > 1e-9) {
+      extra = Math.min(input.prepayYearly, balance);
+      balance -= extra;
+    }
+    if (loanPaidOffMonth === null && balance <= 1e-9) loanPaidOffMonth = m;
+    prepaid.push(extra);
     const outflow =
       payment +
+      extra +
       (valueBefore * input.maintenance) / 12 +
       (input.propertyTax * growthFactor(input.inflation, year)) / 12;
     const rentNow = input.monthlyRent * growthFactor(input.rentGrowth, year);
@@ -174,6 +203,9 @@ export function rentVsBuy(input: RentBuyInput): RentBuyResult {
     buyerNetWorth,
     renterNetWorth,
     difference,
+    prepaid,
+    interestPaid,
+    loanPaidOffMonth,
     crossover: cross && cross.month > 0 ? { months: cross.month, years: cross.month / 12 } : null,
     atHorizon: {
       buyer: buyerNetWorth[last]!,

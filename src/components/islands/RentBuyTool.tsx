@@ -22,6 +22,8 @@ import MonthlyTable, { type MonthlyColumn } from '@/components/tool/MonthlyTable
 import SensitivityList, { type FlipLine } from '@/components/tool/SensitivityList';
 import NonMoneyChecklist from '@/components/tool/NonMoneyChecklist';
 import ShareLink from '@/components/tool/ShareLink';
+import Refine from '@/components/tool/Refine';
+import ScenarioShelf from '@/components/tool/ScenarioShelf';
 
 interface Props {
   locale: Locale;
@@ -105,6 +107,19 @@ export default function RentBuyTool({ locale }: Props) {
   const years = form.horizonYears ?? 15;
   const missing = invalidRentBuyFields(form);
   const cash = form.downPayment === 1;
+
+  const QUICK: (keyof RentBuyForm)[] = [
+    'homePrice',
+    'monthlyRent',
+    'loanRate',
+    'stampDuty',
+    'maintenance',
+    'sellingCost',
+    'investmentReturn',
+    'horizonYears',
+  ];
+  const quickInvalid = missing.filter((k) => QUICK.includes(k));
+  const refineInvalid = missing.some((k) => !QUICK.includes(k));
 
   const field = (
     key: keyof RentBuyForm,
@@ -267,6 +282,9 @@ export default function RentBuyTool({ locale }: Props) {
         { label: t(locale, 'rentBuy.col.homeValue'), kind: 'money', values: r.homeValue },
         { label: t(locale, 'rentBuy.col.loanLeft'), kind: 'money', values: r.outstanding },
         { label: t(locale, 'rentBuy.col.ownerOutflow'), kind: 'money', values: r.buyerOutflow },
+        ...(r.prepaid.some((x) => x > 0)
+          ? [{ label: t(locale, 'rentBuy.col.prepaid'), kind: 'money' as const, values: r.prepaid }]
+          : []),
         { label: t(locale, 'rentBuy.col.rent'), kind: 'money', values: r.rent },
         { label: t(locale, 'rentBuy.col.buyerNet'), kind: 'money', values: r.buyerNetWorth },
         { label: t(locale, 'rentBuy.col.renterNet'), kind: 'money', values: r.renterNetWorth },
@@ -303,37 +321,18 @@ export default function RentBuyTool({ locale }: Props) {
               {t(locale, 'solar.clear')}
             </button>
           </div>
-          <p class="mt-1 text-sm text-ink-muted">{t(locale, 'inputs.legend')}</p>
+          <p class="mt-1 text-sm text-ink-muted">{t(locale, 'inputs.quickLegend')}</p>
 
-          <Group title={t(locale, 'rentBuy.group.home')}>
+          <Group title={t(locale, 'rentBuy.group.essentials')}>
             {field('homePrice', 'rentBuy.in.homePrice', '₹', t(locale, 'rentBuy.note.homePrice'))}
             {field(
-              'downPayment',
-              'rentBuy.in.downPayment',
-              '%',
-              t(locale, 'rentBuy.note.downPayment'),
-              {
-                percent: true,
-              },
-            )}
-            {field('stampDuty', 'rentBuy.in.stampDuty', '%', t(locale, 'rentBuy.note.stampDuty'), {
-              percent: true,
-              flagged: verifiedStampDuty() === null,
-            })}
-            {field(
-              'otherUpfront',
-              'rentBuy.in.otherUpfront',
+              'monthlyRent',
+              'rentBuy.in.monthlyRent',
               '₹',
-              t(locale, 'rentBuy.note.otherUpfront'),
-              {
-                optional: true,
-              },
+              t(locale, 'rentBuy.note.monthlyRent'),
             )}
-          </Group>
-
-          {!cash && (
-            <Group title={t(locale, 'rentBuy.group.loan')}>
-              {field(
+            {!cash &&
+              field(
                 'loanRate',
                 'rentBuy.in.loanRate',
                 t(locale, 'assumptions.perYear'),
@@ -343,19 +342,10 @@ export default function RentBuyTool({ locale }: Props) {
                   flagged: assumptions.homeLoanRate === null && form.loanRate === null,
                 },
               )}
-              {field(
-                'loanYears',
-                'rentBuy.in.loanYears',
-                t(locale, 'input.horizonYears.unit'),
-                t(locale, 'rentBuy.note.loanYears'),
-                {
-                  integer: true,
-                },
-              )}
-            </Group>
-          )}
-
-          <Group title={t(locale, 'rentBuy.group.owning')}>
+            {field('stampDuty', 'rentBuy.in.stampDuty', '%', t(locale, 'rentBuy.note.stampDuty'), {
+              percent: true,
+              flagged: verifiedStampDuty() === null,
+            })}
             {field(
               'maintenance',
               'rentBuy.in.maintenance',
@@ -364,15 +354,6 @@ export default function RentBuyTool({ locale }: Props) {
               {
                 percent: true,
                 flagged: true,
-              },
-            )}
-            {field(
-              'propertyTax',
-              'rentBuy.in.propertyTax',
-              t(locale, 'input.upkeep.unit'),
-              t(locale, 'rentBuy.note.propertyTax'),
-              {
-                optional: true,
               },
             )}
             {field(
@@ -385,83 +366,135 @@ export default function RentBuyTool({ locale }: Props) {
                 flagged: true,
               },
             )}
-          </Group>
-
-          <Group title={t(locale, 'rentBuy.group.renting')}>
-            {field(
-              'monthlyRent',
-              'rentBuy.in.monthlyRent',
-              '₹',
-              t(locale, 'rentBuy.note.monthlyRent'),
-            )}
-            {field(
-              'securityDeposit',
-              'rentBuy.in.securityDeposit',
-              '₹',
-              t(locale, 'rentBuy.note.securityDeposit'),
-              {
-                optional: true,
-              },
-            )}
-          </Group>
-
-          <Group title={t(locale, 'rentBuy.group.money')} columns>
             {field(
               'investmentReturn',
               'rentBuy.in.investmentReturn',
               '%',
               t(locale, 'rentBuy.note.investmentReturn'),
-              {
-                percent: true,
-                flagged: true,
-                layout: 'stack',
-              },
+              { percent: true, flagged: true },
             )}
-            {field(
-              'appreciation',
-              'rentBuy.in.appreciation',
-              '%',
-              t(locale, 'rentBuy.note.appreciation'),
-              {
-                percent: true,
-                layout: 'stack',
-              },
-            )}
-            {field(
-              'rentGrowth',
-              'rentBuy.in.rentGrowth',
-              '%',
-              t(locale, 'rentBuy.note.rentGrowth'),
-              {
-                percent: true,
-                layout: 'stack',
-              },
-            )}
-            {field('inflation', 'rentBuy.in.inflation', '%', t(locale, 'rentBuy.note.inflation'), {
-              percent: true,
-              layout: 'stack',
-            })}
             {field(
               'horizonYears',
               'rentBuy.in.horizon',
               t(locale, 'input.horizonYears.unit'),
               t(locale, 'rentBuy.note.horizon'),
-              {
-                integer: true,
-                layout: 'stack',
-              },
+              { integer: true },
             )}
           </Group>
 
-          <div class="mt-4 flex items-start justify-between gap-4 rounded-lg bg-surface px-3 py-2.5">
-            <div>
-              <p class="text-sm font-medium">{t(locale, 'rentBuy.taxToggle')}</p>
-              <p class="mt-0.5 text-xs text-ink-muted">{t(locale, 'rentBuy.taxToggleNote')}</p>
+          <Refine
+            locale={locale}
+            storageKey="dw.refine.rentBuy"
+            hint={t(locale, 'rentBuy.refineHint')}
+            forceOpen={refineInvalid && quickInvalid.length === 0}
+          >
+            <Group title={t(locale, 'rentBuy.group.home')}>
+              {field(
+                'downPayment',
+                'rentBuy.in.downPayment',
+                '%',
+                t(locale, 'rentBuy.note.downPayment'),
+                {
+                  percent: true,
+                },
+              )}
+              {field(
+                'otherUpfront',
+                'rentBuy.in.otherUpfront',
+                '₹',
+                t(locale, 'rentBuy.note.otherUpfront'),
+                {
+                  optional: true,
+                },
+              )}
+            </Group>
+
+            {!cash && (
+              <Group title={t(locale, 'rentBuy.group.loan')}>
+                {field(
+                  'loanYears',
+                  'rentBuy.in.loanYears',
+                  t(locale, 'input.horizonYears.unit'),
+                  t(locale, 'rentBuy.note.loanYears'),
+                  { integer: true },
+                )}
+                {field(
+                  'prepayYearly',
+                  'rentBuy.in.prepayYearly',
+                  t(locale, 'input.upkeep.unit'),
+                  t(locale, 'rentBuy.note.prepayYearly'),
+                  { optional: true },
+                )}
+                {field(
+                  'monthlyIncome',
+                  'rentBuy.in.monthlyIncome',
+                  '₹',
+                  t(locale, 'rentBuy.note.monthlyIncome'),
+                  { optional: true },
+                )}
+              </Group>
+            )}
+
+            <Group title={t(locale, 'rentBuy.group.owning')}>
+              {field(
+                'propertyTax',
+                'rentBuy.in.propertyTax',
+                t(locale, 'input.upkeep.unit'),
+                t(locale, 'rentBuy.note.propertyTax'),
+                { optional: true },
+              )}
+              {field(
+                'securityDeposit',
+                'rentBuy.in.securityDeposit',
+                '₹',
+                t(locale, 'rentBuy.note.securityDeposit'),
+                { optional: true },
+              )}
+            </Group>
+
+            <Group title={t(locale, 'rentBuy.group.money')} columns>
+              {field(
+                'appreciation',
+                'rentBuy.in.appreciation',
+                '%',
+                t(locale, 'rentBuy.note.appreciation'),
+                {
+                  percent: true,
+                  layout: 'stack',
+                },
+              )}
+              {field(
+                'rentGrowth',
+                'rentBuy.in.rentGrowth',
+                '%',
+                t(locale, 'rentBuy.note.rentGrowth'),
+                {
+                  percent: true,
+                  layout: 'stack',
+                },
+              )}
+              {field(
+                'inflation',
+                'rentBuy.in.inflation',
+                '%',
+                t(locale, 'rentBuy.note.inflation'),
+                {
+                  percent: true,
+                  layout: 'stack',
+                },
+              )}
+            </Group>
+
+            <div class="mt-4 flex items-start justify-between gap-4 rounded-lg bg-surface px-3 py-2.5">
+              <div>
+                <p class="text-sm font-medium">{t(locale, 'rentBuy.taxToggle')}</p>
+                <p class="mt-0.5 text-xs text-ink-muted">{t(locale, 'rentBuy.taxToggleNote')}</p>
+              </div>
+              <span class="shrink-0 rounded-full bg-warn-soft px-2 py-0.5 text-xs font-medium text-warn">
+                {t(locale, 'rentBuy.taxToggleOff')}
+              </span>
             </div>
-            <span class="shrink-0 rounded-full bg-warn-soft px-2 py-0.5 text-xs font-medium text-warn">
-              {t(locale, 'rentBuy.taxToggleOff')}
-            </span>
-          </div>
+          </Refine>
         </section>
 
         <div class="lg:sticky lg:top-20">
@@ -512,6 +545,25 @@ export default function RentBuyTool({ locale }: Props) {
                     </Stat>
                   );
                 })()}
+                {!cash && (
+                  <Stat label={t(locale, 'rentBuy.stat.interestPaid', { years })}>
+                    {formatMoney(r.interestPaid)}
+                  </Stat>
+                )}
+                {!cash && (
+                  <Stat label={t(locale, 'rentBuy.stat.loanEnds')}>
+                    {r.loanPaidOffMonth === null
+                      ? t(locale, 'rentBuy.stat.loanAfter', { years })
+                      : t(locale, 'rentBuy.stat.loanYear', {
+                          year: Math.ceil(r.loanPaidOffMonth / 12),
+                        })}
+                  </Stat>
+                )}
+                {!cash && form.monthlyIncome !== null && (
+                  <Stat label={t(locale, 'rentBuy.stat.emiShare')}>
+                    {formatPercent(r.emi / form.monthlyIncome)}
+                  </Stat>
+                )}
               </dl>
               <p class="mt-3 text-xs text-ink-muted">{t(locale, 'rentBuy.stat.note')}</p>
             </section>
@@ -529,6 +581,42 @@ export default function RentBuyTool({ locale }: Props) {
               <ShareLink locale={locale} url={shareHref} />
             </div>
           )}
+          <ScenarioShelf
+            locale={locale}
+            tool="rentBuy"
+            query={shareHref ? new URL(shareHref).search : ''}
+            summary={
+              r && input
+                ? [
+                    { label: t(locale, 'scenarios.row.answer'), value: headline },
+                    {
+                      label: t(locale, 'rentBuy.in.homePrice'),
+                      value: formatMoney(input.homePrice),
+                    },
+                    {
+                      label: t(locale, 'rentBuy.in.monthlyRent'),
+                      value: formatMoney(input.monthlyRent),
+                    },
+                    {
+                      label: t(locale, 'rentBuy.in.investmentReturn'),
+                      value: formatPercent(input.investmentReturn),
+                    },
+                    {
+                      label: t(locale, 'rentBuy.in.appreciation'),
+                      value: formatPercent(input.appreciation),
+                    },
+                    {
+                      label: t(locale, 'rentBuy.stat.buyer', { years }),
+                      value: formatMoney(r.atHorizon.buyer),
+                    },
+                    {
+                      label: t(locale, 'rentBuy.stat.renter', { years }),
+                      value: formatMoney(r.atHorizon.renter),
+                    },
+                  ]
+                : null
+            }
+          />
         </div>
       </div>
 

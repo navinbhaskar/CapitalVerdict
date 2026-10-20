@@ -700,5 +700,17 @@
   "scenarios.compare": "Compare saved scenarios ({n})",
   "scenarios.note": "Saved on this device only.",
   "scenarios.limit": "You can keep up to {n}. Remove one to save another.",
-  "scenarios.row.answer": "Answer"
+  "scenarios.row.answer": "Answer",
+  "rentBuy.group.essentials": "The home, the rent and your money",
+  "rentBuy.refineHint": "Down payment, other costs, loan tenure, prepayment, income, property tax, deposit, home price growth, rent increase and inflation. Already filled in or optional.",
+  "rentBuy.in.prepayYearly": "Extra paid on the loan each year",
+  "rentBuy.note.prepayYearly": "Paid after the twelfth EMI each year; the EMI stays the same, so the loan ends sooner. Optional.",
+  "rentBuy.in.monthlyIncome": "Take-home income a month",
+  "rentBuy.note.monthlyIncome": "Optional. Only used to show what share of it the EMI takes.",
+  "rentBuy.stat.interestPaid": "Interest paid in {years} years",
+  "rentBuy.stat.loanEnds": "Loan paid off",
+  "rentBuy.stat.loanYear": "In year {year}",
+  "rentBuy.stat.loanAfter": "After year {years}",
+  "rentBuy.stat.emiShare": "EMI as a share of income",
+  "rentBuy.col.prepaid": "Prepaid"
 }

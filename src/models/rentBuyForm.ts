@@ -24,6 +24,10 @@ export interface RentBuyForm {
   investmentReturn: number | null;
   inflation: number | null;
   horizonYears: number | null;
+  /** Extra paid towards the loan each year, ₹ (optional). */
+  prepayYearly: number | null;
+  /** Take-home income a month, ₹ (optional): only to show the EMI's share of it. */
+  monthlyIncome: number | null;
 }
 
 const table = defaults.scenarioVariables;
@@ -45,6 +49,8 @@ export const RENT_BUY_START_FORM: RentBuyForm = {
   investmentReturn: null,
   inflation: table.inflation.values.base,
   horizonYears: 15,
+  prepayYearly: null,
+  monthlyIncome: null,
 };
 
 export const RENT_BUY_LIMITS = {
@@ -64,10 +70,18 @@ export const RENT_BUY_LIMITS = {
   investmentReturn: { min: 0, max: 0.3 },
   inflation: { min: 0, max: 0.2 },
   horizonYears: { min: 1, max: 40 },
+  prepayYearly: { min: 0, max: 10_00_00_000 },
+  monthlyIncome: { min: 1, max: 10_00_00_000 },
 } as const satisfies Record<keyof RentBuyForm, { min: number; max: number }>;
 
 /** May be left empty; empty means zero. */
-const OPTIONAL: (keyof RentBuyForm)[] = ['otherUpfront', 'propertyTax', 'securityDeposit'];
+const OPTIONAL: (keyof RentBuyForm)[] = [
+  'otherUpfront',
+  'propertyTax',
+  'securityDeposit',
+  'prepayYearly',
+  'monthlyIncome',
+];
 const INTEGER: (keyof RentBuyForm)[] = ['loanYears', 'horizonYears'];
 
 const num = (param: string, key: keyof RentBuyForm) => ({
@@ -94,6 +108,8 @@ export const rentBuyShareSchema: ShareSchema<RentBuyForm> = {
   investmentReturn: num('ret', 'investmentReturn'),
   inflation: num('inf', 'inflation'),
   horizonYears: num('y', 'horizonYears'),
+  prepayYearly: num('pre', 'prepayYearly'),
+  monthlyIncome: num('inc', 'monthlyIncome'),
 };
 
 export function invalidRentBuyFields(form: RentBuyForm): (keyof RentBuyForm)[] {
@@ -128,5 +144,6 @@ export function toRentBuyInput(form: RentBuyForm): RentBuyInput | null {
     investmentReturn: form.investmentReturn!,
     inflation: form.inflation!,
     horizonYears: form.horizonYears!,
+    prepayYearly: form.prepayYearly ?? 0,
   };
 }

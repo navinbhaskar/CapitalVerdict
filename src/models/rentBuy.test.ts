@@ -145,3 +145,35 @@ describe('rent vs buy: scenarios and flips', () => {
     expect(() => rentVsBuy({ ...loanCase, horizonYears: 0 })).toThrow(RangeError);
   });
 });
+
+describe('rent vs buy: interest, payoff and prepayment', () => {
+  it('interest paid in 15 years = 180 EMIs − principal repaid', () => {
+    // 180 × 35,989.0382 − (40,00,000 − 17,33,713.38) = 64,78,026.88 − 22,66,286.62 = ₹42,11,740.26
+    const r = rentVsBuy(loanCase);
+    expect(r.interestPaid).toBeCloseTo(4_211_740.26, 0);
+    expect(r.loanPaidOffMonth).toBeNull();
+    expect(r.prepaid.every((p) => p === 0)).toBe(true);
+  });
+
+  it('a 10-year loan is paid off in month 120; a cash buyer has none', () => {
+    expect(rentVsBuy({ ...loanCase, loanYears: 10 }).loanPaidOffMonth).toBe(120);
+    expect(rentVsBuy(cashBuyer).loanPaidOffMonth).toBe(0);
+  });
+
+  it('₹1 lakh prepaid after the 12th EMI: balance drops by exactly that, and it counts as outflow', () => {
+    const plain = rentVsBuy(loanCase);
+    const r = rentVsBuy({ ...loanCase, prepayYearly: 100_000 });
+    expect(r.prepaid[10]).toBe(0);
+    expect(r.prepaid[11]).toBe(100_000);
+    expect(r.outstanding[11]).toBeCloseTo(outstanding(4_000_000, 0.09, 240, 12) - 100_000, 6);
+    expect(r.buyerOutflow[11]! - plain.buyerOutflow[11]!).toBeCloseTo(100_000, 6);
+    expect(r.interestPaid).toBeLessThan(plain.interestPaid);
+  });
+
+  it('a prepayment larger than the loan clears it and pays only what is owed', () => {
+    const r = rentVsBuy({ ...loanCase, prepayYearly: 10_000_000 });
+    expect(r.loanPaidOffMonth).toBe(12);
+    expect(r.prepaid[11]).toBeCloseTo(outstanding(4_000_000, 0.09, 240, 12), 6);
+    expect(r.prepaid[23]).toBe(0);
+  });
+});

@@ -700,5 +700,17 @@
   "scenarios.compare": "TODO_COPY_HI",
   "scenarios.note": "TODO_COPY_HI",
   "scenarios.limit": "TODO_COPY_HI",
-  "scenarios.row.answer": "TODO_COPY_HI"
+  "scenarios.row.answer": "TODO_COPY_HI",
+  "rentBuy.group.essentials": "TODO_COPY_HI",
+  "rentBuy.refineHint": "TODO_COPY_HI",
+  "rentBuy.in.prepayYearly": "TODO_COPY_HI",
+  "rentBuy.note.prepayYearly": "TODO_COPY_HI",
+  "rentBuy.in.monthlyIncome": "TODO_COPY_HI",
+  "rentBuy.note.monthlyIncome": "TODO_COPY_HI",
+  "rentBuy.stat.interestPaid": "TODO_COPY_HI",
+  "rentBuy.stat.loanEnds": "TODO_COPY_HI",
+  "rentBuy.stat.loanYear": "TODO_COPY_HI",
+  "rentBuy.stat.loanAfter": "TODO_COPY_HI",
+  "rentBuy.stat.emiShare": "TODO_COPY_HI",
+  "rentBuy.col.prepaid": "TODO_COPY_HI"
 }
