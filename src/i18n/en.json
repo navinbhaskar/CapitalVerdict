@@ -774,5 +774,7 @@
   "hero.home.rent": "Renting and investing comes out {amount} ahead",
   "hero.home.buy": "Buying comes out {amount} ahead",
   "hero.home.sub": "After {years} years; {today} in today's money.",
-  "hero.home.context": "{down} down, a {loan} loan over {loanYears} years, homes and rent rising {growth} a year. Example figures."
+  "hero.home.context": "{down} down, a {loan} loan over {loanYears} years, homes and rent rising {growth} a year. Example figures.",
+  "hero.rotate.pause": "Pause the examples",
+  "hero.rotate.play": "Play the examples"
 }

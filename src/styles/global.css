@@ -664,6 +664,11 @@
   }
 }
 
+/* The hero card's examples: the incoming panel fades in (opacity only, so reduced motion keeps it). */
+.hero-panel-in {
+  animation: dw-fade var(--duration-enter) var(--ease-out-quart) both;
+}
+
 /* ---------- Entrances ---------- */
 
 @keyframes dw-rise {

@@ -774,5 +774,7 @@
   "hero.home.rent": "TODO_COPY_HI",
   "hero.home.buy": "TODO_COPY_HI",
   "hero.home.sub": "TODO_COPY_HI",
-  "hero.home.context": "TODO_COPY_HI"
+  "hero.home.context": "TODO_COPY_HI",
+  "hero.rotate.pause": "TODO_COPY_HI",
+  "hero.rotate.play": "TODO_COPY_HI"
 }

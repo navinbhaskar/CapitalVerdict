@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useState } from 'preact/hooks';
+import { useEffect, useId, useMemo, useRef, useState } from 'preact/hooks';
 import { Fragment, type ComponentChildren } from 'preact';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { fuelPrices } from '@/data';
@@ -34,6 +34,10 @@ const TABS: { id: Tab; label: MessageKey }[] = [
   { id: 'home', label: 'hero.tab.home' },
 ];
 
+/** Auto-rotation: a few seconds per example, two rounds at most, then it rests on its own. */
+const ROTATE_MS = 6000;
+const MAX_STEPS = TABS.length * 2;
+
 const PRICE_ISO =
   fuelPrices.cities.find((c) => c.id === HERO_PRICE_CITY)?.petrol.effectiveDate ?? '';
 const PRICE_DATE = PRICE_ISO
@@ -65,6 +69,42 @@ export default function HeroDecider({ locale }: Props) {
   const [solar, setSolar] = useState(SOLAR_ASK_START);
   const [home, setHome] = useState(HOME_ASK_START);
   const id = useId();
+
+  // The examples rotate on their own until the visitor does anything with the card. Hovering or
+  // focusing it pauses; any click, key or edit stops it for good; it never runs off screen or in a
+  // hidden tab, and after two rounds it stops by itself. The pause button restarts it.
+  const [auto, setAuto] = useState(true);
+  const [held, setHeld] = useState(false);
+  const [onScreen, setOnScreen] = useState(true);
+  const [steps, setSteps] = useState(0);
+  const box = useRef<HTMLDivElement>(null);
+  const stop = () => setAuto(false);
+
+  useEffect(() => {
+    const el = box.current;
+    if (!el || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(([entry]) => setOnScreen(!!entry?.isIntersecting));
+    io.observe(el);
+    const onVisibility = () => setOnScreen(!document.hidden);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      io.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!auto || held || !onScreen) return;
+    if (steps >= MAX_STEPS) {
+      setAuto(false);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setTab((current) => TABS[(TABS.findIndex((x) => x.id === current) + 1) % TABS.length]!.id);
+      setSteps((n) => n + 1);
+    }, ROTATE_MS);
+    return () => clearTimeout(timer);
+  }, [auto, held, onScreen, steps]);
 
   const carA = useMemo(() => carAsk(car), [car]);
   const solarA = useMemo(() => solarAsk(solar), [solar]);
@@ -272,39 +312,84 @@ export default function HeroDecider({ locale }: Props) {
   };
 
   return (
-    <div class="w-full max-w-md justify-self-center lg:justify-self-end">
-      <div
-        role="tablist"
-        aria-label={t(locale, 'hero.tablist')}
-        class="flex gap-1"
-        onKeyDown={(e) => {
-          if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-          const order = TABS.map((x) => x.id);
-          const next = order[(order.indexOf(tab) + (e.key === 'ArrowRight' ? 1 : 2)) % 3]!;
-          setTab(next);
-          document.getElementById(`${id}-tab-${next}`)?.focus();
-        }}
-      >
-        {TABS.map((tb) => (
-          <button
-            key={tb.id}
-            id={`${id}-tab-${tb.id}`}
-            type="button"
-            role="tab"
-            aria-selected={tab === tb.id}
-            aria-controls={`${id}-panel`}
-            tabIndex={tab === tb.id ? 0 : -1}
-            onClick={() => setTab(tb.id)}
-            class={`hero-tab ${tab === tb.id ? 'is-active' : ''}`}
-          >
-            {t(locale, tb.label)}
-          </button>
-        ))}
+    <div
+      ref={box}
+      class="w-full max-w-md justify-self-center lg:justify-self-end"
+      onPointerEnter={() => setHeld(true)}
+      onPointerLeave={() => setHeld(false)}
+      onFocusIn={() => setHeld(true)}
+      onFocusOut={() => setHeld(false)}
+    >
+      <div class="flex items-center justify-between gap-2">
+        <div
+          role="tablist"
+          aria-label={t(locale, 'hero.tablist')}
+          class="flex gap-1"
+          onKeyDown={(e) => {
+            if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+            stop();
+            const order = TABS.map((x) => x.id);
+            const next = order[(order.indexOf(tab) + (e.key === 'ArrowRight' ? 1 : 2)) % 3]!;
+            setTab(next);
+            document.getElementById(`${id}-tab-${next}`)?.focus();
+          }}
+        >
+          {TABS.map((tb) => (
+            <button
+              key={tb.id}
+              id={`${id}-tab-${tb.id}`}
+              type="button"
+              role="tab"
+              aria-selected={tab === tb.id}
+              aria-controls={`${id}-panel`}
+              tabIndex={tab === tb.id ? 0 : -1}
+              onClick={() => {
+                stop();
+                setTab(tb.id);
+              }}
+              class={`hero-tab ${tab === tb.id ? 'is-active' : ''}`}
+            >
+              {t(locale, tb.label)}
+            </button>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            if (auto) stop();
+            else {
+              setSteps(0);
+              setAuto(true);
+            }
+          }}
+          aria-label={t(locale, auto ? 'hero.rotate.pause' : 'hero.rotate.play')}
+          class="inline-flex size-11 shrink-0 items-center justify-center rounded-full text-ink-muted transition-colors duration-(--duration-fast) ease-out-quart hover:bg-surface hover:text-ink"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            {auto ? (
+              <path
+                d="M9 6v12M15 6v12"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            ) : (
+              <path
+                d="M8 5.5v13l10-6.5-10-6.5Z"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linejoin="round"
+              />
+            )}
+          </svg>
+        </button>
       </div>
 
       <div
         class="relative mt-2 grid rounded-xl border border-line-strong bg-raised px-4 pt-4 pb-1 shadow-float sm:px-5 sm:pt-5"
         role="tabpanel"
+        onInput={stop}
+        onChange={stop}
         id={`${id}-panel`}
         aria-labelledby={`${id}-tab-${tab}`}
       >
@@ -317,7 +402,7 @@ export default function HeroDecider({ locale }: Props) {
               <div class="mt-3 border-t border-line pt-3">
                 <p
                   class="font-display text-xl font-medium tracking-(--tracking-heading) text-accent-strong"
-                  aria-live="polite"
+                  aria-live={auto ? 'off' : 'polite'}
                 >
                   <span key={p.head} class="tick block">
                     {p.head}
@@ -368,7 +453,7 @@ function fill(template: string, parts: Record<string, ComponentChildren>): Compo
 
 /** Inactive panels stay in the layout (so they size the card) but are hidden from sight, focus and screen readers. */
 function panelClass(active: boolean): string {
-  return `col-start-1 row-start-1 min-w-0 ${active ? '' : 'invisible'}`;
+  return `col-start-1 row-start-1 min-w-0 ${active ? 'hero-panel-in' : 'invisible'}`;
 }
 
 /**

@@ -99,3 +99,4 @@ Example values the tools now open with. They are labelled "Example" on the page 
 | ---------------------------------------------------------------------------------- | --------------------------------------------------------------- |
 | [ ] `hero.tab.*`, `hero.tablist`, `hero.ask.*`, `hero.answer.invalid`, `hero.open` | Home hero card: tabs, blank labels, answer                      |
 | [ ] `hero.car.*`, `hero.solar.*`, `hero.home.*`                                    | The three sentences, their answers and the example-figures line |
+| [ ] `hero.rotate.pause`, `hero.rotate.play`                                        | Home hero card: pause and play button for the rotating examples |
