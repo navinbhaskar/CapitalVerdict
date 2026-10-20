@@ -728,3 +728,25 @@ a:hover .logo-mark .logo-dot {
     animation: none;
   }
 }
+
+/* Print: the result and its working on white paper; chrome, buttons and motion left out. */
+@media print {
+  :root {
+    color-scheme: light;
+  }
+  body {
+    background: #fff;
+  }
+  .btn,
+  .skeleton,
+  .glass {
+    display: none !important;
+  }
+  details > :not(summary) {
+    display: block;
+  }
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

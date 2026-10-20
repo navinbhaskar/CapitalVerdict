@@ -10,13 +10,13 @@ interface Props {
   netWithInterest: number[];
   /** Optional dashed comparison line (e.g. ignoring interest). */
   netNoInterest?: number[];
-  /** Scenario envelope for the with-interest line. */
-  bandLow: number[];
-  bandHigh: number[];
+  /** Scenario envelope for the with-interest line. Leave out to draw lines only. */
+  bandLow?: number[];
+  bandHigh?: number[];
   breakevenWithInterest: number | null;
   breakevenNoInterest?: number | null;
   /** Legend text; defaults to the car fuel wording. */
-  labels?: { main: string; secondary?: string; band: string };
+  labels?: { main: string; secondary?: string; band?: string };
 }
 
 const HEIGHT = 240;
@@ -158,8 +158,8 @@ export default function NetPositionChart(props: Props) {
           months,
           netWithInterest,
           netNoInterest ?? netWithInterest.map(() => null),
-          bandLow,
-          bandHigh,
+          bandLow ?? netWithInterest,
+          bandHigh ?? netWithInterest,
         ],
         box.current,
       );
@@ -209,10 +209,12 @@ export default function NetPositionChart(props: Props) {
             {legend.secondary}
           </span>
         )}
-        <span class="inline-flex items-center gap-2">
-          <span class="h-3 w-5 rounded-sm bg-accent/15" />
-          {legend.band}
-        </span>
+        {bandLow && legend.band && (
+          <span class="inline-flex items-center gap-2">
+            <span class="h-3 w-5 rounded-sm bg-accent/15" />
+            {legend.band}
+          </span>
+        )}
       </div>
       <div class="relative mt-4" style={{ height: `${HEIGHT}px` }} aria-hidden="true">
         <div ref={box} class="h-full w-full" />

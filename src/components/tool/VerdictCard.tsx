@@ -34,6 +34,8 @@ export function verdictHeadline(
       return t(locale, 'verdict.paysBack', { alt: names[verdict.payer], months: verdict.months });
     case 'never':
       return t(locale, 'verdict.never', { base: names[verdict.winner], years });
+    case 'resale':
+      return t(locale, 'verdict.resale', { winner: names[verdict.winner], years });
     case 'dominant':
       return t(locale, 'verdict.dominant', { winner: names[verdict.winner] });
     case 'tie':
@@ -65,9 +67,11 @@ export default function VerdictCard(props: Props) {
         })
       : verdict.kind === 'never'
         ? t(locale, 'verdict.neverDetail', { alt: dearer, years })
-        : verdict.kind === 'dominant'
-          ? t(locale, 'verdict.dominantDetail')
-          : null;
+        : verdict.kind === 'resale'
+          ? t(locale, 'verdict.resaleDetail', { winner: dearer })
+          : verdict.kind === 'dominant'
+            ? t(locale, 'verdict.dominantDetail')
+            : null;
 
   // Range across price-rise scenarios, only meaningful when there is a break-even to range over.
   const scenarioMonths = (['pessimistic', 'base', 'optimistic'] as const).map(
@@ -154,6 +158,16 @@ export default function VerdictCard(props: Props) {
             <span class={row.net < 0 ? 'text-danger' : ''}>{formatMoney(row.net)}</span>
           </Stat>
         ))}
+        {input.resale && (
+          <>
+            <Stat label={t(locale, 'stat.resaleCar', { car: baseCar, years })}>
+              {formatMoney(input.resale.base)}
+            </Stat>
+            <Stat label={t(locale, 'stat.resaleCar', { car: altCar, years })}>
+              {formatMoney(input.resale.alternative)}
+            </Stat>
+          </>
+        )}
         {verdict.kind === 'payback' && (
           <Stat label={t(locale, 'stat.breakevenNoInterest')}>
             {basis.breakevenNoInterest
@@ -164,7 +178,9 @@ export default function VerdictCard(props: Props) {
           </Stat>
         )}
       </dl>
-      <p class="mt-3 text-xs text-ink-muted">{t(locale, 'stat.netHelp')}</p>
+      <p class="mt-3 text-xs text-ink-muted">
+        {t(locale, input.resale ? 'stat.netHelpResale' : 'stat.netHelp')}
+      </p>
     </section>
   );
 }

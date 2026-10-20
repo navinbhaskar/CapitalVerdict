@@ -10,9 +10,11 @@ import type { CarFuelInput, FuelOption } from './carFuel';
 import { carFuelExample } from './carFuel.example';
 
 export type AltKind = 'cng' | 'ev';
+/** What petrol is compared with: one alternative, or both side by side. */
+export type FormAlt = AltKind | 'all';
 
 export interface CarFuelForm {
-  alt: AltKind;
+  alt: FormAlt;
   monthlyKm: number | null;
   /** On-road price of the petrol car, ₹. */
   petrolCarPrice: number | null;
@@ -41,6 +43,19 @@ export interface CarFuelForm {
   evPriceRise: number | null;
   evUpkeep: number | null;
   horizonYears: number | null;
+  /** Optional extras; empty means not counted. Insurance is ₹ a year, flat. */
+  petrolInsurance: number | null;
+  cngInsurance: number | null;
+  evInsurance: number | null;
+  /** Resale at the end of the horizon, as a decimal of the on-road price. */
+  petrolResale: number | null;
+  cngResale: number | null;
+  evResale: number | null;
+  /** One big cost in a given year (CNG cylinder or kit, EV battery), ₹ and year 1–20. */
+  cngOneOffCost: number | null;
+  cngOneOffYear: number | null;
+  evOneOffCost: number | null;
+  evOneOffYear: number | null;
 }
 
 export type NumericField = Exclude<keyof CarFuelForm, 'alt'>;
@@ -67,6 +82,16 @@ export const CAR_FUEL_EXAMPLE_FORM: CarFuelForm = {
   evPriceRise: 0,
   evUpkeep: 0,
   horizonYears: carFuelExample.horizonMonths / 12,
+  petrolInsurance: null,
+  cngInsurance: null,
+  evInsurance: null,
+  petrolResale: null,
+  cngResale: null,
+  evResale: null,
+  cngOneOffCost: null,
+  cngOneOffYear: null,
+  evOneOffCost: null,
+  evOneOffYear: null,
 };
 
 /** Bounds shared by validation and URL decoding. */
@@ -91,6 +116,16 @@ export const CAR_FUEL_LIMITS = {
   evPriceRise: { min: 0, max: 0.2 },
   evUpkeep: { min: 0, max: 500_000 },
   horizonYears: { min: 1, max: 20 },
+  petrolInsurance: { min: 0, max: 500_000 },
+  cngInsurance: { min: 0, max: 500_000 },
+  evInsurance: { min: 0, max: 500_000 },
+  petrolResale: { min: 0, max: 1 },
+  cngResale: { min: 0, max: 1 },
+  evResale: { min: 0, max: 1 },
+  cngOneOffCost: { min: 0, max: 50_00_000 },
+  cngOneOffYear: { min: 1, max: 20 },
+  evOneOffCost: { min: 0, max: 50_00_000 },
+  evOneOffYear: { min: 1, max: 20 },
 } as const satisfies Record<NumericField, { min: number; max: number }>;
 
 const CNG_ONLY: NumericField[] = [
@@ -99,6 +134,10 @@ const CNG_ONLY: NumericField[] = [
   'cngMileage',
   'cngPriceRise',
   'cngUpkeep',
+  'cngInsurance',
+  'cngResale',
+  'cngOneOffCost',
+  'cngOneOffYear',
 ];
 const EV_ONLY: NumericField[] = [
   'evCarPrice',
@@ -108,7 +147,25 @@ const EV_ONLY: NumericField[] = [
   'publicRate',
   'evPriceRise',
   'evUpkeep',
+  'evInsurance',
+  'evResale',
+  'evOneOffCost',
+  'evOneOffYear',
 ];
+/** May be left empty: empty means "not counted". */
+const OPTIONAL: NumericField[] = [
+  'petrolInsurance',
+  'cngInsurance',
+  'evInsurance',
+  'petrolResale',
+  'cngResale',
+  'evResale',
+  'cngOneOffCost',
+  'cngOneOffYear',
+  'evOneOffCost',
+  'evOneOffYear',
+];
+const INTEGER: NumericField[] = ['horizonYears', 'cngOneOffYear', 'evOneOffYear'];
 
 const num = (param: string, key: NumericField, integer = false) => ({
   param,
@@ -118,7 +175,7 @@ const num = (param: string, key: NumericField, integer = false) => ({
 });
 
 export const carFuelShareSchema: ShareSchema<CarFuelForm> = {
-  alt: { param: 'alt', type: 'enum', values: ['cng', 'ev'] },
+  alt: { param: 'alt', type: 'enum', values: ['cng', 'ev', 'all'] },
   monthlyKm: num('km', 'monthlyKm'),
   petrolCarPrice: num('pcp', 'petrolCarPrice'),
   cngCarPrice: num('ccp', 'cngCarPrice'),
@@ -139,23 +196,43 @@ export const carFuelShareSchema: ShareSchema<CarFuelForm> = {
   evPriceRise: num('er', 'evPriceRise'),
   evUpkeep: num('eu', 'evUpkeep'),
   horizonYears: num('y', 'horizonYears', true),
+  petrolInsurance: num('pi', 'petrolInsurance'),
+  cngInsurance: num('ci', 'cngInsurance'),
+  evInsurance: num('ei', 'evInsurance'),
+  petrolResale: num('prs', 'petrolResale'),
+  cngResale: num('crs', 'cngResale'),
+  evResale: num('ers', 'evResale'),
+  cngOneOffCost: num('coc', 'cngOneOffCost'),
+  cngOneOffYear: num('coy', 'cngOneOffYear', true),
+  evOneOffCost: num('eoc', 'evOneOffCost'),
+  evOneOffYear: num('eoy', 'evOneOffYear', true),
 };
 
 /** The on-road price field of the chosen alternative. */
 export const altCarPriceField = (alt: AltKind): NumericField =>
   alt === 'cng' ? 'cngCarPrice' : 'evCarPrice';
 
-/** Fields that are empty or out of bounds, for the chosen alternative only. */
+/** On-road price fields needed for the chosen comparison, petrol first. */
+export const carPriceFields = (alt: FormAlt): NumericField[] =>
+  alt === 'all'
+    ? ['petrolCarPrice', 'cngCarPrice', 'evCarPrice']
+    : ['petrolCarPrice', altCarPriceField(alt)];
+
+/** Fields that are empty or out of bounds, for the chosen comparison only. */
 export function invalidFields(form: CarFuelForm): NumericField[] {
-  const skip = new Set(form.alt === 'cng' ? EV_ONLY : CNG_ONLY);
+  const skip = new Set(form.alt === 'cng' ? EV_ONLY : form.alt === 'ev' ? CNG_ONLY : []);
   // Public charging price only matters when some charging is away from home.
-  if (form.alt === 'ev' && form.homeChargingShare === 1) skip.add('publicRate');
+  if (form.alt !== 'cng' && form.homeChargingShare === 1) skip.add('publicRate');
   return (Object.keys(CAR_FUEL_LIMITS) as NumericField[]).filter((key) => {
     if (skip.has(key)) return false;
     const value = form[key];
+    // A one-off cost needs the year it falls in.
+    if (key === 'cngOneOffYear' && (form.cngOneOffCost ?? 0) > 0 && value === null) return true;
+    if (key === 'evOneOffYear' && (form.evOneOffCost ?? 0) > 0 && value === null) return true;
+    if (value === null) return !OPTIONAL.includes(key);
     const { min, max } = CAR_FUEL_LIMITS[key];
-    if (value === null || !Number.isFinite(value) || value < min || value > max) return true;
-    return key === 'horizonYears' && !Number.isInteger(value);
+    if (!Number.isFinite(value) || value < min || value > max) return true;
+    return INTEGER.includes(key) && !Number.isInteger(value);
   });
 }
 
@@ -171,56 +248,82 @@ export function evEnergyPrice(form: CarFuelForm): number | null {
   return share * form.homeRate + (1 - share) * form.publicRate;
 }
 
-function alternativeOption(form: CarFuelForm): FuelOption {
-  return form.alt === 'cng'
-    ? {
+/** The single alternative a form compares with; "all" defaults to CNG unless one is named. */
+const kindOf = (form: CarFuelForm, kind?: AltKind): AltKind =>
+  kind ?? (form.alt === 'all' ? 'cng' : form.alt);
+
+/** A one-off cost in year y is charged in that year's first month. */
+const oneOff = (cost: number | null, year: number | null) =>
+  cost && year ? { month: (year - 1) * 12 + 1, amount: cost } : undefined;
+
+function option(form: CarFuelForm, kind: 'petrol' | AltKind): FuelOption {
+  switch (kind) {
+    case 'petrol':
+      return {
+        mileage: form.petrolMileage!,
+        energyPrice: form.petrolPrice!,
+        annualPriceRise: form.petrolPriceRise!,
+        annualUpkeep: form.petrolUpkeep! + (form.petrolInsurance ?? 0),
+      };
+    case 'cng':
+      return {
         mileage: form.cngMileage!,
         energyPrice: form.cngPrice!,
         annualPriceRise: form.cngPriceRise!,
-        annualUpkeep: form.cngUpkeep!,
-      }
-    : {
+        annualUpkeep: form.cngUpkeep! + (form.cngInsurance ?? 0),
+        oneOff: oneOff(form.cngOneOffCost, form.cngOneOffYear),
+      };
+    case 'ev':
+      return {
         mileage: form.evEfficiency!,
         energyPrice: evEnergyPrice(form)!,
         annualPriceRise: form.evPriceRise!,
-        annualUpkeep: form.evUpkeep!,
+        annualUpkeep: form.evUpkeep! + (form.evInsurance ?? 0),
+        oneOff: oneOff(form.evOneOffCost, form.evOneOffYear),
       };
+  }
 }
 
-/** CarFuelInput for a complete, valid form; null otherwise. */
-export function toCarFuelInput(form: CarFuelForm): CarFuelInput | null {
+/**
+ * CarFuelInput (petrol against one alternative) for a complete, valid form; null otherwise.
+ * With "all", pass `kind` to pick the pair; it defaults to CNG.
+ */
+export function toCarFuelInput(form: CarFuelForm, kind?: AltKind): CarFuelInput | null {
   if (invalidFields(form).length > 0) return null;
-  const altPrice = form[altCarPriceField(form.alt)]!;
+  const alt = kindOf(form, kind);
+  const altPrice = form[altCarPriceField(alt)]!;
+  const altResale = alt === 'cng' ? form.cngResale : form.evResale;
+  const withResale = form.petrolResale !== null || altResale !== null;
   return {
     monthlyKm: form.monthlyKm!,
     horizonMonths: form.horizonYears! * 12,
     extraPrice: altPrice - form.petrolCarPrice!,
     purchasePrices: { base: form.petrolCarPrice!, alternative: altPrice },
     interestRate: form.interestRate!,
-    base: {
-      mileage: form.petrolMileage!,
-      energyPrice: form.petrolPrice!,
-      annualPriceRise: form.petrolPriceRise!,
-      annualUpkeep: form.petrolUpkeep!,
-    },
-    alternative: alternativeOption(form),
+    base: option(form, 'petrol'),
+    alternative: option(form, alt),
+    ...(withResale
+      ? {
+          resale: {
+            base: form.petrolCarPrice! * (form.petrolResale ?? 0),
+            alternative: altPrice * (altResale ?? 0),
+          },
+        }
+      : {}),
   };
 }
 
 /** Alternative on-road price minus petrol on-road price, or null until both are valid. */
-export function extraPriceOf(form: CarFuelForm): number | null {
+export function extraPriceOf(form: CarFuelForm, kind?: AltKind): number | null {
   const bad = invalidFields(form);
-  const altField = altCarPriceField(form.alt);
+  const altField = altCarPriceField(kindOf(form, kind));
   if (bad.includes('petrolCarPrice') || bad.includes(altField)) return null;
   return form[altField]! - form.petrolCarPrice!;
 }
 
-/** True when the only thing missing is one or both car prices (the usual first-visit state). */
+/** True when the only thing missing is one or more car prices (the usual first-visit state). */
 export function onlyPricesMissing(form: CarFuelForm): boolean {
   const bad = invalidFields(form);
-  const altField = altCarPriceField(form.alt);
-  return (
-    bad.length > 0 &&
-    bad.every((k) => (k === 'petrolCarPrice' || k === altField) && form[k] === null)
-  );
+  const prices = carPriceFields(form.alt);
+  return bad.length > 0 && bad.every((k) => prices.includes(k) && form[k] === null);
 }

@@ -26,6 +26,8 @@ export interface FuelOption {
   annualPriceRise: number;
   /** Running cost per year beyond energy that this option adds, ₹ (flat, not escalated). */
   annualUpkeep: number;
+  /** A single cost in one month, e.g. an EV battery or a CNG cylinder, ₹ (month 1 = first month). */
+  oneOff?: { month: number; amount: number };
 }
 
 export interface CarFuelInput {
@@ -45,6 +47,11 @@ export interface CarFuelInput {
   purchasePrices?: { base: number; alternative: number };
   /** Annual rate charged on the extra price (loan or forgone return), nominal with monthly compounding. */
   interestRate: number;
+  /**
+   * What each car sells for at the end of the horizon, ₹. Counted only at the horizon: it changes
+   * the net position and total cost then, not the break-even month (savings must earn that).
+   */
+  resale?: { base: number; alternative: number };
 }
 
 export interface BreakevenDetail {
@@ -90,7 +97,10 @@ export interface CarFuelResult {
   /** null when the horizon is shorter than 5 / 10 years. */
   netAt5Years: NetPosition | null;
   netAt10Years: NetPosition | null;
+  /** Includes the resale gap. */
   netAtHorizon: NetPosition;
+  /** Alternative's resale − base's resale, ₹ (0 without resale). */
+  resaleGap: number;
 }
 
 function validate(input: CarFuelInput): void {
@@ -112,12 +122,21 @@ function validate(input: CarFuelInput): void {
   for (const option of [base, alternative]) {
     if (!(option.mileage > 0)) throw new RangeError('mileage must be positive');
     if (option.energyPrice < 0) throw new RangeError('energyPrice must not be negative');
+    const once = option.oneOff;
+    if (once && !(Number.isInteger(once.month) && once.month >= 1 && once.amount >= 0)) {
+      throw new RangeError('oneOff needs a whole month from 1 and an amount of 0 or more');
+    }
+  }
+  const resale = input.resale;
+  if (resale && !(resale.base >= 0 && resale.alternative >= 0)) {
+    throw new RangeError('resale must not be negative');
   }
 }
 
 function monthlyCost(option: FuelOption, monthlyKm: number, month: number): number {
   const price = yearlySteppedPrice(option.energyPrice, option.annualPriceRise, month);
-  return (monthlyKm / option.mileage) * price + option.annualUpkeep / 12;
+  const once = option.oneOff?.month === month ? option.oneOff.amount : 0;
+  return (monthlyKm / option.mileage) * price + option.annualUpkeep / 12 + once;
 }
 
 export function compareCarFuel(input: CarFuelInput): CarFuelResult {
@@ -139,11 +158,20 @@ export function compareCarFuel(input: CarFuelInput): CarFuelResult {
   const growth = cumulativeSaving.map((_, m) => growthFactor(r, m));
   const cumulativeRunningCost = { base: cumulative(baseCost), alternative: cumulative(altCost) };
   const prices = input.purchasePrices;
+  const resale = input.resale ?? { base: 0, alternative: 0 };
+  const resaleGap = resale.alternative - resale.base;
+  // Resale comes back only when the car is sold, at the horizon.
+  const sold = (m: number, amount: number) => (m === horizonMonths ? amount : 0);
   const totalCost = prices
     ? {
-        base: growth.map((g, m) => prices.base * g + cumulativeRunningCost.base[m]!),
+        base: growth.map(
+          (g, m) => prices.base * g + cumulativeRunningCost.base[m]! - sold(m, resale.base),
+        ),
         alternative: growth.map(
-          (g, m) => prices.alternative * g + cumulativeRunningCost.alternative[m]!,
+          (g, m) =>
+            prices.alternative * g +
+            cumulativeRunningCost.alternative[m]! -
+            sold(m, resale.alternative),
         ),
       }
     : null;
@@ -161,8 +189,9 @@ export function compareCarFuel(input: CarFuelInput): CarFuelResult {
     month > horizonMonths
       ? null
       : {
-          noInterest: cumulativeSaving[month]! - extraPrice,
-          withInterest: cumulativeSaving[month]! - extraPriceWithInterest[month]!,
+          noInterest: cumulativeSaving[month]! - extraPrice + sold(month, resaleGap),
+          withInterest:
+            cumulativeSaving[month]! - extraPriceWithInterest[month]! + sold(month, resaleGap),
         };
 
   return {
@@ -182,6 +211,7 @@ export function compareCarFuel(input: CarFuelInput): CarFuelResult {
     netAt5Years: netAt(60),
     netAt10Years: netAt(120),
     netAtHorizon: netAt(horizonMonths)!,
+    resaleGap,
   };
 }
 
@@ -271,6 +301,8 @@ export type CarFuelVerdict =
   | { kind: 'payback'; payer: 'base' | 'alternative'; months: number; km: number }
   /** The dearer car never earns back its extra price; the cheaper one wins over the horizon. */
   | { kind: 'never'; winner: 'base' | 'alternative' }
+  /** Savings never earn back the extra price, but the dearer car's higher resale puts it ahead. */
+  | { kind: 'resale'; winner: 'base' | 'alternative' }
   /** One car costs no more to buy and less to run: it wins from day one. */
   | { kind: 'dominant'; winner: 'base' | 'alternative' }
   /** Same price and same running cost. */
@@ -287,6 +319,7 @@ export function swapOptions(input: CarFuelInput): CarFuelInput {
       base: input.purchasePrices.alternative,
       alternative: input.purchasePrices.base,
     },
+    resale: input.resale && { base: input.resale.alternative, alternative: input.resale.base },
   };
 }
 
@@ -323,6 +356,94 @@ export function carFuelVerdict(input: CarFuelInput): {
       basis,
       swapped,
     };
+  if (basis.netAtHorizon.withInterest > 0) {
+    return { verdict: { kind: 'resale', winner: dearer }, basis, swapped };
+  }
   if (saving <= 0) return { verdict: { kind: 'dominant', winner: cheaper }, basis, swapped };
   return { verdict: { kind: 'never', winner: cheaper }, basis, swapped };
+}
+
+export interface CarSetEntry {
+  key: string;
+  purchasePrice: number;
+  /** Energy cost per km in month 1, ₹. */
+  costPerKm: number;
+  /** Fuel or charging plus upkeep in month 1, ₹. */
+  firstMonthRunning: number;
+  /** Fuel, upkeep and one-off costs over the horizon, ₹. */
+  running: number;
+  /** Interest on the full on-road price over the horizon (loan or forgone return), ₹. */
+  interest: number;
+  resale: number;
+  /** purchasePrice + interest + running − resale: the total cost of owning the car, ₹. */
+  netCost: number;
+  /** Total cost by month (index 0 = purchase), as in CarFuelResult.totalCost. */
+  totalCost: number[];
+}
+
+export interface CarSetResult {
+  /** Base first, then the alternatives in the order given. */
+  entries: CarSetEntry[];
+  /** Keys from lowest to highest total cost at the horizon. */
+  ranking: string[];
+  /** Each alternative against the base, with its headline verdict. */
+  pairs: Record<string, { result: CarFuelResult; verdict: CarFuelVerdict }>;
+}
+
+/**
+ * Several cars against one base (petrol vs CNG vs EV). Every comparison must share the base car,
+ * horizon, distance and interest rate, and carry purchase prices. The cheapest car is the one with
+ * the lowest total cost of owning it over the horizon, resale included.
+ */
+export function compareCarSet(
+  baseKey: string,
+  alternatives: Record<string, CarFuelInput>,
+): CarSetResult {
+  const keys = Object.keys(alternatives);
+  const first = alternatives[keys[0]!];
+  if (!first?.purchasePrices)
+    throw new RangeError('compareCarSet needs an alternative with prices');
+  for (const key of keys) {
+    const i = alternatives[key]!;
+    if (
+      !i.purchasePrices ||
+      i.horizonMonths !== first.horizonMonths ||
+      i.monthlyKm !== first.monthlyKm ||
+      i.interestRate !== first.interestRate ||
+      i.purchasePrices.base !== first.purchasePrices.base
+    ) {
+      throw new RangeError('compareCarSet inputs must share the base car, prices and assumptions');
+    }
+  }
+  const end = first.horizonMonths;
+  const g = growthFactor(nominalToMonthly(first.interestRate), end);
+  const pairs: CarSetResult['pairs'] = {};
+  for (const key of keys) {
+    pairs[key] = {
+      result: compareCarFuel(alternatives[key]!),
+      verdict: carFuelVerdict(alternatives[key]!).verdict,
+    };
+  }
+  const entry = (key: string, side: 'base' | 'alternative', input: CarFuelInput): CarSetEntry => {
+    const result = pairs[side === 'base' ? keys[0]! : key]!.result;
+    const option = input[side];
+    const price = input.purchasePrices![side];
+    return {
+      key,
+      purchasePrice: price,
+      costPerKm: option.energyPrice / option.mileage,
+      firstMonthRunning: result.monthlyCost[side][0]!,
+      running: result.cumulativeRunningCost[side][end]!,
+      interest: price * (g - 1),
+      resale: input.resale?.[side] ?? 0,
+      netCost: result.totalCost![side][end]!,
+      totalCost: result.totalCost![side],
+    };
+  };
+  const entries = [
+    entry(baseKey, 'base', first),
+    ...keys.map((key) => entry(key, 'alternative', alternatives[key]!)),
+  ];
+  const ranking = [...entries].sort((a, b) => a.netCost - b.netCost).map((e) => e.key);
+  return { entries, ranking, pairs };
 }

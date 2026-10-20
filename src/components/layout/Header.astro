@@ -21,7 +21,7 @@ const onMethodology = path.startsWith('/methodology');
   Floating bar: transparent over the top of the page, then a glass pill with a soft shadow once
   the page scrolls (html[data-scrolled], set in Motion.astro). Only opacity animates.
 -->
-<header class="site-header sticky top-0 z-40 isolate pt-2 sm:pt-3">
+<header class="site-header print:hidden sticky top-0 z-40 isolate pt-2 sm:pt-3">
   <div class="container-page">
     <div class="nav-bar -mx-2 flex h-14 items-center justify-between gap-2 rounded-xl pr-1.5 pl-2 sm:-mx-3 sm:pl-3">
       <a href={home} aria-label={t(locale, 'a11y.home')} class="shrink-0 rounded-sm py-1">

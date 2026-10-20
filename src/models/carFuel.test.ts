@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { formatINR, formatLakhCrore } from '@/lib/format';
-import { carFuelFlips, carFuelVerdict, compareCarFuel, type CarFuelInput } from './carFuel';
+import {
+  carFuelFlips,
+  carFuelVerdict,
+  compareCarFuel,
+  compareCarSet,
+  type CarFuelInput,
+} from './carFuel';
 import { carFuelExample } from './carFuel.example';
 
 /**
@@ -289,5 +295,112 @@ describe('car fuel verdict, whichever car costs more to buy', () => {
   it('same price and same running cost: tie', () => {
     const same = { ...fixture, extraPrice: 0, alternative: fixture.base };
     expect(carFuelVerdict(same).verdict).toEqual({ kind: 'tie' });
+  });
+});
+
+describe('car fuel: one-off costs and resale', () => {
+  it('a one-off cost lands in its month and delays break-even (33 → 37 months)', () => {
+    // ₹12,000 for the CNG car in month 13 (say, a cylinder). Hand check, saving ₹3,557.15/month:
+    //   month 36: 3,557.15 × 36 − 12,000 = 116,057 < 90,000 × 1.0075^36 = 117,778
+    //   month 37: 3,557.15 × 37 − 12,000 = 119,615 ≥ 90,000 × 1.0075^37 = 118,661   ⇒ 37 months
+    const plain = compareCarFuel(fixture);
+    const r = compareCarFuel({
+      ...fixture,
+      alternative: { ...fixture.alternative, oneOff: { month: 13, amount: 12_000 } },
+    });
+    expect(r.cumulativeSaving[12]).toBeCloseTo(plain.cumulativeSaving[12]!, 9);
+    expect(r.cumulativeSaving[13]).toBeCloseTo(plain.cumulativeSaving[13]! - 12_000, 9);
+    expect(r.breakevenWithInterest?.months).toBe(37);
+  });
+
+  it('resale changes the position at the horizon only, not the break-even month', () => {
+    const plain = compareCarFuel(fixture);
+    const r = compareCarFuel({ ...fixture, resale: { base: 200_000, alternative: 230_000 } });
+    expect(r.resaleGap).toBe(30_000);
+    expect(r.breakevenWithInterest?.months).toBe(33);
+    expect(r.netAt5Years!.withInterest).toBeCloseTo(plain.netAt5Years!.withInterest, 9);
+    expect(r.netAtHorizon.withInterest).toBeCloseTo(plain.netAtHorizon.withInterest + 30_000, 9);
+  });
+
+  it('resale can carry a car that never pays back on fuel alone', () => {
+    // 300 km a month: saving ₹592.86/month, 120 months → 71,143; extra with interest 220,622.
+    // Net −149,479 without resale; a ₹2 lakh higher resale for the CNG car makes it +50,521.
+    const input = { ...fixture, monthlyKm: 300, resale: { base: 100_000, alternative: 300_000 } };
+    const r = compareCarFuel(input);
+    expect(r.netAtHorizon.withInterest).toBeGreaterThan(50_500);
+    expect(r.netAtHorizon.withInterest).toBeLessThan(50_540);
+    expect(carFuelVerdict(input).verdict).toEqual({ kind: 'resale', winner: 'alternative' });
+  });
+
+  it('rejects a bad one-off or negative resale', () => {
+    const bad = { ...fixture.alternative, oneOff: { month: 0, amount: 1 } };
+    expect(() => compareCarFuel({ ...fixture, alternative: bad })).toThrow(RangeError);
+    expect(() => compareCarFuel({ ...fixture, resale: { base: -1, alternative: 0 } })).toThrow(
+      RangeError,
+    );
+  });
+});
+
+describe('car set: petrol vs CNG vs EV', () => {
+  // SYNTHETIC: 1,000 km a month for 12 months, no interest.
+  // Petrol ₹10 lakh, 10 km/L at ₹100 → ₹10,000/month → total 10,00,000 + 1,20,000 = ₹11,20,000
+  // CNG    ₹11 lakh, 20 km/kg at ₹80 → ₹4,000/month  → total 11,00,000 + 48,000   = ₹11,48,000
+  // EV     ₹15 lakh, 5 km/kWh at ₹10 → ₹2,000/month  → total 15,00,000 + 24,000   = ₹15,24,000
+  const petrol = { mileage: 10, energyPrice: 100, annualPriceRise: 0, annualUpkeep: 0 };
+  const pair = (
+    alternative: CarFuelInput['base'],
+    price: number,
+    rate = 0,
+    resale?: CarFuelInput['resale'],
+  ): CarFuelInput => ({
+    monthlyKm: 1000,
+    horizonMonths: 12,
+    base: petrol,
+    alternative,
+    extraPrice: price - 1_000_000,
+    purchasePrices: { base: 1_000_000, alternative: price },
+    interestRate: rate,
+    resale,
+  });
+  const cng = { mileage: 20, energyPrice: 80, annualPriceRise: 0, annualUpkeep: 0 };
+  const ev = { mileage: 5, energyPrice: 10, annualPriceRise: 0, annualUpkeep: 0 };
+
+  it('total cost of each car and the ranking', () => {
+    const r = compareCarSet('petrol', { cng: pair(cng, 1_100_000), ev: pair(ev, 1_500_000) });
+    expect(r.entries.map((e) => [e.key, e.netCost])).toEqual([
+      ['petrol', 1_120_000],
+      ['cng', 1_148_000],
+      ['ev', 1_524_000],
+    ]);
+    expect(r.entries.map((e) => e.firstMonthRunning)).toEqual([10_000, 4_000, 2_000]);
+    expect(r.ranking).toEqual(['petrol', 'cng', 'ev']);
+    expect(r.pairs.cng!.verdict.kind).toBe('never');
+  });
+
+  it('resale moves the EV to first: 15,24,000 − 6,00,000 = ₹9,24,000', () => {
+    const r = compareCarSet('petrol', {
+      cng: pair(cng, 1_100_000, 0, { base: 0, alternative: 0 }),
+      ev: pair(ev, 1_500_000, 0, { base: 0, alternative: 600_000 }),
+    });
+    expect(r.entries[2]!.netCost).toBe(924_000);
+    expect(r.ranking).toEqual(['ev', 'petrol', 'cng']);
+  });
+
+  it('interest on each on-road price: 10 lakh × (1.01^12 − 1) = ₹1,26,825.03 at 12%', () => {
+    const r = compareCarSet('petrol', {
+      cng: pair(cng, 1_100_000, 0.12),
+      ev: pair(ev, 1_500_000, 0.12),
+    });
+    expect(r.entries[0]!.interest).toBeCloseTo(126_825.03, 2);
+    expect(r.entries[0]!.netCost).toBeCloseTo(1_000_000 + 126_825.03 + 120_000, 2);
+  });
+
+  it('refuses inputs that do not share the base car', () => {
+    expect(() =>
+      compareCarSet('petrol', {
+        cng: pair(cng, 1_100_000),
+        ev: { ...pair(ev, 1_500_000), monthlyKm: 5 },
+      }),
+    ).toThrow(RangeError);
   });
 });
