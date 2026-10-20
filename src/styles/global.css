@@ -717,15 +717,19 @@
   animation: dw-tick var(--duration-base) var(--ease-out-expo);
 }
 
-/* ---------- Logo ---------- */
+/* ---------- Logo: the wordmark and its brass full stop ---------- */
 
-.logo-mark .logo-dot {
-  transform-box: fill-box;
-  transform-origin: center;
+.logo-dot {
+  display: inline-block;
+  width: 0.24em;
+  height: 0.24em;
+  margin-left: 0.06em;
+  border-radius: 50%;
+  background: var(--color-accent);
   transition: transform var(--duration-base) var(--ease-out-back);
 }
-a:hover .logo-mark .logo-dot {
-  transform: translateY(-3px) scale(1.12);
+a:hover .logo-dot {
+  transform: translateY(-0.12em) scale(1.15);
 }
 
 @keyframes dw-draw {
@@ -754,25 +758,15 @@ a:hover .logo-mark .logo-dot {
 }
 
 /* Plays once per visit: the head script adds .logo-intro only when it has not played yet. */
-.logo-intro [data-logo-intro] :is(.logo-bowl, .logo-stem) {
-  stroke-dasharray: 1;
-}
-.logo-intro [data-logo-intro] .logo-bowl {
-  animation: dw-draw var(--duration-focal) var(--ease-out-quart) both;
-}
-.logo-intro [data-logo-intro] .logo-stem {
-  animation: dw-draw var(--duration-enter) var(--ease-out-quart) 250ms both;
+.logo-intro [data-logo-intro] .logo-word {
+  animation: dw-word var(--duration-enter) var(--ease-out-expo) both;
 }
 .logo-intro [data-logo-intro] .logo-dot {
-  animation: dw-pop var(--duration-enter) var(--ease-out-back) 620ms both;
-}
-.logo-intro [data-logo-intro] .logo-word {
-  animation: dw-word var(--duration-enter) var(--ease-out-expo) 420ms both;
+  animation: dw-pop var(--duration-enter) var(--ease-out-back) 380ms both;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .logo-intro [data-logo-intro] :is(.logo-bowl, .logo-stem, .logo-dot) {
-    stroke-dasharray: none;
+  .logo-intro [data-logo-intro] :is(.logo-word, .logo-dot) {
     animation: dw-fade var(--duration-enter) ease-out both;
   }
 }
