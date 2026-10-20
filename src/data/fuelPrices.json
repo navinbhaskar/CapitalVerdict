@@ -6,15 +6,15 @@
       "petrol": {
         "value": 101.86,
         "unit": "₹/L",
-        "source": "Lucknow, ~14 Sep 2026 (carchhe.com, energy.thecore.in). Changes daily. From user's CNG_vs_Petrol_Lucknow.xlsx",
-        "effectiveDate": "2026-09-14",
+        "source": "Lucknow retail price on 19 Oct 2026: ₹101.86 a litre in Goodreturns, BankBazaar and Business Today (goodreturns.in/petrol-price-in-lucknow.html). Indian Oil publishes city prices only by SMS (RSP 155054 to 92249 92249) and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-10-19",
         "status": "verified"
       },
       "cng": {
-        "value": 95.75,
+        "value": 107,
         "unit": "₹/kg",
-        "source": "Lucknow, 14 Sep 2026 (carchhe.com, CarDekho). Some sources show ₹99.50 (Jul 2026); verify at your pump. From user's CNG_vs_Petrol_Lucknow.xlsx",
-        "effectiveDate": "2026-09-14",
+        "source": "Green Gas Limited, the city gas distributor for Lucknow (gglonline.net/cng-price): Rs 107.00/kg w.e.f. 6:00 hrs 03.10.2026.",
+        "effectiveDate": "2026-10-03",
         "status": "verified"
       }
     },
