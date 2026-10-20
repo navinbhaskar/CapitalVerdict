@@ -17,4 +17,5 @@ export const TOOL_PATHS = {
   'car-fuel': '/tools/car-fuel/',
   solar: '/tools/solar/',
   'rent-vs-buy': '/tools/rent-vs-buy/',
+  'prepay-or-invest': '/tools/prepay-or-invest/',
 } as const;

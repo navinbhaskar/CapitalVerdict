@@ -16,7 +16,7 @@ const liveTools: {
   title: MessageKey;
   question: MessageKey;
   href: string;
-  icon: 'fuel' | 'sun' | 'home';
+  icon: 'fuel' | 'sun' | 'home' | 'banknote';
 }[] = [
   {
     title: 'tool.carFuel.title',
@@ -36,13 +36,18 @@ const liveTools: {
     href: localizePath('/tools/rent-vs-buy/', locale),
     icon: 'home',
   },
+  {
+    title: 'tool.prepay.title',
+    question: 'tool.prepay.question',
+    href: localizePath('/tools/prepay-or-invest/', locale),
+    icon: 'banknote',
+  },
 ];
 const upcoming: {
   title: MessageKey;
   question: MessageKey;
   icon: 'banknote' | 'car' | 'snowflake' | 'percent';
 }[] = [
-  { title: 'tool.prepay.title', question: 'tool.prepay.question', icon: 'banknote' },
   { title: 'tool.carLoan.title', question: 'tool.carLoan.question', icon: 'car' },
   { title: 'tool.ac.title', question: 'tool.ac.question', icon: 'snowflake' },
   { title: 'tool.taxRegime.title', question: 'tool.taxRegime.question', icon: 'percent' },
@@ -127,7 +132,7 @@ const principles: { title: MessageKey; body: MessageKey }[] = [
           {t(locale, 'home.tools.heading')}
         </h2>
       </div>
-      <div class="mt-5 grid gap-4 md:grid-cols-3" data-reveal>
+      <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reveal>
         {liveTools.map((tool) => (
           <a
             href={tool.href}
@@ -154,7 +159,7 @@ const principles: { title: MessageKey; body: MessageKey }[] = [
         {t(locale, 'home.tools.upcomingHeading')}
       </h3>
       <ul
-        class="mt-3 grid border-t border-line-strong sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-4"
+        class="mt-3 grid border-t border-line-strong sm:grid-cols-3 sm:gap-x-8"
         role="list"
         data-reveal
       >
