@@ -1,18 +1,23 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageIntro from '@/components/layout/PageIntro.astro';
+import Icon from '@/components/layout/Icon.astro';
 import { t } from '@/i18n/t';
-import { byDateDesc, readingMinutes } from '@/lib/blog';
+import { byDateDesc, readingMinutes, TOOL_PATHS } from '@/lib/blog';
 
 const locale = 'en';
 const posts = (await getCollection('blog')).sort(byDateDesc);
-const kinds = [
-  { kind: 'decision', heading: t(locale, 'blog.kind.decision') },
-  { kind: 'basics', heading: t(locale, 'blog.kind.basics') },
-  { kind: 'update', heading: t(locale, 'blog.kind.update') },
-] as const;
+const toolOrder = Object.keys(TOOL_PATHS);
+const rank = (p: CollectionEntry<'blog'>) =>
+  p.data.tool ? toolOrder.indexOf(p.data.tool) : toolOrder.length;
+// Decisions follow the calculators' order (car, solar, home); the rest stay newest first.
+const decisions = posts.filter((p) => p.data.kind === 'decision').sort((a, b) => rank(a) - rank(b));
+const basics = posts.filter((p) => p.data.kind === 'basics');
+const updates = posts.filter((p) => p.data.kind === 'update');
 const dateFormat = new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeZone: 'UTC' });
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+const href = (p: CollectionEntry<'blog'>) => `/guides/${p.id}/`;
 ---
 
 <BaseLayout
@@ -22,39 +27,122 @@ const dateFormat = new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeZ
 >
   <PageIntro title={t(locale, 'blog.title')} lead={t(locale, 'blog.intro')} />
   <div class="container-page pt-2 pb-10 sm:pb-12">
-    {kinds.map(({ kind, heading }) => {
-      const list = posts.filter((p) => p.data.kind === kind);
-      return (
-        list.length > 0 && (
-          <section class="mt-6 max-w-3xl" aria-labelledby={`k-${kind}`}>
-            <h2 id={`k-${kind}`} class="font-display text-2xl font-medium">
-              {heading}
-            </h2>
-            <ul class="mt-3 divide-y divide-line border-y border-line" role="list">
-              {list.map((post) => (
-                <li>
-                  <a
-                    href={`/guides/${post.id}/`}
-                    class="group block py-4 transition-colors duration-(--duration-fast) ease-out-quart"
-                  >
-                    <span class="block font-medium text-ink group-hover:text-accent-strong">
-                      {post.data.title}
-                    </span>
-                    <span class="mt-1 block text-sm text-ink-muted">{post.data.description}</span>
-                    <span class="num mt-1.5 block text-sm text-ink-muted">
-                      <time datetime={post.data.date.toISOString().slice(0, 10)}>
-                        {dateFormat.format(post.data.date)}
-                      </time>
+    {decisions.length > 0 && (
+      <section class="mt-6" aria-labelledby="k-decision">
+        <span class="rule-brass" aria-hidden="true" />
+        <h2 id="k-decision" class="mt-3 font-display text-2xl font-medium">
+          {t(locale, 'blog.kind.decision')}
+        </h2>
+        <ul class="mt-4 grid gap-4 md:grid-cols-3" role="list">
+          {decisions.map((post) => (
+            <li class="card-lift relative flex flex-col rounded-xl border border-line bg-raised p-5 transition-colors duration-(--duration-base) ease-out-quart hover:border-accent">
+              {post.data.takeaway && (
+                <p class="border-b border-line pb-4">
+                  <span class="block font-display text-2xl font-medium tracking-(--tracking-heading) text-accent-strong num">
+                    {post.data.takeaway.figure}
+                  </span>
+                  <span class="mt-1 block text-sm text-ink-muted">{post.data.takeaway.label}</span>
+                </p>
+              )}
+              <h3 class="mt-4 font-display text-xl font-medium tracking-(--tracking-heading) text-balance">
+                <a
+                  href={href(post)}
+                  class="after:absolute after:inset-0 after:rounded-xl hover:text-accent-strong"
+                >
+                  {post.data.title}
+                </a>
+              </h3>
+              <p class="mt-2 flex-1 text-sm text-ink-muted">{post.data.description}</p>
+              <div class="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm">
+                <span class="num text-ink-muted">
+                  {t(locale, 'blog.minutes', { n: readingMinutes(post.body ?? '') })}
+                  {post.data.updated && (
+                    <>
                       {', '}
-                      {t(locale, 'blog.minutes', { n: readingMinutes(post.body ?? '') })}
+                      {t(locale, 'blog.updated', { date: dateFormat.format(post.data.updated) })}
+                    </>
+                  )}
+                </span>
+                {post.data.tool && (
+                  <a
+                    href={TOOL_PATHS[post.data.tool]}
+                    class="link relative z-10 inline-flex min-h-11 items-center gap-1.5"
+                  >
+                    {t(locale, 'blog.openTool')}
+                    <span class="sr-only">
+                      {' '}
+                      {t(locale, 'blog.forGuide', { title: post.data.title })}
                     </span>
+                    <Icon name="arrowRight" size={16} class="nudge" />
                   </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )
-      );
-    })}
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {basics.length > 0 && (
+      <section class="mt-10" aria-labelledby="k-basics">
+        <span class="rule-brass" aria-hidden="true" />
+        <h2 id="k-basics" class="mt-3 font-display text-2xl font-medium">
+          {t(locale, 'blog.kind.basics')}
+        </h2>
+        <ul class="mt-4 grid gap-4 md:grid-cols-3" role="list">
+          {basics.map((post) => (
+            <li class="card-lift relative flex flex-col rounded-xl border border-line bg-raised p-5 transition-colors duration-(--duration-base) ease-out-quart hover:border-accent">
+              <h3 class="font-display text-xl font-medium tracking-(--tracking-heading) text-balance">
+                <a
+                  href={href(post)}
+                  class="after:absolute after:inset-0 after:rounded-xl hover:text-accent-strong"
+                >
+                  {post.data.title}
+                </a>
+              </h3>
+              <p class="mt-2 flex-1 text-sm text-ink-muted">{post.data.description}</p>
+              <p class="num mt-4 text-sm text-ink-muted">
+                {t(locale, 'blog.minutes', { n: readingMinutes(post.body ?? '') })}
+                {post.data.updated && (
+                  <>
+                    {', '}
+                    {t(locale, 'blog.updated', { date: dateFormat.format(post.data.updated) })}
+                  </>
+                )}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {updates.length > 0 && (
+      <section class="mt-10 max-w-3xl" aria-labelledby="k-update">
+        <span class="rule-brass" aria-hidden="true" />
+        <h2 id="k-update" class="mt-3 font-display text-2xl font-medium">
+          {t(locale, 'blog.kind.update')}
+        </h2>
+        <ul class="mt-3 divide-y divide-line border-y border-line" role="list">
+          {updates.map((post) => (
+            <li>
+              <a
+                href={href(post)}
+                class="group grid gap-x-6 gap-y-1 py-4 sm:grid-cols-[8rem_minmax(0,1fr)]"
+              >
+                <time datetime={iso(post.data.date)} class="num text-sm text-ink-muted sm:pt-0.5">
+                  {dateFormat.format(post.data.date)}
+                </time>
+                <span>
+                  <span class="block font-medium text-ink group-hover:text-accent-strong">
+                    {post.data.title}
+                  </span>
+                  <span class="mt-1 block text-sm text-ink-muted">{post.data.description}</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
   </div>
 </BaseLayout>

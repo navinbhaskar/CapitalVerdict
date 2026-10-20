@@ -3,6 +3,9 @@ title: 'Is rooftop solar worth it? Start with your own bill'
 description: Rooftop solar pays back through the units it saves you from buying. How fast depends on your bill, your tariff slab and what happens to units you export.
 date: 2026-10-20
 kind: decision
+takeaway:
+  figure: '7.2 years'
+  label: to pay back the illustrative 3 kW system
 tool: solar
 ---
 

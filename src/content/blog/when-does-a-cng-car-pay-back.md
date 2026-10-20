@@ -3,6 +3,9 @@ title: When does a CNG car pay back?
 description: A CNG car costs more to buy and less to run. Here is how to work out when the saving covers the extra price, and when it never does.
 date: 2026-10-20
 kind: decision
+takeaway:
+  figure: '46 months'
+  label: to break even in the worked example, at 1,800 km a month
 tool: car-fuel
 ---
 

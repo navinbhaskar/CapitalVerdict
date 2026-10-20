@@ -3,6 +3,9 @@ title: 'Rent or buy: the maths most people skip'
 description: Comparing EMI with rent misses half the picture. A fair comparison follows both households and invests whatever the cheaper one saves.
 date: 2026-10-20
 kind: decision
+takeaway:
+  figure: '₹24.50 lakh'
+  label: ahead by renting and investing after 15 years, in the illustration
 tool: rent-vs-buy
 ---
 

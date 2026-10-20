@@ -712,6 +712,7 @@
   "blog.updated": "updated {date}",
   "blog.tryTool": "Work it out with your own numbers",
   "blog.openTool": "Open the calculator",
+  "blog.forGuide": "for the guide “{title}”",
   "blog.disclaimer": "For education only. Not investment, tax or insurance advice. Examples use the figures stated in the guide; check your own before you act.",
   "blog.more": "More guides",
   "nav.blog": "Guides",
