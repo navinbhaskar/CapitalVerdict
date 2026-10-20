@@ -1,4 +1,4 @@
-@import '@fontsource-variable/bricolage-grotesque/opsz.css';
+@import '@fontsource-variable/fraunces/opsz.css';
 @import '@fontsource-variable/ibm-plex-sans/wght.css';
 @import '@fontsource/ibm-plex-sans-devanagari/devanagari-400.css';
 @import '@fontsource/ibm-plex-sans-devanagari/devanagari-500.css';
@@ -16,8 +16,7 @@
 @theme {
   /* Type: display voice for headings and verdicts, Plex for body, UI and numbers. */
   --font-display:
-    'Bricolage Grotesque Variable', 'IBM Plex Sans Devanagari', 'IBM Plex Sans Variable', system-ui,
-    sans-serif;
+    'Fraunces Variable', 'IBM Plex Sans Devanagari', Georgia, 'Times New Roman', serif;
   --font-sans:
     'IBM Plex Sans Variable', 'IBM Plex Sans', 'IBM Plex Sans Devanagari', system-ui, -apple-system,
     'Segoe UI', sans-serif;
@@ -42,11 +41,11 @@
   --text-5xl: 3rem;
   --text-5xl--line-height: 3.125rem;
   --text-display: clamp(2.5rem, 1.55rem + 3.9vw, 4.5rem);
-  --text-display--line-height: 1;
+  --text-display--line-height: 1.04;
   --text-figure: clamp(2.25rem, 1.7rem + 2.2vw, 3.25rem); /* the answer's headline number */
   --text-figure--line-height: 1.05;
-  --tracking-display: -0.04em;
-  --tracking-heading: -0.02em;
+  --tracking-display: -0.025em; /* Fraunces needs far less tightening than a grotesque */
+  --tracking-heading: -0.01em;
 
   /*
    * Colour: "private bank". Warm ivory paper and deep forest ink for reading; dark forest bands

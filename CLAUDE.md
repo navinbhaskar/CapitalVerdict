@@ -21,8 +21,9 @@ paused: strings stay in `hi.json`, but no Hindi pages are built (see `PUBLISHED_
 
 ## Design rules
 
-- **Type.** Two self-hosted families via `@fontsource` (never a Google Fonts link): Bricolage Grotesque
-  (optical-size cut, weight 500 at display sizes) for display (h1, h2, verdicts) and IBM Plex Sans + IBM Plex Sans Devanagari for body, UI and numbers.
+- **Type.** Two self-hosted families via `@fontsource` (never a Google Fonts link): Fraunces
+  (optical-size cut, weight 500 at display sizes, light tracking) for display (h1, h2, verdicts, the
+  wordmark) and IBM Plex Sans + IBM Plex Sans Devanagari for body, UI and numbers.
   Use the one type scale defined as `--text-*` tokens in `src/styles/global.css`; no arbitrary font
   sizes in components. Tabular figures (`.num`) for every number that can change.
 - **Tokens.** Colours, spacing, radius, shadows and motion (durations and easing curves) are CSS custom

@@ -25,7 +25,7 @@
   "dependencies": {
     "@astrojs/preact": "^6.1.0",
     "@astrojs/sitemap": "^3.7.4",
-    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/fraunces": "^5.3.0",
     "@fontsource-variable/ibm-plex-sans": "^5.3.0",
     "@fontsource/ibm-plex-sans-devanagari": "^5.3.0",
     "@tailwindcss/vite": "^4.3.3",
