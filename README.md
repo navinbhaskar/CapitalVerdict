@@ -49,7 +49,7 @@ them if the tagline or a tool question changes.
 - `src/engine/`: pure calculation modules (no DOM), fully unit-tested
 - `src/models/`: one file per decision tool
 - `src/data/`: JSON data with `{value, unit, source, effectiveDate}`; unverified values are marked `TODO_VERIFY`
-- `src/content/blog/`: notes; `src/content/blogNumbers.test.ts` recomputes every number they quote
+- `src/content/blog/`: guides (served at `/guides/`); `src/content/blogNumbers.test.ts` recomputes every number they quote
 - `src/i18n/`: `en.json` and `hi.json` UI strings; `TODO_COPY` / `TODO_COPY_HI` mark copy still to be written
 - `src/config/site.ts`: deployment settings read from the environment
 - `src/components/`, `src/layouts/`, `src/pages/`: UI

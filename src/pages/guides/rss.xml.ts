@@ -14,8 +14,8 @@ export const GET: APIRoute = async ({ site }) => {
     .map(
       (p) => `    <item>
       <title>${escape(p.data.title)}</title>
-      <link>${link(`/blog/${p.id}/`)}</link>
-      <guid>${link(`/blog/${p.id}/`)}</guid>
+      <link>${link(`/guides/${p.id}/`)}</link>
+      <guid>${link(`/guides/${p.id}/`)}</guid>
       <description>${escape(p.data.description)}</description>
       <pubDate>${p.data.date.toUTCString()}</pubDate>
     </item>`,
@@ -25,7 +25,7 @@ export const GET: APIRoute = async ({ site }) => {
 <rss version="2.0">
   <channel>
     <title>${escape(`${t('en', 'blog.title')}: ${t('en', 'site.name')}`)}</title>
-    <link>${link('/blog/')}</link>
+    <link>${link('/guides/')}</link>
     <description>${escape(t('en', 'blog.description'))}</description>
     <language>en-in</language>
 ${items}

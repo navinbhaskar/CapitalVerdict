@@ -22,7 +22,7 @@ const dateFormat = new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeZ
 >
   <PageIntro title={t(locale, 'blog.title')} lead={t(locale, 'blog.intro')}>
     <p class="mt-4 text-sm">
-      <a href="/blog/rss.xml" class="link">
+      <a href="/guides/rss.xml" class="link">
         {t(locale, 'blog.rss')}
       </a>
     </p>
@@ -40,7 +40,7 @@ const dateFormat = new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeZ
               {list.map((post) => (
                 <li>
                   <a
-                    href={`/blog/${post.id}/`}
+                    href={`/guides/${post.id}/`}
                     class="group block py-4 transition-colors duration-(--duration-fast) ease-out-quart"
                   >
                     <span class="block font-medium text-ink group-hover:text-accent-strong">

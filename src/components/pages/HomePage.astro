@@ -202,14 +202,14 @@ const principles: { title: MessageKey; body: MessageKey }[] = [
             {t(locale, 'home.notes.heading')}
           </h2>
         </div>
-        <a href={localizePath('/blog/', locale)} class="link">
+        <a href={localizePath('/guides/', locale)} class="link">
           {t(locale, 'home.notes.all')}
         </a>
       </div>
       <ul class="mt-5 grid gap-x-8 sm:grid-cols-3" role="list" data-reveal>
         {notes.map((post) => (
           <li class="border-t border-line-strong">
-            <a href={`/blog/${post.id}/`} class="group block py-4">
+            <a href={`/guides/${post.id}/`} class="group block py-4">
               <span class="block font-display text-xl font-medium tracking-(--tracking-heading) group-hover:text-accent-strong">
                 {post.data.title}
               </span>
