@@ -265,6 +265,55 @@
     background: var(--color-surface);
   }
 
+  /* Blog articles: Markdown output, styled from the site's tokens. */
+  .prose-dw {
+    color: var(--color-ink);
+    line-height: 1.7;
+  }
+  .prose-dw > * + * {
+    margin-top: 1rem;
+  }
+  .prose-dw h2 {
+    margin-top: 2rem;
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .prose-dw h3 {
+    margin-top: 1.5rem;
+    font-weight: 600;
+  }
+  .prose-dw ul,
+  .prose-dw ol {
+    padding-left: 1.25rem;
+  }
+  .prose-dw ul {
+    list-style: disc;
+  }
+  .prose-dw ol {
+    list-style: decimal;
+  }
+  .prose-dw li + li {
+    margin-top: 0.375rem;
+  }
+  .prose-dw li::marker {
+    color: var(--color-ink-subtle);
+  }
+  .prose-dw a {
+    color: var(--color-accent-strong);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+  }
+  .prose-dw strong {
+    font-weight: 600;
+  }
+  .prose-dw p,
+  .prose-dw li {
+    font-variant-numeric: tabular-nums;
+  }
+
   /* Text links that live in prose or small print. */
   .link {
     color: var(--color-accent-strong);

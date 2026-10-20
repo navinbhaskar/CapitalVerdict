@@ -81,7 +81,11 @@ export default function CarSetCard({ locale, set, names, baseKey, years }: Props
             <tr class="border-b border-line">
               <td class="py-2" />
               {set.entries.map((e) => (
-                <th key={e.key} scope="col" class="py-2 pl-3 text-right font-medium">
+                <th
+                  key={e.key}
+                  scope="col"
+                  class="py-2 pl-3 text-right font-medium whitespace-nowrap"
+                >
                   {names[e.key]!.car}
                   {e.key === best!.key && (
                     <span class="mt-0.5 block text-xs font-medium text-accent-strong">
@@ -107,7 +111,7 @@ export default function CarSetCard({ locale, set, names, baseKey, years }: Props
                 {set.entries.map((e) => (
                   <td
                     key={e.key}
-                    class={`py-2 pl-3 text-right num ${row.strong ? 'font-semibold' : ''}`}
+                    class={`py-2 pl-3 text-right whitespace-nowrap num ${row.strong ? 'font-semibold' : ''}`}
                   >
                     {row.value(e)}
                   </td>

@@ -1,0 +1,23 @@
+import { defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { z } from 'astro/zod';
+
+/**
+ * Blog posts: Markdown in src/content/blog. Facts in a post must come from the data files or the
+ * tools' own results; illustrative numbers say so in the text.
+ */
+const blog = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
+  schema: z.object({
+    title: z.string().min(1),
+    description: z.string().min(1).max(200),
+    date: z.coerce.date(),
+    updated: z.coerce.date().optional(),
+    /** decision: one tool's question worked through; basics: a money idea; update: a dated data change. */
+    kind: z.enum(['decision', 'basics', 'update']),
+    /** The calculator this post leads to, if any. */
+    tool: z.enum(['car-fuel', 'solar', 'rent-vs-buy']).optional(),
+  }),
+});
+
+export const collections = { blog };

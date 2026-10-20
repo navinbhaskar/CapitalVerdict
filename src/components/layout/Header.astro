@@ -15,6 +15,8 @@ const carFuel = localizePath('/tools/car-fuel/', locale);
 const onCarFuel = path.startsWith('/tools/car-fuel');
 const methodology = localizePath('/methodology/', locale);
 const onMethodology = path.startsWith('/methodology');
+const blog = localizePath('/blog/', locale);
+const onBlog = path.startsWith('/blog');
 ---
 
 <!--
@@ -37,6 +39,11 @@ const onMethodology = path.startsWith('/methodology');
           <li class="hidden sm:block">
             <a href={carFuel} class="nav-link" aria-current={onCarFuel ? 'page' : undefined}>
               {t(locale, 'nav.carFuel')}
+            </a>
+          </li>
+          <li class="hidden sm:block">
+            <a href={blog} class="nav-link" aria-current={onBlog ? 'page' : undefined}>
+              {t(locale, 'nav.blog')}
             </a>
           </li>
           <li class="hidden md:block">

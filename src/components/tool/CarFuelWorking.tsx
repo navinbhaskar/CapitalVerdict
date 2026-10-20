@@ -6,6 +6,8 @@ import type { CarFuelInput, CarFuelResult } from '@/models/carFuel';
 
 interface Props {
   locale: Locale;
+  /** Heading override when several workings share a page. */
+  heading?: string;
   input: CarFuelInput;
   result: CarFuelResult;
   /** Name of the alternative ("CNG" or "EV") and its units. */
@@ -166,9 +168,9 @@ export default function CarFuelWorking(props: Props) {
   ].filter(Boolean) as Row[];
 
   return (
-    <section aria-labelledby="working-heading">
-      <h2 id="working-heading" class="font-display text-xl font-semibold">
-        {t(locale, 'working.heading')}
+    <section aria-labelledby={`working-heading-${altKind}`}>
+      <h2 id={`working-heading-${altKind}`} class="font-display text-xl font-semibold">
+        {props.heading ?? t(locale, 'working.heading')}
       </h2>
       <div class="mt-4 grid gap-4 lg:grid-cols-2">
         <div class="grid content-start gap-4">

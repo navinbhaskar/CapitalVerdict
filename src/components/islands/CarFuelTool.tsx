@@ -874,6 +874,7 @@ export default function CarFuelTool({ locale }: Props) {
               <CarFuelWorking
                 key={kind}
                 locale={locale}
+                heading={t(locale, 'working.headingFor', { alt: fuelName(kind) })}
                 input={pairs[kind]!}
                 result={setComputed.set.pairs[kind]!.result}
                 altName={fuelName(kind)}

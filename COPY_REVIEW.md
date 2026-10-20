@@ -61,3 +61,18 @@ switch.
 | [ ] `scenarios.*`                                                                                                                                                                                                              | Save, compare and print (all tools)                                      |
 | [ ] `rentBuy.group.essentials`, `rentBuy.refineHint`, `rentBuy.in.prepayYearly`, `rentBuy.in.monthlyIncome` (+ notes), `rentBuy.stat.interestPaid`, `.loanEnds`, `.loanYear`, `.loanAfter`, `.emiShare`, `rentBuy.col.prepaid` | Rent vs buy: quick mode and loan extras                                  |
 | [ ] `solar.group.essentials`, `solar.refineHint`, `solar.stat.coverage`, `solar.stat.lifetimeSaving`                                                                                                                           | Solar: quick mode and new figures                                        |
+
+## Blog posts (drafts for your review)
+
+Each post's numbers are recomputed by `src/content/blogNumbers.test.ts`; if a price or model changes, that test fails and the post needs updating. Examples are labelled illustrative in the text.
+
+| Post                                                         | Kind           | Check especially                                                              |
+| ------------------------------------------------------------ | -------------- | ----------------------------------------------------------------------------- |
+| [ ] `src/content/blog/when-does-a-cng-car-pay-back.md`       | Decision       | Uses Lucknow prices of 19 Oct 2026 and the illustrative 18 km/L, 26 km/kg car |
+| [ ] `src/content/blog/is-rooftop-solar-worth-it.md`          | Decision       | Made-up 3 kW example; no subsidy or tariff figures until those are verified   |
+| [ ] `src/content/blog/rent-or-buy-the-maths-people-skip.md`  | Decision       | Made-up ₹50 lakh example; 7% stamp duty is illustrative, not the UP rate      |
+| [ ] `src/content/blog/where-your-emi-goes.md`                | Money idea     | Mentions prepayment charges and tax benefits only as things to check          |
+| [ ] `src/content/blog/break-even-the-number-to-ask-for.md`   | Money idea     |                                                                               |
+| [ ] `src/content/blog/todays-rupees.md`                      | Money idea     |                                                                               |
+| [ ] `src/content/blog/lucknow-cng-107-october-2026.md`       | Price update   | Mentions ₹95.75, the price the tool used before the update                    |
+| [ ] `blog.*`, `nav.blog`, `footer.link.blog`, `home.notes.*` | Blog interface |                                                                               |

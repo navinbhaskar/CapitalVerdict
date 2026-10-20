@@ -1,0 +1,110 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { t, type MessageKey } from '@/i18n/t';
+import { TOOL_PATHS, byDateDesc, readingMinutes } from '@/lib/blog';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+const { post } = Astro.props;
+const locale = 'en';
+const { Content } = await render(post);
+const { title, description, date, updated, kind, tool } = post.data;
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const dateFormat = new Intl.DateTimeFormat('en-IN', { dateStyle: 'long', timeZone: 'UTC' });
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+
+const toolTitle: Record<NonNullable<typeof tool>, MessageKey> = {
+  'car-fuel': 'tool.carFuel.question',
+  solar: 'tool.solar.question',
+  'rent-vs-buy': 'tool.rentVsBuy.question',
+};
+const more = (await getCollection('blog'))
+  .filter((p) => p.id !== post.id)
+  .sort((a, b) => Number(b.data.tool === tool) - Number(a.data.tool === tool) || byDateDesc(a, b))
+  .slice(0, 3);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description,
+    datePublished: iso(date),
+    dateModified: iso(updated ?? date),
+    mainEntityOfPage: url,
+    inLanguage: 'en-IN',
+    publisher: { '@type': 'Organization', name: t(locale, 'site.name') },
+  },
+];
+---
+
+<BaseLayout locale={locale} title={title} description={description} jsonLd={jsonLd}>
+  <article class="container-page pt-6 pb-12 sm:pt-8 sm:pb-14">
+    <header class="max-w-(--container-prose)">
+      <p class="text-sm">
+        <a href="/blog/" class="link">
+          {t(locale, 'blog.title')}
+        </a>
+        <span class="text-ink-muted">
+          {' / '}
+          {t(locale, `blog.kind.${kind}` as MessageKey)}
+        </span>
+      </p>
+      <h1 class="mt-2 font-display text-2xl font-medium sm:text-3xl">{title}</h1>
+      <p class="mt-3 text-ink-muted">{description}</p>
+      <p class="num mt-3 text-sm text-ink-muted">
+        <time datetime={iso(date)}>{dateFormat.format(date)}</time>
+        {updated && (
+          <>
+            {', '}
+            {t(locale, 'blog.updated', { date: dateFormat.format(updated) })}
+          </>
+        )}
+        {', '}
+        {t(locale, 'blog.minutes', { n: readingMinutes(post.body ?? '') })}
+      </p>
+    </header>
+
+    <div class="prose-dw mt-6 max-w-(--container-prose)">
+      <Content />
+    </div>
+
+    {tool && (
+      <aside class="mt-10 max-w-(--container-prose) rounded-xl border border-line p-5">
+        <p class="text-sm text-ink-muted">{t(locale, 'blog.tryTool')}</p>
+        <p class="mt-1 font-display text-xl font-semibold">{t(locale, toolTitle[tool])}</p>
+        <a href={TOOL_PATHS[tool]} class="btn btn-primary mt-4 min-h-11 px-4 text-sm">
+          {t(locale, 'blog.openTool')}
+        </a>
+      </aside>
+    )}
+
+    <p class="mt-8 max-w-(--container-prose) border-l-2 border-line-strong pl-3 text-sm text-ink-muted">
+      {t(locale, 'blog.disclaimer')}
+    </p>
+
+    {more.length > 0 && (
+      <nav class="mt-10 max-w-3xl border-t border-line pt-6" aria-labelledby="more-posts">
+        <h2 id="more-posts" class="font-display text-xl font-semibold">
+          {t(locale, 'blog.more')}
+        </h2>
+        <ul class="mt-3 divide-y divide-line" role="list">
+          {more.map((p) => (
+            <li>
+              <a href={`/blog/${p.id}/`} class="link inline-flex min-h-11 items-center py-1">
+                {p.data.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )}
+  </article>
+</BaseLayout>

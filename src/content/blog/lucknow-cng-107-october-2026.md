@@ -1,0 +1,21 @@
+---
+title: Lucknow CNG now ₹107 a kg
+description: Green Gas Limited's price page lists CNG in Lucknow at ₹107.00 a kg from 3 October 2026. Here is what it does to the CNG car's payback.
+date: 2026-10-20
+kind: update
+tool: car-fuel
+---
+
+Green Gas Limited, the city gas distributor for Lucknow, lists CNG at **₹107.00 a kg from 6 am on 3 October 2026** on its price page. The car tool now uses this price for Lucknow. Petrol in Lucknow is ₹101.86 a litre (19 October 2026).
+
+## What it does to the payback
+
+With the illustrative car on our home page (18 km a litre on petrol, 26 km a kg on CNG, a ₹90,000 higher price at 9% interest, 1,800 km a month):
+
+- CNG now costs ₹4.12 a km against petrol's ₹5.66, a saving of ₹1.54 a km.
+- At ₹95.75 a kg, the price the tool used before this update, the CNG car paid back in 33 months. At ₹107.00 it takes **46 months**.
+- Below about 1,191 km a month, petrol is now the cheaper car over 10 years.
+
+## Check your own pump
+
+Prices can differ within a city and change without much notice. If the price at your pump is different, type it into the tool under "Refine the assumptions". Every value we use, with its source and date, is listed in the [assumptions changelog](/assumptions-changelog/).

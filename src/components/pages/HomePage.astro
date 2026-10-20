@@ -4,6 +4,8 @@ import Icon from '@/components/layout/Icon.astro';
 import HeroDecider from '@/components/islands/HeroDecider';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { localizePath } from '@/i18n/routes';
+import { getCollection } from 'astro:content';
+import { byDateDesc } from '@/lib/blog';
 
 interface Props {
   locale: Locale;
@@ -45,6 +47,8 @@ const upcoming: {
   { title: 'tool.ac.title', question: 'tool.ac.question', icon: 'snowflake' },
   { title: 'tool.taxRegime.title', question: 'tool.taxRegime.question', icon: 'percent' },
 ];
+
+const notes = (await getCollection('blog')).sort(byDateDesc).slice(0, 3);
 
 const principles: { title: MessageKey; body: MessageKey }[] = [
   { title: 'principle.assumptions.title', body: 'principle.assumptions.body' },
@@ -162,6 +166,31 @@ const principles: { title: MessageKey; body: MessageKey }[] = [
       </ul>
     </div>
   </section>
+
+  {notes.length > 0 && (
+    <section class="container-page pt-10 sm:pt-14" aria-labelledby="home-notes">
+      <div class="flex flex-wrap items-baseline justify-between gap-3" data-reveal>
+        <h2 id="home-notes" class="font-display text-2xl font-medium sm:text-3xl">
+          {t(locale, 'home.notes.heading')}
+        </h2>
+        <a href={localizePath('/blog/', locale)} class="link text-sm">
+          {t(locale, 'home.notes.all')}
+        </a>
+      </div>
+      <ul class="mt-4 grid gap-x-8 sm:grid-cols-3" role="list" data-reveal>
+        {notes.map((post) => (
+          <li class="border-t border-line-strong">
+            <a href={`/blog/${post.id}/`} class="group block py-3">
+              <span class="block font-medium group-hover:text-accent-strong">
+                {post.data.title}
+              </span>
+              <span class="mt-1 block text-sm text-ink-muted">{post.data.description}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
 
   <section id="principles" class="container-page scroll-mt-20 py-10 sm:py-14">
     <h2 class="font-display text-2xl font-medium sm:text-3xl" data-reveal>
