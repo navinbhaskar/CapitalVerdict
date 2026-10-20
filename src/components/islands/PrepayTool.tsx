@@ -580,8 +580,8 @@ export default function PrepayTool({ locale }: Props) {
             </MoreDetail>
 
             <MoreDetail
-              title={t(locale, 'prepay.detail.chart')}
-              hint={t(locale, 'prepay.detail.chartHint')}
+              title={t(locale, 'detail.chartReturns')}
+              hint={t(locale, 'detail.chartReturnsHint')}
             >
               <div class="grid gap-6 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12">
                 <NetPositionChart
@@ -593,14 +593,14 @@ export default function PrepayTool({ locale }: Props) {
                 />
                 <section aria-labelledby="pp-returns">
                   <h3 id="pp-returns" class="font-display text-xl font-medium">
-                    {t(locale, 'prepay.returns.heading')}
+                    {t(locale, 'returns.heading')}
                   </h3>
                   <ul class="mt-4 space-y-3" role="list">
                     {extras?.atReturns.map(({ ret, difference }) => (
                       <li key={ret} class="rounded-xl border border-line p-4">
                         <div class="flex items-baseline justify-between gap-3">
                           <span class="font-medium whitespace-nowrap">
-                            {t(locale, 'prepay.returns.at', { value: formatPercent(ret) })}
+                            {t(locale, 'returns.at', { value: formatPercent(ret) })}
                           </span>
                           <span class="text-right font-semibold num">
                             {difference >= 0
@@ -615,7 +615,7 @@ export default function PrepayTool({ locale }: Props) {
                       </li>
                     ))}
                   </ul>
-                  <p class="mt-3 text-xs text-ink-muted">{t(locale, 'prepay.returns.note')}</p>
+                  <p class="mt-3 text-xs text-ink-muted">{t(locale, 'returns.note')}</p>
                 </section>
               </div>
             </MoreDetail>

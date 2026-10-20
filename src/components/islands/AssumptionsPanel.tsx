@@ -20,11 +20,11 @@ interface Props {
 }
 
 /** Which live tools read each assumption. Keep in step with the tools. */
-const USED_BY: Partial<Record<AssumptionKey, MessageKey>> = {
-  city: 'tool.carFuel.title',
-  carLoanRate: 'tool.carFuel.title',
-  homeLoanRate: 'tool.rentVsBuy.title',
-  inflation: 'tool.rentVsBuy.title',
+const USED_BY: Partial<Record<AssumptionKey, MessageKey[]>> = {
+  city: ['tool.carFuel.title'],
+  carLoanRate: ['tool.carFuel.title', 'tool.carLoan.title'],
+  homeLoanRate: ['tool.rentVsBuy.title', 'tool.prepay.title'],
+  inflation: ['tool.rentVsBuy.title', 'tool.prepay.title', 'tool.carLoan.title'],
 };
 
 /** Fields the user has changed from the defaults. */
@@ -74,7 +74,7 @@ export default function AssumptionsPanel({ locale }: Props) {
     const used = USED_BY[key];
     const parts = [
       used
-        ? t(locale, 'assumptions.usedIn', { tool: t(locale, used) })
+        ? t(locale, 'assumptions.usedIn', { tool: used.map((k) => t(locale, k)).join(', ') })
         : t(locale, 'assumptions.notUsedYet'),
       defaultText,
     ].filter(Boolean);

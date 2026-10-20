@@ -26,6 +26,7 @@ const toolTitle: Record<NonNullable<typeof tool>, MessageKey> = {
   solar: 'tool.solar.question',
   'rent-vs-buy': 'tool.rentVsBuy.question',
   'prepay-or-invest': 'tool.prepay.question',
+  'cash-or-car-loan': 'tool.carLoan.question',
 };
 const more = (await getCollection('blog'))
   .filter((p) => p.id !== post.id)
