@@ -1,4 +1,4 @@
-# Decidewise
+# CapitalVerdict
 
 Honest money-decision calculators for India. "Big money decisions, honest maths, assumptions shown."
 Astro + TypeScript (static), Preact islands, Tailwind v4, Vitest. English at `/`. Hindi (`/hi/`) is

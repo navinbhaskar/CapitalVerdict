@@ -1,7 +1,7 @@
 /// <reference types="astro/client" />
 
 interface ImportMetaEnv {
-  /** Production origin, e.g. https://decidewise.in. Used for canonical links, sitemap and feeds. */
+  /** Production origin, e.g. https://capitalverdict.com. Used for canonical links, sitemap and feeds. */
   readonly SITE_URL?: string;
   /** Where "Report an error" emails go. The link is hidden until this is set. */
   readonly PUBLIC_CONTACT_EMAIL?: string;

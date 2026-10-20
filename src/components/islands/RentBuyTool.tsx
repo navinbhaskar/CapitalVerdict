@@ -733,7 +733,7 @@ export default function RentBuyTool({ locale }: Props) {
                 locale={locale}
                 columns={columns}
                 highlight={r.crossover ? [r.crossover.months] : []}
-                csvFilename="decidewise-rent-vs-buy.csv"
+                csvFilename="capitalverdict-rent-vs-buy.csv"
               />
             </MoreDetail>
           </div>

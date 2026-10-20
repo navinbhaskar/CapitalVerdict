@@ -5,7 +5,7 @@
 const problems = [];
 const site = process.env.SITE_URL ?? '';
 if (!/^https:\/\/[^/]+\.[^/]+/.test(site) || /localhost|127\.0\.0\.1/.test(site)) {
-  problems.push('SITE_URL must be the public https origin, e.g. https://decidewise.in');
+  problems.push('SITE_URL must be the public https origin, e.g. https://capitalverdict.com');
 }
 const email = process.env.PUBLIC_CONTACT_EMAIL ?? '';
 if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.endsWith('.invalid')) {

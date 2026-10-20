@@ -970,7 +970,9 @@ export default function CarFuelTool({ locale }: Props) {
                   : []
               }
               csvFilename={
-                all ? 'decidewise-petrol-cng-ev.csv' : `decidewise-${singleKind}-vs-petrol.csv`
+                all
+                  ? 'capitalverdict-petrol-cng-ev.csv'
+                  : `capitalverdict-${singleKind}-vs-petrol.csv`
               }
             />
           </MoreDetail>

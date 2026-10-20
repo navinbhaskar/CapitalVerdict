@@ -7,7 +7,7 @@
         "base": 0.06,
         "optimistic": 0.05
       },
-      "source": "Decidewise default assumption from project spec; user-editable, not a forecast",
+      "source": "CapitalVerdict default assumption from project spec; user-editable, not a forecast",
       "effectiveDate": "2026-10-19",
       "status": "verified"
     },
@@ -18,7 +18,7 @@
         "base": 0.1,
         "optimistic": 0.12
       },
-      "source": "Decidewise default assumption from project spec; user-editable, not a forecast",
+      "source": "CapitalVerdict default assumption from project spec; user-editable, not a forecast",
       "effectiveDate": "2026-10-19",
       "status": "verified"
     },
@@ -29,7 +29,7 @@
         "base": 0.05,
         "optimistic": 0.07
       },
-      "source": "Decidewise default assumption from project spec; user-editable, not a forecast",
+      "source": "CapitalVerdict default assumption from project spec; user-editable, not a forecast",
       "effectiveDate": "2026-10-19",
       "status": "verified"
     },
@@ -40,7 +40,7 @@
         "base": 0.05,
         "optimistic": 0.04
       },
-      "source": "Decidewise default assumption from project spec; user-editable, not a forecast",
+      "source": "CapitalVerdict default assumption from project spec; user-editable, not a forecast",
       "effectiveDate": "2026-10-19",
       "status": "verified"
     },
@@ -51,7 +51,7 @@
         "base": 0.03,
         "optimistic": 0.05
       },
-      "source": "Decidewise default assumption from project spec (fuel/tariff rise); user-editable, not a forecast",
+      "source": "CapitalVerdict default assumption from project spec (fuel/tariff rise); user-editable, not a forecast",
       "effectiveDate": "2026-10-19",
       "status": "verified"
     }

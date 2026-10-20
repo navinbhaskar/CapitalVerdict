@@ -32,7 +32,7 @@ Break-even depends on a handful of inputs, and usually one matters most:
 - **The price gap you are saving on.** Fuel, electricity or rent. If that gap shrinks, the wait grows.
 - **The extra price itself**, and the interest rate on it.
 
-Each Decidewise tool has a "what would flip the answer" list. It changes one input at a time and tells you the value at which the other option starts to win, for example the monthly distance below which petrol beats CNG.
+Each CapitalVerdict tool has a "what would flip the answer" list. It changes one input at a time and tells you the value at which the other option starts to win, for example the monthly distance below which petrol beats CNG.
 
 ## Compare it with how long you will keep it
 

@@ -554,7 +554,7 @@ export default function SolarTool({ locale }: Props) {
                 locale={locale}
                 columns={columns}
                 highlight={r.payback && r.payback.months > 0 ? [r.payback.months] : []}
-                csvFilename="decidewise-rooftop-solar.csv"
+                csvFilename="capitalverdict-rooftop-solar.csv"
               />
             </MoreDetail>
           </div>
