@@ -21,6 +21,8 @@ import MonthlyTable, { type MonthlyColumn } from '@/components/tool/MonthlyTable
 import SensitivityList, { type FlipLine } from '@/components/tool/SensitivityList';
 import NonMoneyChecklist from '@/components/tool/NonMoneyChecklist';
 import ShareLink from '@/components/tool/ShareLink';
+import Refine from '@/components/tool/Refine';
+import ScenarioShelf from '@/components/tool/ScenarioShelf';
 
 interface Props {
   locale: Locale;
@@ -86,6 +88,17 @@ export default function SolarTool({ locale }: Props) {
 
   const years = form.horizonYears ?? 25;
   const missing = invalidSolarFields(form, SLAB_TARIFF !== null);
+  const QUICK: (keyof SolarForm)[] = [
+    'systemKW',
+    'grossCost',
+    'subsidy',
+    'monthlyConsumptionKWh',
+    'sanctionedLoadKW',
+    'averageRate',
+    'generationPerKWPerDay',
+  ];
+  const quickInvalid = missing.filter((k) => QUICK.includes(k));
+  const refineInvalid = missing.some((k) => !QUICK.includes(k));
   const unverified = (key: Parameters<typeof verifiedSolarValue>[0]) =>
     verifiedSolarValue(key) === null;
 
@@ -232,9 +245,9 @@ export default function SolarTool({ locale }: Props) {
               {t(locale, 'solar.clear')}
             </button>
           </div>
-          <p class="mt-1 text-sm text-ink-muted">{t(locale, 'inputs.legend')}</p>
+          <p class="mt-1 text-sm text-ink-muted">{t(locale, 'inputs.quickLegend')}</p>
 
-          <Group title={t(locale, 'solar.group.system')}>
+          <Group title={t(locale, 'solar.group.essentials')}>
             {field('systemKW', 'solar.in.systemKW', 'kW', t(locale, 'solar.note.systemKW'))}
             {field('grossCost', 'solar.in.grossCost', '₹', t(locale, 'solar.note.grossCost'))}
             {field('subsidy', 'solar.in.subsidy', '₹', t(locale, 'solar.note.subsidy'), {
@@ -242,42 +255,37 @@ export default function SolarTool({ locale }: Props) {
               flagged: unverified('subsidy'),
             })}
             {field(
+              'monthlyConsumptionKWh',
+              'solar.in.consumption',
+              'kWh',
+              t(locale, 'solar.note.consumption'),
+            )}
+            {SLAB_TARIFF
+              ? field('sanctionedLoadKW', 'solar.in.load', 'kW', t(locale, 'solar.note.load'))
+              : field(
+                  'averageRate',
+                  'solar.in.averageRate',
+                  '₹/kWh',
+                  t(locale, 'solar.note.averageRate'),
+                )}
+            {field(
               'generationPerKWPerDay',
               'solar.in.generation',
               'kWh',
               t(locale, 'solar.note.generation'),
               { flagged: unverified('generationPerKWPerDay') },
             )}
-            {field(
-              'degradationPerYear',
-              'solar.in.degradation',
-              '%',
-              t(locale, 'solar.note.degradation'),
-              {
-                percent: true,
-                flagged: unverified('degradationPerYear'),
-              },
-            )}
           </Group>
 
-          <Group title={t(locale, 'solar.group.bill')}>
-            {field(
-              'monthlyConsumptionKWh',
-              'solar.in.consumption',
-              'kWh',
-              t(locale, 'solar.note.consumption'),
-            )}
-            {SLAB_TARIFF ? (
-              field('sanctionedLoadKW', 'solar.in.load', 'kW', t(locale, 'solar.note.load'))
-            ) : (
-              <>
-                {field(
-                  'averageRate',
-                  'solar.in.averageRate',
-                  '₹/kWh',
-                  t(locale, 'solar.note.averageRate'),
-                )}
-                {field(
+          <Refine
+            locale={locale}
+            storageKey="dw.refine.solar"
+            hint={t(locale, 'solar.refineHint')}
+            forceOpen={refineInvalid && quickInvalid.length === 0}
+          >
+            <Group title={t(locale, 'solar.group.bill')}>
+              {!SLAB_TARIFF &&
+                field(
                   'fixedCharge',
                   'solar.in.fixedCharge',
                   '₹',
@@ -286,63 +294,65 @@ export default function SolarTool({ locale }: Props) {
                     optional: true,
                   },
                 )}
-              </>
-            )}
-            {field(
-              'exportRatePerKWh',
-              'solar.in.exportRate',
-              '₹/kWh',
-              t(locale, 'solar.note.exportRate'),
-              {
-                optional: true,
-                flagged: unverified('exportRatePerKWh'),
-              },
-            )}
-          </Group>
+              {field(
+                'exportRatePerKWh',
+                'solar.in.exportRate',
+                '₹/kWh',
+                t(locale, 'solar.note.exportRate'),
+                {
+                  optional: true,
+                  flagged: unverified('exportRatePerKWh'),
+                },
+              )}
+              {field(
+                'degradationPerYear',
+                'solar.in.degradation',
+                '%',
+                t(locale, 'solar.note.degradation'),
+                {
+                  percent: true,
+                  flagged: unverified('degradationPerYear'),
+                },
+              )}
+            </Group>
 
-          <Group title={t(locale, 'inputs.group.optional')} columns>
-            {field(
-              'tariffRisePerYear',
-              'solar.in.tariffRise',
-              '%',
-              t(locale, 'solar.note.tariffRise'),
-              {
-                percent: true,
-                layout: 'stack',
-              },
-            )}
-            {field(
-              'horizonYears',
-              'solar.in.horizon',
-              t(locale, 'input.horizonYears.unit'),
-              t(locale, 'solar.note.horizon'),
-              {
-                integer: true,
-                layout: 'stack',
-              },
-            )}
-            {field(
-              'inverterYear',
-              'solar.in.inverterYear',
-              t(locale, 'input.horizonYears.unit'),
-              t(locale, 'solar.note.inverter'),
-              {
-                integer: true,
-                optional: true,
-                layout: 'stack',
-              },
-            )}
-            {field(
-              'inverterCost',
-              'solar.in.inverterCost',
-              '₹',
-              t(locale, 'solar.note.inverterCost'),
-              {
-                optional: true,
-                layout: 'stack',
-              },
-            )}
-          </Group>
+            <Group title={t(locale, 'inputs.group.optional')} columns>
+              {field(
+                'tariffRisePerYear',
+                'solar.in.tariffRise',
+                '%',
+                t(locale, 'solar.note.tariffRise'),
+                {
+                  percent: true,
+                  layout: 'stack',
+                },
+              )}
+              {field(
+                'horizonYears',
+                'solar.in.horizon',
+                t(locale, 'input.horizonYears.unit'),
+                t(locale, 'solar.note.horizon'),
+                { integer: true, layout: 'stack' },
+              )}
+              {field(
+                'inverterYear',
+                'solar.in.inverterYear',
+                t(locale, 'input.horizonYears.unit'),
+                t(locale, 'solar.note.inverter'),
+                { integer: true, optional: true, layout: 'stack' },
+              )}
+              {field(
+                'inverterCost',
+                'solar.in.inverterCost',
+                '₹',
+                t(locale, 'solar.note.inverterCost'),
+                {
+                  optional: true,
+                  layout: 'stack',
+                },
+              )}
+            </Group>
+          </Refine>
         </section>
 
         <div class="lg:sticky lg:top-20">
@@ -388,6 +398,15 @@ export default function SolarTool({ locale }: Props) {
                 <Stat label={t(locale, 'solar.stat.irr')}>
                   {r.irr === null ? '—' : formatPercent(r.irr)}
                 </Stat>
+                <Stat label={t(locale, 'solar.stat.coverage')}>
+                  {formatPercent(
+                    r.generation.slice(0, 12).reduce((a, b) => a + b, 0) /
+                      (input.monthlyConsumptionKWh * 12),
+                  )}
+                </Stat>
+                <Stat label={t(locale, 'solar.stat.lifetimeSaving', { years })}>
+                  {formatMoney(r.saving.reduce((a, b) => a + b, 0))}
+                </Stat>
               </dl>
               <p class="mt-3 text-xs text-ink-muted">{t(locale, 'solar.stat.note')}</p>
             </section>
@@ -405,6 +424,35 @@ export default function SolarTool({ locale }: Props) {
               <ShareLink locale={locale} url={shareHref} />
             </div>
           )}
+          <ScenarioShelf
+            locale={locale}
+            tool="solar"
+            query={shareHref ? new URL(shareHref).search : ''}
+            summary={
+              r && input
+                ? [
+                    { label: t(locale, 'scenarios.row.answer'), value: headline },
+                    {
+                      label: t(locale, 'solar.in.systemKW'),
+                      value: `${formatNumber(input.systemKW, 1)} kW`,
+                    },
+                    { label: t(locale, 'solar.stat.netCost'), value: formatMoney(r.netCost) },
+                    {
+                      label: t(locale, 'solar.stat.firstYear'),
+                      value: formatMoney(r.firstYearSaving),
+                    },
+                    {
+                      label: t(locale, 'solar.stat.net', { years }),
+                      value: formatMoney(r.netAtHorizon),
+                    },
+                    {
+                      label: t(locale, 'solar.stat.irr'),
+                      value: r.irr === null ? '—' : formatPercent(r.irr),
+                    },
+                  ]
+                : null
+            }
+          />
         </div>
       </div>
 

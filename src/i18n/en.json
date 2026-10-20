@@ -712,5 +712,9 @@
   "rentBuy.stat.loanYear": "In year {year}",
   "rentBuy.stat.loanAfter": "After year {years}",
   "rentBuy.stat.emiShare": "EMI as a share of income",
-  "rentBuy.col.prepaid": "Prepaid"
+  "rentBuy.col.prepaid": "Prepaid",
+  "solar.group.essentials": "Your system and your bill",
+  "solar.refineHint": "Fixed charge, export credit, panel ageing, tariff rise, years and inverter replacement. Filled in or optional.",
+  "solar.stat.coverage": "Share of your use covered, year 1",
+  "solar.stat.lifetimeSaving": "Bills saved over {years} years"
 }

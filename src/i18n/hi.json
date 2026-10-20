@@ -712,5 +712,9 @@
   "rentBuy.stat.loanYear": "TODO_COPY_HI",
   "rentBuy.stat.loanAfter": "TODO_COPY_HI",
   "rentBuy.stat.emiShare": "TODO_COPY_HI",
-  "rentBuy.col.prepaid": "TODO_COPY_HI"
+  "rentBuy.col.prepaid": "TODO_COPY_HI",
+  "solar.group.essentials": "TODO_COPY_HI",
+  "solar.refineHint": "TODO_COPY_HI",
+  "solar.stat.coverage": "TODO_COPY_HI",
+  "solar.stat.lifetimeSaving": "TODO_COPY_HI"
 }
