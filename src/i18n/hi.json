@@ -530,7 +530,6 @@
   "assumptionsTable.rentGrowth": "TODO_COPY_HI",
   "assumptionsTable.homeLoanRate": "TODO_COPY_HI",
   "footer.nav": "TODO_COPY_HI",
-  "footer.link.methodology": "TODO_COPY_HI",
   "footer.link.changelog": "TODO_COPY_HI",
   "footer.link.about": "TODO_COPY_HI",
   "footer.link.disclaimer": "TODO_COPY_HI",
@@ -884,5 +883,8 @@
   "page.methodology.prepay.body": "TODO_COPY_HI",
   "page.methodology.prepay.formula": "TODO_COPY_HI",
   "prepay.detail.chart": "TODO_COPY_HI",
-  "prepay.detail.chartHint": "TODO_COPY_HI"
+  "prepay.detail.chartHint": "TODO_COPY_HI",
+  "footer.group.tools": "TODO_COPY_HI",
+  "footer.group.learn": "TODO_COPY_HI",
+  "footer.legal": "TODO_COPY_HI"
 }

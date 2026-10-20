@@ -530,7 +530,6 @@
   "assumptionsTable.rentGrowth": "Rent increase a year (pessimistic / base / optimistic)",
   "assumptionsTable.homeLoanRate": "Home loan rate (default)",
   "footer.nav": "Site",
-  "footer.link.methodology": "How we work out the numbers",
   "footer.link.changelog": "Assumptions changelog",
   "footer.link.about": "About",
   "footer.link.disclaimer": "Disclaimer",
@@ -884,5 +883,8 @@
   "page.methodology.prepay.body": "The tool follows two households with the same money until the loan's original end date. One puts the amount into the loan; the other invests it. Both spend the original EMI's worth every month: whatever the loan does not take is invested at your return. With “keep the EMI”, the loan ends sooner and the whole EMI is invested afterwards; with “lower the EMI”, the EMI is recalculated over the same end date and the drop is invested.\n\nA prepayment charge comes out of the amount paid in. If you enter a tax rate and a limit, the tax saved on each year's interest is invested at the year end, on both sides.",
   "page.methodology.prepay.formula": "net worth = investments − loan still owed\nanswer    = prepay's net worth − invest's net worth at the original end date\ncleared   = amount paid in ÷ (1 + prepayment charge)",
   "prepay.detail.chart": "Show the chart and other returns",
-  "prepay.detail.chartHint": "How the gap changes month by month, and the answer if your return is 2 points lower or higher."
+  "prepay.detail.chartHint": "How the gap changes month by month, and the answer if your return is 2 points lower or higher.",
+  "footer.group.tools": "Calculators",
+  "footer.group.learn": "Learn",
+  "footer.legal": "Legal"
 }
