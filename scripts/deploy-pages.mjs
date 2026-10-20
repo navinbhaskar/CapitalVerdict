@@ -1,5 +1,5 @@
 /**
- * Publish the preview to GitHub Pages: https://navinbhaskar.github.io/capitalverdict/
+ * Publish the preview to GitHub Pages: https://navinbhaskar.github.io/CapitalVerdict/
  *
  *   npm run build:pages    build dist/ for the sub-path only
  *   npm run deploy:pages   build, then force-push dist/ to the gh-pages branch of origin
@@ -10,7 +10,7 @@ import { execFileSync } from 'node:child_process';
 import { rmSync } from 'node:fs';
 
 const OWNER = 'navinbhaskar';
-const REPO = 'capitalverdict';
+const REPO = 'CapitalVerdict';
 const env = { ...process.env, SITE_URL: `https://${OWNER}.github.io` };
 const run = (cmd, args, opts = {}) => execFileSync(cmd, args, { stdio: 'inherit', env, ...opts });
 
