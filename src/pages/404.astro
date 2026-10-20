@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageIntro from '@/components/layout/PageIntro.astro';
 import { t } from '@/i18n/t';
 
 const locale = 'en';
@@ -16,11 +17,8 @@ const tools = [
   description={t(locale, 'page.notFound.description')}
   noindex
 >
-  <div class="container-page pt-10 pb-16 sm:pt-14">
-    <h1 class="font-display text-2xl font-medium sm:text-3xl">
-      {t(locale, 'page.notFound.title')}
-    </h1>
-    <p class="mt-3 max-w-(--container-prose) text-ink-muted">{t(locale, 'page.notFound.body')}</p>
+  <PageIntro title={t(locale, 'page.notFound.title')} lead={t(locale, 'page.notFound.body')} />
+  <div class="container-page pt-8 pb-16">
     <ul class="mt-5 grid max-w-3xl gap-3 sm:grid-cols-3" role="list">
       {tools.map((tool) => (
         <li>

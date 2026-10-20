@@ -96,7 +96,7 @@ export default function HeroDecider({ locale }: Props) {
   return (
     <div class="w-full max-w-md justify-self-center lg:justify-self-end">
       <figure
-        class="relative grid rounded-xl p-4 shadow-float glass sm:p-5"
+        class="relative grid rounded-xl border border-line-strong bg-raised p-5 shadow-float sm:p-6"
         role="tabpanel"
         id={`${id}-panel`}
         aria-labelledby={`${id}-tab-${tab}`}
@@ -111,7 +111,10 @@ export default function HeroDecider({ locale }: Props) {
                 : t(locale, 'home.preview.label')}
             </span>
           </div>
-          <p class="mt-3 font-display text-xl font-semibold" aria-live="polite">
+          <p
+            class="mt-3 font-display text-2xl font-medium tracking-(--tracking-heading) text-accent-strong"
+            aria-live="polite"
+          >
             <span key={verdict} class="tick block">
               {verdict}
             </span>
@@ -333,7 +336,7 @@ function Stat({ label, children }: { label: string; children: ComponentChildren 
   return (
     <div>
       <dt class="text-xs text-ink-muted">{label}</dt>
-      <dd class="mt-1 font-semibold num sm:text-lg">{children}</dd>
+      <dd class="mt-1 font-display text-lg font-medium num sm:text-xl">{children}</dd>
     </div>
   );
 }

@@ -39,43 +39,50 @@
   --text-3xl--line-height: 2.375rem;
   --text-4xl: 2.375rem;
   --text-4xl--line-height: 2.75rem;
-  --text-display: clamp(2.125rem, 1.5rem + 2.6vw, 3.25rem);
-  --text-display--line-height: 1.02;
-  --tracking-display: -0.035em;
+  --text-5xl: 3rem;
+  --text-5xl--line-height: 3.125rem;
+  --text-display: clamp(2.5rem, 1.55rem + 3.9vw, 4.5rem);
+  --text-display--line-height: 1;
+  --text-figure: clamp(2.25rem, 1.7rem + 2.2vw, 3.25rem); /* the answer's headline number */
+  --text-figure--line-height: 1.05;
+  --tracking-display: -0.04em;
   --tracking-heading: -0.02em;
 
-  /* Colour */
-  --color-page: #ffffff;
-  --color-surface: #f6f8f7;
-  --color-raised: #ffffff; /* cards that sit above the page */
-  --color-ink: #1c2b39; /* 14.4:1 */
-  --color-ink-muted: #52606d; /* 6.5:1 */
-  --color-ink-subtle: #8a96a3; /* 3.0:1, large text, icons and chart axes only */
-  --color-line: #e3e8e6;
-  --color-line-strong: #cdd5d3;
-  --color-accent: #2e8b6a; /* 4.2:1, graphics and large text only */
-  --color-accent-strong: #1f6e52; /* 6.2:1, links and small text */
-  --color-accent-soft: #eaf5ef;
-  --color-primary: #1c2b39;
-  --color-primary-hover: #2a3d4f;
-  --color-on-primary: #ffffff;
-  --color-danger: #b42318; /* 6.5:1 */
-  --color-warn: #8a5300;
-  --color-warn-soft: #fff6e5;
-  --color-scrim: rgb(28 43 57 / 0.32);
-  --color-glass: rgb(255 255 255 / 0.72);
-  --color-glass-edge: rgb(255 255 255 / 0.9);
-  --color-glass-strong: rgb(255 255 255 / 0.9); /* nav bar: text scrolls under it */
-  --color-selection: #cfeadc;
+  /*
+   * Colour: "private bank". Warm ivory paper and deep forest ink for reading; dark forest bands
+   * (.band-dark: header, page intros, answers, footer) with ivory text and brass figures.
+   */
+  --color-page: #f6f2ea; /* ivory paper */
+  --color-surface: #eee8dc;
+  --color-raised: #fcfaf5; /* cards that sit above the page */
+  --color-ink: #13241d; /* 15.2:1 */
+  --color-ink-muted: #4c5a52; /* 7.1:1 */
+  --color-ink-subtle: #868b80; /* 3.2:1, large text, icons and chart axes only */
+  --color-line: #e3dbcc;
+  --color-line-strong: #cec2ac;
+  --color-accent: #a07a37; /* brass, 3.3:1: graphics and large text only */
+  --color-accent-strong: #7a5a22; /* 5.8:1, links and small text */
+  --color-accent-soft: #f1e6cc;
+  --color-primary: #123a2e; /* forest */
+  --color-primary-hover: #0c2c22;
+  --color-on-primary: #f6f2ea;
+  --color-danger: #a8281c; /* 6.6:1 */
+  --color-warn: #7d4c00;
+  --color-warn-soft: #f8ead0;
+  --color-scrim: rgb(15 42 34 / 0.4);
+  --color-glass: rgb(252 250 245 / 0.78);
+  --color-glass-edge: rgb(255 255 255 / 0.7);
+  --color-glass-strong: rgb(15 42 34 / 0.94);
+  --color-selection: #ead9ad;
 
   /* Shape and depth. Elevation is declared once: a border or a shadow, not both. */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  --shadow-card: 0 1px 2px rgb(16 24 40 / 0.05), 0 2px 6px -1px rgb(16 24 40 / 0.06);
-  --shadow-raised: 0 2px 4px rgb(16 24 40 / 0.04), 0 14px 32px -10px rgb(16 24 40 / 0.16);
-  --shadow-float: 0 8px 16px -6px rgb(16 24 40 / 0.12), 0 24px 56px -16px rgb(16 24 40 / 0.22);
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.625rem;
+  --radius-xl: 0.875rem;
+  --shadow-card: 0 1px 2px rgb(19 36 29 / 0.06), 0 2px 6px -1px rgb(19 36 29 / 0.06);
+  --shadow-raised: 0 2px 4px rgb(19 36 29 / 0.05), 0 18px 40px -14px rgb(19 36 29 / 0.28);
+  --shadow-float: 0 8px 16px -6px rgb(19 36 29 / 0.14), 0 28px 64px -18px rgb(19 36 29 / 0.34);
 
   /* Motion curves (Tailwind ease-* utilities). Durations are :root tokens below. */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -113,33 +120,48 @@
 }
 
 @layer base {
+  /* Dark forest bands on the light theme: the header, page intros, answers and the footer. */
+  .band-dark,
   :root[data-theme='dark'] {
     color-scheme: dark;
-    --color-page: #0e1621;
-    --color-surface: #141e29;
-    --color-raised: #172331;
-    --color-ink: #e8ecef; /* 15.3:1 */
-    --color-ink-muted: #a3b0bd; /* 8.2:1 */
-    --color-ink-subtle: #6f7d8a; /* 4.3:1 */
-    --color-line: #233140;
-    --color-line-strong: #33424f;
-    --color-accent: #5cc59a;
-    --color-accent-strong: #7dd3ae; /* 10.2:1 */
-    --color-accent-soft: #13302a;
-    --color-primary: #e8ecef;
-    --color-primary-hover: #ffffff;
-    --color-on-primary: #0e1621;
-    --color-danger: #f97066;
-    --color-warn: #f5b94a;
-    --color-warn-soft: #2b2111;
-    --color-scrim: rgb(0 0 0 / 0.5);
-    --color-glass: rgb(20 30 41 / 0.72);
+    --color-page: #0f2a22; /* forest */
+    --color-surface: #143329;
+    --color-raised: #163a2f;
+    --color-ink: #f3eee3; /* 13.6:1 */
+    --color-ink-muted: #b6c4bc; /* 8.4:1 */
+    --color-ink-subtle: #7e958a; /* 4.1:1 */
+    --color-line: #24493d;
+    --color-line-strong: #31594b;
+    --color-accent: #d6b878; /* brass on forest, 8.1:1 */
+    --color-accent-strong: #e4cb93; /* 9.6:1 */
+    --color-accent-soft: #1e4236;
+    --color-primary: #e4cb93; /* brass buttons */
+    --color-primary-hover: #efdaa9;
+    --color-on-primary: #0f2a22;
+    --color-danger: #f2998f;
+    --color-warn: #f0c46c;
+    --color-warn-soft: #2f3a21;
+    --color-scrim: rgb(0 0 0 / 0.55);
+    --color-glass: rgb(20 51 41 / 0.78);
     --color-glass-edge: rgb(255 255 255 / 0.08);
-    --color-glass-strong: rgb(20 30 41 / 0.9);
-    --color-selection: #1f4d3c;
-    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4);
-    --shadow-raised: 0 16px 40px -12px rgb(0 0 0 / 0.65);
-    --shadow-float: 0 24px 56px -16px rgb(0 0 0 / 0.75);
+    --color-glass-strong: rgb(15 42 34 / 0.94);
+    --color-selection: #3d5b3c;
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.35);
+    --shadow-raised: 0 18px 44px -14px rgb(0 0 0 / 0.55);
+    --shadow-float: 0 28px 64px -18px rgb(0 0 0 / 0.65);
+  }
+  /* Dark theme: the paper itself goes near-black green; bands lift one step so they still read. */
+  :root[data-theme='dark'] {
+    --color-page: #0a1c17;
+    --color-surface: #0f241d;
+    --color-raised: #12291f;
+    --color-line: #1d3b31;
+    --color-line-strong: #2a4d40;
+  }
+  [data-theme='dark'] .band-dark {
+    --color-page: #12302a;
+    --color-surface: #173a31;
+    --color-raised: #1a4035;
   }
 
   html {
@@ -168,6 +190,12 @@
     @apply text-ink;
     letter-spacing: var(--tracking-heading);
     text-wrap: balance;
+  }
+
+  /* Bands set their own colour, so text inside inherits the band's ink. */
+  .band-dark {
+    background-color: var(--color-page);
+    color: var(--color-ink);
   }
 
   p {
@@ -220,12 +248,13 @@
 @layer components {
   .btn {
     display: inline-flex;
-    min-height: 2.75rem;
+    min-height: 2.875rem;
     align-items: center;
     gap: 0.5rem;
     border-radius: var(--radius-md);
-    padding-inline: 1.25rem;
+    padding-inline: 1.375rem;
     font-weight: 500;
+    letter-spacing: 0.005em;
     transition:
       transform var(--duration-fast) var(--ease-out-quart),
       background-color var(--duration-fast) var(--ease-out-quart),
@@ -260,6 +289,7 @@
     padding-inline: 1rem;
     font-size: var(--text-sm);
     border: 1px solid var(--color-line-strong);
+    color: var(--color-ink);
   }
   .btn-outline:hover {
     background: var(--color-surface);
@@ -355,6 +385,14 @@
   }
 }
 
+/* A short brass rule that opens a section: the one ornament. */
+@utility rule-brass {
+  display: block;
+  width: 2.5rem;
+  height: 2px;
+  background: var(--color-accent);
+}
+
 /* ---------- Top nav ---------- */
 
 @layer components {
@@ -379,7 +417,16 @@
     transition: opacity var(--duration-base) var(--ease-out-quart);
   }
   [data-scrolled] .nav-bar::before {
-    opacity: 1;
+    opacity: 0;
+  }
+  .site-header {
+    box-shadow: 0 1px 0 transparent;
+    transition: box-shadow var(--duration-base) var(--ease-out-quart);
+  }
+  [data-scrolled] .site-header {
+    box-shadow:
+      0 1px 0 var(--color-line),
+      0 12px 32px -18px rgb(0 0 0 / 0.5);
   }
 
   /* Page-coloured fade above and around the floating bar, so scrolled text never shows in the gap. */
@@ -394,7 +441,7 @@
     transition: opacity var(--duration-base) var(--ease-out-quart);
   }
   [data-scrolled] .site-header::before {
-    opacity: 1;
+    opacity: 0;
   }
 
   .nav-link {

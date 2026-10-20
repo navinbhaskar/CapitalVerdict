@@ -20,12 +20,12 @@ const onBlog = path.startsWith('/blog');
 ---
 
 <!--
-  Floating bar: transparent over the top of the page, then a glass pill with a soft shadow once
-  the page scrolls (html[data-scrolled], set in Motion.astro). Only opacity animates.
+  A solid forest bar (a dark band) that stays at the top; once the page scrolls it gains a hairline
+  and a soft shadow (html[data-scrolled], set in Motion.astro).
 -->
-<header class="site-header print:hidden sticky top-0 z-40 isolate pt-2 sm:pt-3">
+<header class="site-header band-dark print:hidden sticky top-0 z-40 isolate">
   <div class="container-page">
-    <div class="nav-bar -mx-2 flex h-14 items-center justify-between gap-2 rounded-xl pr-1.5 pl-2 sm:-mx-3 sm:pl-3">
+    <div class="nav-bar flex h-16 items-center justify-between gap-2">
       <a href={home} aria-label={t(locale, 'a11y.home')} class="shrink-0 rounded-sm py-1">
         <Logo intro />
       </a>

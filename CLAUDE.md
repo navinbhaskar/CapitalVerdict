@@ -29,6 +29,12 @@ paused: strings stay in `hi.json`, but no Hindi pages are built (see `PUBLISHED_
   properties on `:root` in `src/styles/global.css`, exposed to Tailwind through `@theme`. Components use
   token-backed utilities (`bg-surface`, `rounded-card`, `shadow-raised`, `ease-out-expo`,
   `duration-(--duration-fast)`). No hex values, raw pixel sizes or one-off shadows in components.
+- **Look: "private bank".** Warm ivory paper with deep forest ink for reading; dark forest bands with
+  ivory text and brass figures for the header, every page intro (`PageIntro.astro`, `ToolLayout`), the
+  home hero and "How we work", answer cards, and the footer. A band is the `.band-dark` class, which
+  re-scopes the colour tokens, so components inside need no dark variants. Brass (`accent`) is for
+  figures, rules (`rule-brass`) and primary buttons on forest; links on ivory use `accent-strong`.
+  Alternate ivory and forest sections for rhythm; one brass rule opens each section.
 - **Dark mode** works through the same tokens (`[data-theme='dark']` overrides); never style dark mode
   per component.
 - **Glass** (`backdrop-filter`) only on the hero preview, the sticky nav and floating panels (the

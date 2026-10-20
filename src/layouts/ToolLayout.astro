@@ -60,15 +60,17 @@ const sections = [
 ---
 
 <BaseLayout locale={locale} title={title} description={description} jsonLd={jsonLd}>
-  <article class="container-page pt-6 pb-12 sm:pt-8 sm:pb-14">
-    <header class="max-w-3xl">
-      <h1 class="font-display text-2xl font-medium sm:text-3xl">{title}</h1>
-      <p class="mt-2 border-l-2 border-line-strong pl-3 text-sm text-ink-muted">
-        {t(locale, 'tool.disclaimer')}
-      </p>
-    </header>
-
-    <div class="mt-5">
+  <header class="band-dark">
+    <div class="container-page pt-8 pb-10 sm:pt-12 sm:pb-14">
+      <span class="rule-brass" aria-hidden="true"></span>
+      <h1 class="mt-5 max-w-3xl font-display text-3xl font-medium tracking-(--tracking-display) sm:text-4xl lg:text-5xl">
+        {title}
+      </h1>
+      <p class="mt-4 max-w-2xl text-sm text-ink-muted">{t(locale, 'tool.disclaimer')}</p>
+    </div>
+  </header>
+  <article class="container-page pt-8 pb-12 sm:pt-10 sm:pb-14">
+    <div>
       <slot />
     </div>
 

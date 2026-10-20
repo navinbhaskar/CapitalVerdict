@@ -36,7 +36,7 @@ const ld = (o: Record<string, unknown>) => JSON.stringify(o).replace(/</g, '\\u0
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#0f2a22" />
     <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={bodyFont} as="font" type="font/woff2" crossorigin />
     <script is:inline>
@@ -45,7 +45,7 @@ const ld = (o: Record<string, unknown>) => JSON.stringify(o).replace(/</g, '\\u0
         try {
           if (localStorage.getItem('dw.theme') === 'dark') {
             root.dataset.theme = 'dark';
-            document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#0e1621');
+            document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#12302a');
           }
         } catch {
           // Storage blocked: stay on the light theme.

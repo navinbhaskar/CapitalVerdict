@@ -53,12 +53,12 @@ export default function CarSetCard({ locale, set, names, baseKey, years }: Props
     <section
       aria-labelledby="verdict-heading"
       id="verdict"
-      class="scroll-mt-24 rounded-xl bg-raised p-4 shadow-raised sm:p-5"
+      class="band-dark scroll-mt-24 rounded-xl p-5 shadow-raised sm:p-7"
     >
       <p class="text-sm font-medium text-ink-muted">{t(locale, 'verdict.label')}</p>
       <h2
         id="verdict-heading"
-        class="mt-1 font-display text-xl font-semibold sm:text-2xl sm:font-medium"
+        class="mt-2 font-display text-2xl font-medium tracking-(--tracking-heading) sm:text-3xl"
         aria-live="polite"
       >
         <span key={best!.key} class="tick block">

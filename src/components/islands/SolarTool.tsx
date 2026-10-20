@@ -373,12 +373,12 @@ export default function SolarTool({ locale }: Props) {
             <section
               id="verdict"
               aria-labelledby="solar-verdict-heading"
-              class="scroll-mt-24 rounded-xl bg-raised p-4 shadow-raised sm:p-5"
+              class="band-dark scroll-mt-24 rounded-xl p-5 shadow-raised sm:p-7"
             >
               <p class="text-sm font-medium text-ink-muted">{t(locale, 'verdict.label')}</p>
               <h2
                 id="solar-verdict-heading"
-                class="mt-1 font-display text-xl font-semibold sm:text-2xl sm:font-medium"
+                class="mt-2 font-display text-2xl font-medium tracking-(--tracking-heading) sm:text-3xl"
                 aria-live="polite"
               >
                 <span key={headline} class="tick block">
@@ -589,7 +589,7 @@ function Stat({ label, children }: { label: string; children: ComponentChildren 
   return (
     <div>
       <dt class="text-sm text-ink-muted">{label}</dt>
-      <dd class="mt-0.5 font-semibold num">{children}</dd>
+      <dd class="mt-1 font-display text-xl font-medium text-accent-strong num">{children}</dd>
     </div>
   );
 }

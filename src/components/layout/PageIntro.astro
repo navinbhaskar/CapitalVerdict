@@ -1,0 +1,30 @@
+---
+/**
+ * The dark forest band that opens a page: a brass rule (or a breadcrumb), the title and a lead.
+ * Tool pages build the same band in ToolLayout.
+ */
+interface Props {
+  title: string;
+  lead?: string;
+  /** Narrower measure for articles. */
+  narrow?: boolean;
+}
+const { title, lead, narrow = false } = Astro.props;
+---
+
+<header class="band-dark">
+  <div class="container-page pt-8 pb-10 sm:pt-12 sm:pb-14">
+    <div class={narrow ? 'max-w-(--container-prose)' : 'max-w-3xl'}>
+      {Astro.slots.has('kicker') ? (
+        <slot name="kicker" />
+      ) : (
+        <span class="rule-brass" aria-hidden="true" />
+      )}
+      <h1 class="mt-5 font-display text-3xl font-medium tracking-(--tracking-display) sm:text-4xl lg:text-5xl">
+        {title}
+      </h1>
+      {lead && <p class="mt-4 text-lg text-ink-muted">{lead}</p>}
+      <slot />
+    </div>
+  </div>
+</header>
