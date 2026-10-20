@@ -49,4 +49,6 @@ const walk = (dir) => {
 };
 walk(dist);
 writeFileSync(join(dist, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
+// Pages would otherwise run Jekyll, which drops folders starting with "_" (such as _astro).
+writeFileSync(join(dist, '.nojekyll'), '');
 console.log(`Rewrote ${changed} files for ${origin}${base}/ (indexing blocked).`);

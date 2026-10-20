@@ -12,18 +12,24 @@ import { rmSync } from 'node:fs';
 const OWNER = 'navinbhaskar';
 const REPO = 'capitalverdict';
 const env = { ...process.env, SITE_URL: `https://${OWNER}.github.io` };
-const run = (cmd, args, opts = {}) =>
-  execFileSync(cmd, args, { stdio: 'inherit', env, shell: process.platform === 'win32', ...opts });
+const run = (cmd, args, opts = {}) => execFileSync(cmd, args, { stdio: 'inherit', env, ...opts });
 
-run('npx', ['astro', 'build']);
+// npx is a .cmd script on Windows, which needs a shell; every other call stays shell-free.
+run('npx', ['astro', 'build'], { shell: process.platform === 'win32' });
 run('node', ['scripts/pages-base.mjs', REPO]);
 if (process.argv.includes('--build-only')) process.exit(0);
 
 const remote = execFileSync('git', ['remote', 'get-url', 'origin'], { encoding: 'utf-8' }).trim();
+const identity = ['user.name', 'user.email'].map((k) =>
+  execFileSync('git', ['config', k], { encoding: 'utf-8' }).trim(),
+);
 const commit = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { encoding: 'utf-8' }).trim();
 rmSync('dist/.git', { recursive: true, force: true });
 const git = (...args) => run('git', args, { cwd: 'dist' });
 git('init', '-q', '-b', 'gh-pages');
+git('config', 'core.autocrlf', 'false');
+git('config', 'user.name', identity[0]);
+git('config', 'user.email', identity[1]);
 git('add', '-A');
 git('commit', '-q', '-m', `Preview build of ${commit}`);
 git('push', '-q', '--force', remote, 'gh-pages');
