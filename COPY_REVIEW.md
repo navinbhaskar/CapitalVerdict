@@ -95,7 +95,7 @@ Example values the tools now open with. They are labelled "Example" on the page 
 
 ## Home page sentence card (drafted 2026-10-20)
 
-| Key                                                                          | Where it shows                                                  |
-| ---------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| [ ] `hero.tab.*`, `hero.tablist`, `hero.ask.*`, `hero.answer.*`, `hero.open` | Home hero card: tabs, blank labels, answer                      |
-| [ ] `hero.car.*`, `hero.solar.*`, `hero.home.*`                              | The three sentences, their answers and the example-figures line |
+| Key                                                                                | Where it shows                                                  |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| [ ] `hero.tab.*`, `hero.tablist`, `hero.ask.*`, `hero.answer.invalid`, `hero.open` | Home hero card: tabs, blank labels, answer                      |
+| [ ] `hero.car.*`, `hero.solar.*`, `hero.home.*`                                    | The three sentences, their answers and the example-figures line |

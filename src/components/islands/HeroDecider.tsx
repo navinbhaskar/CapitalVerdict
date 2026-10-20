@@ -303,7 +303,7 @@ export default function HeroDecider({ locale }: Props) {
       </div>
 
       <div
-        class="relative mt-3 grid rounded-xl border border-line-strong bg-raised p-5 shadow-float sm:p-6"
+        class="relative mt-2.5 grid rounded-xl border border-line-strong bg-raised px-4 pt-4 pb-1 shadow-float sm:px-5 sm:pt-5"
         role="tabpanel"
         id={`${id}-panel`}
         aria-labelledby={`${id}-tab-${tab}`}
@@ -313,27 +313,28 @@ export default function HeroDecider({ locale }: Props) {
           const p = panels[key];
           return (
             <div key={key} class={panelClass(tab === key)}>
-              <p class="text-sm font-medium text-ink-muted">{t(locale, 'hero.ask.label')}</p>
-              <p class="mt-3 font-display text-xl leading-relaxed sm:text-2xl sm:leading-relaxed">
-                {p.sentence}
-              </p>
-              <div class="mt-5 border-t border-line pt-4">
-                <p class="text-sm font-medium text-ink-muted">{t(locale, 'hero.answer.label')}</p>
+              <p class="font-display text-lg leading-loose sm:text-xl">{p.sentence}</p>
+              <div class="mt-3 border-t border-line pt-3">
                 <p
-                  class="mt-1 font-display text-2xl font-medium tracking-(--tracking-heading) text-accent-strong sm:text-3xl"
+                  class="font-display text-xl font-medium tracking-(--tracking-heading) text-accent-strong sm:text-2xl"
                   aria-live="polite"
                 >
                   <span key={p.head} class="tick block">
                     {p.head}
                   </span>
                 </p>
-                {p.sub && <p class="mt-2 text-sm text-ink">{p.sub}</p>}
-                {p.flip && <p class="mt-1 text-sm text-ink-muted">{p.flip}</p>}
+                {(p.sub || p.flip) && (
+                  <p class="mt-1.5 text-sm text-ink-muted">
+                    {p.sub && <span class="text-ink">{p.sub}</span>}
+                    {p.sub && p.flip ? ' ' : ''}
+                    {p.flip}
+                  </p>
+                )}
               </div>
-              <p class="mt-4 text-xs text-ink-muted">{p.context}</p>
+              <p class="mt-3 text-xs text-ink-muted">{p.context}</p>
               <a
                 href={p.href}
-                class="link mt-2 inline-flex min-h-11 items-center text-sm font-medium"
+                class="link mt-1 inline-flex min-h-11 items-center text-sm font-medium"
               >
                 {t(locale, 'hero.open')}
               </a>
@@ -346,13 +347,13 @@ export default function HeroDecider({ locale }: Props) {
 }
 
 /**
- * Width that fits a short number or word in the display font (digits about 0.58em, separators
- * 0.3em, capitals 0.74em). Keeps a blank as wide as its text so the sentence reads naturally.
+ * Width that fits a short number or word in the display font (digits about 0.63em, separators
+ * 0.32em, capitals 0.74em). Keeps a blank as wide as its text so the sentence reads naturally.
  */
 function textWidth(text: string): string {
   let em = 0.1;
   for (const ch of text) {
-    em += /[0-9]/.test(ch) ? 0.58 : /[,.]/.test(ch) ? 0.3 : /[A-Z]/.test(ch) ? 0.74 : 0.5;
+    em += /[0-9]/.test(ch) ? 0.63 : /[,.]/.test(ch) ? 0.32 : /[A-Z]/.test(ch) ? 0.74 : 0.5;
   }
   return `${Math.max(em, 0.65).toFixed(2)}em`;
 }
