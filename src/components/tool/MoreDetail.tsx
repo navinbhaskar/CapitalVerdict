@@ -22,7 +22,7 @@ export default function MoreDetail({ title, hint, children }: Props) {
     >
       <summary class="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-2.5 hover:text-accent-strong">
         <span>
-          <span class="block font-display text-base font-semibold sm:text-lg">{title}</span>
+          <span class="block font-display text-lg font-medium">{title}</span>
           {hint && <span class="mt-0.5 block text-sm text-ink-muted">{hint}</span>}
         </span>
         <svg

@@ -47,7 +47,7 @@ export default function Refine({ locale, storageKey, hint, forceOpen = false, ch
     >
       <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 rounded-xl px-4 py-3 hover:bg-surface">
         <span>
-          <span class="block font-display font-semibold">{t(locale, 'refine.title')}</span>
+          <span class="block font-display text-lg font-medium">{t(locale, 'refine.title')}</span>
           <span class="mt-0.5 block text-sm text-ink-muted">{hint}</span>
         </span>
         <svg

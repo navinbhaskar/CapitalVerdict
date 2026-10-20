@@ -244,7 +244,7 @@ export default function SolarTool({ locale }: Props) {
       <div class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-10">
         <section aria-labelledby="solar-inputs-heading">
           <div class="flex flex-wrap items-baseline justify-between gap-3">
-            <h2 id="solar-inputs-heading" class="font-display text-xl font-semibold">
+            <h2 id="solar-inputs-heading" class="font-display text-2xl font-medium">
               {t(locale, 'inputs.heading')}
             </h2>
             <button
@@ -378,7 +378,7 @@ export default function SolarTool({ locale }: Props) {
               <p class="text-sm font-medium text-ink-muted">{t(locale, 'verdict.label')}</p>
               <h2
                 id="solar-verdict-heading"
-                class="mt-1 font-display text-xl font-medium tracking-(--tracking-heading) sm:text-2xl"
+                class="mt-1 font-display text-2xl font-medium tracking-(--tracking-heading)"
                 aria-live="polite"
               >
                 <span key={headline} class="tick block">
@@ -519,7 +519,7 @@ export default function SolarTool({ locale }: Props) {
                   }}
                 />
                 <section aria-labelledby="solar-scenarios">
-                  <h3 id="solar-scenarios" class="font-display text-xl font-semibold">
+                  <h3 id="solar-scenarios" class="font-display text-xl font-medium">
                     {t(locale, 'scenario.heading')}
                   </h3>
                   <ul class="mt-4 space-y-3" role="list">
@@ -575,7 +575,7 @@ function Group({
 }) {
   return (
     <fieldset class="mt-4">
-      <legend class="w-full border-b border-line-strong pb-1.5 font-display text-base font-semibold">
+      <legend class="w-full border-b border-line-strong pb-1.5 font-display text-lg font-medium">
         {title}
       </legend>
       <div class={columns ? 'grid gap-x-4 gap-y-3 pt-3 sm:grid-cols-2' : 'divide-y divide-line'}>
@@ -589,7 +589,7 @@ function Stat({ label, children }: { label: string; children: ComponentChildren 
   return (
     <div>
       <dt class="text-sm text-ink-muted">{label}</dt>
-      <dd class="mt-1 font-display text-xl font-medium text-accent-strong num">{children}</dd>
+      <dd class="mt-1 font-display text-lg font-medium text-accent-strong num">{children}</dd>
     </div>
   );
 }

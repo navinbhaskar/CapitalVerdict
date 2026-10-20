@@ -42,7 +42,7 @@ export default function WorkingBlock({
           </div>
         ))}
       </dl>
-      {children && <p class="px-4 pb-3 text-xs text-ink-muted">{children}</p>}
+      {children && <p class="px-4 pb-3 text-sm text-ink-muted">{children}</p>}
     </div>
   );
 }

@@ -12,7 +12,7 @@ export default function NonMoneyChecklist({ locale, items }: Props) {
   const id = useId();
   return (
     <section aria-labelledby={`${id}-h`}>
-      <h2 id={`${id}-h`} class="font-display text-xl font-semibold">
+      <h2 id={`${id}-h`} class="font-display text-2xl font-medium">
         {t(locale, 'checklist.heading')}
       </h2>
       <ul class="mt-3" role="list">

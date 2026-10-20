@@ -149,7 +149,7 @@ export default function VerdictCard(props: Props) {
       <p class="text-sm font-medium text-ink-muted">{t(locale, 'verdict.label')}</p>
       <h2
         id="verdict-heading"
-        class="mt-1 font-display text-xl font-medium tracking-(--tracking-heading) sm:text-2xl"
+        class="mt-1 font-display text-2xl font-medium tracking-(--tracking-heading)"
         aria-live="polite"
       >
         <span key={headline} class="tick block">
@@ -211,7 +211,7 @@ function Stat({ label, children }: { label: string; children: ComponentChildren 
   return (
     <div>
       <dt class="text-sm text-ink-muted">{label}</dt>
-      <dd class="mt-1 font-display text-xl font-medium text-accent-strong num">{children}</dd>
+      <dd class="mt-1 font-display text-lg font-medium text-accent-strong num">{children}</dd>
     </div>
   );
 }

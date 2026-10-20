@@ -275,7 +275,7 @@ export default function CarFuelTool({ locale }: Props) {
           <p class="text-sm font-medium">
             {t(locale, 'input.extraPrice', { altCar: carName(kind) })}
           </p>
-          <p class="mt-0.5 text-xs text-ink-muted">
+          <p class="mt-0.5 text-sm text-ink-muted">
             {t(locale, 'note.extraPriceDerived', { altCar: carName(kind) })}
           </p>
         </div>
@@ -496,7 +496,7 @@ export default function CarFuelTool({ locale }: Props) {
       <div class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-10">
         <section aria-labelledby="inputs-heading">
           <div class="flex flex-wrap items-baseline justify-between gap-3">
-            <h2 id="inputs-heading" class="font-display text-xl font-semibold">
+            <h2 id="inputs-heading" class="font-display text-2xl font-medium">
               {t(locale, 'inputs.heading')}
             </h2>
             <button
@@ -906,7 +906,7 @@ export default function CarFuelTool({ locale }: Props) {
                   breakevenNoInterest={result.breakevenNoInterest?.months ?? null}
                 />
                 <section aria-labelledby="scenarios-heading">
-                  <h3 id="scenarios-heading" class="font-display text-xl font-semibold">
+                  <h3 id="scenarios-heading" class="font-display text-xl font-medium">
                     {t(locale, 'scenario.heading')}
                   </h3>
                   <ul class="mt-4 space-y-3" role="list">
@@ -982,7 +982,7 @@ export default function CarFuelTool({ locale }: Props) {
       {hasResult && showBar && (
         <div class="stagger fixed inset-x-3 bottom-3 z-30 lg:hidden">
           <div class="flex items-center justify-between gap-3 rounded-xl py-2 pr-2 pl-4 shadow-float glass">
-            <p class="font-display font-semibold">{headline}</p>
+            <p class="font-display text-lg font-medium">{headline}</p>
             <a href="#verdict" class="btn btn-primary min-h-11 shrink-0 px-4 text-sm">
               {t(locale, 'carFuel.resultBar.cta')}
             </a>
@@ -1005,7 +1005,7 @@ function Group({
 }) {
   return (
     <fieldset class="mt-4">
-      <legend class="w-full border-b border-line-strong pb-1.5 font-display text-base font-semibold">
+      <legend class="w-full border-b border-line-strong pb-1.5 font-display text-lg font-medium">
         {title}
       </legend>
       <div class={columns ? 'grid gap-x-4 gap-y-3 pt-3 sm:grid-cols-2' : 'divide-y divide-line'}>

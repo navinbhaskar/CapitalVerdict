@@ -313,10 +313,10 @@ export default function HeroDecider({ locale }: Props) {
           const p = panels[key];
           return (
             <div key={key} class={panelClass(tab === key)}>
-              <p class="font-display text-base leading-loose sm:text-lg">{p.sentence}</p>
+              <p class="font-display text-lg leading-loose">{p.sentence}</p>
               <div class="mt-3 border-t border-line pt-3">
                 <p
-                  class="font-display text-lg font-medium tracking-(--tracking-heading) text-accent-strong sm:text-xl"
+                  class="font-display text-xl font-medium tracking-(--tracking-heading) text-accent-strong"
                   aria-live="polite"
                 >
                   <span key={p.head} class="tick block">
@@ -324,7 +324,7 @@ export default function HeroDecider({ locale }: Props) {
                   </span>
                 </p>
                 {(p.sub || p.flip) && (
-                  <p class="mt-1 text-xs text-ink-muted sm:text-sm">
+                  <p class="mt-1 text-sm text-ink-muted">
                     {p.sub && <span class="text-ink">{p.sub}</span>}
                     {p.sub && p.flip ? ' ' : ''}
                     {p.flip}

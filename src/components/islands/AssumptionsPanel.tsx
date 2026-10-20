@@ -143,10 +143,10 @@ export default function AssumptionsPanel({ locale }: Props) {
         <div class="flex min-h-full flex-col">
           <header class="sticky top-0 z-10 flex items-start justify-between gap-3 border-b border-line px-5 py-3 glass">
             <div>
-              <h2 id={titleId} class="font-display text-xl font-semibold">
+              <h2 id={titleId} class="font-display text-xl font-medium">
                 {t(locale, 'assumptions.title')}
               </h2>
-              <p class="mt-0.5 text-xs text-ink-muted">{t(locale, 'assumptions.privacy')}</p>
+              <p class="mt-0.5 text-sm text-ink-muted">{t(locale, 'assumptions.privacy')}</p>
             </div>
             <button
               type="button"
@@ -165,7 +165,7 @@ export default function AssumptionsPanel({ locale }: Props) {
               <div class="flex items-center justify-between gap-4 py-2.5">
                 <div>
                   <p class="text-sm font-medium">{t(locale, 'assumptions.state')}</p>
-                  <p class="mt-0.5 text-xs text-ink-muted">{t(locale, 'assumptions.stateNote')}</p>
+                  <p class="mt-0.5 text-sm text-ink-muted">{t(locale, 'assumptions.stateNote')}</p>
                 </div>
                 <p class="text-sm font-medium">{t(locale, 'state.UP')}</p>
               </div>
@@ -200,7 +200,7 @@ export default function AssumptionsPanel({ locale }: Props) {
                 <p class="text-sm font-medium" id={`${titleId}-regime`}>
                   {t(locale, 'assumptions.taxRegime')}
                 </p>
-                <p class="mt-0.5 text-xs text-ink-muted">{noteFor('taxRegime', null)}</p>
+                <p class="mt-0.5 text-sm text-ink-muted">{noteFor('taxRegime', null)}</p>
                 <div
                   role="radiogroup"
                   aria-labelledby={`${titleId}-regime`}
@@ -323,9 +323,7 @@ export default function AssumptionsPanel({ locale }: Props) {
 function Group({ title, children }: { title: string; children: ComponentChildren }) {
   return (
     <section class="mt-5">
-      <h3 class="border-b border-line-strong pb-1.5 font-display text-base font-semibold">
-        {title}
-      </h3>
+      <h3 class="border-b border-line-strong pb-1.5 font-display text-lg font-medium">{title}</h3>
       <div class="divide-y divide-line">{children}</div>
     </section>
   );
@@ -342,12 +340,12 @@ function Row(props: {
     <div class="relative">
       {props.children}
       {props.changed && (
-        <p class="-mt-1 flex items-center gap-2 pb-2.5 text-xs">
+        <p class="-mt-1 flex items-center gap-2 pb-2.5 text-sm">
           <span class="inline-flex items-center gap-1.5 text-accent-strong">
             <span class="size-1.5 rounded-full bg-accent" aria-hidden="true" />
             {t(props.locale, 'assumptions.changed')}
           </span>
-          <button type="button" onClick={props.onReset} class="link min-h-6 text-xs">
+          <button type="button" onClick={props.onReset} class="link min-h-6 text-sm">
             {t(props.locale, 'assumptions.resetOne')}
           </button>
         </p>
@@ -370,7 +368,7 @@ function SelectRow(props: {
         <label for={id} class="block text-sm font-medium">
           {props.label}
         </label>
-        <p id={`${id}-note`} class="mt-0.5 text-xs text-ink-muted">
+        <p id={`${id}-note`} class="mt-0.5 text-sm text-ink-muted">
           {props.note}
         </p>
       </div>

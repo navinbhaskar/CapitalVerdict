@@ -169,7 +169,7 @@ export default function CarFuelWorking(props: Props) {
 
   return (
     <section aria-labelledby={`working-heading-${altKind}`}>
-      <h2 id={`working-heading-${altKind}`} class="font-display text-xl font-semibold">
+      <h2 id={`working-heading-${altKind}`} class="font-display text-xl font-medium">
         {props.heading ?? t(locale, 'working.heading')}
       </h2>
       <div class="mt-4 grid gap-4 lg:grid-cols-2">

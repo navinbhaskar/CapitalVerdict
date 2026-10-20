@@ -33,7 +33,7 @@ const dateFormat = new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeZ
       return (
         list.length > 0 && (
           <section class="mt-6 max-w-3xl" aria-labelledby={`k-${kind}`}>
-            <h2 id={`k-${kind}`} class="font-display text-xl font-semibold">
+            <h2 id={`k-${kind}`} class="font-display text-2xl font-medium">
               {heading}
             </h2>
             <ul class="mt-3 divide-y divide-line border-y border-line" role="list">
@@ -47,7 +47,7 @@ const dateFormat = new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeZ
                       {post.data.title}
                     </span>
                     <span class="mt-1 block text-sm text-ink-muted">{post.data.description}</span>
-                    <span class="num mt-1.5 block text-xs text-ink-muted">
+                    <span class="num mt-1.5 block text-sm text-ink-muted">
                       <time datetime={post.data.date.toISOString().slice(0, 10)}>
                         {dateFormat.format(post.data.date)}
                       </time>

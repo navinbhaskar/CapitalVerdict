@@ -119,7 +119,7 @@ export default function NumberField(props: Props) {
           )}
         </label>
         {row && note && (
-          <p id={`${id}-note`} class="mt-0.5 text-xs text-ink-muted">
+          <p id={`${id}-note`} class="mt-0.5 text-sm text-ink-muted">
             {note}
           </p>
         )}
@@ -172,7 +172,7 @@ export default function NumberField(props: Props) {
           />
         )}
         {!row && note && !error && (
-          <p id={`${id}-note`} class="mt-1 text-xs text-ink-muted">
+          <p id={`${id}-note`} class="mt-1 text-sm text-ink-muted">
             {note}
           </p>
         )}

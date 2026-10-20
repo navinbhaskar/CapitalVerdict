@@ -133,7 +133,7 @@ export default function ScenarioShelf({ locale, tool, query: rawQuery, summary }
         </button>
       </div>
       {full && !alreadySaved && (
-        <p class="mt-2 text-xs text-ink-muted">{t(locale, 'scenarios.limit', { n: LIMIT })}</p>
+        <p class="mt-2 text-sm text-ink-muted">{t(locale, 'scenarios.limit', { n: LIMIT })}</p>
       )}
 
       {saved.length > 0 && (
@@ -209,7 +209,7 @@ export default function ScenarioShelf({ locale, tool, query: rawQuery, summary }
                 </tr>
               </tbody>
             </table>
-            <p class="mt-1 text-xs text-ink-muted">{t(locale, 'scenarios.note')}</p>
+            <p class="mt-1 text-sm text-ink-muted">{t(locale, 'scenarios.note')}</p>
           </div>
         </details>
       )}

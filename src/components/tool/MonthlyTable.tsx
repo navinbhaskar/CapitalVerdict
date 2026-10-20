@@ -55,7 +55,7 @@ export default function MonthlyTable({ locale, columns, highlight, csvFilename }
   return (
     <section aria-labelledby="monthly-heading">
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <h2 id="monthly-heading" class="font-display text-xl font-semibold">
+        <h2 id="monthly-heading" class="font-display text-xl font-medium">
           {t(locale, 'monthly.heading')}
         </h2>
         <button type="button" onClick={download} class="btn btn-outline">

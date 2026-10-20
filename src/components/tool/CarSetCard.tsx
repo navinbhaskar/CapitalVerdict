@@ -58,7 +58,7 @@ export default function CarSetCard({ locale, set, names, baseKey, years }: Props
       <p class="text-sm font-medium text-ink-muted">{t(locale, 'verdict.label')}</p>
       <h2
         id="verdict-heading"
-        class="mt-1 font-display text-xl font-medium tracking-(--tracking-heading) sm:text-2xl"
+        class="mt-1 font-display text-2xl font-medium tracking-(--tracking-heading)"
         aria-live="polite"
       >
         <span key={best!.key} class="tick block">

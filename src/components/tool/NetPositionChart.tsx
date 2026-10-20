@@ -197,7 +197,7 @@ export default function NetPositionChart(props: Props) {
 
   return (
     <figure>
-      <figcaption class="font-display text-xl font-semibold">{title}</figcaption>
+      <figcaption class="font-display text-xl font-medium">{title}</figcaption>
       <div class="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm text-ink-muted" aria-hidden="true">
         <span class="inline-flex items-center gap-2">
           <span class="h-px w-5 bg-ink" />

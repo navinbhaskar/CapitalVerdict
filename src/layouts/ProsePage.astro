@@ -29,7 +29,7 @@ const shown = sections
   <article class="container-page pt-2 pb-10 sm:pb-12">
     {shown.map(({ key, formula, body }) => (
       <section class="mt-6 max-w-3xl border-t border-line pt-5" aria-labelledby={`s-${key}`}>
-        <h2 id={`s-${key}`} class="font-display text-xl font-semibold">
+        <h2 id={`s-${key}`} class="font-display text-2xl font-medium">
           {k(`${key}.title`)}
         </h2>
         <div class="mt-3 max-w-(--container-prose) space-y-3 text-ink-muted">
