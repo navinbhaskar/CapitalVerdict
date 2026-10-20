@@ -8,7 +8,8 @@ import { formatMoney, formatNumber, formatPercent } from '@/lib/formatTool';
 import { solarFlips, solarPayback, solarScenarios, type SolarVariable } from '@/models/solar';
 import {
   SOLAR_LIMITS,
-  SOLAR_START_FORM,
+  SOLAR_EXAMPLE_FORM,
+  SOLAR_EXAMPLE_KEYS,
   invalidSolarFields,
   solarShareSchema,
   toSolarInput,
@@ -23,6 +24,9 @@ import NonMoneyChecklist from '@/components/tool/NonMoneyChecklist';
 import ShareLink from '@/components/tool/ShareLink';
 import Refine from '@/components/tool/Refine';
 import ScenarioShelf from '@/components/tool/ScenarioShelf';
+import MoreDetail from '@/components/tool/MoreDetail';
+import { useIdleValue } from '@/lib/useIdleValue';
+import { formatDuration } from '@/lib/duration';
 
 interface Props {
   locale: Locale;
@@ -39,7 +43,7 @@ const CHECKLIST: MessageKey[] = [
 ];
 
 export default function SolarTool({ locale }: Props) {
-  const [form, setForm] = useState<SolarForm>(SOLAR_START_FORM);
+  const [form, setForm] = useState<SolarForm>(SOLAR_EXAMPLE_FORM);
   const [ready, setReady] = useState(false);
   const [shareHref, setShareHref] = useState('');
   const pinned = useRef(new Set<keyof SolarForm>());
@@ -51,7 +55,8 @@ export default function SolarTool({ locale }: Props) {
 
   useEffect(() => {
     const fromUrl = decodeShare(window.location.search, solarShareSchema);
-    setForm((f) => ({ ...f, ...fromUrl }));
+    for (const key of Object.keys(fromUrl) as (keyof SolarForm)[]) pinned.current.add(key);
+    if (Object.keys(fromUrl).length > 0) setForm((f) => ({ ...f, ...fromUrl }));
     setReady(true);
   }, []);
 
@@ -70,21 +75,28 @@ export default function SolarTool({ locale }: Props) {
   }, [form, ready]);
 
   const input = useMemo(() => toSolarInput(form, SLAB_TARIFF), [form]);
-  const computed = useMemo(() => {
+  const result = useMemo(() => (input ? solarPayback(input) : null), [input]);
+  // Scenarios and the "what would flip it" sweeps can follow a moment after the answer.
+  const extras = useIdleValue(() => {
     if (!input) return null;
-    const result = solarPayback(input);
     const runs = solarScenarios(input, RISE_RATES);
     const all = (['pessimistic', 'base', 'optimistic'] as const).map(
       (s) => runs[s].output.cumulativeNet,
     );
     return {
-      result,
       runs,
       flips: solarFlips(input),
       bandLow: all[0]!.map((_, m) => Math.min(...all.map((s) => s[m]!))),
       bandHigh: all[0]!.map((_, m) => Math.max(...all.map((s) => s[m]!))),
     };
   }, [input]);
+  const computed = result && {
+    result,
+    runs: extras?.runs ?? null,
+    flips: extras?.flips ?? [],
+    bandLow: extras?.bandLow,
+    bandHigh: extras?.bandHigh,
+  };
 
   const years = form.horizonYears ?? 25;
   const missing = invalidSolarFields(form, SLAB_TARIFF !== null);
@@ -123,6 +135,7 @@ export default function SolarTool({ locale }: Props) {
       note={note}
       value={form[key]}
       onChange={set(key)}
+      example={SOLAR_EXAMPLE_KEYS.includes(key) && !pinned.current.has(key)}
       {...SOLAR_LIMITS[key]}
       {...extra}
       layout={extra.layout ?? 'row'}
@@ -222,7 +235,7 @@ export default function SolarTool({ locale }: Props) {
 
   const headline = r
     ? r.payback
-      ? t(locale, 'solar.verdict.payback', { years: formatNumber(r.payback.years, 1) })
+      ? t(locale, 'solar.verdict.payback', { duration: formatDuration(locale, r.payback.months) })
       : t(locale, 'solar.verdict.never', { years })
     : '';
 
@@ -238,11 +251,11 @@ export default function SolarTool({ locale }: Props) {
               type="button"
               onClick={() => {
                 pinned.current.clear();
-                setForm(SOLAR_START_FORM);
+                setForm(SOLAR_EXAMPLE_FORM);
               }}
               class="inline-flex min-h-11 items-center rounded-md px-2 text-sm font-medium text-accent-strong hover:bg-surface"
             >
-              {t(locale, 'solar.clear')}
+              {t(locale, 'carFuel.resetExample')}
             </button>
           </div>
           <p class="mt-1 text-sm text-ink-muted">{t(locale, 'inputs.quickLegend')}</p>
@@ -355,7 +368,7 @@ export default function SolarTool({ locale }: Props) {
           </Refine>
         </section>
 
-        <div class="lg:sticky lg:top-20">
+        <div class="order-first lg:sticky lg:top-20 lg:order-none">
           {computed && r && input ? (
             <section
               id="verdict"
@@ -375,7 +388,6 @@ export default function SolarTool({ locale }: Props) {
               <p class="mt-2 text-ink-muted">
                 {r.payback
                   ? t(locale, 'solar.verdict.paybackDetail', {
-                      months: r.payback.months,
                       years,
                       net: formatMoney(r.netAtHorizon),
                     })
@@ -385,6 +397,25 @@ export default function SolarTool({ locale }: Props) {
                       cost: formatMoney(r.netCost + (input.inverter?.cost ?? 0)),
                     })}
               </p>
+              {(() => {
+                // The gain falls one rupee for every rupee the system costs, so it reaches zero at
+                // net cost + gain.
+                const breakEvenCost = r.netCost + r.netAtHorizon;
+                if (!(breakEvenCost > 0)) return null;
+                return (
+                  <p class="mt-2 font-medium">
+                    {t(locale, 'solar.flip.netCost.above', {
+                      years,
+                      value: formatSolarValue(locale, 'netCost')(breakEvenCost),
+                    })}
+                  </p>
+                );
+              })()}
+              {SOLAR_EXAMPLE_KEYS.some((k) => !pinned.current.has(k)) && (
+                <p class="mt-3 rounded-lg bg-accent-soft px-3 py-2 text-sm text-accent-strong">
+                  {t(locale, 'solar.exampleNote')}
+                </p>
+              )}
               <dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-line pt-4">
                 <Stat label={t(locale, 'solar.stat.netCost')}>{formatMoney(r.netCost)}</Stat>
                 <Stat label={t(locale, 'solar.stat.firstYear')}>
@@ -458,73 +489,74 @@ export default function SolarTool({ locale }: Props) {
 
       {computed && r && input && (
         <>
-          <section class="mt-10 border-t border-line pt-6" aria-labelledby="solar-working">
-            <h2 id="solar-working" class="font-display text-xl font-semibold">
-              {t(locale, 'working.heading')}
-            </h2>
-            <div class="mt-4 grid gap-4 lg:grid-cols-2">
-              <WorkingBlock title={t(locale, 'solar.w.costTitle')} rows={costRows} />
-              <WorkingBlock title={t(locale, 'solar.w.monthTitle')} rows={monthRows}>
-                {t(locale, 'solar.w.monthNote')}
-              </WorkingBlock>
-            </div>
-          </section>
-
-          <div class="mt-10 grid gap-6 border-t border-line pt-6 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12">
-            <NetPositionChart
-              locale={locale}
-              title={t(locale, 'solar.chart.title')}
-              netWithInterest={r.cumulativeNet}
-              bandLow={computed.bandLow}
-              bandHigh={computed.bandHigh}
-              breakevenWithInterest={r.payback?.months ?? null}
-              labels={{
-                main: t(locale, 'solar.chart.main'),
-                band: t(locale, 'solar.chart.band'),
-              }}
-            />
-            <section aria-labelledby="solar-scenarios">
-              <h2 id="solar-scenarios" class="font-display text-xl font-semibold">
-                {t(locale, 'scenario.heading')}
-              </h2>
-              <ul class="mt-4 space-y-3" role="list">
-                {(['pessimistic', 'base', 'optimistic'] as const).map((name) => {
-                  const run = computed.runs[name];
-                  const pb = run.output.payback;
-                  return (
-                    <li key={name} class="rounded-xl border border-line p-4">
-                      <div class="flex items-baseline justify-between gap-3">
-                        <span class="font-medium">{t(locale, `scenario.${name}`)}</span>
-                        <span class="font-semibold num">
-                          {pb
-                            ? t(locale, 'unit.years', { n: formatNumber(pb.years, 1) })
-                            : t(locale, 'verdict.notWithin', { years })}
-                        </span>
-                      </div>
-                      <p class="mt-1 text-sm text-ink-muted">
-                        {t(locale, 'solar.scenario.rise', {
-                          rate: formatPercent(run.input.tariffRisePerYear),
-                        })}
-                      </p>
-                    </li>
-                  );
-                })}
-              </ul>
-            </section>
-          </div>
-
-          <div class="mt-10 border-t border-line pt-6">
-            <MonthlyTable
-              locale={locale}
-              columns={columns}
-              highlight={r.payback && r.payback.months > 0 ? [r.payback.months] : []}
-              csvFilename="decidewise-rooftop-solar.csv"
-            />
-          </div>
-
           <div class="mt-10 grid gap-8 border-t border-line pt-6 lg:grid-cols-2">
             <SensitivityList locale={locale} lines={flipLines} />
             <NonMoneyChecklist locale={locale} items={CHECKLIST.map((k) => t(locale, k))} />
+          </div>
+
+          <div class="mt-8 border-t border-line">
+            <MoreDetail title={t(locale, 'detail.working')} hint={t(locale, 'detail.workingHint')}>
+              <div class="grid gap-4 lg:grid-cols-2">
+                <WorkingBlock title={t(locale, 'solar.w.costTitle')} rows={costRows} />
+                <WorkingBlock title={t(locale, 'solar.w.monthTitle')} rows={monthRows}>
+                  {t(locale, 'solar.w.monthNote')}
+                </WorkingBlock>
+              </div>
+            </MoreDetail>
+
+            <MoreDetail title={t(locale, 'detail.chart')} hint={t(locale, 'detail.chartHint')}>
+              <div class="grid gap-6 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12">
+                <NetPositionChart
+                  locale={locale}
+                  title={t(locale, 'solar.chart.title')}
+                  netWithInterest={r.cumulativeNet}
+                  bandLow={computed.bandLow}
+                  bandHigh={computed.bandHigh}
+                  breakevenWithInterest={r.payback?.months ?? null}
+                  labels={{
+                    main: t(locale, 'solar.chart.main'),
+                    band: t(locale, 'solar.chart.band'),
+                  }}
+                />
+                <section aria-labelledby="solar-scenarios">
+                  <h3 id="solar-scenarios" class="font-display text-xl font-semibold">
+                    {t(locale, 'scenario.heading')}
+                  </h3>
+                  <ul class="mt-4 space-y-3" role="list">
+                    {(['pessimistic', 'base', 'optimistic'] as const).map((name) => {
+                      if (!computed.runs) return null;
+                      const run = computed.runs[name];
+                      const pb = run.output.payback;
+                      return (
+                        <li key={name} class="rounded-xl border border-line p-4">
+                          <div class="flex items-baseline justify-between gap-3">
+                            <span class="font-medium">
+                              {t(locale, 'solar.scenario.rise', {
+                                rate: formatPercent(run.input.tariffRisePerYear),
+                              })}
+                            </span>
+                            <span class="font-semibold num">
+                              {pb
+                                ? formatDuration(locale, pb.months)
+                                : t(locale, 'verdict.notWithin', { years })}
+                            </span>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </section>
+              </div>
+            </MoreDetail>
+
+            <MoreDetail title={t(locale, 'detail.monthly')} hint={t(locale, 'detail.monthlyHint')}>
+              <MonthlyTable
+                locale={locale}
+                columns={columns}
+                highlight={r.payback && r.payback.months > 0 ? [r.payback.months] : []}
+                csvFilename="decidewise-rooftop-solar.csv"
+              />
+            </MoreDetail>
           </div>
         </>
       )}

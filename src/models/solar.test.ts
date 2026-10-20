@@ -136,3 +136,13 @@ describe('solar: scenarios and flips', () => {
     expect(flip?.signBelow).toBe(1);
   });
 });
+
+describe('solar: IRR can be skipped for sweeps', () => {
+  it('same net figures, no IRR', () => {
+    const full = solarPayback(base);
+    const fast = solarPayback(base, { withIrr: false });
+    expect(fast.irr).toBeNull();
+    expect(fast.netAtHorizon).toBe(full.netAtHorizon);
+    expect(fast.payback).toEqual(full.payback);
+  });
+});

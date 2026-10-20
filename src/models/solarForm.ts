@@ -139,3 +139,28 @@ export function toSolarInput(form: SolarForm, slabTariff: Tariff | null): SolarI
     horizonYears: form.horizonYears!,
   };
 }
+
+/**
+ * What the tool opens with, so a first visit gets an answer straight away. ILLUSTRATIVE EXAMPLES
+ * (labelled "Example" on the page), not market data; the same case as the solar blog post.
+ * Values that are verified in the data files win over these.
+ */
+const SOLAR_EXAMPLE_VALUES: Partial<Record<keyof SolarForm, number>> = {
+  systemKW: 3,
+  grossCost: 180_000,
+  subsidy: 0,
+  monthlyConsumptionKWh: 300,
+  averageRate: 7,
+  sanctionedLoadKW: 3,
+  generationPerKWPerDay: 4,
+  degradationPerYear: 0.005,
+};
+
+export const SOLAR_EXAMPLE_KEYS = (Object.keys(SOLAR_EXAMPLE_VALUES) as (keyof SolarForm)[]).filter(
+  (key) => SOLAR_START_FORM[key] === null,
+);
+
+export const SOLAR_EXAMPLE_FORM: SolarForm = {
+  ...SOLAR_START_FORM,
+  ...Object.fromEntries(SOLAR_EXAMPLE_KEYS.map((key) => [key, SOLAR_EXAMPLE_VALUES[key]])),
+};

@@ -10,6 +10,7 @@ import { toTodaysRupees } from '@/engine/timeValue';
 import { carFuelFlips, compareCarFuel } from '@/models/carFuel';
 import { carFuelExample } from '@/models/carFuel.example';
 import { rentBuyFlips, rentVsBuy, type RentBuyInput } from '@/models/rentBuy';
+import { RENT_BUY_EXAMPLE_FORM, toRentBuyInput } from '@/models/rentBuyForm';
 import { solarPayback } from '@/models/solar';
 
 describe('posts: CNG payback, break-even, Lucknow update', () => {
@@ -93,6 +94,10 @@ describe('posts: rent or buy, EMI', () => {
     horizonYears: 15,
   };
   const r = rentVsBuy(illustration);
+
+  it('is the example the rent vs buy tool opens with', () => {
+    expect(toRentBuyInput(RENT_BUY_EXAMPLE_FORM)).toEqual({ ...illustration, prepayYearly: 0 });
+  });
 
   it("first month, 15-year result and today's rupees", () => {
     expect(Math.round(r.buyerOutflow[0]!)).toBe(38_572);

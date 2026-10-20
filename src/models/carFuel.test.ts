@@ -404,3 +404,12 @@ describe('car set: petrol vs CNG vs EV', () => {
     ).toThrow(RangeError);
   });
 });
+
+describe('car fuel flips: one variable on request', () => {
+  it('same threshold as the full sweep', () => {
+    const all = carFuelFlips(fixture).find((f) => f.variable === 'monthlyKm')!;
+    const one = carFuelFlips(fixture, ['monthlyKm']);
+    expect(one).toHaveLength(1);
+    expect(one[0]).toEqual(all);
+  });
+});

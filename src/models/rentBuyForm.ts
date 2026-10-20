@@ -147,3 +147,27 @@ export function toRentBuyInput(form: RentBuyForm): RentBuyInput | null {
     prepayYearly: form.prepayYearly ?? 0,
   };
 }
+
+/**
+ * What the tool opens with, so a first visit gets an answer straight away. ILLUSTRATIVE EXAMPLES
+ * (labelled "Example" on the page), not market data; the same case as the rent vs buy blog post.
+ */
+export const RENT_BUY_EXAMPLE_VALUES = {
+  homePrice: 5_000_000,
+  monthlyRent: 15_000,
+  loanRate: 0.09,
+  stampDuty: 0.07,
+  maintenance: 0.005,
+  sellingCost: 0.02,
+  investmentReturn: 0.08,
+  otherUpfront: 50_000,
+  propertyTax: 6_000,
+  securityDeposit: 45_000,
+} as const satisfies Partial<Record<keyof RentBuyForm, number>>;
+
+export const RENT_BUY_EXAMPLE_FORM: RentBuyForm = {
+  ...RENT_BUY_START_FORM,
+  ...RENT_BUY_EXAMPLE_VALUES,
+};
+
+export const RENT_BUY_EXAMPLE_KEYS = Object.keys(RENT_BUY_EXAMPLE_VALUES) as (keyof RentBuyForm)[];

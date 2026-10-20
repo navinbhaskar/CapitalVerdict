@@ -45,6 +45,7 @@ import Refine from '@/components/tool/Refine';
 import ScenarioShelf from '@/components/tool/ScenarioShelf';
 import MoreDetail from '@/components/tool/MoreDetail';
 import { formatDuration } from '@/lib/duration';
+import { useIdleValue } from '@/lib/useIdleValue';
 
 interface Props {
   locale: Locale;
@@ -94,7 +95,7 @@ export default function CarFuelTool({ locale }: Props) {
   useEffect(() => {
     const fromUrl = decodeShare(window.location.search, carFuelShareSchema);
     for (const key of Object.keys(fromUrl) as (keyof CarFuelForm)[]) pinned.current.add(key);
-    setForm((f) => ({ ...f, ...fromUrl }));
+    if (Object.keys(fromUrl).length > 0) setForm((f) => ({ ...f, ...fromUrl }));
     setReady(true);
   }, []);
 
@@ -108,7 +109,11 @@ export default function CarFuelTool({ locale }: Props) {
       if (!pinned.current.has('interestRate')) next.interestRate = assumptions.carLoanRate;
       if (cityPrices && !pinned.current.has('petrolPrice')) next.petrolPrice = cityPrices.petrol;
       if (cityPrices && !pinned.current.has('cngPrice')) next.cngPrice = cityPrices.cng;
-      return next;
+      const same =
+        next.interestRate === f.interestRate &&
+        next.petrolPrice === f.petrolPrice &&
+        next.cngPrice === f.cngPrice;
+      return same ? f : next;
     });
   }, [ready, assumptions.carLoanRate, cityPrices?.petrol, cityPrices?.cng]);
 
@@ -154,7 +159,7 @@ export default function CarFuelTool({ locale }: Props) {
 
   // One alternative: verdict, scenarios and break-even, as before.
   const input = !all && pairs ? pairs[form.alt as AltKind]! : null;
-  const computed = useMemo(() => {
+  const core = useMemo(() => {
     if (!input) return null;
     const result = compareCarFuel(input);
     // The headline is asked of whichever car costs more to buy; scenarios use the same basis.
@@ -168,13 +173,17 @@ export default function CarFuelTool({ locale }: Props) {
       verdict,
       basis,
       runs,
-      flips: carFuelFlips(input),
+      // The verdict's own line needs only the distance flip, so it paints with the answer.
+      kmFlips: carFuelFlips(input, ['monthlyKm']),
       netWithInterest: netSeries(result, result.extraPriceWithInterest),
       netNoInterest: netSeries(result, input.extraPrice),
       bandLow: scenarioNets[0]!.map((_, m) => Math.min(...scenarioNets.map((s) => s[m]!))),
       bandHigh: scenarioNets[0]!.map((_, m) => Math.max(...scenarioNets.map((s) => s[m]!))),
     };
   }, [input]);
+  // Scenarios and the "what would flip it" sweeps can follow a moment after the answer.
+  const fullFlips = useIdleValue(() => (input ? carFuelFlips(input) : null), [input]);
+  const computed = core && { ...core, flips: fullFlips ?? core.kmFlips };
 
   // All three: total cost of each car and each alternative against petrol.
   const setComputed = useMemo(() => {
@@ -788,7 +797,7 @@ export default function CarFuelTool({ locale }: Props) {
               altName={altName}
               baseCar={names.petrol.car}
               altCar={altCar}
-              flips={computed.flips}
+              flips={computed.kmFlips}
               exampleNote={exampleNote}
             />
           ) : setComputed ? (

@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { simpleTariff } from '@/engine/tariff';
 import { decodeShare, encodeShare } from '@/lib/shareLink';
 import {
+  SOLAR_EXAMPLE_FORM,
+  SOLAR_EXAMPLE_KEYS,
   SOLAR_START_FORM,
   invalidSolarFields,
   solarShareSchema,
@@ -76,5 +78,13 @@ describe('solar form', () => {
     expect(decodeShare(encodeShare(filled, solarShareSchema), solarShareSchema)).toEqual(
       Object.fromEntries(Object.entries(filled).filter(([, v]) => v !== null)),
     );
+  });
+});
+
+describe('solar form: example start', () => {
+  it('opens complete with a flat rate, and never overrides verified data', () => {
+    expect(invalidSolarFields(SOLAR_EXAMPLE_FORM, false)).toEqual([]);
+    for (const key of SOLAR_EXAMPLE_KEYS) expect(SOLAR_START_FORM[key]).toBeNull();
+    expect(SOLAR_EXAMPLE_FORM.systemKW).toBe(3);
   });
 });

@@ -317,8 +317,8 @@
   "solar.note.inverterCost": "In today's rupees.",
   "solar.needInputs": "Enter your system, its price, generation, panel loss, your usage and your price per unit to see the result.",
   "solar.stillMissing": "{n} required fields still empty.",
-  "solar.verdict.payback": "Solar pays back in {years} years",
-  "solar.verdict.paybackDetail": "In month {months}, after the subsidy. Net gain over {years} years: {net}.",
+  "solar.verdict.payback": "Solar pays for itself in {duration}",
+  "solar.verdict.paybackDetail": "After that it keeps cutting your bill: you end {net} ahead after {years} years.",
   "solar.verdict.never": "Solar does not pay back within {years} years",
   "solar.verdict.neverDetail": "Over {years} years it saves {saved}, less than the {cost} it costs.",
   "solar.stat.netCost": "Net cost after subsidy",
@@ -752,5 +752,9 @@
   "verdict.plain.paysBack": "{dearer}'s {extra} higher price pays back in {duration}, counting {rate} a year interest on it.",
   "verdict.plain.noPayback": "{dearer}'s {extra} higher price does not pay back within {years} years.",
   "verdict.plain.resaleNote": "Its higher resale value is what puts it ahead.",
-  "verdict.plain.flipKm": "The answer changes at {km} a month: drive less than that and {below} is cheaper."
+  "verdict.plain.flipKm": "The answer changes at {km} a month: drive less than that and {below} is cheaper.",
+  "rentBuy.verdict.flipBuy": "Buying would win if home prices grew faster than {value} a year.",
+  "rentBuy.verdict.flipRent": "Renting would win if home prices grew slower than {value} a year.",
+  "rentBuy.exampleNote": "This answer uses an example home, rent and return. Put in yours to get your own answer.",
+  "solar.exampleNote": "This answer uses an example system and bill. Put in your installer's quote and your own bill to get your answer."
 }

@@ -255,7 +255,7 @@ export interface RentBuyFlip extends Flip {
 }
 
 /** Where buying and renting end level at the horizon, one input at a time. Positive = buying wins. */
-export function rentBuyFlips(input: RentBuyInput): RentBuyFlip[] {
+export function rentBuyFlips(input: RentBuyInput, only?: RentBuyVariable[]): RentBuyFlip[] {
   const diff = (i: RentBuyInput) => rentVsBuy(i).atHorizon.difference;
   const probes: { variable: RentBuyVariable; lo: number; hi: number }[] = [
     { variable: 'appreciation', lo: -0.05, hi: 0.2 },
@@ -265,6 +265,7 @@ export function rentBuyFlips(input: RentBuyInput): RentBuyFlip[] {
   ];
   const flips: RentBuyFlip[] = [];
   for (const { variable, lo, hi } of probes) {
+    if (only && !only.includes(variable)) continue;
     if (variable === 'loanRate' && input.downPayment >= 1) continue;
     const flip = findFlip((v) => diff({ ...input, [variable]: v }), { lo, hi, steps: 50 });
     if (flip) flips.push({ variable, ...flip });

@@ -21,7 +21,7 @@ interface Props {
   /** Comparison with the dearer car as the alternative. */
   basis: CarFuelResult;
   /** Price-rise scenarios on the same basis, for the range line. */
-  runs: Record<ScenarioName, ScenarioRun<CarFuelInput, CarFuelResult>>;
+  runs: Record<ScenarioName, ScenarioRun<CarFuelInput, CarFuelResult>> | null;
   flips: CarFuelFlip[];
   baseName: string;
   altName: string;
@@ -121,9 +121,11 @@ export default function VerdictCard(props: Props) {
     : null;
 
   // Range across price-rise scenarios, only when the break-even moves with them.
-  const scenarioMonths = (['pessimistic', 'base', 'optimistic'] as const).map(
-    (s) => runs[s].output.breakevenWithInterest?.months ?? null,
-  );
+  const scenarioMonths = runs
+    ? (['pessimistic', 'base', 'optimistic'] as const).map(
+        (s) => runs[s].output.breakevenWithInterest?.months ?? null,
+      )
+    : [];
   const reached = scenarioMonths.filter((m): m is number => m !== null);
   const monthsText = (m: number | null) =>
     m === null ? t(locale, 'verdict.notWithin', { years }) : formatDuration(locale, m);

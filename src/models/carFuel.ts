@@ -227,7 +227,7 @@ export interface CarFuelFlip extends Flip {
  * the horizon crosses zero, holding everything else. Positive net = the alternative wins.
  * Variables that cannot flip the answer within a plausible range are left out.
  */
-export function carFuelFlips(input: CarFuelInput): CarFuelFlip[] {
+export function carFuelFlips(input: CarFuelInput, only?: CarFuelVariable[]): CarFuelFlip[] {
   const net = (i: CarFuelInput) => compareCarFuel(i).netAtHorizon.withInterest;
   const { base, alternative } = input;
 
@@ -265,6 +265,7 @@ export function carFuelFlips(input: CarFuelInput): CarFuelFlip[] {
 
   const flips: CarFuelFlip[] = [];
   for (const { variable, lo, hi, apply } of probes) {
+    if (only && !only.includes(variable)) continue;
     if (!(hi > lo)) continue;
     const flip = findFlip((v) => net(apply(v)), { lo, hi, steps: 60 });
     if (flip) flips.push({ variable, ...flip });

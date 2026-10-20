@@ -83,7 +83,11 @@ function validate(i: SolarInput): void {
   }
 }
 
-export function solarPayback(input: SolarInput): SolarResult {
+/**
+ * `withIrr: false` skips the IRR search when only the net figures are needed (the sensitivity sweeps
+ * run this hundreds of times).
+ */
+export function solarPayback(input: SolarInput, { withIrr = true } = {}): SolarResult {
   validate(input);
   const months = input.horizonYears * 12;
   const fixedOnly = bill(0, input.tariff, { sanctionedLoadKW: input.sanctionedLoadKW }).total;
@@ -131,7 +135,7 @@ export function solarPayback(input: SolarInput): SolarResult {
     cumulativeNet,
     cumulativeNet.map(() => 0),
   );
-  const monthlyIrr = irr(flows);
+  const monthlyIrr = withIrr ? irr(flows) : null;
 
   return {
     netCost,
@@ -171,8 +175,8 @@ export interface SolarFlip extends Flip {
 
 /** Where the net position at the horizon crosses zero, one input at a time. */
 export function solarFlips(input: SolarInput): SolarFlip[] {
-  const net = (i: SolarInput) => solarPayback(i).netAtHorizon;
-  const now = solarPayback(input);
+  const net = (i: SolarInput) => solarPayback(i, { withIrr: false }).netAtHorizon;
+  const now = solarPayback(input, { withIrr: false });
   // Search net cost up to well past the lifetime savings, so a break-even cost is always in range.
   const lifetimeSavings = now.netAtHorizon + now.netCost + (input.inverter?.cost ?? 0);
   const probes: {

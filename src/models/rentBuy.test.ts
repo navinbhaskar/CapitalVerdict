@@ -177,3 +177,10 @@ describe('rent vs buy: interest, payoff and prepayment', () => {
     expect(r.prepaid[23]).toBe(0);
   });
 });
+
+describe('rent vs buy flips: one variable on request', () => {
+  it('same threshold as the full sweep', () => {
+    const all = rentBuyFlips(loanCase).find((f) => f.variable === 'appreciation')!;
+    expect(rentBuyFlips(loanCase, ['appreciation'])).toEqual([all]);
+  });
+});

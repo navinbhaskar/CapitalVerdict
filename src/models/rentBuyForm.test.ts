@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { decodeShare, encodeShare } from '@/lib/shareLink';
 import {
+  RENT_BUY_EXAMPLE_FORM,
+  RENT_BUY_EXAMPLE_KEYS,
   RENT_BUY_START_FORM,
   invalidRentBuyFields,
   rentBuyShareSchema,
@@ -54,5 +56,15 @@ describe('rent vs buy form', () => {
     expect(decodeShare(encodeShare(filled, rentBuyShareSchema), rentBuyShareSchema)).toEqual(
       Object.fromEntries(Object.entries(filled).filter(([, v]) => v !== null)),
     );
+  });
+});
+
+describe('rent vs buy form: example start', () => {
+  it('opens complete, and matches the illustration in the blog post', () => {
+    expect(invalidRentBuyFields(RENT_BUY_EXAMPLE_FORM)).toEqual([]);
+    const input = toRentBuyInput(RENT_BUY_EXAMPLE_FORM)!;
+    expect(input.homePrice).toBe(5_000_000);
+    expect(input.monthlyRent).toBe(15_000);
+    expect(RENT_BUY_EXAMPLE_KEYS).toContain('stampDuty');
   });
 });
