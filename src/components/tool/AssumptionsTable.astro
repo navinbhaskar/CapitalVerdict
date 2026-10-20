@@ -1,5 +1,6 @@
 ---
 import { t, type Locale } from '@/i18n/t';
+import { sourceNote } from '@/lib/draft';
 
 export interface AssumptionRow {
   label: string;
@@ -48,7 +49,7 @@ const { locale, rows } = Astro.props;
               </span>
             )}
           </td>
-          <td class="py-3 pr-4 text-ink-muted">{row.source}</td>
+          <td class="py-3 pr-4 text-ink-muted">{sourceNote(row.source)}</td>
           <td class="num py-3 whitespace-nowrap text-ink-muted">{row.date}</td>
         </tr>
       ))}

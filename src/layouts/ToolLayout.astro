@@ -24,6 +24,7 @@ interface Props {
 }
 const { locale, title, description, related = [], faq = [] } = Astro.props;
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const reportHref = reportErrorHref(pageUrl);
 
 const jsonLd: Record<string, unknown>[] = [
   {
@@ -108,13 +109,12 @@ const sections = [
       </nav>
     )}
 
-    <p class="mt-8 text-sm">
-      <a
-        href={reportErrorHref(pageUrl)}
-        class="text-accent-strong underline decoration-1 underline-offset-4 hover:decoration-2"
-      >
-        {t(locale, 'tool.reportError')}
-      </a>
-    </p>
+    {reportHref && (
+      <p class="mt-8 text-sm">
+        <a href={reportHref} class="link">
+          {t(locale, 'tool.reportError')}
+        </a>
+      </p>
+    )}
   </article>
 </BaseLayout>

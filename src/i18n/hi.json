@@ -756,5 +756,9 @@
   "rentBuy.verdict.flipBuy": "TODO_COPY_HI",
   "rentBuy.verdict.flipRent": "TODO_COPY_HI",
   "rentBuy.exampleNote": "TODO_COPY_HI",
-  "solar.exampleNote": "TODO_COPY_HI"
+  "solar.exampleNote": "TODO_COPY_HI",
+  "page.privacy.analytics.bodyOn": "TODO_COPY_HI",
+  "share.whatsapp": "TODO_COPY_HI",
+  "share.message": "TODO_COPY_HI",
+  "page.privacy.thirdParty.bodyOn": "TODO_COPY_HI"
 }

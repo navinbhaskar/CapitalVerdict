@@ -18,7 +18,9 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "verify": "npm run format:check && npm run lint && npm run test && npm run build"
+    "verify": "npm run format:check && npm run lint && npm run test && npm run build",
+    "build:prod": "node scripts/check-env.mjs && astro check && astro build && node scripts/check-dist.mjs",
+    "check:dist": "node scripts/check-dist.mjs"
   },
   "dependencies": {
     "@astrojs/preact": "^6.1.0",

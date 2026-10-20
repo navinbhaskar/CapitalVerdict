@@ -326,7 +326,7 @@ export default function RentBuyTool({ locale }: Props) {
 
   return (
     <div>
-      <div class="grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-10">
+      <div class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-10">
         <section aria-labelledby="rb-inputs-heading">
           <div class="flex flex-wrap items-baseline justify-between gap-3">
             <h2 id="rb-inputs-heading" class="font-display text-xl font-semibold">
@@ -622,7 +622,7 @@ export default function RentBuyTool({ locale }: Props) {
           )}
           {shareHref && computed && (
             <div class="mt-4">
-              <ShareLink locale={locale} url={shareHref} />
+              <ShareLink locale={locale} url={shareHref} headline={headline} />
             </div>
           )}
           <ScenarioShelf

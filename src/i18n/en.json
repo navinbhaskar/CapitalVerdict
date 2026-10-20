@@ -756,5 +756,9 @@
   "rentBuy.verdict.flipBuy": "Buying would win if home prices grew faster than {value} a year.",
   "rentBuy.verdict.flipRent": "Renting would win if home prices grew slower than {value} a year.",
   "rentBuy.exampleNote": "This answer uses an example home, rent and return. Put in yours to get your own answer.",
-  "solar.exampleNote": "This answer uses an example system and bill. Put in your installer's quote and your own bill to get your answer."
+  "solar.exampleNote": "This answer uses an example system and bill. Put in your installer's quote and your own bill to get your answer.",
+  "page.privacy.analytics.bodyOn": "Decidewise counts visits with Cloudflare Web Analytics, which sets no cookies and does not identify you. It records pages viewed, the referring site, and the browser and country, in aggregate. It is used only to see which pages people find useful.",
+  "share.whatsapp": "Share on WhatsApp",
+  "share.message": "{headline}. Worked out on Decidewise:",
+  "page.privacy.thirdParty.bodyOn": "Fonts and scripts are served from this site, apart from the Cloudflare Web Analytics script described above. The host that serves the site may keep standard technical logs, such as the pages requested and IP addresses, to run and protect it.\n\nIf you report an error, your email app sends the message, and we receive your email address with it. It is used only to reply."
 }

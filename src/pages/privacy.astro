@@ -1,5 +1,6 @@
 ---
 import ProsePage from '@/layouts/ProsePage.astro';
+import { site } from '@/config/site';
 ---
 
 <ProsePage
@@ -9,7 +10,7 @@ import ProsePage from '@/layouts/ProsePage.astro';
     { key: 'device' },
     { key: 'cookies' },
     { key: 'links' },
-    { key: 'analytics' },
-    { key: 'thirdParty' },
+    { key: 'analytics', bodyKey: site.analyticsToken ? 'analytics.bodyOn' : undefined },
+    { key: 'thirdParty', bodyKey: site.analyticsToken ? 'thirdParty.bodyOn' : undefined },
   ]}
 />

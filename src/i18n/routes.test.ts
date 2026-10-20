@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { alternates, localizePath, otherLocale, splitLocale } from './routes';
+import { PUBLISHED_LOCALES, alternates, localizePath, otherLocale, splitLocale } from './routes';
+import { HINDI_PUBLISHED } from './t';
 
 describe('localizePath', () => {
   it('keeps English at the root', () => {
@@ -50,5 +51,11 @@ describe('otherLocale', () => {
   it('swaps', () => {
     expect(otherLocale('en')).toBe('hi');
     expect(otherLocale('hi')).toBe('en');
+  });
+});
+
+describe('Hindi dictionary switch', () => {
+  it('matches the published locales', () => {
+    expect(HINDI_PUBLISHED).toBe(PUBLISHED_LOCALES.includes('hi'));
   });
 });
