@@ -97,6 +97,13 @@ const ld = (o: Record<string, unknown>) => JSON.stringify(o).replace(/</g, '\\u0
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <!-- The guides feed: no visible link, but feed readers find it from any page. -->
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${t(locale, 'blog.title')}: ${siteName}`}
+      href="/guides/rss.xml"
+    />
   </head>
   <body class="flex min-h-dvh flex-col">
     <a

@@ -20,13 +20,7 @@ const dateFormat = new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeZ
   title={t(locale, 'blog.title')}
   description={t(locale, 'blog.description')}
 >
-  <PageIntro title={t(locale, 'blog.title')} lead={t(locale, 'blog.intro')}>
-    <p class="mt-4 text-sm">
-      <a href="/guides/rss.xml" class="link">
-        {t(locale, 'blog.rss')}
-      </a>
-    </p>
-  </PageIntro>
+  <PageIntro title={t(locale, 'blog.title')} lead={t(locale, 'blog.intro')} />
   <div class="container-page pt-2 pb-10 sm:pb-12">
     {kinds.map(({ kind, heading }) => {
       const list = posts.filter((p) => p.data.kind === kind);
