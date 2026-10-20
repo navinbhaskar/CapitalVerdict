@@ -118,13 +118,18 @@ export default function AssumptionsPanel({ locale }: Props) {
 
   return (
     <>
-      <button type="button" onClick={open} aria-haspopup="dialog" class="nav-pill">
+      <button
+        type="button"
+        onClick={open}
+        aria-haspopup="dialog"
+        class="nav-pill sm:pr-3.5 sm:pl-2.5"
+      >
         <SlidersIcon />
         <span class="sr-only sm:not-sr-only">{t(locale, 'assumptions.open')}</span>
         {changed.length > 0 && (
           <>
             <span
-              class="absolute top-1.5 left-7 size-2 rounded-full bg-accent ring-2 ring-raised sm:left-8"
+              class="absolute -top-0.5 left-6 size-2 rounded-full bg-accent ring-2 ring-page sm:left-7"
               aria-hidden="true"
             />
             <span class="sr-only">

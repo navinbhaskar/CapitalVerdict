@@ -486,32 +486,38 @@
     background: var(--color-accent);
   }
 
+  /* Outlined, flat: a brass hairline instead of a shadow, so it sits in the bar, not above it. */
   .nav-pill {
     position: relative;
     display: inline-flex;
-    min-height: 2.75rem;
-    min-width: 2.75rem;
+    min-height: 2.25rem;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
     border-radius: 999px;
-    padding-inline: 0.875rem;
+    border: 1px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
+    min-width: 2.25rem;
+    padding-inline: 0.5rem;
     font-size: var(--text-sm);
     font-weight: 500;
     color: var(--color-ink);
-    background: var(--color-raised);
-    box-shadow:
-      var(--shadow-card),
-      inset 0 0 0 1px var(--color-line-strong);
     transition:
-      transform var(--duration-fast) var(--ease-out-quart),
-      box-shadow var(--duration-fast) var(--ease-out-quart);
+      background-color var(--duration-fast) var(--ease-out-quart),
+      border-color var(--duration-fast) var(--ease-out-quart),
+      transform var(--duration-fast) var(--ease-out-quart);
+  }
+  /* Keeps the tap target at 44px while the outline stays compact. */
+  .nav-pill::before {
+    content: '';
+    position: absolute;
+    inset: -0.25rem;
+  }
+  .nav-pill svg {
+    color: var(--color-accent);
   }
   .nav-pill:hover {
-    transform: translateY(var(--motion-lift));
-    box-shadow:
-      var(--shadow-raised),
-      inset 0 0 0 1px var(--color-ink-subtle);
+    border-color: var(--color-accent);
+    background-color: color-mix(in srgb, var(--color-accent) 12%, transparent);
   }
   .nav-pill:active {
     transform: scale(0.97);
