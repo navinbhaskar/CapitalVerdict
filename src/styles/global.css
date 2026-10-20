@@ -359,18 +359,19 @@
     text-decoration-color: currentColor;
   }
 
-  /* Cards that are links: small lift and a deeper shadow on hover. */
+  /* Cards that are links: a small lift on hover. */
   .card-lift {
     transition:
       transform var(--duration-base) var(--ease-out-expo),
       box-shadow var(--duration-base) var(--ease-out-expo);
   }
+  /* Subtle: a 2px lift and the lightest shadow; the brass border does most of the work. */
   .card-lift:hover {
-    transform: translateY(calc(var(--motion-lift) * 2));
-    box-shadow: var(--shadow-float);
+    transform: translateY(var(--motion-lift));
+    box-shadow: var(--shadow-card);
   }
   .card-lift:active {
-    transform: translateY(var(--motion-lift));
+    transform: none;
     transition-duration: var(--duration-instant);
   }
 
