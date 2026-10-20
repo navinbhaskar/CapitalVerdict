@@ -66,6 +66,7 @@ paused: strings stay in `hi.json`, but no Hindi pages are built (see `PUBLISHED_
 - `prefers-reduced-motion`: drop movement and keep only short fades and state changes.
 - Nothing loops forever or competes with reading. Content is visible by default; motion is an
   enhancement that a failed script cannot hide.
-- One focal moment per page (the home hero's break-even line and the logo intro, played once per visit).
+- One focal moment per page (the home hero's answer, which ticks as the visitor edits the sentence, and
+  the logo intro, played once per visit).
 - Check performance after motion changes: no layout shift (reserve space for anything that loads late),
   no large new JS bundle.

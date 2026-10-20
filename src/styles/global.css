@@ -611,6 +611,56 @@
   }
 }
 
+/* ---------- Hero sentence: blanks the visitor can change ---------- */
+
+@layer components {
+  /* An editable number inside a sentence: brass text on a brass underline, as wide as its text. */
+  .blank {
+    display: inline-flex;
+    align-items: baseline;
+    padding-block: 0.12em;
+    color: var(--color-accent-strong);
+    border-bottom: 2px solid var(--color-accent);
+    white-space: nowrap;
+    transition: background-color var(--duration-fast) var(--ease-out-quart);
+  }
+  .blank input {
+    min-width: 1ch;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+  }
+  .blank input:focus-visible {
+    outline: none;
+  }
+  .blank:focus-within {
+    background: var(--color-accent-soft);
+  }
+  .blank.is-bad {
+    border-bottom-color: var(--color-danger);
+  }
+  .blank-select {
+    appearance: none;
+    padding: 0.12em 1em 0.12em 0;
+    border: 0;
+    border-bottom: 2px solid var(--color-accent);
+    border-radius: 0;
+    color: var(--color-accent-strong);
+    font: inherit;
+    background: transparent
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d6b878' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
+      no-repeat right center / 0.7em;
+    cursor: pointer;
+  }
+  .blank-select:focus-visible {
+    outline: none;
+    background-color: var(--color-accent-soft);
+  }
+}
+
 /* ---------- Entrances ---------- */
 
 @keyframes dw-rise {

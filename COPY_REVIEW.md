@@ -92,3 +92,10 @@ Example values the tools now open with. They are labelled "Example" on the page 
 | [ ] `inputs.example`, `carFuel.exampleNote`, `detail.*`, `duration.*`                                                                                                                                                                                                                                                                | All tools                  |
 | [ ] `verdict.paysBack`, `verdict.plain.*`, `verdict.range`                                                                                                                                                                                                                                                                           | Car verdict in plain words |
 | [ ] Renamed: `stat.monthlySaving`, `stat.totalCost`, `chart.netTitle`, `chart.netWithInterest`, `chart.netNoInterest`, `scenario.*`, `working.result1`, `working.result2`, `working.months`, `working.km`, `working.years`, `working.longRun`, `solar.stat.irr`, `solar.stat.net`, `rentBuy.stat.neededAppreciation`, `note.horizon` | Plain-language pass        |
+
+## Home page sentence card (drafted 2026-10-20)
+
+| Key                                                                          | Where it shows                                                  |
+| ---------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| [ ] `hero.tab.*`, `hero.tablist`, `hero.ask.*`, `hero.answer.*`, `hero.open` | Home hero card: tabs, blank labels, answer                      |
+| [ ] `hero.car.*`, `hero.solar.*`, `hero.home.*`                              | The three sentences, their answers and the example-figures line |
