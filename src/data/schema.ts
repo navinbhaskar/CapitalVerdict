@@ -12,6 +12,7 @@ import fuelPricesJson from './fuelPrices.json';
 import upTariffJson from './tariffs/UP.json';
 import solarJson from './solar.json';
 import propertyJson from './property.json';
+import changelogJson from './changelog.json';
 
 export const verificationStatus = z.enum(['TODO_VERIFY', 'verified']);
 
@@ -111,6 +112,13 @@ export const propertySchema = z.object({
 });
 export type PropertyData = z.infer<typeof propertySchema>;
 
+export const changelogSchema = z.object({
+  entries: z
+    .array(z.object({ date: z.iso.date(), change: z.string().min(1) }))
+    .refine((e) => e.every((x, i) => i === 0 || e[i - 1]!.date >= x.date), 'newest first'),
+});
+export type Changelog = z.infer<typeof changelogSchema>;
+
 /** Throws on any malformed data file. Called from BaseLayout so a bad file fails the build. */
 export function validateAllData(): void {
   defaultsSchema.parse(defaultsJson);
@@ -118,4 +126,5 @@ export function validateAllData(): void {
   tariffSchema.parse(upTariffJson);
   solarSchema.parse(solarJson);
   propertySchema.parse(propertyJson);
+  changelogSchema.parse(changelogJson);
 }

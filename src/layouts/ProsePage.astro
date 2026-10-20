@@ -1,0 +1,50 @@
+---
+/**
+ * Text pages (methodology, about, legal). Strings live under `page.<page>.*` in the dictionaries:
+ * title, description, intro, and per section `<key>.title`, `<key>.body` (paragraphs separated by
+ * a blank line) and, when `formula` is set, `<key>.formula` shown as a monospaced block.
+ */
+import BaseLayout from './BaseLayout.astro';
+import { t, type Locale, type MessageKey } from '@/i18n/t';
+
+interface Props {
+  locale: Locale;
+  page: string;
+  sections: { key: string; formula?: boolean }[];
+  noindex?: boolean;
+}
+const { locale, page, sections, noindex } = Astro.props;
+const k = (key: string) => t(locale, `page.${page}.${key}` as MessageKey);
+---
+
+<BaseLayout locale={locale} title={k('title')} description={k('description')} noindex={noindex}>
+  <article class="container-page pt-6 pb-12 sm:pt-8 sm:pb-14">
+    <header class="max-w-3xl">
+      <h1 class="font-display text-2xl font-medium sm:text-3xl">{k('title')}</h1>
+      <p class="mt-3 max-w-(--container-prose) text-ink-muted">{k('intro')}</p>
+    </header>
+
+    {sections.map(({ key, formula }) => (
+      <section class="mt-8 max-w-3xl border-t border-line pt-6" aria-labelledby={`s-${key}`}>
+        <h2 id={`s-${key}`} class="font-display text-xl font-semibold">
+          {k(`${key}.title`)}
+        </h2>
+        <div class="mt-3 max-w-(--container-prose) space-y-3 text-ink-muted">
+          {k(`${key}.body`)
+            .split('\n\n')
+            .map((p) => (
+              <p>{p}</p>
+            ))}
+        </div>
+        {formula && (
+          <pre
+            class="num mt-4 overflow-x-auto rounded-lg bg-surface px-4 py-3 text-sm text-ink"
+            set:text={k(`${key}.formula`)}
+          />
+        )}
+      </section>
+    ))}
+
+    <slot />
+  </article>
+</BaseLayout>

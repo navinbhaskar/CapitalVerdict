@@ -43,7 +43,7 @@ const { locale, rows } = Astro.props;
           <td class="num py-3 pr-4">
             {row.value}
             {!row.verified && (
-              <span class="ml-2 inline-block rounded-full bg-warn-soft px-2 py-0.5 text-xs font-medium text-warn">
+              <span class="ml-2 inline-block rounded-full whitespace-nowrap bg-warn-soft px-2 py-0.5 text-xs font-medium text-warn">
                 {t(locale, 'assumptionsTable.unverified')}
               </span>
             )}

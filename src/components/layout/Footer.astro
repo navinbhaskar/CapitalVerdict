@@ -1,12 +1,22 @@
 ---
 import Logo from './Logo.astro';
-import { t, type Locale } from '@/i18n/t';
+import { t, type Locale, type MessageKey } from '@/i18n/t';
+import { localizePath } from '@/i18n/routes';
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 const year = new Date().getFullYear();
+const links: [MessageKey, string][] = [
+  ['footer.link.methodology', '/methodology/'],
+  ['footer.link.changelog', '/assumptions-changelog/'],
+  ['footer.link.about', '/about/'],
+  ['footer.link.disclaimer', '/disclaimer/'],
+  ['footer.link.terms', '/terms/'],
+  ['footer.link.privacy', '/privacy/'],
+  ['footer.link.trademarks', '/trademarks/'],
+];
 ---
 
 <footer class="border-t border-line">
@@ -14,6 +24,20 @@ const year = new Date().getFullYear();
     <div class="flex flex-col gap-3">
       <Logo size={22} />
       <p class="max-w-md">{t(locale, 'footer.disclaimer')}</p>
+      <nav aria-label={t(locale, 'footer.nav')}>
+        <ul class="-mx-1 flex max-w-md flex-wrap gap-x-1" role="list">
+          {links.map(([label, path]) => (
+            <li>
+              <a
+                href={localizePath(path, locale)}
+                class="inline-flex min-h-11 items-center rounded-sm px-1 underline decoration-line-strong decoration-1 underline-offset-4 hover:text-ink hover:decoration-current"
+              >
+                {t(locale, label)}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
     <div class="flex flex-col gap-2 sm:items-end">
       <button

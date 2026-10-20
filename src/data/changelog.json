@@ -1,0 +1,20 @@
+{
+  "entries": [
+    {
+      "date": "2026-10-20",
+      "change": "Added UP stamp duty and registration for the rent vs buy tool, as a placeholder (not verified)."
+    },
+    {
+      "date": "2026-10-19",
+      "change": "Added the UP domestic electricity tariff and rooftop solar subsidy, generation, degradation and export credit, as placeholders (not verified)."
+    },
+    {
+      "date": "2026-10-19",
+      "change": "Added Lucknow petrol (₹101.86 a litre) and CNG (₹95.75 a kg) prices as of 14 Sep 2026, from the CNG_vs_Petrol_Lucknow.xlsx workbook."
+    },
+    {
+      "date": "2026-10-19",
+      "change": "Set the default scenario table (inflation, equity return, home prices, rent, fuel and electricity prices) and the 9% default rate on the extra car price, from the project spec."
+    }
+  ]
+}

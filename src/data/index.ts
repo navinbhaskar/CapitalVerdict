@@ -7,7 +7,15 @@ import fuelPricesJson from './fuelPrices.json';
 import upTariffJson from './tariffs/UP.json';
 import solarJson from './solar.json';
 import propertyJson from './property.json';
-import type { Defaults, FuelPrices, PropertyData, SolarData, TariffData } from './schema';
+import changelogJson from './changelog.json';
+import type {
+  Changelog,
+  Defaults,
+  FuelPrices,
+  PropertyData,
+  SolarData,
+  TariffData,
+} from './schema';
 import type { Tariff } from '@/engine/tariff';
 
 export const defaults = defaultsJson as unknown as Defaults;
@@ -44,3 +52,5 @@ export function verifiedStampDuty(): number | null {
   const r = propertyData.stampDutyAndRegistration;
   return r.status === 'verified' ? r.value : null;
 }
+
+export const changelog = changelogJson as unknown as Changelog;

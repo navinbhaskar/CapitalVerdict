@@ -16,12 +16,18 @@ interface Props {
   locale: Locale;
   title?: string;
   description?: string;
+  /** Structured data objects, each rendered as its own JSON-LD script. */
+  jsonLd?: Record<string, unknown>[];
+  noindex?: boolean;
 }
-const { locale, title, description } = Astro.props;
+const { locale, title, description, jsonLd = [], noindex = false } = Astro.props;
 const { path } = splitLocale(Astro.url.pathname);
 const siteName = t(locale, 'site.name');
 const pageTitle = title ? `${title} | ${siteName}` : `${siteName}: ${t(locale, 'site.tagline')}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const metaDescription = description ?? t(locale, 'site.description');
+// JSON in a script tag: escape "<" so no string can close the tag.
+const ld = (o: Record<string, unknown>) => JSON.stringify(o).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -58,8 +64,18 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       })();
     </script>
     <title>{pageTitle}</title>
-    <meta name="description" content={description ?? t(locale, 'site.description')} />
-    <link rel="canonical" href={canonical} />
+    <meta name="description" content={metaDescription} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={title ?? pageTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={locale === 'hi' ? 'hi_IN' : 'en_IN'} />
+    <meta name="twitter:card" content="summary" />
+    {jsonLd.map((o) => (
+      <script type="application/ld+json" set:html={ld(o)} />
+    ))}
     {PUBLISHED_LOCALES.length > 1 &&
       alternates(path, Astro.site!, PUBLISHED_LOCALES).map((a) => (
         <link rel="alternate" hreflang={a.hreflang} href={a.href} />

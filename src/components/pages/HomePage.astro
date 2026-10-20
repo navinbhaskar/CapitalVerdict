@@ -10,21 +10,31 @@ interface Props {
 }
 const { locale } = Astro.props;
 
-const liveTools: { title: MessageKey; question: MessageKey; href: string; icon: 'fuel' | 'sun' }[] =
-  [
-    {
-      title: 'tool.carFuel.title',
-      question: 'tool.carFuel.question',
-      href: localizePath('/tools/car-fuel/', locale),
-      icon: 'fuel',
-    },
-    {
-      title: 'tool.solar.title',
-      question: 'tool.solar.question',
-      href: localizePath('/tools/solar/', locale),
-      icon: 'sun',
-    },
-  ];
+const liveTools: {
+  title: MessageKey;
+  question: MessageKey;
+  href: string;
+  icon: 'fuel' | 'sun' | 'home';
+}[] = [
+  {
+    title: 'tool.carFuel.title',
+    question: 'tool.carFuel.question',
+    href: localizePath('/tools/car-fuel/', locale),
+    icon: 'fuel',
+  },
+  {
+    title: 'tool.solar.title',
+    question: 'tool.solar.question',
+    href: localizePath('/tools/solar/', locale),
+    icon: 'sun',
+  },
+  {
+    title: 'tool.rentVsBuy.title',
+    question: 'tool.rentVsBuy.question',
+    href: localizePath('/tools/rent-vs-buy/', locale),
+    icon: 'home',
+  },
+];
 const upcoming: {
   title: MessageKey;
   question: MessageKey;
@@ -44,7 +54,19 @@ const principles: { title: MessageKey; body: MessageKey }[] = [
 ];
 ---
 
-<BaseLayout locale={locale}>
+<BaseLayout
+  locale={locale}
+  jsonLd={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: t(locale, 'site.name'),
+      url: new URL('/', Astro.site).href,
+      description: t(locale, 'site.description'),
+      inLanguage: 'en-IN',
+    },
+  ]}
+>
   <section class="relative overflow-hidden">
     <!-- Two cost lines run behind the glass preview and cross where it sits: the break-even motif. -->
     <svg

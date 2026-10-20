@@ -19,9 +19,37 @@ interface Props {
   title: string;
   description?: string;
   related?: { href: string; label: string }[];
+  /** Questions and answers shown in the FAQ slot, repeated as FAQPage structured data. */
+  faq?: { q: string; a: string }[];
 }
-const { locale, title, description, related = [] } = Astro.props;
+const { locale, title, description, related = [], faq = [] } = Astro.props;
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+
+const jsonLd: Record<string, unknown>[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: title,
+    url: pageUrl,
+    description,
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'Any',
+    inLanguage: locale === 'hi' ? 'hi-IN' : 'en-IN',
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
+  },
+];
+if (faq.length > 0) {
+  jsonLd.push({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  });
+}
 
 const sections = [
   { slot: 'explanation', heading: t(locale, 'tool.section.explanation') },
@@ -31,7 +59,7 @@ const sections = [
 ].filter((s) => Astro.slots.has(s.slot));
 ---
 
-<BaseLayout locale={locale} title={title} description={description}>
+<BaseLayout locale={locale} title={title} description={description} jsonLd={jsonLd}>
   <article class="container-page pt-6 pb-12 sm:pt-8 sm:pb-14">
     <header class="max-w-3xl">
       <h1 class="font-display text-2xl font-medium sm:text-3xl">{title}</h1>

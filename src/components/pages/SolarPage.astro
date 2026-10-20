@@ -56,6 +56,10 @@ const related = [
   title={t(locale, 'tool.solar.question')}
   description={t(locale, 'solar.metaDescription')}
   related={related}
+  faq={FAQ.map((n) => ({
+    q: t(locale, `solar.faq.${n}.q` as MessageKey),
+    a: t(locale, `solar.faq.${n}.a` as MessageKey),
+  }))}
 >
   <SolarTool client:load locale={locale} />
 

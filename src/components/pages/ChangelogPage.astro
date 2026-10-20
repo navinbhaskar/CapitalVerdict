@@ -1,0 +1,99 @@
+---
+import ProsePage from '@/layouts/ProsePage.astro';
+import AssumptionsTable, { type AssumptionRow } from '@/components/tool/AssumptionsTable.astro';
+import { t, type Locale, type MessageKey } from '@/i18n/t';
+import { changelog, defaults, fuelPrices, propertyData, solarData, upTariff } from '@/data';
+import type { DataRecord, ScenarioVariable } from '@/data/schema';
+import { formatPercent } from '@/lib/formatTool';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const value = (r: DataRecord) =>
+  r.value === null
+    ? '—'
+    : r.unit.startsWith('decimal')
+      ? formatPercent(r.value)
+      : `${r.value} ${r.unit}`;
+const record = (label: string, r: DataRecord): AssumptionRow => ({
+  label,
+  value: value(r),
+  source: r.source,
+  date: r.effectiveDate,
+  verified: r.status === 'verified',
+});
+const scenario = (label: MessageKey, v: ScenarioVariable): AssumptionRow => ({
+  label: t(locale, label),
+  value: [v.values.pessimistic, v.values.base, v.values.optimistic].map(formatPercent).join(' / '),
+  source: v.source,
+  date: v.effectiveDate,
+  verified: v.status === 'verified',
+});
+const city = (id: string) => t(locale, `city.${id}` as MessageKey);
+const sv = defaults.scenarioVariables;
+const ga = defaults.globalAssumptions;
+const verifiedCities = fuelPrices.cities.filter(
+  (c) => c.petrol.status === 'verified' && c.cng.status === 'verified',
+);
+const otherCities = fuelPrices.cities.filter((c) => !verifiedCities.includes(c));
+
+const rows: AssumptionRow[] = [
+  ...verifiedCities.flatMap((c) => [
+    record(`${t(locale, 'fuel.petrol')}, ${city(c.id)}`, c.petrol),
+    record(`${t(locale, 'fuel.cng')}, ${city(c.id)}`, c.cng),
+  ]),
+  // Cities still waiting for prices share one row, so the verified values stay easy to find.
+  ...(otherCities.length > 0
+    ? [
+        record(
+          `${t(locale, 'assumptionsTable.otherCities')}: ${otherCities.map((c) => city(c.id)).join(', ')}`,
+          otherCities[0]!.petrol,
+        ),
+      ]
+    : []),
+  record(t(locale, 'assumptionsTable.upTariff'), { ...upTariff, value: null, unit: '' }),
+  record(t(locale, 'assumptionsTable.solarSubsidy'), solarData.subsidy),
+  record(t(locale, 'assumptionsTable.solarGeneration'), solarData.generationPerKWPerDay),
+  record(t(locale, 'assumptionsTable.solarDegradation'), solarData.degradationPerYear),
+  record(t(locale, 'assumptionsTable.solarExport'), solarData.exportRatePerKWh),
+  record(t(locale, 'assumptionsTable.stampDuty'), propertyData.stampDutyAndRegistration),
+  record(t(locale, 'assumptionsTable.carLoanRate'), ga.carLoanRate),
+  record(t(locale, 'assumptionsTable.homeLoanRate'), ga.homeLoanRate),
+  record(t(locale, 'assumptionsTable.fdRate'), ga.fdRate),
+  scenario('assumptionsTable.inflation', sv.inflation),
+  scenario('assumptionsTable.equityReturn', sv.equityReturnNominal),
+  scenario('assumptionsTable.propertyGrowth', sv.propertyAppreciation),
+  scenario('assumptionsTable.rentGrowth', sv.rentGrowth),
+  scenario('assumptionsTable.energyPriceRise', sv.energyPriceRise),
+];
+const dateFormat = new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeZone: 'UTC' });
+---
+
+<ProsePage locale={locale} page="changelog" sections={[]}>
+  <section class="mt-8 max-w-3xl border-t border-line pt-6" aria-labelledby="s-changes">
+    <h2 id="s-changes" class="font-display text-xl font-semibold">
+      {t(locale, 'page.changelog.changes')}
+    </h2>
+    <ol class="mt-4 divide-y divide-line border-y border-line" role="list">
+      {changelog.entries.map((e) => (
+        <li class="grid gap-1 py-3 sm:grid-cols-[8rem_1fr] sm:gap-4">
+          <time datetime={e.date} class="num text-sm text-ink-muted">
+            {dateFormat.format(new Date(e.date))}
+          </time>
+          <p>{e.change}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="mt-10 border-t border-line pt-6" aria-labelledby="s-register">
+    <h2 id="s-register" class="font-display text-xl font-semibold">
+      {t(locale, 'page.changelog.register')}
+    </h2>
+    <div class="mt-4">
+      <AssumptionsTable locale={locale} rows={rows} />
+    </div>
+  </section>
+</ProsePage>

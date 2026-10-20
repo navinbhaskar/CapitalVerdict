@@ -1,5 +1,6 @@
+import changelogJson from './changelog.json';
 import { describe, expect, it } from 'vitest';
-import { dataRecord, tariffSchema, validateAllData } from './schema';
+import { changelogSchema, dataRecord, tariffSchema, validateAllData } from './schema';
 import {
   defaults,
   fuelPrices,
@@ -106,5 +107,19 @@ describe('property.json', () => {
   it('has no invented stamp duty while TODO_VERIFY', () => {
     expect(propertyData.stampDutyAndRegistration.value).toBeNull();
     expect(verifiedStampDuty()).toBeNull();
+  });
+});
+
+describe('changelog.json', () => {
+  it('is valid, newest first', () => {
+    expect(() => changelogSchema.parse(changelogJson)).not.toThrow();
+    expect(() =>
+      changelogSchema.parse({
+        entries: [
+          { date: '2026-01-01', change: 'a' },
+          { date: '2026-02-01', change: 'b' },
+        ],
+      }),
+    ).toThrow();
   });
 });

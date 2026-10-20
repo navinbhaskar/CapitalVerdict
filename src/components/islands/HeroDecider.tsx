@@ -96,198 +96,198 @@ export default function HeroDecider({ locale }: Props) {
   return (
     <div class="w-full max-w-md justify-self-center lg:justify-self-end">
       <figure
-        class="relative rounded-xl p-4 shadow-float glass sm:p-5"
+        class="relative grid rounded-xl p-4 shadow-float glass sm:p-5"
         role="tabpanel"
         id={`${id}-panel`}
         aria-labelledby={`${id}-tab-${tab}`}
       >
-        {tab === 'cng' ? (
-          <>
-            <div class="flex items-center justify-between gap-3">
-              <span class="text-sm font-medium text-ink-muted">{t(locale, 'hero.tab.cng')}</span>
-              <span class="rounded-full bg-surface px-2.5 py-0.5 text-xs font-medium text-ink-muted">
-                {LUCKNOW
-                  ? t(locale, 'hero.context', { date: PRICE_DATE })
-                  : t(locale, 'home.preview.label')}
-              </span>
-            </div>
-            <p class="mt-3 font-display text-xl font-semibold" aria-live="polite">
-              <span key={verdict} class="tick block">
-                {verdict}
-              </span>
-            </p>
+        {/* All panels share one grid cell, so the card keeps the tallest panel's size on every tab. */}
+        <div class={panelClass(tab === 'cng')}>
+          <div class="flex items-center justify-between gap-3">
+            <span class="text-sm font-medium text-ink-muted">{t(locale, 'hero.tab.cng')}</span>
+            <span class="rounded-full bg-surface px-2.5 py-0.5 text-xs font-medium text-ink-muted">
+              {LUCKNOW
+                ? t(locale, 'hero.context', { date: PRICE_DATE })
+                : t(locale, 'home.preview.label')}
+            </span>
+          </div>
+          <p class="mt-3 font-display text-xl font-semibold" aria-live="polite">
+            <span key={verdict} class="tick block">
+              {verdict}
+            </span>
+          </p>
 
-            <svg
-              viewBox={`0 0 ${W} ${H + 18}`}
-              class="mt-4 w-full overflow-visible"
-              fill="none"
-              aria-hidden="true"
-            >
-              <defs>
-                <linearGradient id={`${id}-gain`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stop-color="var(--color-accent)" stop-opacity="0.22" />
-                  <stop offset="1" stop-color="var(--color-accent)" stop-opacity="0.02" />
-                </linearGradient>
-              </defs>
-              {[0.25, 0.5, 0.75].map((f) => (
-                <line
-                  key={f}
-                  x1="0"
-                  x2={W}
-                  y1={H * f}
-                  y2={H * f}
-                  stroke="var(--color-line)"
-                  stroke-width="0.6"
-                  stroke-dasharray="1.5 3"
-                />
-              ))}
+          <svg
+            viewBox={`0 0 ${W} ${H + 18}`}
+            class="mt-4 w-full overflow-visible"
+            fill="none"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient id={`${id}-gain`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="var(--color-accent)" stop-opacity="0.22" />
+                <stop offset="1" stop-color="var(--color-accent)" stop-opacity="0.02" />
+              </linearGradient>
+            </defs>
+            {[0.25, 0.5, 0.75].map((f) => (
               <line
+                key={f}
                 x1="0"
                 x2={W}
-                y1={H}
-                y2={H}
-                stroke="var(--color-line-strong)"
+                y1={H * f}
+                y2={H * f}
+                stroke="var(--color-line)"
                 stroke-width="0.6"
+                stroke-dasharray="1.5 3"
               />
-              {view.gain && <path d={view.gain} fill={`url(#${id}-gain)`} />}
-              <path
-                d={view.cost}
-                pathLength={1}
-                class="draw"
-                style="--delay: 300ms"
-                stroke="var(--color-ink-subtle)"
-                stroke-width="1"
-                stroke-linecap="round"
-              />
-              <path
-                d={view.saving}
-                pathLength={1}
-                class="draw"
-                style="--delay: 380ms"
-                stroke="var(--color-ink)"
-                stroke-width="1.15"
-                stroke-linecap="round"
-              />
-              {view.be && (
-                <g>
-                  <line
-                    x1={view.be.x}
-                    x2={view.be.x}
-                    y1={view.be.y + 6}
-                    y2={H}
-                    stroke="var(--color-accent)"
-                    stroke-width="0.6"
-                    stroke-dasharray="1.5 2.5"
-                  />
-                  <circle
-                    cx={view.be.x}
-                    cy={view.be.y}
-                    r="6"
-                    stroke="var(--color-accent)"
-                    stroke-width="0.6"
-                  />
-                  <circle cx={view.be.x} cy={view.be.y} r="2.4" fill="var(--color-accent)" />
-                  <text
-                    x={view.be.x}
-                    y={view.be.y - 10}
-                    font-size="8.5"
-                    font-weight="500"
-                    fill="var(--color-accent-strong)"
-                    text-anchor="middle"
-                  >
-                    {t(locale, 'unit.monthsShort', { n: view.be.months })}
-                  </text>
-                </g>
-              )}
-              <text x="0" y={H + 14} font-size="8.5" fill="var(--color-ink-muted)">
-                0
-              </text>
-              <text
-                x={W / 2}
-                y={H + 14}
-                font-size="8.5"
-                fill="var(--color-ink-muted)"
-                text-anchor="middle"
-              >
-                {t(locale, 'unit.yearsShort', { n: 5 })}
-              </text>
-              <text
-                x={W}
-                y={H + 14}
-                font-size="8.5"
-                fill="var(--color-ink-muted)"
-                text-anchor="end"
-              >
-                {t(locale, 'unit.yearsShort', { n: 10 })}
-              </text>
-            </svg>
+            ))}
+            <line
+              x1="0"
+              x2={W}
+              y1={H}
+              y2={H}
+              stroke="var(--color-line-strong)"
+              stroke-width="0.6"
+            />
+            {view.gain && <path d={view.gain} fill={`url(#${id}-gain)`} />}
+            <path
+              d={view.cost}
+              pathLength={1}
+              class="draw"
+              style="--delay: 300ms"
+              stroke="var(--color-ink-subtle)"
+              stroke-width="1"
+              stroke-linecap="round"
+            />
+            <path
+              d={view.saving}
+              pathLength={1}
+              class="draw"
+              style="--delay: 380ms"
+              stroke="var(--color-ink)"
+              stroke-width="1.15"
+              stroke-linecap="round"
+            />
+            {view.be && (
+              <g>
+                <line
+                  x1={view.be.x}
+                  x2={view.be.x}
+                  y1={view.be.y + 6}
+                  y2={H}
+                  stroke="var(--color-accent)"
+                  stroke-width="0.6"
+                  stroke-dasharray="1.5 2.5"
+                />
+                <circle
+                  cx={view.be.x}
+                  cy={view.be.y}
+                  r="6"
+                  stroke="var(--color-accent)"
+                  stroke-width="0.6"
+                />
+                <circle cx={view.be.x} cy={view.be.y} r="2.4" fill="var(--color-accent)" />
+                <text
+                  x={view.be.x}
+                  y={view.be.y - 10}
+                  font-size="8.5"
+                  font-weight="500"
+                  fill="var(--color-accent-strong)"
+                  text-anchor="middle"
+                >
+                  {t(locale, 'unit.monthsShort', { n: view.be.months })}
+                </text>
+              </g>
+            )}
+            <text x="0" y={H + 14} font-size="8.5" fill="var(--color-ink-muted)">
+              0
+            </text>
+            <text
+              x={W / 2}
+              y={H + 14}
+              font-size="8.5"
+              fill="var(--color-ink-muted)"
+              text-anchor="middle"
+            >
+              {t(locale, 'unit.yearsShort', { n: 5 })}
+            </text>
+            <text x={W} y={H + 14} font-size="8.5" fill="var(--color-ink-muted)" text-anchor="end">
+              {t(locale, 'unit.yearsShort', { n: 10 })}
+            </text>
+          </svg>
 
-            <div class="mt-4">
-              <div class="flex items-baseline justify-between gap-3">
-                <label for={`${id}-km`} class="text-sm font-medium">
-                  {t(locale, 'hero.slider')}
-                </label>
-                <span class="text-sm font-semibold num">{t(locale, 'unit.km', { n: nf(km) })}</span>
-              </div>
-              <input
-                id={`${id}-km`}
-                type="range"
-                min={KM.min}
-                max={KM.max}
-                step={KM.step}
-                value={km}
-                aria-valuetext={t(locale, 'hero.sliderValue', { n: nf(km) })}
-                onInput={(e) => setKm(Number(e.currentTarget.value))}
-                class="range mt-2 w-full"
-                style={{ '--fill': `${((km - KM.min) / (KM.max - KM.min)) * 100}%` }}
-              />
-              {FLIP_KM !== null && (
-                <p class="mt-1.5 text-xs text-ink-muted">
-                  {t(locale, 'hero.flip', { km: t(locale, 'unit.km', { n: nf(FLIP_KM) }) })}
-                </p>
-              )}
+          <div class="mt-4">
+            <div class="flex items-baseline justify-between gap-3">
+              <label for={`${id}-km`} class="text-sm font-medium">
+                {t(locale, 'hero.slider')}
+              </label>
+              <span class="text-sm font-semibold num">{t(locale, 'unit.km', { n: nf(km) })}</span>
             </div>
+            <input
+              id={`${id}-km`}
+              type="range"
+              min={KM.min}
+              max={KM.max}
+              step={KM.step}
+              value={km}
+              aria-valuetext={t(locale, 'hero.sliderValue', { n: nf(km) })}
+              onInput={(e) => setKm(Number(e.currentTarget.value))}
+              class="range mt-2 w-full"
+              style={{ '--fill': `${((km - KM.min) / (KM.max - KM.min)) * 100}%` }}
+            />
+            {FLIP_KM !== null && (
+              <p class="mt-1.5 text-xs text-ink-muted">
+                {t(locale, 'hero.flip', { km: t(locale, 'unit.km', { n: nf(FLIP_KM) }) })}
+              </p>
+            )}
+          </div>
 
-            <dl class="mt-4 grid grid-cols-3 gap-3 border-t border-line pt-4">
-              <Stat label={t(locale, 'home.preview.breakeven')}>
-                {view.be ? t(locale, 'unit.monthsShort', { n: view.be.months }) : '—'}
-              </Stat>
-              <Stat label={t(locale, 'home.preview.distance')}>
-                {view.be ? t(locale, 'unit.km', { n: nf(view.be.months * km) }) : '—'}
-              </Stat>
-              <Stat label={t(locale, 'home.preview.net10')}>
-                <span class={r.netAt10Years!.withInterest < 0 ? 'text-danger' : ''}>
-                  {formatLakhCrore(r.netAt10Years!.withInterest)}
-                </span>
-              </Stat>
-            </dl>
-            <p class="mt-3 text-xs text-ink-muted">
-              {t(locale, 'hero.footnote', {
-                gap: formatLakhCrore(BASE_INPUT.extraPrice),
-                rate: formatPercent(BASE_INPUT.interestRate),
-              })}{' '}
-              <a
-                href={`${localizePath('/tools/car-fuel/', locale)}?km=${km}`}
-                class="link font-medium"
-              >
-                {t(locale, 'hero.cta')}
-              </a>
-            </p>
-          </>
-        ) : (
+          <dl class="mt-4 grid grid-cols-3 gap-3 border-t border-line pt-4">
+            <Stat label={t(locale, 'home.preview.breakeven')}>
+              {view.be ? t(locale, 'unit.monthsShort', { n: view.be.months }) : '—'}
+            </Stat>
+            <Stat label={t(locale, 'home.preview.distance')}>
+              {view.be ? t(locale, 'unit.km', { n: nf(view.be.months * km) }) : '—'}
+            </Stat>
+            <Stat label={t(locale, 'home.preview.net10')}>
+              <span class={r.netAt10Years!.withInterest < 0 ? 'text-danger' : ''}>
+                {formatLakhCrore(r.netAt10Years!.withInterest)}
+              </span>
+            </Stat>
+          </dl>
+          <p class="mt-3 text-xs text-ink-muted">
+            {t(locale, 'hero.footnote', {
+              gap: formatLakhCrore(BASE_INPUT.extraPrice),
+              rate: formatPercent(BASE_INPUT.interestRate),
+            })}{' '}
+            <a
+              href={`${localizePath('/tools/car-fuel/', locale)}?km=${km}`}
+              class="link font-medium"
+            >
+              {t(locale, 'hero.cta')}
+            </a>
+          </p>
+        </div>
+        <div class={panelClass(tab === 'solar')}>
           <LockedPanel
-            title={tab === 'solar' ? t(locale, 'hero.tab.solar') : t(locale, 'hero.tab.rent')}
-            body={tab === 'solar' ? t(locale, 'hero.solarLocked') : t(locale, 'hero.rentLocked')}
-            link={
-              tab === 'solar'
-                ? { href: localizePath('/tools/solar/', locale), label: t(locale, 'hero.solarCta') }
-                : {
-                    href: localizePath('/tools/rent-vs-buy/', locale),
-                    label: t(locale, 'hero.rentCta'),
-                  }
-            }
+            title={t(locale, 'hero.tab.solar')}
+            body={t(locale, 'hero.solarLocked')}
+            link={{
+              href: localizePath('/tools/solar/', locale),
+              label: t(locale, 'hero.solarCta'),
+            }}
           />
-        )}
+        </div>
+        <div class={panelClass(tab === 'rent')}>
+          <LockedPanel
+            title={t(locale, 'hero.tab.rent')}
+            body={t(locale, 'hero.rentLocked')}
+            link={{
+              href: localizePath('/tools/rent-vs-buy/', locale),
+              label: t(locale, 'hero.rentCta'),
+            }}
+          />
+        </div>
       </figure>
 
       <div
@@ -324,6 +324,11 @@ export default function HeroDecider({ locale }: Props) {
   );
 }
 
+/** Inactive panels stay in the layout (so they size the card) but are hidden from sight, focus and screen readers. */
+function panelClass(active: boolean): string {
+  return `col-start-1 row-start-1 min-w-0 ${active ? '' : 'invisible'}`;
+}
+
 function Stat({ label, children }: { label: string; children: ComponentChildren }) {
   return (
     <div>
@@ -339,7 +344,7 @@ function LockedPanel(props: {
   link: { href: string; label: string } | null;
 }) {
   return (
-    <div class="flex min-h-80 flex-col items-start justify-center gap-3 px-1">
+    <div class="flex h-full flex-col items-start justify-center gap-3 px-1">
       <span class="inline-flex size-10 items-center justify-center rounded-lg bg-surface text-ink-muted">
         <LockIcon size={20} />
       </span>

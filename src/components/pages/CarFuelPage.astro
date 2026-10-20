@@ -107,6 +107,10 @@ const related = [
   title={t(locale, 'tool.carFuel.question')}
   description={t(locale, 'carFuel.metaDescription')}
   related={related}
+  faq={FAQ.map((n) => ({
+    q: t(locale, `carFuel.faq.${n}.q` as MessageKey),
+    a: t(locale, `carFuel.faq.${n}.a` as MessageKey),
+  }))}
 >
   <CarFuelTool client:load locale={locale} />
 

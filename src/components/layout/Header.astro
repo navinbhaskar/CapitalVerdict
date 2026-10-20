@@ -13,6 +13,8 @@ const { locale, path } = Astro.props;
 const home = localizePath('/', locale);
 const carFuel = localizePath('/tools/car-fuel/', locale);
 const onCarFuel = path.startsWith('/tools/car-fuel');
+const methodology = localizePath('/methodology/', locale);
+const onMethodology = path.startsWith('/methodology');
 ---
 
 <!--
@@ -38,7 +40,11 @@ const onCarFuel = path.startsWith('/tools/car-fuel');
             </a>
           </li>
           <li class="hidden md:block">
-            <a href={`${home}#principles`} class="nav-link">
+            <a
+              href={methodology}
+              class="nav-link"
+              aria-current={onMethodology ? 'page' : undefined}
+            >
               {t(locale, 'nav.principles')}
             </a>
           </li>
