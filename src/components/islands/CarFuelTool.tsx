@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { defaults, fuelPrices, verifiedFuelPrices } from '@/data';
-import { decodeShare, encodeShare } from '@/lib/shareLink';
+import { decodeShare, encodeShare, pickKeys } from '@/lib/shareLink';
 import { formatINR } from '@/lib/format';
 import { formatMoney, formatNumber, formatPercent } from '@/lib/formatTool';
 import { useGlobalAssumptions } from '@/lib/useAssumptions';
@@ -18,9 +18,11 @@ import {
   type CarFuelVariable,
 } from '@/models/carFuel';
 import {
-  CAR_FUEL_EXAMPLE_FORM,
+  CAR_FUEL_EXAMPLE_KEYS,
+  CAR_FUEL_START_FORM,
   CAR_FUEL_LIMITS,
   carFuelShareSchema,
+  carPriceFields,
   extraPriceOf,
   invalidFields,
   onlyPricesMissing,
@@ -41,12 +43,16 @@ import NonMoneyChecklist from '@/components/tool/NonMoneyChecklist';
 import ShareLink from '@/components/tool/ShareLink';
 import Refine from '@/components/tool/Refine';
 import ScenarioShelf from '@/components/tool/ScenarioShelf';
+import MoreDetail from '@/components/tool/MoreDetail';
+import { formatDuration } from '@/lib/duration';
 
 interface Props {
   locale: Locale;
 }
 
 const RISE_RATES = defaults.scenarioVariables.energyPriceRise.values;
+/** Prices shown until the visitor picks a city: the city whose prices are verified. */
+const DEFAULT_PRICE_CITY = 'lucknow';
 const CHECKLIST: Record<AltKind, MessageKey[]> = {
   cng: ['checklist.carFuel.1', 'checklist.carFuel.2', 'checklist.carFuel.3', 'checklist.carFuel.4'],
   ev: ['checklist.ev.1', 'checklist.ev.2', 'checklist.ev.3', 'checklist.ev.4', 'checklist.ev.5'],
@@ -69,7 +75,7 @@ const netSeries = (r: CarFuelResult, extra: number[] | number) =>
   r.cumulativeSaving.map((v, m) => v - (typeof extra === 'number' ? extra : extra[m]!));
 
 export default function CarFuelTool({ locale }: Props) {
-  const [form, setForm] = useState<CarFuelForm>(CAR_FUEL_EXAMPLE_FORM);
+  const [form, setForm] = useState<CarFuelForm>(CAR_FUEL_START_FORM);
   const [ready, setReady] = useState(false);
   const [shareHref, setShareHref] = useState('');
   /** Mobile only: a floating summary while the verdict is still below the fold. */
@@ -93,7 +99,8 @@ export default function CarFuelTool({ locale }: Props) {
   }, []);
 
   // Fill unpinned fields from the global assumptions panel.
-  const cityPrices = verifiedFuelPrices(assumptions.city);
+  const priceCity = assumptions.city ?? DEFAULT_PRICE_CITY;
+  const cityPrices = verifiedFuelPrices(priceCity);
   useEffect(() => {
     if (!ready) return;
     setForm((f) => {
@@ -109,7 +116,7 @@ export default function CarFuelTool({ locale }: Props) {
   useEffect(() => {
     if (!ready) return;
     const timer = setTimeout(() => {
-      const query = encodeShare(form, carFuelShareSchema);
+      const query = encodeShare(pickKeys(form, ['alt', ...pinned.current]), carFuelShareSchema);
       const url = `${window.location.pathname}${query ? `?${query}` : ''}`;
       window.history.replaceState(window.history.state, '', url);
       setShareHref(window.location.href);
@@ -123,7 +130,7 @@ export default function CarFuelTool({ locale }: Props) {
     if (!verdict || !('IntersectionObserver' in window)) return;
     const io = new IntersectionObserver(([entry]) => {
       if (!entry) return;
-      setShowBar(!wide.matches && !entry.isIntersecting && entry.boundingClientRect.top > 0);
+      setShowBar(!wide.matches && !entry.isIntersecting);
     });
     io.observe(verdict);
     return () => io.disconnect();
@@ -200,14 +207,14 @@ export default function CarFuelTool({ locale }: Props) {
   const reset = () => {
     pinned.current.clear();
     setForm({
-      ...CAR_FUEL_EXAMPLE_FORM,
+      ...CAR_FUEL_START_FORM,
       alt: form.alt,
       interestRate: assumptions.carLoanRate,
       ...(cityPrices ? { petrolPrice: cityPrices.petrol, cngPrice: cityPrices.cng } : {}),
     });
   };
 
-  const city = fuelPrices.cities.find((c) => c.id === assumptions.city);
+  const city = fuelPrices.cities.find((c) => c.id === priceCity);
   const priceNote = (fuel: 'petrol' | 'cng') =>
     city && cityPrices && !pinned.current.has(fuel === 'petrol' ? 'petrolPrice' : 'cngPrice')
       ? t(locale, 'note.fuelPriceCity', {
@@ -227,6 +234,7 @@ export default function CarFuelTool({ locale }: Props) {
       flagged?: boolean;
       layout?: 'row' | 'stack';
       params?: Record<string, string>;
+      slider?: { min: number; max: number; step: number };
     } = {},
   ) => (
     <NumberField
@@ -238,6 +246,8 @@ export default function CarFuelTool({ locale }: Props) {
       value={form[key]}
       onChange={set(key)}
       {...CAR_FUEL_LIMITS[key]}
+      example={CAR_FUEL_EXAMPLE_KEYS.includes(key) && !pinned.current.has(key)}
+      slider={extra.slider}
       percent={extra.percent}
       integer={extra.integer}
       flagged={extra.flagged}
@@ -413,12 +423,19 @@ export default function CarFuelTool({ locale }: Props) {
 
   const quickInvalid = invalidFields(form).filter((k) => QUICK.includes(k));
   const refineInvalid = invalidFields(form).some((k) => !QUICK.includes(k));
+  // While the visitor's own figures are still examples, the answer says so.
+  const exampleNote = (['monthlyKm', ...carPriceFields(form.alt)] as NumericField[]).some(
+    (k) => !pinned.current.has(k),
+  )
+    ? t(locale, 'carFuel.exampleNote')
+    : null;
   const headline = computed
     ? verdictHeadline(
         locale,
         computed.verdict,
         { base: petrol, alternative: altName },
         input!.horizonMonths / 12,
+        computed.basis.netAtHorizon.withInterest,
       )
     : setComputed
       ? t(locale, 'carSet.headline', {
@@ -524,6 +541,7 @@ export default function CarFuelTool({ locale }: Props) {
               'input.monthlyKm',
               t(locale, 'input.monthlyKm.unit'),
               t(locale, 'note.monthlyKm'),
+              { slider: { min: 200, max: 5000, step: 100 } },
             )}
             {field(
               'petrolCarPrice',
@@ -757,7 +775,7 @@ export default function CarFuelTool({ locale }: Props) {
           </Refine>
         </section>
 
-        <div id="verdict-anchor" class="lg:sticky lg:top-20">
+        <div id="verdict-anchor" class="order-first lg:sticky lg:top-20 lg:order-none">
           {computed && input ? (
             <VerdictCard
               locale={locale}
@@ -770,6 +788,8 @@ export default function CarFuelTool({ locale }: Props) {
               altName={altName}
               baseCar={names.petrol.car}
               altCar={altCar}
+              flips={computed.flips}
+              exampleNote={exampleNote}
             />
           ) : setComputed ? (
             <CarSetCard
@@ -803,84 +823,29 @@ export default function CarFuelTool({ locale }: Props) {
         </div>
       </div>
 
-      {computed && input && result && (
-        <>
-          <div class="mt-10 border-t border-line pt-6">
-            <CarFuelWorking
-              locale={locale}
-              input={input}
-              result={result}
-              altName={altName}
-              altKind={singleKind}
-              evBlend={
-                singleKind === 'ev'
-                  ? {
-                      homeShare: form.homeChargingShare!,
-                      homeRate: form.homeRate!,
-                      publicRate: form.publicRate,
-                    }
-                  : undefined
-              }
-            />
-          </div>
-
-          <div class="mt-10 grid gap-6 border-t border-line pt-6 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12">
-            <NetPositionChart
-              locale={locale}
-              title={t(locale, 'chart.netTitle', { alt: altName })}
-              netWithInterest={computed.netWithInterest}
-              netNoInterest={computed.netNoInterest}
-              bandLow={computed.bandLow}
-              bandHigh={computed.bandHigh}
-              breakevenWithInterest={result.breakevenWithInterest?.months ?? null}
-              breakevenNoInterest={result.breakevenNoInterest?.months ?? null}
-            />
-            <section aria-labelledby="scenarios-heading">
-              <h2 id="scenarios-heading" class="font-display text-xl font-semibold">
-                {t(locale, 'scenario.heading')}
-              </h2>
-              <ul class="mt-4 space-y-3" role="list">
-                {(['pessimistic', 'base', 'optimistic'] as const).map((name) => {
-                  const run = computed.runs[name];
-                  const months = run.output.breakevenWithInterest?.months;
-                  return (
-                    <li key={name} class="rounded-xl border border-line p-4">
-                      <div class="flex items-baseline justify-between gap-3">
-                        <span class="font-medium">{t(locale, `scenario.${name}`)}</span>
-                        <span class="font-semibold num">
-                          {months === undefined
-                            ? t(locale, 'verdict.notWithin', { years: input.horizonMonths / 12 })
-                            : t(locale, 'unit.months', { n: months })}
-                        </span>
-                      </div>
-                      <p class="mt-1 text-sm text-ink-muted">
-                        {t(locale, 'scenario.priceRise', {
-                          rate: formatPercent(run.input.alternative.annualPriceRise),
-                        })}
-                      </p>
-                    </li>
-                  );
-                })}
-              </ul>
-            </section>
-          </div>
-        </>
+      {hasResult && (
+        <div class="mt-10 grid gap-8 border-t border-line pt-6 lg:grid-cols-2">
+          <SensitivityList locale={locale} lines={flipLines} />
+          <NonMoneyChecklist
+            key={form.alt}
+            locale={locale}
+            items={kinds.flatMap((kind) => CHECKLIST[kind]).map((k) => t(locale, k))}
+          />
+        </div>
       )}
 
-      {setComputed && pairs && (
-        <>
-          <div class="mt-10 space-y-10 border-t border-line pt-6">
-            {(['cng', 'ev'] as const).map((kind) => (
+      {hasResult && (
+        <div class="mt-8 border-t border-line">
+          <MoreDetail title={t(locale, 'detail.working')} hint={t(locale, 'detail.workingHint')}>
+            {computed && input && result ? (
               <CarFuelWorking
-                key={kind}
                 locale={locale}
-                heading={t(locale, 'working.headingFor', { alt: fuelName(kind) })}
-                input={pairs[kind]!}
-                result={setComputed.set.pairs[kind]!.result}
-                altName={fuelName(kind)}
-                altKind={kind}
+                input={input}
+                result={result}
+                altName={altName}
+                altKind={singleKind}
                 evBlend={
-                  kind === 'ev'
+                  singleKind === 'ev'
                     ? {
                         homeShare: form.homeChargingShare!,
                         homeRate: form.homeRate!,
@@ -889,32 +854,101 @@ export default function CarFuelTool({ locale }: Props) {
                     : undefined
                 }
               />
-            ))}
-          </div>
-          <div class="mt-10 border-t border-line pt-6">
-            <NetPositionChart
-              locale={locale}
-              title={t(locale, 'chart.setTitle')}
-              netWithInterest={setComputed.net.cng}
-              netNoInterest={setComputed.net.ev}
-              breakevenWithInterest={
-                setComputed.set.pairs.cng!.result.breakevenWithInterest?.months ?? null
-              }
-              breakevenNoInterest={
-                setComputed.set.pairs.ev!.result.breakevenWithInterest?.months ?? null
-              }
-              labels={{
-                main: t(locale, 'chart.setLine', { car: names.cng.car }),
-                secondary: t(locale, 'chart.setLine', { car: names.ev.car }),
-              }}
-            />
-          </div>
-        </>
-      )}
+            ) : (
+              setComputed &&
+              pairs && (
+                <div class="space-y-10">
+                  {(['cng', 'ev'] as const).map((kind) => (
+                    <CarFuelWorking
+                      key={kind}
+                      locale={locale}
+                      heading={t(locale, 'working.headingFor', { alt: fuelName(kind) })}
+                      input={pairs[kind]!}
+                      result={setComputed.set.pairs[kind]!.result}
+                      altName={fuelName(kind)}
+                      altKind={kind}
+                      evBlend={
+                        kind === 'ev'
+                          ? {
+                              homeShare: form.homeChargingShare!,
+                              homeRate: form.homeRate!,
+                              publicRate: form.publicRate,
+                            }
+                          : undefined
+                      }
+                    />
+                  ))}
+                </div>
+              )
+            )}
+          </MoreDetail>
 
-      {hasResult && (
-        <>
-          <div class="mt-10 border-t border-line pt-6">
+          <MoreDetail title={t(locale, 'detail.chart')} hint={t(locale, 'detail.chartHint')}>
+            {computed && input && result ? (
+              <div class="grid gap-6 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12">
+                <NetPositionChart
+                  locale={locale}
+                  title={t(locale, 'chart.netTitle', { alt: altName })}
+                  netWithInterest={computed.netWithInterest}
+                  netNoInterest={computed.netNoInterest}
+                  bandLow={computed.bandLow}
+                  bandHigh={computed.bandHigh}
+                  breakevenWithInterest={result.breakevenWithInterest?.months ?? null}
+                  breakevenNoInterest={result.breakevenNoInterest?.months ?? null}
+                />
+                <section aria-labelledby="scenarios-heading">
+                  <h3 id="scenarios-heading" class="font-display text-xl font-semibold">
+                    {t(locale, 'scenario.heading')}
+                  </h3>
+                  <ul class="mt-4 space-y-3" role="list">
+                    {(['pessimistic', 'base', 'optimistic'] as const).map((name) => {
+                      const run = computed.runs[name];
+                      const months = run.output.breakevenWithInterest?.months;
+                      return (
+                        <li key={name} class="rounded-xl border border-line p-4">
+                          <div class="flex items-baseline justify-between gap-3">
+                            <span class="font-medium">
+                              {t(locale, 'scenario.priceRise', {
+                                rate: formatPercent(run.input.alternative.annualPriceRise),
+                              })}
+                            </span>
+                            <span class="font-semibold num">
+                              {months === undefined
+                                ? t(locale, 'verdict.notWithin', {
+                                    years: input.horizonMonths / 12,
+                                  })
+                                : formatDuration(locale, months)}
+                            </span>
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </section>
+              </div>
+            ) : (
+              setComputed && (
+                <NetPositionChart
+                  locale={locale}
+                  title={t(locale, 'chart.setTitle')}
+                  netWithInterest={setComputed.net.cng}
+                  netNoInterest={setComputed.net.ev}
+                  breakevenWithInterest={
+                    setComputed.set.pairs.cng!.result.breakevenWithInterest?.months ?? null
+                  }
+                  breakevenNoInterest={
+                    setComputed.set.pairs.ev!.result.breakevenWithInterest?.months ?? null
+                  }
+                  labels={{
+                    main: t(locale, 'chart.setLine', { car: names.cng.car }),
+                    secondary: t(locale, 'chart.setLine', { car: names.ev.car }),
+                  }}
+                />
+              )
+            )}
+          </MoreDetail>
+
+          <MoreDetail title={t(locale, 'detail.monthly')} hint={t(locale, 'detail.monthlyHint')}>
             <MonthlyTable
               locale={locale}
               columns={monthlyColumns}
@@ -930,17 +964,8 @@ export default function CarFuelTool({ locale }: Props) {
                 all ? 'decidewise-petrol-cng-ev.csv' : `decidewise-${singleKind}-vs-petrol.csv`
               }
             />
-          </div>
-
-          <div class="mt-10 grid gap-8 border-t border-line pt-6 lg:grid-cols-2">
-            <SensitivityList locale={locale} lines={flipLines} />
-            <NonMoneyChecklist
-              key={form.alt}
-              locale={locale}
-              items={kinds.flatMap((kind) => CHECKLIST[kind]).map((k) => t(locale, k))}
-            />
-          </div>
-        </>
+          </MoreDetail>
+        </div>
       )}
 
       {hasResult && showBar && (

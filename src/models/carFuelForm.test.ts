@@ -5,6 +5,8 @@ import { carFuelScenarios } from './carFuel';
 import { carFuelExample } from './carFuel.example';
 import {
   CAR_FUEL_EXAMPLE_FORM,
+  CAR_FUEL_EXAMPLE_KEYS,
+  CAR_FUEL_START_FORM,
   carFuelShareSchema,
   evEnergyPrice,
   extraPriceOf,
@@ -208,5 +210,22 @@ describe('car fuel form: all three cars and extras', () => {
     expect(back.alt).toBe('all');
     expect(back.evResale).toBe(0.25);
     expect(back.cngOneOffYear).toBe(3);
+  });
+});
+
+describe('car fuel form: example start', () => {
+  it('opens complete for every comparison, so there is always an answer', () => {
+    for (const alt of ['cng', 'ev', 'all'] as const) {
+      expect(invalidFields({ ...CAR_FUEL_START_FORM, alt })).toEqual([]);
+    }
+    // The spec's reference premium; EV charging blends 80% at ₹8 and 20% at ₹20 = ₹10.40.
+    expect(extraPriceOf(CAR_FUEL_START_FORM, 'cng')).toBe(90_000);
+    expect(evEnergyPrice(CAR_FUEL_START_FORM)).toBeCloseTo(10.4, 9);
+  });
+
+  it('labels every example value, and nothing the visitor sets later', () => {
+    expect(CAR_FUEL_EXAMPLE_KEYS).toContain('petrolCarPrice');
+    expect(CAR_FUEL_EXAMPLE_KEYS).toContain('monthlyKm');
+    expect(CAR_FUEL_EXAMPLE_KEYS).not.toContain('interestRate');
   });
 });

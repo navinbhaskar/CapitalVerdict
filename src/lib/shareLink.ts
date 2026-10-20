@@ -91,3 +91,13 @@ export function shareUrl<T extends object>(
   url.hash = '';
   return url.href;
 }
+
+/**
+ * Only the given keys of a form, for share links that carry what the visitor set and nothing the
+ * page filled in (examples, city prices, saved assumptions).
+ */
+export function pickKeys<T extends object>(values: T, keys: Iterable<keyof T>): Partial<T> {
+  const out: Partial<T> = {};
+  for (const key of keys) out[key] = values[key];
+  return out;
+}

@@ -16,6 +16,10 @@ interface Props extends NumberRules {
   note?: string;
   /** Marks the value as an assumption the user should check. */
   flagged?: boolean;
+  /** The value is still the tool's example: labelled so nobody mistakes it for data. */
+  example?: boolean;
+  /** A slider under the field, in the field's own units (not for percent fields). */
+  slider?: { min: number; max: number; step: number };
   /**
    * `stack`: label above the field. `row`: label and note on the left, field on the right
    * (from the sm breakpoint), like a row of an inputs table.
@@ -32,7 +36,19 @@ interface Props extends NumberRules {
 }
 
 export default function NumberField(props: Props) {
-  const { locale, label, unit, note, flagged, layout = 'stack', value, onChange, ...rules } = props;
+  const {
+    locale,
+    label,
+    unit,
+    note,
+    flagged,
+    example,
+    slider,
+    layout = 'stack',
+    value,
+    onChange,
+    ...rules
+  } = props;
   const id = useId();
   const [text, setText] = useState(formatNumberText(value, rules));
   const [error, setError] = useState<string | null>(null);
@@ -90,10 +106,16 @@ export default function NumberField(props: Props) {
       <div>
         <label for={id} class={`block text-sm font-medium ${row ? '' : 'mb-1.5'}`}>
           {label}
-          {flagged && (
-            <span class="ml-2 inline-block rounded-full bg-warn-soft px-2 py-0.5 align-[1px] text-xs font-medium text-warn">
-              {t(locale, 'inputs.flag')}
+          {example ? (
+            <span class="ml-2 inline-block rounded-full bg-accent-soft px-2 py-0.5 align-[1px] text-xs font-medium text-accent-strong">
+              {t(locale, 'inputs.example')}
             </span>
+          ) : (
+            flagged && (
+              <span class="ml-2 inline-block rounded-full bg-warn-soft px-2 py-0.5 align-[1px] text-xs font-medium text-warn">
+                {t(locale, 'inputs.flag')}
+              </span>
+            )
           )}
         </label>
         {row && note && (
@@ -122,7 +144,7 @@ export default function NumberField(props: Props) {
             class={`min-h-11 w-full rounded-md border px-3 text-base text-ink num transition-colors duration-(--duration-fast) ease-out-quart hover:border-ink-subtle focus:border-accent-strong ${
               unit ? 'pr-16' : ''
             } ${error ? 'border-danger' : 'border-line-strong'} ${
-              flagged ? 'bg-warn-soft/60' : 'bg-page'
+              flagged && !example ? 'bg-warn-soft/60' : 'bg-page'
             }`}
           />
           {unit && (
@@ -131,6 +153,24 @@ export default function NumberField(props: Props) {
             </span>
           )}
         </div>
+        {slider && (
+          <input
+            type="range"
+            class="range mt-2 w-full"
+            min={slider.min}
+            max={slider.max}
+            step={slider.step}
+            value={value ?? slider.min}
+            aria-label={label}
+            aria-valuetext={unit ? `${text} ${unit}` : text}
+            onInput={(e) => {
+              const v = Number(e.currentTarget.value);
+              setError(null);
+              setText(formatNumberText(v, rules));
+              onChange(v, true);
+            }}
+          />
+        )}
         {!row && note && !error && (
           <p id={`${id}-note`} class="mt-1 text-xs text-ink-muted">
             {note}

@@ -61,7 +61,9 @@ function parse(raw: string | null): Saved[] {
  * Save scenarios on this device, compare them side by side with the current one, and print a
  * clean summary. Nothing leaves the browser.
  */
-export default function ScenarioShelf({ locale, tool, query, summary }: Props) {
+export default function ScenarioShelf({ locale, tool, query: rawQuery, summary }: Props) {
+  // An untouched example has an empty query; "?" still reopens it.
+  const query = rawQuery || '?';
   const [saved, setSaved] = useState<Saved[]>([]);
   const [justSaved, setJustSaved] = useState(false);
 

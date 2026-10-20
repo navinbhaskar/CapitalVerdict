@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { defaults, verifiedStampDuty } from '@/data';
-import { decodeShare, encodeShare } from '@/lib/shareLink';
+import { decodeShare, encodeShare, pickKeys } from '@/lib/shareLink';
 import { formatINR } from '@/lib/format';
 import { formatMoney, formatNumber, formatPercent } from '@/lib/formatTool';
 import { useGlobalAssumptions } from '@/lib/useAssumptions';
@@ -76,7 +76,7 @@ export default function RentBuyTool({ locale }: Props) {
   useEffect(() => {
     if (!ready) return;
     const timer = setTimeout(() => {
-      const query = encodeShare(form, rentBuyShareSchema);
+      const query = encodeShare(pickKeys(form, pinned.current), rentBuyShareSchema);
       window.history.replaceState(
         window.history.state,
         '',

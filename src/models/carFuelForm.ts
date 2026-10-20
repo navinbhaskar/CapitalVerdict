@@ -327,3 +327,31 @@ export function onlyPricesMissing(form: CarFuelForm): boolean {
   const prices = carPriceFields(form.alt);
   return bad.length > 0 && bad.every((k) => prices.includes(k) && form[k] === null);
 }
+
+/**
+ * What the tool opens with, so a first visit gets an answer straight away. Car prices and EV
+ * figures are ILLUSTRATIVE EXAMPLES (labelled "Example" on the page), not market data: the
+ * ₹90,000 CNG premium is the spec's reference example. Fuel prices come from the city data.
+ */
+export const CAR_FUEL_EXAMPLE_VALUES = {
+  petrolCarPrice: 700_000,
+  cngCarPrice: 790_000,
+  evCarPrice: 1_200_000,
+  evEfficiency: 7,
+  homeRate: 8,
+  homeChargingShare: 0.8,
+  publicRate: 20,
+} as const satisfies Partial<Record<NumericField, number>>;
+
+export const CAR_FUEL_START_FORM: CarFuelForm = {
+  ...CAR_FUEL_EXAMPLE_FORM,
+  ...CAR_FUEL_EXAMPLE_VALUES,
+};
+
+/** Fields whose starting value is an example the visitor should replace with their own. */
+export const CAR_FUEL_EXAMPLE_KEYS: readonly NumericField[] = [
+  'monthlyKm',
+  'petrolMileage',
+  'cngMileage',
+  ...(Object.keys(CAR_FUEL_EXAMPLE_VALUES) as NumericField[]),
+];

@@ -1,41 +1,75 @@
 import type { ComponentChildren } from 'preact';
 import { t, type Locale } from '@/i18n/t';
+import { formatDuration } from '@/lib/duration';
 import { formatMoney, formatNumber, formatPercent, formatRupeesPrecise } from '@/lib/formatTool';
 import type { ScenarioName, ScenarioRun } from '@/engine/scenarios';
-import type { CarFuelInput, CarFuelResult, CarFuelVerdict } from '@/models/carFuel';
+import type { CarFuelFlip, CarFuelInput, CarFuelResult, CarFuelVerdict } from '@/models/carFuel';
+
+interface Names {
+  /** Short names: "Petrol", "CNG", "EV". */
+  base: string;
+  alternative: string;
+}
 
 interface Props {
   locale: Locale;
   input: CarFuelInput;
-  /** Petrol vs CNG, CNG as the alternative: drives the stats. */
+  /** Petrol vs the alternative as entered: drives the stats. */
   result: CarFuelResult;
   /** The headline, asked of whichever car costs more to buy. */
   verdict: CarFuelVerdict;
-  /** Comparison with the dearer car as the alternative (for the no-interest break-even). */
+  /** Comparison with the dearer car as the alternative. */
   basis: CarFuelResult;
   /** Price-rise scenarios on the same basis, for the range line. */
   runs: Record<ScenarioName, ScenarioRun<CarFuelInput, CarFuelResult>>;
+  flips: CarFuelFlip[];
   baseName: string;
   altName: string;
-  /** Names with "car" where it reads naturally ("CNG car", "EV"). */
+  /** Names with "car" where it reads naturally ("Petrol car", "CNG car", "EV"). */
   baseCar?: string;
   altCar?: string;
+  /** Shown while the answer still rests on example numbers. */
+  exampleNote?: string | null;
 }
 
-/** The one-line answer, shared by the verdict card and the mobile result bar. */
+const other = (side: 'base' | 'alternative') => (side === 'base' ? 'alternative' : 'base');
+/** Mid-sentence form of a fuel name: "petrol", but acronyms such as "CNG" and "EV" stay as they are. */
+const inline = (name: string) => (name === name.toUpperCase() ? name : name.toLowerCase());
+
+/** The short answer, shared by the verdict card, the mobile result bar and saved scenarios. */
 export function verdictHeadline(
   locale: Locale,
   verdict: CarFuelVerdict,
-  names: { base: string; alternative: string },
+  names: Names,
   years: number,
+  /** basis.netAtHorizon.withInterest: positive when the dearer car comes out ahead. */
+  dearerNet?: number,
 ): string {
   switch (verdict.kind) {
     case 'payback':
-      return t(locale, 'verdict.paysBack', { alt: names[verdict.payer], months: verdict.months });
     case 'never':
-      return t(locale, 'verdict.never', { base: names[verdict.winner], years });
-    case 'resale':
-      return t(locale, 'verdict.resale', { winner: names[verdict.winner], years });
+    case 'resale': {
+      if (dearerNet === undefined) {
+        return verdict.kind === 'payback'
+          ? t(locale, 'verdict.paysBack', {
+              alt: names[verdict.payer],
+              duration: formatDuration(locale, verdict.months),
+            })
+          : t(locale, 'verdict.never', { base: names[other(dearerOf(verdict))], years });
+      }
+      const dearer = dearerOf(verdict);
+      return dearerNet > 0
+        ? t(locale, 'verdict.plain.saves', {
+            winner: names[dearer],
+            amount: formatMoney(dearerNet),
+            years,
+          })
+        : t(locale, 'verdict.plain.cheaper', {
+            winner: names[other(dearer)],
+            amount: formatMoney(-dearerNet),
+            years,
+          });
+    }
     case 'dominant':
       return t(locale, 'verdict.dominant', { winner: names[verdict.winner] });
     case 'tie':
@@ -43,66 +77,64 @@ export function verdictHeadline(
   }
 }
 
-/** Verdict, scenario range and headline numbers. */
+/** The side that costs more to buy, for verdicts that are about earning that extra back. */
+function dearerOf(
+  verdict: Extract<CarFuelVerdict, { kind: 'payback' | 'never' | 'resale' }>,
+): 'base' | 'alternative' {
+  if (verdict.kind === 'payback') return verdict.payer;
+  return verdict.kind === 'never' ? other(verdict.winner) : verdict.winner;
+}
+
+/** Verdict in plain words, the one thing that would change it, and a few headline figures. */
 export default function VerdictCard(props: Props) {
-  const { locale, input, result, verdict, basis, runs, baseName, altName } = props;
+  const { locale, input, result, verdict, basis, runs, flips, baseName, altName } = props;
   const baseCar = props.baseCar ?? baseName;
   const altCar = props.altCar ?? altName;
   const years = input.horizonMonths / 12;
-  const dearer = input.extraPrice < 0 ? baseName : altName;
-  const km = (n: number) => t(locale, 'unit.km', { n: formatNumber(n) });
+  const names = { base: baseName, alternative: altName };
+  const extra = formatMoney(Math.abs(input.extraPrice));
 
-  const headline = verdictHeadline(
-    locale,
-    verdict,
-    { base: baseName, alternative: altName },
-    years,
-  );
-
+  const headline = verdictHeadline(locale, verdict, names, years, basis.netAtHorizon.withInterest);
   const detail =
     verdict.kind === 'payback'
-      ? t(locale, 'verdict.paysBackDetail', {
-          km: km(verdict.km),
+      ? t(locale, 'verdict.plain.paysBack', {
+          dearer: names[verdict.payer],
+          extra,
+          duration: formatDuration(locale, verdict.months),
           rate: formatPercent(input.interestRate),
         })
-      : verdict.kind === 'never'
-        ? t(locale, 'verdict.neverDetail', { alt: dearer, years })
-        : verdict.kind === 'resale'
-          ? t(locale, 'verdict.resaleDetail', { winner: dearer })
-          : verdict.kind === 'dominant'
-            ? t(locale, 'verdict.dominantDetail')
-            : null;
+      : verdict.kind === 'never' || verdict.kind === 'resale'
+        ? `${t(locale, 'verdict.plain.noPayback', { dearer: names[dearerOf(verdict)], extra, years })}${
+            verdict.kind === 'resale' ? ` ${t(locale, 'verdict.plain.resaleNote')}` : ''
+          }`
+        : verdict.kind === 'dominant'
+          ? t(locale, 'verdict.dominantDetail')
+          : null;
 
-  // Range across price-rise scenarios, only meaningful when there is a break-even to range over.
+  // The one input most people can act on: how far they drive.
+  const kmFlip = flips.find((f) => f.variable === 'monthlyKm');
+  const flipLine = kmFlip
+    ? t(locale, 'verdict.plain.flipKm', {
+        km: t(locale, 'unit.km', { n: formatNumber(Math.round(kmFlip.threshold)) }),
+        below: inline(kmFlip.signBelow === -1 ? baseName : altName),
+      })
+    : null;
+
+  // Range across price-rise scenarios, only when the break-even moves with them.
   const scenarioMonths = (['pessimistic', 'base', 'optimistic'] as const).map(
     (s) => runs[s].output.breakevenWithInterest?.months ?? null,
   );
   const reached = scenarioMonths.filter((m): m is number => m !== null);
   const monthsText = (m: number | null) =>
-    m === null ? t(locale, 'verdict.notWithin', { years }) : t(locale, 'unit.months', { n: m });
+    m === null ? t(locale, 'verdict.notWithin', { years }) : formatDuration(locale, m);
   const range =
-    verdict.kind !== 'payback' || reached.length === 0
+    verdict.kind !== 'payback' || reached.length === 0 || new Set(scenarioMonths).size === 1
       ? null
-      : new Set(scenarioMonths).size === 1
-        ? t(locale, 'verdict.rangeSame', { value: monthsText(scenarioMonths[0]!) })
-        : t(locale, 'verdict.range', {
-            low: monthsText(Math.min(...reached)),
-            high: monthsText(reached.length < 3 ? null : Math.max(...reached)),
-          });
+      : t(locale, 'verdict.range', {
+          low: monthsText(Math.min(...reached)),
+          high: monthsText(reached.length < 3 ? null : Math.max(...reached)),
+        });
 
-  // The 5-year row only when the horizon is longer; the horizon row always (10 years by default).
-  const netRows: { label: string; net: number }[] = [
-    ...(years > 5 && result.netAt5Years
-      ? [{ label: t(locale, 'stat.net5', { alt: altName }), net: result.netAt5Years.withInterest }]
-      : []),
-    {
-      label:
-        years === 10
-          ? t(locale, 'stat.net10', { alt: altName })
-          : t(locale, 'stat.netHorizon', { years, alt: altName }),
-      net: result.netAtHorizon.withInterest,
-    },
-  ];
   const total = result.totalCost;
   const end = input.horizonMonths;
 
@@ -123,9 +155,11 @@ export default function VerdictCard(props: Props) {
         </span>
       </h2>
       {detail && <p class="mt-2 text-ink-muted">{detail}</p>}
-      {range && (
-        <p class="mt-2 inline-flex rounded-full bg-surface px-3 py-1 text-sm text-ink-muted">
-          {range}
+      {flipLine && <p class="mt-2 font-medium">{flipLine}</p>}
+      {range && <p class="mt-2 text-sm text-ink-muted">{range}</p>}
+      {props.exampleNote && (
+        <p class="mt-3 rounded-lg bg-accent-soft px-3 py-2 text-sm text-accent-strong">
+          {props.exampleNote}
         </p>
       )}
 
@@ -153,11 +187,6 @@ export default function VerdictCard(props: Props) {
             })}
           </span>
         </Stat>
-        {netRows.map((row) => (
-          <Stat key={row.label} label={row.label}>
-            <span class={row.net < 0 ? 'text-danger' : ''}>{formatMoney(row.net)}</span>
-          </Stat>
-        ))}
         {input.resale && (
           <>
             <Stat label={t(locale, 'stat.resaleCar', { car: baseCar, years })}>
@@ -167,15 +196,6 @@ export default function VerdictCard(props: Props) {
               {formatMoney(input.resale.alternative)}
             </Stat>
           </>
-        )}
-        {verdict.kind === 'payback' && (
-          <Stat label={t(locale, 'stat.breakevenNoInterest')}>
-            {basis.breakevenNoInterest
-              ? t(locale, 'unit.months', {
-                  n: formatNumber(basis.breakevenNoInterest.fractionalMonths, 1),
-                })
-              : t(locale, 'stat.notReached')}
-          </Stat>
         )}
       </dl>
       <p class="mt-3 text-xs text-ink-muted">

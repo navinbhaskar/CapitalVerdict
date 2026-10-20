@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { decodeShare, encodeShare, shareUrl, type ShareSchema } from './shareLink';
+import { decodeShare, encodeShare, pickKeys, shareUrl, type ShareSchema } from './shareLink';
 
 interface Inputs {
   km: number;
@@ -75,5 +75,12 @@ describe('shareUrl', () => {
     expect(shareUrl('https://example.com/tools/car-fuel/?old=1#verdict', { km: 900 }, schema)).toBe(
       'https://example.com/tools/car-fuel/?km=900',
     );
+  });
+});
+
+describe('pickKeys', () => {
+  it('keeps only the keys asked for', () => {
+    expect(pickKeys({ a: 1, b: 2, c: null }, ['a', 'c'])).toEqual({ a: 1, c: null });
+    expect(pickKeys({ a: 1 }, new Set<'a'>())).toEqual({});
   });
 });

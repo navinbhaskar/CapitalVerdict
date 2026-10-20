@@ -76,3 +76,19 @@ Each post's numbers are recomputed by `src/content/blogNumbers.test.ts`; if a pr
 | [ ] `src/content/blog/todays-rupees.md`                      | Money idea     |                                                                               |
 | [ ] `src/content/blog/lucknow-cng-107-october-2026.md`       | Price update   | Mentions ₹95.75, the price the tool used before the update                    |
 | [ ] `blog.*`, `nav.blog`, `footer.link.blog`, `home.notes.*` | Blog interface |                                                                               |
+
+## Phase 1: answer first, plain words (drafted 2026-10-20)
+
+Example values the tools now open with. They are labelled "Example" on the page and are illustrations, not market data. Approve or replace each.
+
+| Tool            | Example values                                                                                                                                                                                                                                                |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [ ] Car         | Petrol car ₹7,00,000, CNG car ₹7,90,000 (the spec's ₹90,000 premium), EV ₹12,00,000; EV 7 km a kWh, 80% charged at home at ₹8 a unit, the rest at ₹20; 1,800 km a month; 18 km/L and 26 km/kg. Fuel prices: Lucknow (verified) until the visitor picks a city |
+| [ ] Rent vs buy | See the rent vs buy row below                                                                                                                                                                                                                                 |
+| [ ] Solar       | See the solar row below                                                                                                                                                                                                                                       |
+
+| Key                                                                                                                                                                                                                                                                                                                                  | Where it shows             |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------- |
+| [ ] `inputs.example`, `carFuel.exampleNote`, `detail.*`, `duration.*`                                                                                                                                                                                                                                                                | All tools                  |
+| [ ] `verdict.paysBack`, `verdict.plain.*`, `verdict.range`                                                                                                                                                                                                                                                                           | Car verdict in plain words |
+| [ ] Renamed: `stat.monthlySaving`, `stat.totalCost`, `chart.netTitle`, `chart.netWithInterest`, `chart.netNoInterest`, `scenario.*`, `working.result1`, `working.result2`, `working.months`, `working.km`, `working.years`, `working.longRun`, `solar.stat.irr`, `solar.stat.net`, `rentBuy.stat.neededAppreciation`, `note.horizon` | Plain-language pass        |

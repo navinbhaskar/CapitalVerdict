@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { defaults, verifiedSolarValue, verifiedTariff } from '@/data';
-import { decodeShare, encodeShare } from '@/lib/shareLink';
+import { decodeShare, encodeShare, pickKeys } from '@/lib/shareLink';
 import { formatINR } from '@/lib/format';
 import { formatMoney, formatNumber, formatPercent } from '@/lib/formatTool';
 import { solarFlips, solarPayback, solarScenarios, type SolarVariable } from '@/models/solar';
@@ -58,7 +58,7 @@ export default function SolarTool({ locale }: Props) {
   useEffect(() => {
     if (!ready) return;
     const timer = setTimeout(() => {
-      const query = encodeShare(form, solarShareSchema);
+      const query = encodeShare(pickKeys(form, pinned.current), solarShareSchema);
       window.history.replaceState(
         window.history.state,
         '',
