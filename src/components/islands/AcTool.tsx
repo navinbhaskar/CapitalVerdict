@@ -20,6 +20,7 @@ import {
 import CompareBars from '@/components/tool/CompareBars';
 import ExampleNote from '@/components/tool/ExampleNote';
 import ResultBar from '@/components/tool/ResultBar';
+import Tier from '@/components/tool/Tier';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import NetPositionChart from '@/components/tool/NetPositionChart';
@@ -46,11 +47,11 @@ const CHECKLIST: MessageKey[] = [
 ];
 const QUICK: (keyof AcForm)[] = [
   'basicPrice',
-  'efficientPrice',
   'basicUnits',
+  'efficientPrice',
   'efficientUnits',
-  'usage',
   'pricePerUnit',
+  'usage',
 ];
 
 export default function AcTool({ locale }: Props) {
@@ -283,32 +284,29 @@ export default function AcTool({ locale }: Props) {
               {t(locale, 'carFuel.resetExample')}
             </button>
           </div>
-          <p class="mt-1 text-sm text-ink-muted">{t(locale, 'inputs.quickLegend')}</p>
-
-          <Group title={t(locale, 'ac.group.basic')}>
-            {field('basicPrice', 'ac.in.price', '₹', t(locale, 'ac.note.basicPrice'))}
+          <Tier tone="yours" title={t(locale, 'tier.yours')} hint={t(locale, 'tier.yoursHint')}>
+            {field('basicPrice', 'ac.in.basicPrice', '₹', t(locale, 'ac.note.basicPrice'))}
             {field(
               'basicUnits',
-              'ac.in.units',
+              'ac.in.basicUnits',
               t(locale, 'ac.unit.unitsYear'),
               t(locale, 'ac.note.units'),
             )}
-          </Group>
-          <Group title={t(locale, 'ac.group.efficient')}>
-            {field('efficientPrice', 'ac.in.price', '₹', t(locale, 'ac.note.efficientPrice'))}
+            {field(
+              'efficientPrice',
+              'ac.in.efficientPrice',
+              '₹',
+              t(locale, 'ac.note.efficientPrice'),
+            )}
             {field(
               'efficientUnits',
-              'ac.in.units',
+              'ac.in.efficientUnits',
               t(locale, 'ac.unit.unitsYear'),
               t(locale, 'ac.note.units'),
             )}
-          </Group>
-          <Group title={t(locale, 'ac.group.use')}>
-            {field('usage', 'ac.in.usage', '%', t(locale, 'ac.note.usage'), {
-              percent: true,
-              flagged: true,
-              slider: { min: 0.25, max: 2, step: 0.05 },
-            })}
+          </Tier>
+
+          <Tier tone="check" title={t(locale, 'tier.check')} hint={t(locale, 'tier.checkHint')}>
             {field(
               'pricePerUnit',
               'ac.in.pricePerUnit',
@@ -318,12 +316,21 @@ export default function AcTool({ locale }: Props) {
                 flagged: true,
               },
             )}
-          </Group>
+            {field('usage', 'ac.in.usage', '%', t(locale, 'ac.note.usage'), {
+              percent: true,
+              flagged: true,
+              slider: { min: 0.25, max: 2, step: 0.05 },
+            })}
+          </Tier>
 
           <Refine
             locale={locale}
             storageKey="dw.refine.ac"
-            hint={t(locale, 'ac.refineHint')}
+            hint={t(locale, 'ac.summary', {
+              rise: formatPercent(form.tariffRise ?? 0),
+              rate: formatPercent(form.interestRate ?? 0),
+              years,
+            })}
             forceOpen={refineInvalid && quickInvalid.length === 0}
           >
             <Group title={t(locale, 'ac.group.money')}>

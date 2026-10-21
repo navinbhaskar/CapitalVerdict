@@ -15,6 +15,7 @@ import {
   TAX_REGIME_EXAMPLE_FORM,
   TAX_REGIME_EXAMPLE_KEYS,
   TAX_REGIME_LIMITS,
+  invalidTaxRegimeFields,
   taxRegimeShareSchema,
   toTaxRegimeInput,
   type TaxRegimeForm,
@@ -22,6 +23,8 @@ import {
 import CompareBars from '@/components/tool/CompareBars';
 import ExampleNote from '@/components/tool/ExampleNote';
 import ResultBar from '@/components/tool/ResultBar';
+import Tier from '@/components/tool/Tier';
+import Refine from '@/components/tool/Refine';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import SensitivityList, { type FlipLine } from '@/components/tool/SensitivityList';
@@ -88,6 +91,7 @@ export default function TaxRegimeTool({ locale }: Props) {
     [input],
   );
 
+  const missing = invalidTaxRegimeFields(form);
   const isExample = TAX_REGIME_EXAMPLE_KEYS.some((k) => !pinned.current.has(k));
   const regimeName = (regime: Regime) => t(locale, `taxRegime.regime.${regime}` as MessageKey);
 
@@ -192,33 +196,42 @@ export default function TaxRegimeTool({ locale }: Props) {
             {t(locale, 'taxRegime.scope', { year: incomeTax.taxYear })}
           </p>
 
-          <Group title={t(locale, 'taxRegime.group.income')}>
+          <Tier tone="yours" title={t(locale, 'tier.yours')} hint={t(locale, 'tier.yoursHint')}>
             {field('salary', 'taxRegime.in.salary', t(locale, 'taxRegime.note.salary'), {
               slider: { min: 3_00_000, max: 50_00_000, step: 50_000 },
             })}
-            {field(
-              'otherIncome',
-              'taxRegime.in.otherIncome',
-              t(locale, 'taxRegime.note.otherIncome'),
-              {
-                optional: true,
-              },
-            )}
-          </Group>
-          <Group title={t(locale, 'taxRegime.group.deductions')}>
             {field(
               'oldDeductions',
               'taxRegime.in.oldDeductions',
               t(locale, 'taxRegime.note.oldDeductions'),
               { optional: true },
             )}
-            {field(
-              'newDeductions',
-              'taxRegime.in.newDeductions',
-              t(locale, 'taxRegime.note.newDeductions'),
-              { optional: true },
-            )}
-          </Group>
+          </Tier>
+
+          <Refine
+            locale={locale}
+            storageKey="dw.refine.taxRegime"
+            hint={t(locale, 'taxRegime.summary', {
+              other: formatMoney(form.otherIncome ?? 0),
+              nd: formatMoney(form.newDeductions ?? 0),
+            })}
+            forceOpen={missing.some((k) => k === 'otherIncome' || k === 'newDeductions')}
+          >
+            <Group title={t(locale, 'taxRegime.group.more')}>
+              {field(
+                'otherIncome',
+                'taxRegime.in.otherIncome',
+                t(locale, 'taxRegime.note.otherIncome'),
+                { optional: true },
+              )}
+              {field(
+                'newDeductions',
+                'taxRegime.in.newDeductions',
+                t(locale, 'taxRegime.note.newDeductions'),
+                { optional: true },
+              )}
+            </Group>
+          </Refine>
         </section>
 
         <div class="order-first lg:sticky lg:top-20 lg:order-none">

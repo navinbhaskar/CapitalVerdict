@@ -19,6 +19,7 @@ import {
 import CompareBars from '@/components/tool/CompareBars';
 import ExampleNote from '@/components/tool/ExampleNote';
 import ResultBar from '@/components/tool/ResultBar';
+import Tier from '@/components/tool/Tier';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import NetPositionChart from '@/components/tool/NetPositionChart';
@@ -132,10 +133,7 @@ export default function RentBuyTool({ locale }: Props) {
     'monthlyRent',
     'loanRate',
     'stampDuty',
-    'maintenance',
-    'sellingCost',
     'investmentReturn',
-    'horizonYears',
   ];
   const quickInvalid = missing.filter((k) => QUICK.includes(k));
   const refineInvalid = missing.some((k) => !QUICK.includes(k));
@@ -347,9 +345,7 @@ export default function RentBuyTool({ locale }: Props) {
               {t(locale, 'carFuel.resetExample')}
             </button>
           </div>
-          <p class="mt-1 text-sm text-ink-muted">{t(locale, 'inputs.quickLegend')}</p>
-
-          <Group title={t(locale, 'rentBuy.group.essentials')}>
+          <Tier tone="yours" title={t(locale, 'tier.yours')} hint={t(locale, 'tier.yoursHint')}>
             {field('homePrice', 'rentBuy.in.homePrice', '₹', t(locale, 'rentBuy.note.homePrice'))}
             {field(
               'monthlyRent',
@@ -358,6 +354,9 @@ export default function RentBuyTool({ locale }: Props) {
               t(locale, 'rentBuy.note.monthlyRent'),
               { slider: { min: 2_000, max: 1_50_000, step: 500 } },
             )}
+          </Tier>
+
+          <Tier tone="check" title={t(locale, 'tier.check')} hint={t(locale, 'tier.checkHint')}>
             {!cash &&
               field(
                 'loanRate',
@@ -374,47 +373,54 @@ export default function RentBuyTool({ locale }: Props) {
               flagged: verifiedStampDuty() === null,
             })}
             {field(
-              'maintenance',
-              'rentBuy.in.maintenance',
-              '%',
-              t(locale, 'rentBuy.note.maintenance'),
-              {
-                percent: true,
-                flagged: true,
-              },
-            )}
-            {field(
-              'sellingCost',
-              'rentBuy.in.sellingCost',
-              '%',
-              t(locale, 'rentBuy.note.sellingCost'),
-              {
-                percent: true,
-                flagged: true,
-              },
-            )}
-            {field(
               'investmentReturn',
               'rentBuy.in.investmentReturn',
               '%',
               t(locale, 'rentBuy.note.investmentReturn'),
               { percent: true, flagged: true },
             )}
-            {field(
-              'horizonYears',
-              'rentBuy.in.horizon',
-              t(locale, 'input.horizonYears.unit'),
-              t(locale, 'rentBuy.note.horizon'),
-              { integer: true },
-            )}
-          </Group>
+          </Tier>
 
           <Refine
             locale={locale}
             storageKey="dw.refine.rentBuy"
-            hint={t(locale, 'rentBuy.refineHint')}
+            hint={t(locale, 'rentBuy.summary', {
+              years,
+              down: formatPercent(form.downPayment ?? 0),
+              growth: formatPercent(form.appreciation ?? 0),
+              rent: formatPercent(form.rentGrowth ?? 0),
+            })}
             forceOpen={refineInvalid && quickInvalid.length === 0}
           >
+            <Group title={t(locale, 'rentBuy.group.costs')}>
+              {field(
+                'horizonYears',
+                'rentBuy.in.horizon',
+                t(locale, 'input.horizonYears.unit'),
+                t(locale, 'rentBuy.note.horizon'),
+                { integer: true },
+              )}
+              {field(
+                'maintenance',
+                'rentBuy.in.maintenance',
+                '%',
+                t(locale, 'rentBuy.note.maintenance'),
+                {
+                  percent: true,
+                  flagged: true,
+                },
+              )}
+              {field(
+                'sellingCost',
+                'rentBuy.in.sellingCost',
+                '%',
+                t(locale, 'rentBuy.note.sellingCost'),
+                {
+                  percent: true,
+                  flagged: true,
+                },
+              )}
+            </Group>
             <Group title={t(locale, 'rentBuy.group.home')}>
               {field(
                 'downPayment',

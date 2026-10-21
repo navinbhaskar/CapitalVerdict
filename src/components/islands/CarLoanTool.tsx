@@ -18,6 +18,7 @@ import {
 import CompareBars from '@/components/tool/CompareBars';
 import ExampleNote from '@/components/tool/ExampleNote';
 import ResultBar from '@/components/tool/ResultBar';
+import Tier from '@/components/tool/Tier';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import NetPositionChart from '@/components/tool/NetPositionChart';
@@ -264,12 +265,13 @@ export default function CarLoanTool({ locale }: Props) {
               {t(locale, 'carFuel.resetExample')}
             </button>
           </div>
-          <p class="mt-1 text-sm text-ink-muted">{t(locale, 'inputs.quickLegend')}</p>
-
-          <Group title={t(locale, 'carLoan.group.essentials')}>
+          <Tier tone="yours" title={t(locale, 'tier.yours')} hint={t(locale, 'tier.yoursHint')}>
             {field('carPrice', 'carLoan.in.carPrice', '₹', t(locale, 'carLoan.note.carPrice'), {
               slider: { min: 3_00_000, max: 40_00_000, step: 25_000 },
             })}
+          </Tier>
+
+          <Tier tone="check" title={t(locale, 'tier.check')} hint={t(locale, 'tier.checkHint')}>
             {field(
               'loanRate',
               'carLoan.in.loanRate',
@@ -284,12 +286,15 @@ export default function CarLoanTool({ locale }: Props) {
               t(locale, 'carLoan.note.investmentReturn'),
               { percent: true, flagged: true },
             )}
-          </Group>
+          </Tier>
 
           <Refine
             locale={locale}
             storageKey="dw.refine.carLoan"
-            hint={t(locale, 'carLoan.refineHint')}
+            hint={t(locale, 'carLoan.summary', {
+              down: formatPercent(form.downPayment ?? 0),
+              years,
+            })}
             forceOpen={refineInvalid && quickInvalid.length === 0}
           >
             <Group title={t(locale, 'carLoan.group.loan')}>

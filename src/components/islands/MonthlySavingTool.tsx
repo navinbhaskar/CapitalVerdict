@@ -19,6 +19,7 @@ import {
 import CompareBars from '@/components/tool/CompareBars';
 import ExampleNote from '@/components/tool/ExampleNote';
 import ResultBar from '@/components/tool/ResultBar';
+import Tier from '@/components/tool/Tier';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import SensitivityList, { type FlipLine } from '@/components/tool/SensitivityList';
@@ -42,7 +43,7 @@ const CHECKLIST: MessageKey[] = [
   'saving.checklist.3',
   'saving.checklist.4',
 ];
-const QUICK: (keyof MonthlySavingForm)[] = ['monthly', 'years', 'sipReturn', 'rdRate', 'taxRate'];
+const QUICK: (keyof MonthlySavingForm)[] = ['monthly', 'rdRate', 'taxRate'];
 
 export default function MonthlySavingTool({ locale }: Props) {
   const [form, setForm] = useState<MonthlySavingForm>(MONTHLY_SAVING_EXAMPLE_FORM);
@@ -229,37 +230,44 @@ export default function MonthlySavingTool({ locale }: Props) {
           </div>
           <p class="mt-1 text-sm text-ink-muted">{t(locale, 'saving.scope')}</p>
 
-          <Group title={t(locale, 'saving.group.amount')}>
+          <Tier tone="yours" title={t(locale, 'tier.yours')} hint={t(locale, 'tier.yoursHint')}>
             {field('monthly', 'saving.in.monthly', '₹', t(locale, 'saving.note.monthly'), {
               slider: { min: 500, max: 12_500, step: 500 },
             })}
-            {field(
-              'years',
-              'saving.in.years',
-              t(locale, 'input.horizonYears.unit'),
-              t(locale, 'saving.note.years'),
-              { integer: true },
-            )}
-          </Group>
-          <Group title={t(locale, 'saving.group.rates')}>
-            {field('sipReturn', 'saving.in.sipReturn', '%', t(locale, 'saving.note.sipReturn'), {
-              percent: true,
-              flagged: true,
-            })}
+          </Tier>
+
+          <Tier tone="check" title={t(locale, 'tier.check')} hint={t(locale, 'tier.checkHint')}>
             {field('rdRate', 'saving.in.rdRate', '%', t(locale, 'saving.note.rdRate'), {
               percent: true,
             })}
             {field('taxRate', 'saving.in.taxRate', '%', t(locale, 'saving.note.taxRate'), {
               percent: true,
             })}
-          </Group>
+          </Tier>
 
           <Refine
             locale={locale}
             storageKey="dw.refine.saving"
-            hint={t(locale, 'saving.refineHint')}
+            hint={t(locale, 'saving.summary', {
+              years,
+              fund: formatPercent(form.sipReturn ?? 0),
+              ppf: formatPercent(form.ppfRate ?? 0),
+            })}
             forceOpen={refineInvalid && quickInvalid.length === 0}
           >
+            <Group title={t(locale, 'saving.group.assumed')}>
+              {field(
+                'years',
+                'saving.in.years',
+                t(locale, 'input.horizonYears.unit'),
+                t(locale, 'saving.note.years'),
+                { integer: true },
+              )}
+              {field('sipReturn', 'saving.in.sipReturn', '%', t(locale, 'saving.note.sipReturn'), {
+                percent: true,
+                flagged: true,
+              })}
+            </Group>
             <Group title={t(locale, 'saving.group.more')}>
               {field('ppfRate', 'saving.in.ppfRate', '%', t(locale, 'saving.note.ppfRate'), {
                 percent: true,

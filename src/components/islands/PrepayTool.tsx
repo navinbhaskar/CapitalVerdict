@@ -20,6 +20,7 @@ import {
 import CompareBars from '@/components/tool/CompareBars';
 import ExampleNote from '@/components/tool/ExampleNote';
 import ResultBar from '@/components/tool/ResultBar';
+import Tier from '@/components/tool/Tier';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import NetPositionChart from '@/components/tool/NetPositionChart';
@@ -46,9 +47,9 @@ const CHECKLIST: MessageKey[] = [
 const RETURN_STEPS = [-0.02, 0, 0.02];
 const QUICK: PrepayNumberField[] = [
   'outstanding',
-  'loanRate',
   'yearsLeft',
   'lumpSum',
+  'loanRate',
   'investmentReturn',
 ];
 
@@ -332,15 +333,27 @@ export default function PrepayTool({ locale }: Props) {
               {t(locale, 'carFuel.resetExample')}
             </button>
           </div>
-          <p class="mt-1 text-sm text-ink-muted">{t(locale, 'inputs.quickLegend')}</p>
-
-          <Group title={t(locale, 'prepay.group.loan')}>
+          <Tier tone="yours" title={t(locale, 'tier.yours')} hint={t(locale, 'tier.yoursHint')}>
             {field(
               'outstanding',
               'prepay.in.outstanding',
               '₹',
               t(locale, 'prepay.note.outstanding'),
             )}
+            {field(
+              'yearsLeft',
+              'prepay.in.yearsLeft',
+              t(locale, 'input.horizonYears.unit'),
+              t(locale, 'prepay.note.yearsLeft'),
+              { integer: true },
+            )}
+            {field('lumpSum', 'prepay.in.lumpSum', '₹', t(locale, 'prepay.note.lumpSum'), {
+              optional: true,
+              slider: { min: 0, max: 20_00_000, step: 25_000 },
+            })}
+          </Tier>
+
+          <Tier tone="check" title={t(locale, 'tier.check')} hint={t(locale, 'tier.checkHint')}>
             {field(
               'loanRate',
               'prepay.in.loanRate',
@@ -352,27 +365,13 @@ export default function PrepayTool({ locale }: Props) {
               },
             )}
             {field(
-              'yearsLeft',
-              'prepay.in.yearsLeft',
-              t(locale, 'input.horizonYears.unit'),
-              t(locale, 'prepay.note.yearsLeft'),
-              { integer: true },
-            )}
-          </Group>
-
-          <Group title={t(locale, 'prepay.group.money')}>
-            {field('lumpSum', 'prepay.in.lumpSum', '₹', t(locale, 'prepay.note.lumpSum'), {
-              optional: true,
-              slider: { min: 0, max: 20_00_000, step: 25_000 },
-            })}
-            {field(
               'investmentReturn',
               'prepay.in.investmentReturn',
               '%',
               t(locale, 'prepay.note.investmentReturn'),
               { percent: true, flagged: true },
             )}
-          </Group>
+          </Tier>
 
           <div class="mt-4">
             <p class="text-sm font-medium" id="pp-mode">
@@ -408,7 +407,7 @@ export default function PrepayTool({ locale }: Props) {
           <Refine
             locale={locale}
             storageKey="dw.refine.prepay"
-            hint={t(locale, 'prepay.refineHint')}
+            hint={t(locale, 'prepay.summary', { inflation: formatPercent(form.inflation ?? 0) })}
             forceOpen={refineInvalid && quickInvalid.length === 0}
           >
             <Group title={t(locale, 'prepay.group.more')}>

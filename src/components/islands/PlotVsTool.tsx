@@ -19,6 +19,7 @@ import {
 import CompareBars from '@/components/tool/CompareBars';
 import ExampleNote from '@/components/tool/ExampleNote';
 import ResultBar from '@/components/tool/ResultBar';
+import Tier from '@/components/tool/Tier';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import SensitivityList, { type FlipLine } from '@/components/tool/SensitivityList';
@@ -41,15 +42,7 @@ const CHECKLIST: MessageKey[] = [
   'plotVs.checklist.3',
   'plotVs.checklist.4',
 ];
-const QUICK: (keyof PlotVsForm)[] = [
-  'plotPrice',
-  'stampDuty',
-  'plotGrowth',
-  'fdRate',
-  'taxRate',
-  'fundReturn',
-  'years',
-];
+const QUICK: (keyof PlotVsForm)[] = ['plotPrice', 'stampDuty', 'fdRate', 'taxRate'];
 
 export default function PlotVsTool({ locale }: Props) {
   const [form, setForm] = useState<PlotVsForm>(PLOT_VS_EXAMPLE_FORM);
@@ -243,45 +236,64 @@ export default function PlotVsTool({ locale }: Props) {
           </div>
           <p class="mt-1 text-sm text-ink-muted">{t(locale, 'plotVs.scope')}</p>
 
-          <Group title={t(locale, 'plotVs.group.plot')}>
+          <Tier tone="yours" title={t(locale, 'tier.yours')} hint={t(locale, 'tier.yoursHint')}>
             {field('plotPrice', 'plotVs.in.plotPrice', '₹', t(locale, 'plotVs.note.plotPrice'), {
               slider: { min: 2_00_000, max: 1_00_00_000, step: 50_000 },
             })}
+          </Tier>
+
+          <Tier tone="check" title={t(locale, 'tier.check')} hint={t(locale, 'tier.checkHint')}>
             {field('stampDuty', 'plotVs.in.stampDuty', '%', t(locale, 'plotVs.note.stampDuty'), {
               percent: true,
               flagged: verifiedStampDuty() === null,
             })}
-            {field('plotGrowth', 'plotVs.in.plotGrowth', '%', t(locale, 'plotVs.note.plotGrowth'), {
-              percent: true,
-              flagged: true,
-            })}
-          </Group>
-          <Group title={t(locale, 'plotVs.group.others')}>
             {field('fdRate', 'plotVs.in.fdRate', '%', t(locale, 'plotVs.note.fdRate'), {
               percent: true,
             })}
             {field('taxRate', 'plotVs.in.taxRate', '%', t(locale, 'plotVs.note.taxRate'), {
               percent: true,
             })}
-            {field('fundReturn', 'plotVs.in.fundReturn', '%', t(locale, 'plotVs.note.fundReturn'), {
-              percent: true,
-              flagged: true,
-            })}
-            {field(
-              'years',
-              'plotVs.in.years',
-              t(locale, 'input.horizonYears.unit'),
-              t(locale, 'plotVs.note.years'),
-              { integer: true },
-            )}
-          </Group>
+          </Tier>
 
           <Refine
             locale={locale}
             storageKey="dw.refine.plotVs"
-            hint={t(locale, 'plotVs.refineHint')}
+            hint={t(locale, 'plotVs.summary', {
+              growth: formatPercent(form.plotGrowth ?? 0),
+              fund: formatPercent(form.fundReturn ?? 0),
+              years,
+            })}
             forceOpen={refineInvalid && quickInvalid.length === 0}
           >
+            <Group title={t(locale, 'plotVs.group.assumed')}>
+              {field(
+                'plotGrowth',
+                'plotVs.in.plotGrowth',
+                '%',
+                t(locale, 'plotVs.note.plotGrowth'),
+                {
+                  percent: true,
+                  flagged: true,
+                },
+              )}
+              {field(
+                'fundReturn',
+                'plotVs.in.fundReturn',
+                '%',
+                t(locale, 'plotVs.note.fundReturn'),
+                {
+                  percent: true,
+                  flagged: true,
+                },
+              )}
+              {field(
+                'years',
+                'plotVs.in.years',
+                t(locale, 'input.horizonYears.unit'),
+                t(locale, 'plotVs.note.years'),
+                { integer: true },
+              )}
+            </Group>
             <Group title={t(locale, 'plotVs.group.plotCosts')}>
               {field(
                 'otherBuyCosts',

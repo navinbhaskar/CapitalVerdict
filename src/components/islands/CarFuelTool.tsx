@@ -33,6 +33,7 @@ import {
   type NumericField,
 } from '@/models/carFuelForm';
 import ResultBar from '@/components/tool/ResultBar';
+import Tier from '@/components/tool/Tier';
 import NumberField from '@/components/tool/NumberField';
 import VerdictCard, { verdictHeadline } from '@/components/tool/VerdictCard';
 import CarSetCard from '@/components/tool/CarSetCard';
@@ -60,12 +61,16 @@ const CHECKLIST: Record<AltKind, MessageKey[]> = {
   ev: ['checklist.ev.1', 'checklist.ev.2', 'checklist.ev.3', 'checklist.ev.4', 'checklist.ev.5'],
 };
 
-/** Fields asked up front in quick mode; everything else is under "Refine". */
+/** Fields shown above the "Filled in for you" panel ("Your numbers" and "Check these"). */
 const QUICK: NumericField[] = [
   'monthlyKm',
   'petrolCarPrice',
   'cngCarPrice',
   'evCarPrice',
+  'petrolMileage',
+  'cngMileage',
+  'petrolPrice',
+  'cngPrice',
   'evEfficiency',
   'homeRate',
   'homeChargingShare',
@@ -479,6 +484,20 @@ export default function CarFuelTool({ locale }: Props) {
       ]
     : null;
 
+  // In "Check these" unless the city's prices are verified, then under "Filled in for you".
+  const fuelPriceFields = (
+    <>
+      {field(
+        'petrolPrice',
+        'input.petrolPrice',
+        t(locale, 'input.petrolPrice.unit'),
+        priceNote('petrol'),
+      )}
+      {showCng &&
+        field('cngPrice', 'input.cngPrice', t(locale, 'input.cngPrice.unit'), priceNote('cng'))}
+    </>
+  );
+
   return (
     <div>
       <div class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-10">
@@ -495,7 +514,6 @@ export default function CarFuelTool({ locale }: Props) {
               {t(locale, 'carFuel.resetExample')}
             </button>
           </div>
-          <p class="mt-1 text-sm text-ink-muted">{t(locale, 'inputs.quickLegend')}</p>
           {assumptions.city && !cityPrices && (
             <p class="mt-3 rounded-lg bg-warn-soft px-3 py-2 text-sm text-warn">
               {t(locale, 'carFuel.cityPriceUnverified', {
@@ -532,7 +550,7 @@ export default function CarFuelTool({ locale }: Props) {
             </div>
           </div>
 
-          <Group title={t(locale, 'inputs.group.essentials')}>
+          <Tier tone="yours" title={t(locale, 'tier.yours')} hint={t(locale, 'tier.yoursHint')}>
             {field(
               'monthlyKm',
               'input.monthlyKm',
@@ -561,6 +579,25 @@ export default function CarFuelTool({ locale }: Props) {
                 t(locale, 'note.carPrice'),
               )}
             {kinds.map(extraRow)}
+          </Tier>
+
+          <Tier tone="check" title={t(locale, 'tier.check')} hint={t(locale, 'tier.checkHint')}>
+            {!cityPrices && fuelPriceFields}
+            {field(
+              'petrolMileage',
+              'input.petrolMileage',
+              t(locale, 'input.petrolMileage.unit'),
+              t(locale, 'note.mileage'),
+              { flagged: true },
+            )}
+            {showCng &&
+              field(
+                'cngMileage',
+                'input.cngMileage',
+                t(locale, 'input.cngMileage.unit'),
+                t(locale, 'note.mileage'),
+                { flagged: true },
+              )}
             {showEv && (
               <>
                 {field(
@@ -582,46 +619,20 @@ export default function CarFuelTool({ locale }: Props) {
                   field('publicRate', 'input.publicRate', '₹/kWh', t(locale, 'note.publicRate'))}
               </>
             )}
-          </Group>
+          </Tier>
 
           <Refine
             locale={locale}
             storageKey="dw.refine.carFuel"
-            hint={t(locale, 'carFuel.refineHint')}
+            hint={t(locale, 'carFuel.summary', {
+              rate: formatPercent(form.interestRate ?? 0),
+              years: horizonYears,
+            })}
             forceOpen={refineInvalid && quickInvalid.length === 0}
           >
-            <Group title={t(locale, 'inputs.group.prices')}>
-              {field(
-                'petrolPrice',
-                'input.petrolPrice',
-                t(locale, 'input.petrolPrice.unit'),
-                priceNote('petrol'),
-              )}
-              {showCng &&
-                field(
-                  'cngPrice',
-                  'input.cngPrice',
-                  t(locale, 'input.cngPrice.unit'),
-                  priceNote('cng'),
-                )}
-            </Group>
-            <Group title={t(locale, 'inputs.group.mileage')}>
-              {field(
-                'petrolMileage',
-                'input.petrolMileage',
-                t(locale, 'input.petrolMileage.unit'),
-                t(locale, 'note.mileage'),
-                { flagged: true },
-              )}
-              {showCng &&
-                field(
-                  'cngMileage',
-                  'input.cngMileage',
-                  t(locale, 'input.cngMileage.unit'),
-                  t(locale, 'note.mileage'),
-                  { flagged: true },
-                )}
-            </Group>
+            {cityPrices && (
+              <Group title={t(locale, 'inputs.group.prices')}>{fuelPriceFields}</Group>
+            )}
             <Group title={t(locale, 'inputs.group.money')}>
               {field('interestRate', 'input.interestRate', '%', t(locale, 'note.interestRate'), {
                 percent: true,

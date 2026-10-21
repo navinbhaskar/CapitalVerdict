@@ -6,7 +6,7 @@ interface Props {
   locale: Locale;
   /** Remembers whether this visitor keeps the section open, per tool. */
   storageKey: string;
-  /** One line on what is inside, e.g. "Fuel prices, mileage, interest…". */
+  /** The values already filled in, as one line, so they can be read without opening. */
   hint: string;
   /** Open regardless of the visitor's choice, e.g. while a field inside needs fixing. */
   forceOpen?: boolean;
@@ -14,8 +14,8 @@ interface Props {
 }
 
 /**
- * Quick mode: the few questions only the visitor can answer sit above; every other assumption
- * (already filled in) lives here, one click away and still fully visible when opened.
+ * "Filled in for you": every assumption the visitor does not have to supply. Closed by default,
+ * with the current values summarised on the closed panel; still fully visible when opened.
  */
 export default function Refine({ locale, storageKey, hint, forceOpen = false, children }: Props) {
   const [open, setOpen] = useState(false);

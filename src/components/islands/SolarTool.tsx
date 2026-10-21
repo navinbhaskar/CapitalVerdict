@@ -18,6 +18,7 @@ import {
 import CompareBars from '@/components/tool/CompareBars';
 import ExampleNote from '@/components/tool/ExampleNote';
 import ResultBar from '@/components/tool/ResultBar';
+import Tier from '@/components/tool/Tier';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import NetPositionChart from '@/components/tool/NetPositionChart';
@@ -111,6 +112,7 @@ export default function SolarTool({ locale }: Props) {
     'sanctionedLoadKW',
     'averageRate',
     'generationPerKWPerDay',
+    'exportRatePerKWh',
   ];
   const quickInvalid = missing.filter((k) => QUICK.includes(k));
   const refineInvalid = missing.some((k) => !QUICK.includes(k));
@@ -262,21 +264,18 @@ export default function SolarTool({ locale }: Props) {
               {t(locale, 'carFuel.resetExample')}
             </button>
           </div>
-          <p class="mt-1 text-sm text-ink-muted">{t(locale, 'inputs.quickLegend')}</p>
-
-          <Group title={t(locale, 'solar.group.essentials')}>
+          <Tier tone="yours" title={t(locale, 'tier.yours')} hint={t(locale, 'tier.yoursHint')}>
             {field('systemKW', 'solar.in.systemKW', 'kW', t(locale, 'solar.note.systemKW'))}
             {field('grossCost', 'solar.in.grossCost', '₹', t(locale, 'solar.note.grossCost'))}
-            {field('subsidy', 'solar.in.subsidy', '₹', t(locale, 'solar.note.subsidy'), {
-              optional: true,
-              flagged: unverified('subsidy'),
-            })}
             {field(
               'monthlyConsumptionKWh',
               'solar.in.consumption',
               'kWh',
               t(locale, 'solar.note.consumption'),
             )}
+          </Tier>
+
+          <Tier tone="check" title={t(locale, 'tier.check')} hint={t(locale, 'tier.checkHint')}>
             {SLAB_TARIFF
               ? field('sanctionedLoadKW', 'solar.in.load', 'kW', t(locale, 'solar.note.load'))
               : field(
@@ -285,6 +284,10 @@ export default function SolarTool({ locale }: Props) {
                   '₹/kWh',
                   t(locale, 'solar.note.averageRate'),
                 )}
+            {field('subsidy', 'solar.in.subsidy', '₹', t(locale, 'solar.note.subsidy'), {
+              optional: true,
+              flagged: unverified('subsidy'),
+            })}
             {field(
               'generationPerKWPerDay',
               'solar.in.generation',
@@ -292,12 +295,25 @@ export default function SolarTool({ locale }: Props) {
               t(locale, 'solar.note.generation'),
               { flagged: unverified('generationPerKWPerDay') },
             )}
-          </Group>
+            {field(
+              'exportRatePerKWh',
+              'solar.in.exportRate',
+              '₹/kWh',
+              t(locale, 'solar.note.exportRate'),
+              {
+                optional: true,
+                flagged: unverified('exportRatePerKWh'),
+              },
+            )}
+          </Tier>
 
           <Refine
             locale={locale}
             storageKey="dw.refine.solar"
-            hint={t(locale, 'solar.refineHint')}
+            hint={t(locale, 'solar.summary', {
+              rise: formatPercent(form.tariffRisePerYear ?? 0),
+              years: form.horizonYears ?? 25,
+            })}
             forceOpen={refineInvalid && quickInvalid.length === 0}
           >
             <Group title={t(locale, 'solar.group.bill')}>
@@ -311,16 +327,6 @@ export default function SolarTool({ locale }: Props) {
                     optional: true,
                   },
                 )}
-              {field(
-                'exportRatePerKWh',
-                'solar.in.exportRate',
-                '₹/kWh',
-                t(locale, 'solar.note.exportRate'),
-                {
-                  optional: true,
-                  flagged: unverified('exportRatePerKWh'),
-                },
-              )}
               {field(
                 'degradationPerYear',
                 'solar.in.degradation',
