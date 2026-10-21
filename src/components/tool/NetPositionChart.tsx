@@ -49,8 +49,31 @@ export default function NetPositionChart(props: Props) {
   const plot = useRef<uPlotType | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
+  // The chart library loads only once the chart is near the screen, so an open chart below the
+  // answer costs nothing on first paint. Its space is reserved, so nothing moves when it draws.
+  const [near, setNear] = useState(false);
 
   useEffect(() => {
+    const el = box.current;
+    if (!el || !('IntersectionObserver' in window)) {
+      setNear(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setNear(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '300px 0px' },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!near) return;
     let cancelled = false;
     let resize: ResizeObserver | undefined;
 
@@ -186,6 +209,7 @@ export default function NetPositionChart(props: Props) {
       plot.current = null;
     };
   }, [
+    near,
     netWithInterest,
     netNoInterest,
     bandLow,

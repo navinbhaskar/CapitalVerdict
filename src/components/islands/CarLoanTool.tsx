@@ -452,6 +452,7 @@ export default function CarLoanTool({ locale }: Props) {
             </MoreDetail>
 
             <MoreDetail
+              defaultOpen
               title={t(locale, 'detail.chartReturns')}
               hint={t(locale, 'detail.chartReturnsHint')}
             >

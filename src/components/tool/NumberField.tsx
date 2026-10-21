@@ -107,12 +107,14 @@ export default function NumberField(props: Props) {
         <label for={id} class={`block text-sm font-medium ${row ? '' : 'mb-1.5'}`}>
           {label}
           {example ? (
-            <span class="ml-2 inline-block rounded-full bg-accent-soft px-2 py-0.5 align-[1px] text-xs font-medium text-accent-strong">
+            <span class="ml-2 inline-flex items-center gap-1 align-[1px] text-xs font-medium text-accent-strong">
+              <span class="size-1.5 rounded-full bg-accent" aria-hidden="true" />
               {t(locale, 'inputs.example')}
             </span>
           ) : (
             flagged && (
-              <span class="ml-2 inline-block rounded-full bg-warn-soft px-2 py-0.5 align-[1px] text-xs font-medium text-warn">
+              <span class="ml-2 inline-flex items-center gap-1 align-[1px] text-xs font-medium text-warn">
+                <span class="size-1.5 rounded-full bg-warn" aria-hidden="true" />
                 {t(locale, 'inputs.flag')}
               </span>
             )

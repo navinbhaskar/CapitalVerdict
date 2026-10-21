@@ -5,15 +5,17 @@ interface Props {
   title: string;
   /** One line on what is inside. */
   hint?: string;
+  /** Start open: for the chart, which most visitors should see without asking. */
+  defaultOpen?: boolean;
   children: ComponentChildren;
 }
 
 /**
- * A closed section for detail most visitors skip (the working, the chart, the monthly table).
- * Its content renders only once opened, so a chart or a long table costs nothing until wanted.
+ * A section for detail some visitors skip (the working, the monthly table), closed unless
+ * `defaultOpen`. Its content renders only while open, so a long table costs nothing until wanted.
  */
-export default function MoreDetail({ title, hint, children }: Props) {
-  const [open, setOpen] = useState(false);
+export default function MoreDetail({ title, hint, defaultOpen = false, children }: Props) {
+  const [open, setOpen] = useState(defaultOpen);
   return (
     <details
       class="group border-b border-line"

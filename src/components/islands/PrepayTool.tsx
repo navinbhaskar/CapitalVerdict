@@ -597,6 +597,7 @@ export default function PrepayTool({ locale }: Props) {
             </MoreDetail>
 
             <MoreDetail
+              defaultOpen
               title={t(locale, 'detail.chartReturns')}
               hint={t(locale, 'detail.chartReturnsHint')}
             >

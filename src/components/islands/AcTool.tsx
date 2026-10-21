@@ -471,7 +471,11 @@ export default function AcTool({ locale }: Props) {
               </div>
             </MoreDetail>
 
-            <MoreDetail title={t(locale, 'detail.chart')} hint={t(locale, 'detail.chartHint')}>
+            <MoreDetail
+              defaultOpen
+              title={t(locale, 'detail.chart')}
+              hint={t(locale, 'detail.chartHint')}
+            >
               <div class="grid gap-6 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12">
                 <NetPositionChart
                   locale={locale}

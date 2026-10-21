@@ -340,6 +340,7 @@ export default function TaxRegimeTool({ locale }: Props) {
             </MoreDetail>
 
             <MoreDetail
+              defaultOpen
               title={t(locale, 'taxRegime.table.title')}
               hint={t(locale, 'taxRegime.table.hint')}
             >
