@@ -1,0 +1,34 @@
+{
+  "taxYear": "2026-27",
+  "appliesTo": "Resident individuals below 60, taxable income up to ₹50 lakh (no surcharge)",
+  "cessRate": 0.04,
+  "surchargeFrom": 5000000,
+  "regimes": {
+    "new": {
+      "slabs": [
+        { "upTo": 400000, "rate": 0 },
+        { "upTo": 800000, "rate": 0.05 },
+        { "upTo": 1200000, "rate": 0.1 },
+        { "upTo": 1600000, "rate": 0.15 },
+        { "upTo": 2000000, "rate": 0.2 },
+        { "upTo": 2400000, "rate": 0.25 },
+        { "upTo": null, "rate": 0.3 }
+      ],
+      "standardDeduction": 75000,
+      "rebate": { "max": 60000, "incomeLimit": 1200000, "marginalRelief": true }
+    },
+    "old": {
+      "slabs": [
+        { "upTo": 250000, "rate": 0 },
+        { "upTo": 500000, "rate": 0.05 },
+        { "upTo": 1000000, "rate": 0.2 },
+        { "upTo": null, "rate": 0.3 }
+      ],
+      "standardDeduction": 50000,
+      "rebate": { "max": 12500, "incomeLimit": 500000, "marginalRelief": false }
+    }
+  },
+  "source": "Slabs, rebate, cess and surcharge threshold: Income Tax Department e-filing portal, 'Salaried Individuals for AY 2026-27' (incometax.gov.in/iec/foportal/help/individual/return-applicable-1). Standard deduction (₹75,000 new, ₹50,000 old) and the new-regime rebate edge of ₹12,70,590 (marginal relief): CBDT ITR-1 validation rules AY 2026-27, rules 112, 191, 192, 215. Unchanged for tax year 2026-27: PIB New India Samachar, February 2026, p. 25 ('No changes have been made to the income tax slabs or exemptions').",
+  "effectiveDate": "2026-10-21",
+  "status": "verified"
+}

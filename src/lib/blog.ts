@@ -20,4 +20,5 @@ export const TOOL_PATHS = {
   'prepay-or-invest': '/tools/prepay-or-invest/',
   'cash-or-car-loan': '/tools/cash-or-car-loan/',
   'ac-payback': '/tools/ac-payback/',
+  'old-or-new-tax-regime': '/tools/old-or-new-tax-regime/',
 } as const;

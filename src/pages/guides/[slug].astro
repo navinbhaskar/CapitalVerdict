@@ -28,6 +28,7 @@ const toolTitle: Record<NonNullable<typeof tool>, MessageKey> = {
   'prepay-or-invest': 'tool.prepay.question',
   'cash-or-car-loan': 'tool.carLoan.question',
   'ac-payback': 'tool.ac.question',
+  'old-or-new-tax-regime': 'tool.taxRegime.question',
 };
 const more = (await getCollection('blog'))
   .filter((p) => p.id !== post.id)

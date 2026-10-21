@@ -12,6 +12,7 @@ import fuelPricesJson from './fuelPrices.json';
 import upTariffJson from './tariffs/UP.json';
 import solarJson from './solar.json';
 import propertyJson from './property.json';
+import incomeTaxJson from './incomeTax.json';
 import changelogJson from './changelog.json';
 
 export const verificationStatus = z.enum(['TODO_VERIFY', 'verified']);
@@ -112,6 +113,30 @@ export const propertySchema = z.object({
 });
 export type PropertyData = z.infer<typeof propertySchema>;
 
+const band = z.object({ upTo: z.number().positive().nullable(), rate: z.number().min(0).max(1) });
+const regime = z.object({
+  slabs: z.array(band).min(1),
+  standardDeduction: z.number().min(0),
+  rebate: z.object({
+    max: z.number().min(0),
+    incomeLimit: z.number().min(0),
+    marginalRelief: z.boolean(),
+  }),
+});
+
+/** Income-tax rules for one tax year, both regimes. Verified as a whole, with one source note. */
+export const incomeTaxSchema = z.object({
+  taxYear: z.string().regex(/^\d{4}-\d{2}$/),
+  appliesTo: z.string().min(1),
+  cessRate: z.number().min(0).max(1),
+  surchargeFrom: z.number().positive(),
+  regimes: z.object({ new: regime, old: regime }),
+  source: z.string().min(1),
+  effectiveDate: z.iso.date(),
+  status: verificationStatus,
+});
+export type IncomeTaxData = z.infer<typeof incomeTaxSchema>;
+
 export const changelogSchema = z.object({
   entries: z
     .array(z.object({ date: z.iso.date(), change: z.string().min(1) }))
@@ -126,5 +151,6 @@ export function validateAllData(): void {
   tariffSchema.parse(upTariffJson);
   solarSchema.parse(solarJson);
   propertySchema.parse(propertyJson);
+  incomeTaxSchema.parse(incomeTaxJson);
   changelogSchema.parse(changelogJson);
 }

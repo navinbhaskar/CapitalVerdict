@@ -8,10 +8,12 @@ import upTariffJson from './tariffs/UP.json';
 import solarJson from './solar.json';
 import propertyJson from './property.json';
 import changelogJson from './changelog.json';
+import incomeTaxJson from './incomeTax.json';
 import type {
   Changelog,
   Defaults,
   FuelPrices,
+  IncomeTaxData,
   PropertyData,
   SolarData,
   TariffData,
@@ -54,3 +56,5 @@ export function verifiedStampDuty(): number | null {
 }
 
 export const changelog = changelogJson as unknown as Changelog;
+
+export const incomeTax = incomeTaxJson as unknown as IncomeTaxData;

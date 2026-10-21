@@ -16,7 +16,7 @@ const liveTools: {
   title: MessageKey;
   question: MessageKey;
   href: string;
-  icon: 'fuel' | 'sun' | 'home' | 'banknote' | 'car' | 'snowflake';
+  icon: 'fuel' | 'sun' | 'home' | 'banknote' | 'car' | 'snowflake' | 'percent';
 }[] = [
   {
     title: 'tool.carFuel.title',
@@ -54,13 +54,13 @@ const liveTools: {
     href: localizePath('/tools/ac-payback/', locale),
     icon: 'snowflake',
   },
+  {
+    title: 'tool.taxRegime.title',
+    question: 'tool.taxRegime.question',
+    href: localizePath('/tools/old-or-new-tax-regime/', locale),
+    icon: 'percent',
+  },
 ];
-const upcoming: {
-  title: MessageKey;
-  question: MessageKey;
-  icon: 'banknote' | 'car' | 'snowflake' | 'percent';
-}[] = [{ title: 'tool.taxRegime.title', question: 'tool.taxRegime.question', icon: 'percent' }];
-
 const notes = (await getCollection('blog')).sort(byDateDesc).slice(0, 3);
 
 const principles: { title: MessageKey; body: MessageKey }[] = [
@@ -162,25 +162,6 @@ const principles: { title: MessageKey; body: MessageKey }[] = [
           </a>
         ))}
       </div>
-
-      <h3 class="mt-8 text-sm font-medium text-ink-muted" data-reveal>
-        {t(locale, 'home.tools.upcomingHeading')}
-      </h3>
-      <ul
-        class="mt-3 grid border-t border-line-strong sm:grid-cols-2 sm:gap-x-8"
-        role="list"
-        data-reveal
-      >
-        {upcoming.map((tool) => (
-          <li class="flex gap-3 border-b border-line py-4">
-            <Icon name={tool.icon} size={20} class="mt-0.5 shrink-0 text-accent-strong" />
-            <div class="min-w-0">
-              <p class="font-medium">{t(locale, tool.title)}</p>
-              <p class="mt-0.5 text-sm text-ink-muted">{t(locale, tool.question)}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
     </div>
   </section>
 

@@ -1,0 +1,96 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import Icon from '@/components/layout/Icon.astro';
+import AssumptionsTable, { type AssumptionRow } from '@/components/tool/AssumptionsTable.astro';
+import TaxRegimeTool from '@/components/islands/TaxRegimeTool';
+import { t, type Locale, type MessageKey } from '@/i18n/t';
+import { localizePath } from '@/i18n/routes';
+import { incomeTax } from '@/data';
+import { formatINR } from '@/lib/format';
+import { formatPercent } from '@/lib/formatTool';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const rules = incomeTax;
+const lakh = (n: number) => formatINR(n);
+const slabText = (slabs: { upTo: number | null; rate: number }[]) =>
+  slabs
+    .map((s, i) => {
+      const from = i === 0 ? 0 : slabs[i - 1]!.upTo!;
+      return s.upTo === null
+        ? t(locale, 'taxRegime.a.bandTop', { rate: formatPercent(s.rate), from: lakh(from) })
+        : t(locale, 'taxRegime.a.band', { rate: formatPercent(s.rate), upTo: lakh(s.upTo) });
+    })
+    .join('; ');
+const row = (label: string, value: string): AssumptionRow => ({
+  label,
+  value,
+  source: rules.source,
+  date: rules.effectiveDate,
+  verified: rules.status === 'verified',
+});
+const rows: AssumptionRow[] = [
+  row(t(locale, 'taxRegime.a.newSlabs'), slabText(rules.regimes.new.slabs)),
+  row(t(locale, 'taxRegime.a.oldSlabs'), slabText(rules.regimes.old.slabs)),
+  row(
+    t(locale, 'taxRegime.a.standard'),
+    `${lakh(rules.regimes.new.standardDeduction)} / ${lakh(rules.regimes.old.standardDeduction)}`,
+  ),
+  row(
+    t(locale, 'taxRegime.a.rebate'),
+    (['new', 'old'] as const)
+      .map((k) =>
+        t(locale, 'taxRegime.a.rebateValue', {
+          max: lakh(rules.regimes[k].rebate.max),
+          limit: lakh(rules.regimes[k].rebate.incomeLimit),
+        }),
+      )
+      .join(' / '),
+  ),
+  row(t(locale, 'taxRegime.a.cess'), formatPercent(rules.cessRate)),
+];
+
+const FAQ = [1, 2, 3] as const;
+const related = [
+  { href: localizePath('/tools/prepay-or-invest/', locale), label: t(locale, 'tool.prepay.title') },
+  { href: localizePath('/tools/rent-vs-buy/', locale), label: t(locale, 'tool.rentVsBuy.title') },
+];
+---
+
+<ToolLayout
+  locale={locale}
+  title={t(locale, 'tool.taxRegime.question')}
+  description={t(locale, 'taxRegime.metaDescription')}
+  related={related}
+  faq={FAQ.map((n) => ({
+    q: t(locale, `taxRegime.faq.${n}.q` as MessageKey),
+    a: t(locale, `taxRegime.faq.${n}.a` as MessageKey),
+  }))}
+>
+  <TaxRegimeTool client:load locale={locale} />
+
+  <p slot="explanation">{t(locale, 'taxRegime.explanation')}</p>
+
+  <AssumptionsTable slot="assumptions" locale={locale} rows={rows} />
+
+  <div slot="faq" class="divide-y divide-line border-y border-line">
+    {FAQ.map((n) => (
+      <details class="group">
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-2.5 font-medium text-ink">
+          {t(locale, `taxRegime.faq.${n}.q` as MessageKey)}
+          <Icon
+            name="chevronDown"
+            size={18}
+            class="shrink-0 text-ink-muted transition-transform duration-(--duration-base) ease-out-quart group-open:rotate-180"
+          />
+        </summary>
+        <p class="max-w-(--container-prose) pb-3 text-sm">
+          {t(locale, `taxRegime.faq.${n}.a` as MessageKey)}
+        </p>
+      </details>
+    ))}
+  </div>
+</ToolLayout>

@@ -24,6 +24,7 @@ const blog = defineCollection({
         'prepay-or-invest',
         'cash-or-car-loan',
         'ac-payback',
+        'old-or-new-tax-regime',
       ])
       .optional(),
     /** The guide's headline figure for its listing card; must appear in the post's own text. */
