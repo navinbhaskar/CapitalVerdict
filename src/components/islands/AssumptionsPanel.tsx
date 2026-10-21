@@ -29,6 +29,7 @@ const USED_BY: Partial<Record<AssumptionKey, MessageKey[]>> = {
     'tool.prepay.title',
     'tool.carLoan.title',
     'tool.plotVs.title',
+    'tool.saving.title',
   ],
 };
 

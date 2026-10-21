@@ -13,6 +13,7 @@ import upTariffJson from './tariffs/UP.json';
 import solarJson from './solar.json';
 import propertyJson from './property.json';
 import incomeTaxJson from './incomeTax.json';
+import smallSavingsJson from './smallSavings.json';
 import changelogJson from './changelog.json';
 
 export const verificationStatus = z.enum(['TODO_VERIFY', 'verified']);
@@ -136,6 +137,8 @@ export const incomeTaxSchema = z.object({
     longTermRate: z.number().min(0).max(1),
     equityLongTermExemption: z.number().min(0),
     equityShortTermRate: z.number().min(0).max(1),
+    /** Listed equity (and equity funds) held longer than this is long-term. */
+    listedLongTermAfterMonths: z.number().int().positive(),
     source: z.string().min(1),
     effectiveDate: z.iso.date(),
     status: verificationStatus,
@@ -145,6 +148,22 @@ export const incomeTaxSchema = z.object({
   status: verificationStatus,
 });
 export type IncomeTaxData = z.infer<typeof incomeTaxSchema>;
+
+/** Government small-savings schemes. Verified as a whole, with one source note each. */
+export const smallSavingsSchema = z.object({
+  ppf: z.object({
+    rate: z.number().min(0).max(1),
+    minYearly: z.number().min(0),
+    maxYearly: z.number().positive(),
+    termYears: z.number().int().positive(),
+    extensionYears: z.number().int().positive(),
+    interestTaxFree: z.boolean(),
+    source: z.string().min(1),
+    effectiveDate: z.iso.date(),
+    status: verificationStatus,
+  }),
+});
+export type SmallSavingsData = z.infer<typeof smallSavingsSchema>;
 
 export const changelogSchema = z.object({
   entries: z
@@ -161,5 +180,6 @@ export function validateAllData(): void {
   solarSchema.parse(solarJson);
   propertySchema.parse(propertyJson);
   incomeTaxSchema.parse(incomeTaxJson);
+  smallSavingsSchema.parse(smallSavingsJson);
   changelogSchema.parse(changelogJson);
 }

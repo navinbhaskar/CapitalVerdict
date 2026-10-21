@@ -1,0 +1,13 @@
+{
+  "ppf": {
+    "rate": 0.071,
+    "minYearly": 500,
+    "maxYearly": 150000,
+    "termYears": 15,
+    "extensionYears": 5,
+    "interestTaxFree": true,
+    "source": "National Savings Institute (Ministry of Finance), Public Provident Fund Account page and PPF Scheme 2019 rules: 7.1% a year on deposits and balances from 1 April 2020; ₹500 minimum and ₹1,50,000 maximum deposit in a financial year; matures after fifteen years; interest calculated monthly on the lowest balance between the close of the fifth day and the end of the month and credited at the end of each year; interest free from income tax under Section 10. Rate unchanged for October-December 2026 (Department of Economic Affairs announcement, 30 September 2026, as reported by Business Standard).",
+    "effectiveDate": "2026-10-21",
+    "status": "verified"
+  }
+}

@@ -1,0 +1,111 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import Icon from '@/components/layout/Icon.astro';
+import AssumptionsTable, { type AssumptionRow } from '@/components/tool/AssumptionsTable.astro';
+import MonthlySavingTool from '@/components/islands/MonthlySavingTool';
+import { t, type Locale, type MessageKey } from '@/i18n/t';
+import { localizePath } from '@/i18n/routes';
+import { defaults, incomeTax, smallSavings } from '@/data';
+import { formatINR } from '@/lib/format';
+import { formatPercent } from '@/lib/formatTool';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+
+const cg = incomeTax.capitalGains;
+const ppf = smallSavings.ppf;
+const v = defaults.scenarioVariables;
+const fd = defaults.globalAssumptions.fdRate;
+const triple = (x: { pessimistic: number; base: number; optimistic: number }) =>
+  [x.pessimistic, x.base, x.optimistic].map(formatPercent).join(' / ');
+const rows: AssumptionRow[] = [
+  {
+    label: t(locale, 'saving.in.ppfRate'),
+    value: formatPercent(ppf.rate),
+    source: ppf.source,
+    date: ppf.effectiveDate,
+    verified: ppf.status === 'verified',
+  },
+  {
+    label: t(locale, 'saving.a.ppfLimit'),
+    value: `${formatINR(ppf.minYearly)} – ${formatINR(ppf.maxYearly)}`,
+    source: ppf.source,
+    date: ppf.effectiveDate,
+    verified: ppf.status === 'verified',
+  },
+  {
+    label: t(locale, 'saving.a.cgRates'),
+    value: `${formatPercent(cg.equityShortTermRate)} / ${formatPercent(cg.longTermRate)}`,
+    source: cg.source,
+    date: cg.effectiveDate,
+    verified: cg.status === 'verified',
+  },
+  {
+    label: t(locale, 'plotVs.a.exemption'),
+    value: formatINR(cg.equityLongTermExemption),
+    source: cg.source,
+    date: cg.effectiveDate,
+    verified: cg.status === 'verified',
+  },
+  {
+    label: t(locale, 'saving.in.rdRate'),
+    value: fd.value === null ? '—' : formatPercent(fd.value),
+    source: fd.source,
+    date: fd.effectiveDate,
+    verified: fd.status === 'verified',
+  },
+  {
+    label: t(locale, 'plotVs.a.fundReturn'),
+    value: triple(v.equityReturnNominal.values),
+    source: v.equityReturnNominal.source,
+    date: v.equityReturnNominal.effectiveDate,
+    verified: v.equityReturnNominal.status === 'verified',
+  },
+];
+
+const FAQ = [1, 2, 3] as const;
+const related = [
+  {
+    href: localizePath('/tools/plot-vs-fd-vs-mutual-fund/', locale),
+    label: t(locale, 'tool.plotVs.title'),
+  },
+  { href: localizePath('/tools/prepay-or-invest/', locale), label: t(locale, 'tool.prepay.title') },
+];
+---
+
+<ToolLayout
+  locale={locale}
+  title={t(locale, 'tool.saving.question')}
+  description={t(locale, 'saving.metaDescription')}
+  related={related}
+  faq={FAQ.map((n) => ({
+    q: t(locale, `saving.faq.${n}.q` as MessageKey),
+    a: t(locale, `saving.faq.${n}.a` as MessageKey),
+  }))}
+>
+  <MonthlySavingTool client:load locale={locale} />
+
+  <p slot="explanation">{t(locale, 'saving.explanation')}</p>
+
+  <AssumptionsTable slot="assumptions" locale={locale} rows={rows} />
+
+  <div slot="faq" class="divide-y divide-line border-y border-line">
+    {FAQ.map((n) => (
+      <details class="group">
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-2.5 font-medium text-ink">
+          {t(locale, `saving.faq.${n}.q` as MessageKey)}
+          <Icon
+            name="chevronDown"
+            size={18}
+            class="shrink-0 text-ink-muted transition-transform duration-(--duration-base) ease-out-quart group-open:rotate-180"
+          />
+        </summary>
+        <p class="max-w-(--container-prose) pb-3 text-sm">
+          {t(locale, `saving.faq.${n}.a` as MessageKey)}
+        </p>
+      </details>
+    ))}
+  </div>
+</ToolLayout>

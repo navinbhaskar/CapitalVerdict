@@ -15,7 +15,7 @@ const { locale } = Astro.props;
 const liveTools: {
   question: MessageKey;
   href: string;
-  icon: 'fuel' | 'sun' | 'home' | 'banknote' | 'car' | 'snowflake' | 'percent' | 'plot';
+  icon: 'fuel' | 'sun' | 'home' | 'banknote' | 'car' | 'snowflake' | 'percent' | 'plot' | 'piggy';
 }[] = [
   {
     question: 'tool.carFuel.question',
@@ -56,6 +56,11 @@ const liveTools: {
     question: 'tool.plotVs.question',
     href: localizePath('/tools/plot-vs-fd-vs-mutual-fund/', locale),
     icon: 'plot',
+  },
+  {
+    question: 'tool.saving.question',
+    href: localizePath('/tools/sip-vs-ppf-vs-fd/', locale),
+    icon: 'piggy',
   },
 ];
 const notes = (await getCollection('blog')).sort(byDateDesc).slice(0, 3);

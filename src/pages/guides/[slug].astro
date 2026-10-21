@@ -30,6 +30,7 @@ const toolTitle: Record<NonNullable<typeof tool>, MessageKey> = {
   'ac-payback': 'tool.ac.question',
   'old-or-new-tax-regime': 'tool.taxRegime.question',
   'plot-vs-fd-vs-mutual-fund': 'tool.plotVs.question',
+  'sip-vs-ppf-vs-fd': 'tool.saving.question',
 };
 const more = (await getCollection('blog'))
   .filter((p) => p.id !== post.id)

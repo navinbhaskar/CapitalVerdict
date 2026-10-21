@@ -76,8 +76,9 @@
     "longTermRate": 0.125,
     "equityLongTermExemption": 125000,
     "equityShortTermRate": 0.2,
-    "source": "PIB, 'Union Budget 2024-25: Key Tax Reforms and Relief Measures' (July 2024): long-term gains on all financial and non-financial assets 12.5% without indexation; exemption on equity gains raised to ₹1.25 lakh a year from FY 2024-25; short-term gains on specified financial assets 20%. ₹1,25,000 exemption also in CBDT ITR-1 validation rules AY 2026-27, rule 217. Unchanged for tax year 2026-27 (PIB New India Samachar, February 2026, p. 25).",
+    "source": "PIB, 'Union Budget 2024-25: Key Tax Reforms and Relief Measures' (July 2024): long-term gains on all financial and non-financial assets 12.5% without indexation; exemption on equity gains raised to ₹1.25 lakh a year from FY 2024-25; short-term gains on specified financial assets 20%. ₹1,25,000 exemption also in CBDT ITR-1 validation rules AY 2026-27, rule 217. Unchanged for tax year 2026-27 (PIB New India Samachar, February 2026, p. 25). Holding periods (listed securities one year, all other assets two years): CBDT FAQs on the new capital-gains regime, PIB release PRID 2036604 (July 2024); units held 12 months or less are treated as short-term.",
     "effectiveDate": "2026-10-21",
-    "status": "verified"
+    "status": "verified",
+    "listedLongTermAfterMonths": 12
   }
 }

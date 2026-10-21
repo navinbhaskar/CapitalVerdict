@@ -2,6 +2,10 @@
   "entries": [
     {
       "date": "2026-10-21",
+      "change": "Added the PPF rate (7.1%), deposit limits and term from the National Savings Institute, and the one-year holding period for equity, for the SIP vs PPF vs FD tool."
+    },
+    {
+      "date": "2026-10-21",
       "change": "Added capital-gains rates (12.5% long-term, ₹1.25 lakh yearly exemption on equity gains, 20% short-term on equity) from PIB and CBDT, for the plot vs FD vs mutual funds tool."
     },
     {

@@ -22,4 +22,5 @@ export const TOOL_PATHS = {
   'ac-payback': '/tools/ac-payback/',
   'old-or-new-tax-regime': '/tools/old-or-new-tax-regime/',
   'plot-vs-fd-vs-mutual-fund': '/tools/plot-vs-fd-vs-mutual-fund/',
+  'sip-vs-ppf-vs-fd': '/tools/sip-vs-ppf-vs-fd/',
 } as const;
