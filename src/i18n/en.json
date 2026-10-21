@@ -182,7 +182,6 @@
   "assumptionsTable.unverified": "Not verified",
   "assumptionsTable.priceRise": "Fuel price rise a year (pessimistic / base / optimistic)",
   "assumptionsTable.carLoanRate": "Interest on the extra price (default)",
-  "home.tools.status.live": "Open the tool",
   "unit.lakhShort": "₹{n}L",
   "inputs.heading": "Inputs",
   "inputs.legend": "Fields marked “Check this” are assumptions. Replace them with your own figures.",

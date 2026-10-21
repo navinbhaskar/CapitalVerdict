@@ -13,49 +13,41 @@ interface Props {
 const { locale } = Astro.props;
 
 const liveTools: {
-  title: MessageKey;
   question: MessageKey;
   href: string;
   icon: 'fuel' | 'sun' | 'home' | 'banknote' | 'car' | 'snowflake' | 'percent';
 }[] = [
   {
-    title: 'tool.carFuel.title',
     question: 'tool.carFuel.question',
     href: localizePath('/tools/car-fuel/', locale),
     icon: 'fuel',
   },
   {
-    title: 'tool.solar.title',
     question: 'tool.solar.question',
     href: localizePath('/tools/solar/', locale),
     icon: 'sun',
   },
   {
-    title: 'tool.rentVsBuy.title',
     question: 'tool.rentVsBuy.question',
     href: localizePath('/tools/rent-vs-buy/', locale),
     icon: 'home',
   },
   {
-    title: 'tool.prepay.title',
     question: 'tool.prepay.question',
     href: localizePath('/tools/prepay-or-invest/', locale),
     icon: 'banknote',
   },
   {
-    title: 'tool.carLoan.title',
     question: 'tool.carLoan.question',
     href: localizePath('/tools/cash-or-car-loan/', locale),
     icon: 'car',
   },
   {
-    title: 'tool.ac.title',
     question: 'tool.ac.question',
     href: localizePath('/tools/ac-payback/', locale),
     icon: 'snowflake',
   },
   {
-    title: 'tool.taxRegime.title',
     question: 'tool.taxRegime.question',
     href: localizePath('/tools/old-or-new-tax-regime/', locale),
     icon: 'percent',
@@ -140,25 +132,19 @@ const principles: { title: MessageKey; body: MessageKey }[] = [
           {t(locale, 'home.tools.heading')}
         </h2>
       </div>
-      <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal>
+      <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-reveal>
         {liveTools.map((tool) => (
           <a
             href={tool.href}
-            class="card-lift group flex flex-col rounded-xl border border-line bg-raised p-5 transition-colors duration-(--duration-base) ease-out-quart hover:border-accent"
+            class="card-lift group flex items-center gap-3.5 rounded-xl border border-line bg-raised px-4 py-3.5 transition-colors duration-(--duration-base) ease-out-quart hover:border-accent"
           >
-            <span class="band-dark inline-flex size-10 items-center justify-center rounded-full text-accent">
-              <Icon name={tool.icon} size={20} />
+            <span class="band-dark inline-flex size-9 shrink-0 items-center justify-center rounded-full text-accent">
+              <Icon name={tool.icon} size={18} />
             </span>
-            <span class="mt-4 block text-sm font-medium text-ink-muted">
-              {t(locale, tool.title)}
-            </span>
-            <span class="mt-1 block flex-1 font-display text-xl font-medium tracking-(--tracking-heading) text-balance">
+            <span class="min-w-0 flex-1 font-display text-lg leading-snug font-medium tracking-(--tracking-heading) group-hover:text-accent-strong">
               {t(locale, tool.question)}
             </span>
-            <span class="mt-4 inline-flex items-center gap-2 self-start border-b border-accent pb-0.5 font-medium text-accent-strong">
-              {t(locale, 'home.tools.status.live')}
-              <Icon name="arrowRight" size={18} class="nudge" />
-            </span>
+            <Icon name="arrowRight" size={18} class="nudge shrink-0 text-accent-strong" />
           </a>
         ))}
       </div>
