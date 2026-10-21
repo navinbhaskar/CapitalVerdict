@@ -16,7 +16,7 @@ const liveTools: {
   title: MessageKey;
   question: MessageKey;
   href: string;
-  icon: 'fuel' | 'sun' | 'home' | 'banknote' | 'car';
+  icon: 'fuel' | 'sun' | 'home' | 'banknote' | 'car' | 'snowflake';
 }[] = [
   {
     title: 'tool.carFuel.title',
@@ -48,15 +48,18 @@ const liveTools: {
     href: localizePath('/tools/cash-or-car-loan/', locale),
     icon: 'car',
   },
+  {
+    title: 'tool.ac.title',
+    question: 'tool.ac.question',
+    href: localizePath('/tools/ac-payback/', locale),
+    icon: 'snowflake',
+  },
 ];
 const upcoming: {
   title: MessageKey;
   question: MessageKey;
   icon: 'banknote' | 'car' | 'snowflake' | 'percent';
-}[] = [
-  { title: 'tool.ac.title', question: 'tool.ac.question', icon: 'snowflake' },
-  { title: 'tool.taxRegime.title', question: 'tool.taxRegime.question', icon: 'percent' },
-];
+}[] = [{ title: 'tool.taxRegime.title', question: 'tool.taxRegime.question', icon: 'percent' }];
 
 const notes = (await getCollection('blog')).sort(byDateDesc).slice(0, 3);
 

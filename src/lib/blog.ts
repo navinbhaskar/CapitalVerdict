@@ -19,4 +19,5 @@ export const TOOL_PATHS = {
   'rent-vs-buy': '/tools/rent-vs-buy/',
   'prepay-or-invest': '/tools/prepay-or-invest/',
   'cash-or-car-loan': '/tools/cash-or-car-loan/',
+  'ac-payback': '/tools/ac-payback/',
 } as const;

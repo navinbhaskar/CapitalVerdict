@@ -22,7 +22,7 @@ interface Props {
 /** Which live tools read each assumption. Keep in step with the tools. */
 const USED_BY: Partial<Record<AssumptionKey, MessageKey[]>> = {
   city: ['tool.carFuel.title'],
-  carLoanRate: ['tool.carFuel.title', 'tool.carLoan.title'],
+  carLoanRate: ['tool.carFuel.title', 'tool.carLoan.title', 'tool.ac.title'],
   homeLoanRate: ['tool.rentVsBuy.title', 'tool.prepay.title'],
   inflation: ['tool.rentVsBuy.title', 'tool.prepay.title', 'tool.carLoan.title'],
 };

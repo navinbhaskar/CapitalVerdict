@@ -2,5 +2,6 @@ dist/
 .astro/
 node_modules/
 .claude/
+.agents/
 brand/
 package-lock.json
