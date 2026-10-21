@@ -17,6 +17,9 @@ import {
   type PrepayForm,
   type PrepayNumberField,
 } from '@/models/prepayForm';
+import CompareBars from '@/components/tool/CompareBars';
+import ExampleNote from '@/components/tool/ExampleNote';
+import ResultBar from '@/components/tool/ResultBar';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import NetPositionChart from '@/components/tool/NetPositionChart';
@@ -311,6 +314,7 @@ export default function PrepayTool({ locale }: Props) {
 
   return (
     <div>
+      <ResultBar locale={locale} headline={headline} />
       <div class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-10">
         <section aria-labelledby="pp-inputs-heading">
           <div class="flex flex-wrap items-baseline justify-between gap-3">
@@ -483,17 +487,30 @@ export default function PrepayTool({ locale }: Props) {
                 </p>
               )}
               {isExample && (
-                <p class="mt-3 rounded-lg bg-accent-soft px-3 py-2 text-sm text-accent-strong">
-                  {t(locale, 'prepay.exampleNote')}
-                </p>
+                <ExampleNote
+                  locale={locale}
+                  text={t(locale, 'prepay.exampleNote')}
+                  inputsId="pp-inputs-heading"
+                />
               )}
+              <CompareBars
+                caption={t(locale, 'compare.invested', { years })}
+                items={[
+                  {
+                    label: t(locale, 'prepay.side.prepay'),
+                    value: r.atEnd.prepay,
+                    display: formatMoney(r.atEnd.prepay),
+                    best: prepayWins,
+                  },
+                  {
+                    label: t(locale, 'prepay.side.invest'),
+                    value: r.atEnd.invest,
+                    display: formatMoney(r.atEnd.invest),
+                    best: !prepayWins,
+                  },
+                ]}
+              />
               <dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-line pt-4">
-                <Stat label={t(locale, 'prepay.stat.prepay', { years })}>
-                  {formatMoney(r.atEnd.prepay)}
-                </Stat>
-                <Stat label={t(locale, 'prepay.stat.invest', { years })}>
-                  {formatMoney(r.atEnd.invest)}
-                </Stat>
                 <Stat label={t(locale, 'prepay.stat.interestSaved')}>
                   {formatMoney(r.interestSaved)}
                 </Stat>

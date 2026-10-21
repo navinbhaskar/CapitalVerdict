@@ -724,6 +724,16 @@
   animation: dw-tick var(--duration-base) var(--ease-out-expo);
 }
 
+/* Comparison bars grow to their new length as the inputs change. */
+.compare-bar {
+  transition: transform var(--duration-enter) var(--ease-out-expo);
+}
+@media (prefers-reduced-motion: reduce) {
+  .compare-bar {
+    transition: none;
+  }
+}
+
 /* ---------- Logo: the wordmark and its brass full stop ---------- */
 
 .logo-dot {

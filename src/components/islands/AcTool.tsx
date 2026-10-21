@@ -17,6 +17,9 @@ import {
   toAcInput,
   type AcForm,
 } from '@/models/acForm';
+import CompareBars from '@/components/tool/CompareBars';
+import ExampleNote from '@/components/tool/ExampleNote';
+import ResultBar from '@/components/tool/ResultBar';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import NetPositionChart from '@/components/tool/NetPositionChart';
@@ -262,6 +265,7 @@ export default function AcTool({ locale }: Props) {
 
   return (
     <div>
+      <ResultBar locale={locale} headline={headline} />
       <div class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-10">
         <section aria-labelledby="ac-inputs-heading">
           <div class="flex flex-wrap items-baseline justify-between gap-3">
@@ -373,10 +377,28 @@ export default function AcTool({ locale }: Props) {
                 </p>
               )}
               {isExample && (
-                <p class="mt-3 rounded-lg bg-accent-soft px-3 py-2 text-sm text-accent-strong">
-                  {t(locale, 'ac.exampleNote')}
-                </p>
+                <ExampleNote
+                  locale={locale}
+                  text={t(locale, 'ac.exampleNote')}
+                  inputsId="ac-inputs-heading"
+                />
               )}
+              <CompareBars
+                caption={t(locale, 'compare.ac', { years })}
+                items={[
+                  {
+                    label: t(locale, 'compare.ac.saved'),
+                    value: r.totalSaving,
+                    display: formatMoney(r.totalSaving),
+                    best: r.netGain >= 0,
+                  },
+                  {
+                    label: t(locale, 'compare.ac.cost'),
+                    value: r.extraWithInterest[r.months]!,
+                    display: formatMoney(r.extraWithInterest[r.months]!),
+                  },
+                ]}
+              />
               <dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-line pt-4">
                 <Stat label={t(locale, 'ac.stat.extra')}>{formatMoney(r.extraPrice)}</Stat>
                 <Stat label={t(locale, 'ac.stat.saving')}>{formatMoney(r.firstYearSaving)}</Stat>

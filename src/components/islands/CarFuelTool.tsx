@@ -32,6 +32,7 @@ import {
   type FormAlt,
   type NumericField,
 } from '@/models/carFuelForm';
+import ResultBar from '@/components/tool/ResultBar';
 import NumberField from '@/components/tool/NumberField';
 import VerdictCard, { verdictHeadline } from '@/components/tool/VerdictCard';
 import CarSetCard from '@/components/tool/CarSetCard';
@@ -80,7 +81,6 @@ export default function CarFuelTool({ locale }: Props) {
   const [ready, setReady] = useState(false);
   const [shareHref, setShareHref] = useState('');
   /** Mobile only: a floating summary while the verdict is still below the fold. */
-  const [showBar, setShowBar] = useState(false);
   /** Fields the user (or a shared link) has set; global assumptions never overwrite these. */
   const pinned = useRef(new Set<keyof CarFuelForm>());
   const setAlt = (alt: FormAlt) => setForm((f) => ({ ...f, alt }));
@@ -128,18 +128,6 @@ export default function CarFuelTool({ locale }: Props) {
     }, 250);
     return () => clearTimeout(timer);
   }, [form, ready]);
-
-  useEffect(() => {
-    const verdict = document.getElementById('verdict-anchor');
-    const wide = window.matchMedia('(min-width: 64rem)');
-    if (!verdict || !('IntersectionObserver' in window)) return;
-    const io = new IntersectionObserver(([entry]) => {
-      if (!entry) return;
-      setShowBar(!wide.matches && !entry.isIntersecting);
-    });
-    io.observe(verdict);
-    return () => io.disconnect();
-  }, []);
 
   const all = form.alt === 'all';
   const showCng = form.alt !== 'ev';
@@ -979,16 +967,7 @@ export default function CarFuelTool({ locale }: Props) {
         </div>
       )}
 
-      {hasResult && showBar && (
-        <div class="stagger fixed inset-x-3 bottom-3 z-30 lg:hidden">
-          <div class="flex items-center justify-between gap-3 rounded-xl py-2 pr-2 pl-4 shadow-float glass">
-            <p class="font-display text-lg font-medium">{headline}</p>
-            <a href="#verdict" class="btn btn-primary min-h-11 shrink-0 px-4 text-sm">
-              {t(locale, 'carFuel.resultBar.cta')}
-            </a>
-          </div>
-        </div>
-      )}
+      {hasResult && <ResultBar locale={locale} headline={headline} anchorId="verdict-anchor" />}
     </div>
   );
 }

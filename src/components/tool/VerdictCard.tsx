@@ -2,6 +2,8 @@ import type { ComponentChildren } from 'preact';
 import { t, type Locale } from '@/i18n/t';
 import { formatDuration } from '@/lib/duration';
 import { formatMoney, formatNumber, formatPercent, formatRupeesPrecise } from '@/lib/formatTool';
+import CompareBars from './CompareBars';
+import ExampleNote from './ExampleNote';
 import type { ScenarioName, ScenarioRun } from '@/engine/scenarios';
 import type { CarFuelFlip, CarFuelInput, CarFuelResult, CarFuelVerdict } from '@/models/carFuel';
 
@@ -160,22 +162,30 @@ export default function VerdictCard(props: Props) {
       {flipLine && <p class="mt-2 font-medium">{flipLine}</p>}
       {range && <p class="mt-2 text-sm text-ink-muted">{range}</p>}
       {props.exampleNote && (
-        <p class="mt-3 rounded-lg bg-accent-soft px-3 py-2 text-sm text-accent-strong">
-          {props.exampleNote}
-        </p>
+        <ExampleNote locale={locale} text={props.exampleNote} inputsId="inputs-heading" />
+      )}
+
+      {total && (
+        <CompareBars
+          caption={t(locale, 'compare.totalCost', { years })}
+          items={[
+            {
+              label: baseCar,
+              value: total.base[end]!,
+              display: formatMoney(total.base[end]!),
+              best: total.base[end]! < total.alternative[end]!,
+            },
+            {
+              label: altCar,
+              value: total.alternative[end]!,
+              display: formatMoney(total.alternative[end]!),
+              best: total.alternative[end]! < total.base[end]!,
+            },
+          ]}
+        />
       )}
 
       <dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-line pt-4">
-        {total && (
-          <>
-            <Stat label={t(locale, 'stat.totalCost', { car: baseCar, years })}>
-              {formatMoney(total.base[end]!)}
-            </Stat>
-            <Stat label={t(locale, 'stat.totalCost', { car: altCar, years })}>
-              {formatMoney(total.alternative[end]!)}
-            </Stat>
-          </>
-        )}
         <Stat label={t(locale, 'stat.monthlySaving', { alt: altName })}>
           <span class={result.firstMonthSaving < 0 ? 'text-danger' : ''}>
             {formatMoney(result.firstMonthSaving)}

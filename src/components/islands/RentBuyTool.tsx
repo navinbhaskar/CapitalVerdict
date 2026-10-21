@@ -16,6 +16,9 @@ import {
   toRentBuyInput,
   type RentBuyForm,
 } from '@/models/rentBuyForm';
+import CompareBars from '@/components/tool/CompareBars';
+import ExampleNote from '@/components/tool/ExampleNote';
+import ResultBar from '@/components/tool/ResultBar';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import NetPositionChart from '@/components/tool/NetPositionChart';
@@ -326,6 +329,7 @@ export default function RentBuyTool({ locale }: Props) {
 
   return (
     <div>
+      <ResultBar locale={locale} headline={headline} />
       <div class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-10">
         <section aria-labelledby="rb-inputs-heading">
           <div class="flex flex-wrap items-baseline justify-between gap-3">
@@ -566,17 +570,30 @@ export default function RentBuyTool({ locale }: Props) {
                 );
               })()}
               {RENT_BUY_EXAMPLE_KEYS.some((k) => !pinned.current.has(k)) && (
-                <p class="mt-3 rounded-lg bg-accent-soft px-3 py-2 text-sm text-accent-strong">
-                  {t(locale, 'rentBuy.exampleNote')}
-                </p>
+                <ExampleNote
+                  locale={locale}
+                  text={t(locale, 'rentBuy.exampleNote')}
+                  inputsId="rb-inputs-heading"
+                />
               )}
+              <CompareBars
+                caption={t(locale, 'compare.netWorth', { years })}
+                items={[
+                  {
+                    label: t(locale, 'rentBuy.side.buy'),
+                    value: r.atHorizon.buyer,
+                    display: formatMoney(r.atHorizon.buyer),
+                    best: buyWins,
+                  },
+                  {
+                    label: t(locale, 'rentBuy.side.rent'),
+                    value: r.atHorizon.renter,
+                    display: formatMoney(r.atHorizon.renter),
+                    best: !buyWins,
+                  },
+                ]}
+              />
               <dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-line pt-4">
-                <Stat label={t(locale, 'rentBuy.stat.buyer', { years })}>
-                  {formatMoney(r.atHorizon.buyer)}
-                </Stat>
-                <Stat label={t(locale, 'rentBuy.stat.renter', { years })}>
-                  {formatMoney(r.atHorizon.renter)}
-                </Stat>
                 <Stat label={t(locale, 'rentBuy.stat.outflow')}>
                   {formatMoney(r.buyerOutflow[0]!)}
                 </Stat>

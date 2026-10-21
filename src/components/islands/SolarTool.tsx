@@ -15,6 +15,9 @@ import {
   toSolarInput,
   type SolarForm,
 } from '@/models/solarForm';
+import CompareBars from '@/components/tool/CompareBars';
+import ExampleNote from '@/components/tool/ExampleNote';
+import ResultBar from '@/components/tool/ResultBar';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import NetPositionChart from '@/components/tool/NetPositionChart';
@@ -241,6 +244,7 @@ export default function SolarTool({ locale }: Props) {
 
   return (
     <div>
+      <ResultBar locale={locale} headline={headline} />
       <div class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-10">
         <section aria-labelledby="solar-inputs-heading">
           <div class="flex flex-wrap items-baseline justify-between gap-3">
@@ -412,12 +416,35 @@ export default function SolarTool({ locale }: Props) {
                 );
               })()}
               {SOLAR_EXAMPLE_KEYS.some((k) => !pinned.current.has(k)) && (
-                <p class="mt-3 rounded-lg bg-accent-soft px-3 py-2 text-sm text-accent-strong">
-                  {t(locale, 'solar.exampleNote')}
-                </p>
+                <ExampleNote
+                  locale={locale}
+                  text={t(locale, 'solar.exampleNote')}
+                  inputsId="solar-inputs-heading"
+                />
               )}
+              {(() => {
+                const cost = r.netCost + (input.inverter?.cost ?? 0);
+                const saved = r.saving.reduce((a, b) => a + b, 0);
+                return (
+                  <CompareBars
+                    caption={t(locale, 'compare.solar', { years })}
+                    items={[
+                      {
+                        label: t(locale, 'compare.solar.saved'),
+                        value: saved,
+                        display: formatMoney(saved),
+                        best: saved >= cost,
+                      },
+                      {
+                        label: t(locale, 'compare.solar.cost'),
+                        value: cost,
+                        display: formatMoney(cost),
+                      },
+                    ]}
+                  />
+                );
+              })()}
               <dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-line pt-4">
-                <Stat label={t(locale, 'solar.stat.netCost')}>{formatMoney(r.netCost)}</Stat>
                 <Stat label={t(locale, 'solar.stat.firstYear')}>
                   {formatMoney(r.firstYearSaving)}
                 </Stat>
@@ -434,9 +461,6 @@ export default function SolarTool({ locale }: Props) {
                     r.generation.slice(0, 12).reduce((a, b) => a + b, 0) /
                       (input.monthlyConsumptionKWh * 12),
                   )}
-                </Stat>
-                <Stat label={t(locale, 'solar.stat.lifetimeSaving', { years })}>
-                  {formatMoney(r.saving.reduce((a, b) => a + b, 0))}
                 </Stat>
               </dl>
               <p class="mt-3 text-xs text-ink-muted">{t(locale, 'solar.stat.note')}</p>

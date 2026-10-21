@@ -15,6 +15,9 @@ import {
   toCarLoanInput,
   type CarLoanForm,
 } from '@/models/carLoanForm';
+import CompareBars from '@/components/tool/CompareBars';
+import ExampleNote from '@/components/tool/ExampleNote';
+import ResultBar from '@/components/tool/ResultBar';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import NetPositionChart from '@/components/tool/NetPositionChart';
@@ -239,6 +242,7 @@ export default function CarLoanTool({ locale }: Props) {
 
   return (
     <div>
+      <ResultBar locale={locale} headline={headline} />
       <div class="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start lg:gap-10">
         <section aria-labelledby="cl-inputs-heading">
           <div class="flex flex-wrap items-baseline justify-between gap-3">
@@ -355,10 +359,29 @@ export default function CarLoanTool({ locale }: Props) {
                 </p>
               )}
               {isExample && (
-                <p class="mt-3 rounded-lg bg-accent-soft px-3 py-2 text-sm text-accent-strong">
-                  {t(locale, 'carLoan.exampleNote')}
-                </p>
+                <ExampleNote
+                  locale={locale}
+                  text={t(locale, 'carLoan.exampleNote')}
+                  inputsId="cl-inputs-heading"
+                />
               )}
+              <CompareBars
+                caption={t(locale, 'compare.invested', { years })}
+                items={[
+                  {
+                    label: t(locale, 'carLoan.side.cash'),
+                    value: r.atEnd.cash,
+                    display: formatMoney(r.atEnd.cash),
+                    best: cashWins,
+                  },
+                  {
+                    label: t(locale, 'carLoan.side.loan'),
+                    value: r.atEnd.loan,
+                    display: formatMoney(r.atEnd.loan),
+                    best: !cashWins,
+                  },
+                ]}
+              />
               <dl class="mt-4 grid grid-cols-2 gap-x-5 gap-y-3 border-t border-line pt-4">
                 <Stat label={t(locale, 'carLoan.stat.emi')}>{formatMoney(r.emi)}</Stat>
                 <Stat label={t(locale, 'carLoan.w.loan')}>{formatMoney(r.loanAmount)}</Stat>
@@ -367,12 +390,6 @@ export default function CarLoanTool({ locale }: Props) {
                 </Stat>
                 <Stat label={t(locale, 'carLoan.stat.trueCost')}>
                   {returnFlip ? formatPercent(returnFlip.threshold) : '—'}
-                </Stat>
-                <Stat label={t(locale, 'carLoan.stat.cashPot', { years })}>
-                  {formatMoney(r.atEnd.cash)}
-                </Stat>
-                <Stat label={t(locale, 'carLoan.stat.loanPot', { years })}>
-                  {formatMoney(r.atEnd.loan)}
                 </Stat>
               </dl>
               <p class="mt-3 text-xs text-ink-muted">{t(locale, 'carLoan.stat.note')}</p>
