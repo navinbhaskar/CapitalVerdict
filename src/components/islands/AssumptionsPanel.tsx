@@ -24,7 +24,12 @@ const USED_BY: Partial<Record<AssumptionKey, MessageKey[]>> = {
   city: ['tool.carFuel.title'],
   carLoanRate: ['tool.carFuel.title', 'tool.carLoan.title', 'tool.ac.title'],
   homeLoanRate: ['tool.rentVsBuy.title', 'tool.prepay.title'],
-  inflation: ['tool.rentVsBuy.title', 'tool.prepay.title', 'tool.carLoan.title'],
+  inflation: [
+    'tool.rentVsBuy.title',
+    'tool.prepay.title',
+    'tool.carLoan.title',
+    'tool.plotVs.title',
+  ],
 };
 
 /** Fields the user has changed from the defaults. */

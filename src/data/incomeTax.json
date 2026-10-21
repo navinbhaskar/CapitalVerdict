@@ -6,29 +6,78 @@
   "regimes": {
     "new": {
       "slabs": [
-        { "upTo": 400000, "rate": 0 },
-        { "upTo": 800000, "rate": 0.05 },
-        { "upTo": 1200000, "rate": 0.1 },
-        { "upTo": 1600000, "rate": 0.15 },
-        { "upTo": 2000000, "rate": 0.2 },
-        { "upTo": 2400000, "rate": 0.25 },
-        { "upTo": null, "rate": 0.3 }
+        {
+          "upTo": 400000,
+          "rate": 0
+        },
+        {
+          "upTo": 800000,
+          "rate": 0.05
+        },
+        {
+          "upTo": 1200000,
+          "rate": 0.1
+        },
+        {
+          "upTo": 1600000,
+          "rate": 0.15
+        },
+        {
+          "upTo": 2000000,
+          "rate": 0.2
+        },
+        {
+          "upTo": 2400000,
+          "rate": 0.25
+        },
+        {
+          "upTo": null,
+          "rate": 0.3
+        }
       ],
       "standardDeduction": 75000,
-      "rebate": { "max": 60000, "incomeLimit": 1200000, "marginalRelief": true }
+      "rebate": {
+        "max": 60000,
+        "incomeLimit": 1200000,
+        "marginalRelief": true
+      }
     },
     "old": {
       "slabs": [
-        { "upTo": 250000, "rate": 0 },
-        { "upTo": 500000, "rate": 0.05 },
-        { "upTo": 1000000, "rate": 0.2 },
-        { "upTo": null, "rate": 0.3 }
+        {
+          "upTo": 250000,
+          "rate": 0
+        },
+        {
+          "upTo": 500000,
+          "rate": 0.05
+        },
+        {
+          "upTo": 1000000,
+          "rate": 0.2
+        },
+        {
+          "upTo": null,
+          "rate": 0.3
+        }
       ],
       "standardDeduction": 50000,
-      "rebate": { "max": 12500, "incomeLimit": 500000, "marginalRelief": false }
+      "rebate": {
+        "max": 12500,
+        "incomeLimit": 500000,
+        "marginalRelief": false
+      }
     }
   },
   "source": "Slabs, rebate, cess and surcharge threshold: Income Tax Department e-filing portal, 'Salaried Individuals for AY 2026-27' (incometax.gov.in/iec/foportal/help/individual/return-applicable-1). Standard deduction (₹75,000 new, ₹50,000 old) and the new-regime rebate edge of ₹12,70,590 (marginal relief): CBDT ITR-1 validation rules AY 2026-27, rules 112, 191, 192, 215. Unchanged for tax year 2026-27: PIB New India Samachar, February 2026, p. 25 ('No changes have been made to the income tax slabs or exemptions').",
   "effectiveDate": "2026-10-21",
-  "status": "verified"
+  "status": "verified",
+  "capitalGains": {
+    "longTermRate": 0.125,
+    "equityLongTermExemption": 125000,
+    "equityShortTermRate": 0.2,
+    "source": "PIB, 'Union Budget 2024-25: Key Tax Reforms and Relief Measures' (July 2024): long-term gains on all financial and non-financial assets 12.5% without indexation; exemption on equity gains raised to ₹1.25 lakh a year from FY 2024-25; short-term gains on specified financial assets 20%. ₹1,25,000 exemption also in CBDT ITR-1 validation rules AY 2026-27, rule 217. Unchanged for tax year 2026-27 (PIB New India Samachar, February 2026, p. 25).",
+    "effectiveDate": "2026-10-21",
+    "status": "verified"
+  }
 }

@@ -131,6 +131,15 @@ export const incomeTaxSchema = z.object({
   cessRate: z.number().min(0).max(1),
   surchargeFrom: z.number().positive(),
   regimes: z.object({ new: regime, old: regime }),
+  /** Capital-gains rates for resident individuals, with their own source note. */
+  capitalGains: z.object({
+    longTermRate: z.number().min(0).max(1),
+    equityLongTermExemption: z.number().min(0),
+    equityShortTermRate: z.number().min(0).max(1),
+    source: z.string().min(1),
+    effectiveDate: z.iso.date(),
+    status: verificationStatus,
+  }),
   source: z.string().min(1),
   effectiveDate: z.iso.date(),
   status: verificationStatus,

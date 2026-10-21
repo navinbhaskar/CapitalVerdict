@@ -2,6 +2,10 @@
   "entries": [
     {
       "date": "2026-10-21",
+      "change": "Added capital-gains rates (12.5% long-term, ₹1.25 lakh yearly exemption on equity gains, 20% short-term on equity) from PIB and CBDT, for the plot vs FD vs mutual funds tool."
+    },
+    {
+      "date": "2026-10-21",
       "change": "Added income-tax slabs, standard deduction, rebate and cess for tax year 2026-27 (both regimes, under 60), from the Income Tax Department and CBDT, for the tax regime tool."
     },
     {
