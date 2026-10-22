@@ -1,0 +1,1 @@
+import{n as e,r as t}from"./timeValue.C89xI9KP.js";function n(n,r,i){if(i<=0)throw RangeError(`months must be positive`);if(n<=0)return 0;let a=t(r);if(a===0)return n/i;let o=e(a,i);return n*a*o/(o-1)}export{n as t};

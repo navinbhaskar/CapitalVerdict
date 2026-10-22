@@ -1,0 +1,1 @@
+import{a as e,t}from"./hooks.COIA0cUh.js";function n(n,r){let[i,a]=e(null);return t(()=>{let e=!1,t=()=>{e||a(n())};if(`requestIdleCallback`in window){let n=window.requestIdleCallback(t,{timeout:400});return()=>{e=!0,window.cancelIdleCallback(n)}}let r=setTimeout(t,30);return()=>{e=!0,clearTimeout(r)}},r),i}export{n as t};

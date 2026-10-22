@@ -1,0 +1,1 @@
+function e(e,t=0){let n=[t],r=t;for(let t of e)r+=t,n.push(r);return n}function t(e,t){let n=Math.min(e.length,t.length);for(let r=0;r<n;r++){let n=e[r]-t[r];if(n<0)continue;if(r===0)return{month:0,fractionalMonth:0};let i=t[r-1]-e[r-1];return{month:r,fractionalMonth:r-1+i/(i+n)}}return null}export{e as n,t};
