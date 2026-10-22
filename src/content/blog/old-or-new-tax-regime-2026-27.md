@@ -1,0 +1,46 @@
+---
+title: 'Old or new tax regime for 2026-27: who should switch'
+description: The new regime is the default and often wins. The old one wins only above a certain level of deductions. Here is how to find yours, with worked examples.
+date: 2026-10-22
+kind: decision
+tool: old-or-new-tax-regime
+takeaway:
+  figure: '₹5,43,750'
+  label: of deductions the old regime needs to win on a ₹15 lakh salary
+---
+
+Every year salaried people face the same choice: stay in the new tax regime, which is the default, or opt for the old one. The old regime lets you deduct things like tax-saving investments, health insurance, home-loan interest and the HRA exemption. The new one has lower slab rates but allows almost none of those deductions.
+
+So the question is simple: **are your deductions big enough to make up for the old regime's higher rates?** For most incomes there is one number of deductions where the two regimes charge the same tax. Below it, the new regime wins. Above it, the old one does.
+
+## The rules for 2026-27
+
+The slabs, standard deduction and rebate are the same as last year. The 2026 Budget left them unchanged.
+
+- **New regime:** nil up to ₹4 lakh, then 5%, 10%, 15%, 20% and 25% in steps of ₹4 lakh, and 30% above ₹24 lakh. Standard deduction on salary ₹75,000. No tax at all up to ₹12 lakh of taxable income.
+- **Old regime:** nil up to ₹2.5 lakh, 5% to ₹5 lakh, 20% to ₹10 lakh, 30% above. Standard deduction ₹50,000. No tax up to ₹5 lakh of taxable income.
+- Both add 4% health and education cess.
+
+These are for residents below 60 with income up to ₹50 lakh, where no surcharge applies. The sources are on the [calculator page](/tools/old-or-new-tax-regime/).
+
+## Three salaries, worked through
+
+**₹10 lakh salary, ₹2 lakh of deductions.** Under the new regime, taxable income is ₹9.25 lakh, which is under ₹12 lakh, so the tax is **nil**. Under the old regime, taxable income is ₹7.5 lakh and the tax is ₹65,000. Here the old regime can never win: even if your deductions brought its tax to nil, it would only tie.
+
+**₹15 lakh salary, ₹2.5 lakh of deductions.** New regime: taxable ₹14.25 lakh, tax ₹97,500. Old regime: taxable ₹12 lakh, tax ₹1,79,400. The old regime only wins if your deductions are above **₹5,43,750**.
+
+**₹20 lakh salary, ₹3.75 lakh of deductions.** New regime: ₹1,92,400. Old regime: ₹2,96,400. The old regime needs deductions above **₹7,08,333** to win.
+
+All three include the 4% cess, before the final rounding to the nearest ten rupees.
+
+## What counts as a deduction
+
+For the old regime, add up everything you would actually claim beyond the standard deduction: tax-saving investments and insurance, health insurance, home-loan interest, the HRA exemption and the like. Each has its own limit under the tax rules, so count only what you can really claim. For most people the honest total is well below the break-even numbers above, which is why the new regime usually wins.
+
+## Before you choose
+
+- **The new regime is the default.** To use the old one, you have to choose it, at the latest when you file your return. Tell your employer early so the right tax is deducted each month.
+- **Some people can switch every year and some cannot.** It depends on what kind of income you have, so check before you plan around switching.
+- **Don't buy products just for the deduction.** If an investment or policy only makes sense because of the tax saving, run the numbers with and without it.
+
+Put in your own salary and deductions in the [tax regime calculator](/tools/old-or-new-tax-regime/). It shows both taxes step by step and the deductions the old regime would need.

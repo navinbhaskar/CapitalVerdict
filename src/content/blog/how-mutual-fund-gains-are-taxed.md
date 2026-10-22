@@ -1,0 +1,43 @@
+---
+title: 'How mutual fund gains are taxed in 2026: short-term, long-term and the ₹1.25 lakh exemption'
+description: Equity fund gains are taxed when you sell, at 20% if held a year or less and 12.5% above ₹1.25 lakh a year if held longer. Worked examples, including a SIP.
+date: 2026-10-22
+kind: basics
+tool: sip-vs-ppf-vs-fd
+---
+
+When you compare an equity mutual fund with a fixed deposit or PPF, the fund usually shows a bigger number. But that number is often before tax, while PPF's is tax-free. To compare fairly you need to know what the fund's gains will cost in tax when you sell.
+
+This covers equity mutual funds and shares (the same rules apply to both), for resident individuals, for 2026-27.
+
+## Two rates, depending on how long you held
+
+- **Held 12 months or less: short-term.** The gain is taxed at **20%**.
+- **Held longer: long-term.** The first **₹1.25 lakh** of long-term gains in a financial year is tax-free; the rest is taxed at **12.5%**.
+- **4% cess** is added to both.
+
+You pay this only when you sell (redeem). Until then, the gain grows untaxed, which is a real advantage over an FD, whose interest is taxed every year.
+
+The ₹1.25 lakh exemption is for all your long-term equity gains in the year together, not per fund.
+
+## Two examples
+
+**A short-term sale.** You sell units bought eight months ago, with a gain of ₹50,000. Tax: 20% = ₹10,000, plus cess = **₹10,400**.
+
+**A long-term sale.** You sell units held for three years, with a gain of ₹3 lakh and no other equity gains that year. The first ₹1.25 lakh is exempt, so tax is 12.5% of ₹1.75 lakh = ₹21,875, plus cess = **₹22,750**.
+
+## A SIP is many purchases
+
+Each SIP instalment is a separate purchase with its own holding period. If you sell everything at once, the instalments from the last 12 months are short-term and the rest are long-term.
+
+Take ₹10,000 a month for 15 years, at an illustrative 10% a year before tax. The fund grows to about **₹40.16 lakh**. Selling it all, the tax comes to about **₹2.72 lakh**. Only ₹1,332 of that is on the short-term gains from the last year's instalments; the rest is long-term tax above the exemption. You keep about **₹37.44 lakh**.
+
+That after-tax figure is the one to compare with PPF or an FD. Our [SIP vs PPF vs RD calculator](/tools/sip-vs-ppf-vs-fd/) does this split for you, and shows each option's tax under its result.
+
+## What changes the tax
+
+- **When you sell.** Selling in parts across financial years uses the ₹1.25 lakh exemption more than once.
+- **Your other equity gains.** If you sell shares in the same year, they share the same exemption.
+- **High incomes.** Surcharge can apply above ₹50 lakh of income; our tools leave it out and say so.
+
+The rates and their sources are listed on each calculator page, from the Income Tax Department and PIB.

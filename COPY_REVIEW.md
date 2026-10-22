@@ -79,17 +79,21 @@ switch.
 
 Each post's numbers are recomputed by `src/content/blogNumbers.test.ts`; if a price or model changes, that test fails and the post needs updating. Examples are labelled illustrative in the text.
 
-| Post                                                         | Kind           | Check especially                                                                                                          |
-| ------------------------------------------------------------ | -------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| [ ] `src/content/blog/when-does-a-cng-car-pay-back.md`       | Decision       | Uses Lucknow prices of 19 Oct 2026 and the illustrative 18 km/L, 26 km/kg car                                             |
-| [ ] `src/content/blog/is-rooftop-solar-worth-it.md`          | Decision       | Made-up 3 kW example; no subsidy or tariff figures until those are verified                                               |
-| [ ] `src/content/blog/rent-or-buy-the-maths-people-skip.md`  | Decision       | Made-up ₹50 lakh example; 7% stamp duty is illustrative, not the UP rate                                                  |
-| [ ] `src/content/blog/where-your-emi-goes.md`                | Money idea     | Mentions prepayment charges and tax benefits only as things to check                                                      |
-| [ ] `src/content/blog/break-even-the-number-to-ask-for.md`   | Money idea     |                                                                                                                           |
-| [ ] `src/content/blog/todays-rupees.md`                      | Money idea     |                                                                                                                           |
-| [ ] `src/content/blog/lucknow-cng-107-october-2026.md`       | Price update   | Mentions ₹95.75, the price the tool used before the update                                                                |
-| [ ] `blog.*`, `nav.blog`, `footer.link.blog`, `home.notes.*` | Blog interface |                                                                                                                           |
-| [ ] `takeaway` in the three decision guides' front matter    | Guide cards    | Figure and label for each listing card, taken from the guide's own example (a test checks the figure appears in the text) |
+| Post                                                         | Kind           | Check especially                                                                                                                        |
+| ------------------------------------------------------------ | -------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| [ ] `src/content/blog/when-does-a-cng-car-pay-back.md`       | Decision       | Uses Lucknow prices of 19 Oct 2026 and the illustrative 18 km/L, 26 km/kg car                                                           |
+| [ ] `src/content/blog/is-rooftop-solar-worth-it.md`          | Decision       | Made-up 3 kW example; no subsidy or tariff figures until those are verified                                                             |
+| [ ] `src/content/blog/rent-or-buy-the-maths-people-skip.md`  | Decision       | Made-up ₹50 lakh example; 7% stamp duty is illustrative, not the UP rate                                                                |
+| [ ] `src/content/blog/where-your-emi-goes.md`                | Money idea     | Mentions prepayment charges and tax benefits only as things to check                                                                    |
+| [ ] `src/content/blog/break-even-the-number-to-ask-for.md`   | Money idea     |                                                                                                                                         |
+| [ ] `src/content/blog/todays-rupees.md`                      | Money idea     |                                                                                                                                         |
+| [ ] `src/content/blog/lucknow-cng-107-october-2026.md`       | Price update   | Mentions ₹95.75, the price the tool used before the update                                                                              |
+| [ ] `src/content/blog/old-or-new-tax-regime-2026-27.md`      | Decision       | Drafted 2026-10-22. Three salaries worked through; rules from `incomeTax.json`; advice to tell the employer early                       |
+| [ ] `src/content/blog/is-12-lakh-income-tax-free.md`         | Money idea     | Drafted 2026-10-22. Rebate and marginal relief, with the ₹13 lakh example                                                               |
+| [ ] `src/content/blog/how-mutual-fund-gains-are-taxed.md`    | Money idea     | Drafted 2026-10-22. Says shares and equity funds follow the same rates, and that selling across years uses the exemption more than once |
+| [ ] `src/content/blog/sip-vs-ppf-15-years.md`                | Decision       | Drafted 2026-10-22. PPF loan and withdrawal years and the old-regime deduction from the NSI page                                        |
+| [ ] `blog.*`, `nav.blog`, `footer.link.blog`, `home.notes.*` | Blog interface |                                                                                                                                         |
+| [ ] `takeaway` in the three decision guides' front matter    | Guide cards    | Figure and label for each listing card, taken from the guide's own example (a test checks the figure appears in the text)               |
 
 ## Phase 1: answer first, plain words (drafted 2026-10-20)
 
