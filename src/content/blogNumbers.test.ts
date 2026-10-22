@@ -14,6 +14,8 @@ import { RENT_BUY_EXAMPLE_FORM, toRentBuyInput } from '@/models/rentBuyForm';
 import { solarPayback } from '@/models/solar';
 import { breakEvenDeductions, compareRegimes, regimeTax } from '@/models/taxRegime';
 import { monthlySaving, sipBreakEven } from '@/models/monthlySaving';
+import { prepayFlips, prepayOrInvest, type PrepayInput } from '@/models/prepay';
+import { plotVs, plotVsFlips } from '@/models/plotVs';
 
 describe('posts: CNG payback, break-even, Lucknow update', () => {
   const lucknow = verifiedFuelPrices('lucknow')!;
@@ -260,5 +262,96 @@ describe('post: SIP vs PPF', () => {
     const at7 = monthlySaving({ ...input, sipReturn: 0.07 }, incomeTax, smallSavings.ppf);
     expect(at7.best).toBe('ppf');
     expect(at7.sip.net / 1e5).toBeCloseTo(29.72, 2);
+  });
+});
+
+/** ₹40 lakh at 9% with 20 years left, ₹5 lakh to put in, 8% after tax: the prepay posts. */
+const prepayCase: PrepayInput = {
+  outstanding: 4_000_000,
+  loanRate: 0.09,
+  yearsLeft: 20,
+  lumpSum: 500_000,
+  yearlyAmount: 0,
+  mode: 'reduceTenure',
+  investmentReturn: 0.08,
+  prepaymentCharge: 0,
+  interestTaxRate: 0,
+  interestDeductionCap: 0,
+  inflation: 0.06,
+};
+
+describe('posts: prepay or invest; lower EMI or shorter loan', () => {
+  const tenure = prepayOrInvest(prepayCase);
+  const emi = prepayOrInvest({ ...prepayCase, mode: 'reduceEmi' });
+
+  it('keeping the EMI: ₹5.66 lakh ahead, ₹18.42 lakh interest saved, 65 months sooner', () => {
+    expect(tenure.emi).toBeCloseTo(35_989.04, 2);
+    expect(tenure.atEnd.difference / 1e5).toBeCloseTo(5.66, 2);
+    expect(tenure.interestSaved / 1e5).toBeCloseTo(18.42, 2);
+    expect(tenure.monthsSaved).toBe(65);
+    expect(tenure.atEnd.prepay / 1e5).toBeCloseTo(28.97, 2);
+    expect(tenure.atEnd.invest / 1e5).toBeCloseTo(23.3, 2);
+  });
+
+  it('lowering the EMI: ₹31,490 a month, ₹5.80 lakh saved, ₹2.29 lakh ahead', () => {
+    expect(Math.round(emi.emiAfterLump)).toBe(31_490);
+    expect(Math.round(tenure.emi - emi.emiAfterLump)).toBe(4_499);
+    expect(emi.interestSaved / 1e5).toBeCloseTo(5.8, 2);
+    expect(emi.atEnd.difference / 1e5).toBeCloseTo(2.29, 2);
+    expect(emi.atEnd.prepay / 1e5).toBeCloseTo(25.6, 2);
+    expect(tenure.atEnd.prepay - emi.atEnd.prepay).toBeGreaterThan(0);
+  });
+
+  it('investing wins above 9.38%; at 10% it is ₹3.10 lakh ahead', () => {
+    expect(prepayFlips(prepayCase, ['investmentReturn'])[0]!.threshold * 100).toBeCloseTo(9.38, 2);
+    const at10 = prepayOrInvest({ ...prepayCase, investmentReturn: 0.1 });
+    expect(-at10.atEnd.difference / 1e5).toBeCloseTo(3.1, 2);
+  });
+
+  it('with interest deductible up to ₹2 lakh a year at 31.2%: ₹49,293 ahead, break-even 8.13%', () => {
+    const taxed = { ...prepayCase, interestTaxRate: 0.312, interestDeductionCap: 200_000 };
+    expect(Math.round(prepayOrInvest(taxed).atEnd.difference)).toBe(49_293);
+    expect(prepayFlips(taxed, ['investmentReturn'])[0]!.threshold * 100).toBeCloseTo(8.13, 2);
+  });
+});
+
+describe('post: plot vs mutual fund', () => {
+  const plotCase = {
+    plotPrice: 2_000_000,
+    stampDuty: 0.07,
+    otherBuyCosts: 20_000,
+    yearlyCost: 5_000,
+    plotGrowth: 0.05,
+    sellingCost: 0.02,
+    fdRate: 0.07,
+    taxRate: 0.312,
+    fundReturn: 0.1,
+    years: 10,
+    inflation: 0.06,
+  };
+  const r = plotVs(plotCase, incomeTax);
+
+  it('costs ₹21.6 lakh; keeps ₹30.08 lakh after ₹65,156 selling, ₹1.34 lakh tax, ₹50,000 upkeep', () => {
+    expect(r.cash).toBe(2_160_000);
+    expect(r.plot.salePrice / 1e5).toBeCloseTo(32.58, 2);
+    expect(Math.round(r.plot.sellingCosts)).toBe(65_156);
+    expect(r.plot.tax / 1e5).toBeCloseTo(1.34, 2);
+    expect(r.plot.upkeep).toBe(50_000);
+    expect(r.plot.net / 1e5).toBeCloseTo(30.08, 2);
+    expect(r.plot.yearlyReturn * 100).toBeCloseTo(3.37, 2);
+  });
+
+  it('FD ₹34.57 lakh, fund ₹51.71 lakh (9.12% a year after tax)', () => {
+    expect(r.fd.net / 1e5).toBeCloseTo(34.57, 2);
+    expect(r.fund.net / 1e5).toBeCloseTo(51.71, 2);
+    expect(r.fund.yearlyReturn * 100).toBeCloseTo(9.12, 2);
+  });
+
+  it('the plot needs 11.22% a year to match; at 8% it keeps ₹39.12 lakh, still behind', () => {
+    const flips = plotVsFlips(plotCase, incomeTax);
+    expect(flips.find((f) => f.variable === 'plotGrowth')!.threshold * 100).toBeCloseTo(11.22, 2);
+    const at8 = plotVs({ ...plotCase, plotGrowth: 0.08 }, incomeTax);
+    expect(at8.plot.net / 1e5).toBeCloseTo(39.12, 2);
+    expect(at8.best).toBe('fund');
   });
 });

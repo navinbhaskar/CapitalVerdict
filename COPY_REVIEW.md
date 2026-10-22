@@ -92,6 +92,9 @@ Each post's numbers are recomputed by `src/content/blogNumbers.test.ts`; if a pr
 | [ ] `src/content/blog/is-12-lakh-income-tax-free.md`         | Money idea     | Drafted 2026-10-22. Rebate and marginal relief, with the ₹13 lakh example                                                               |
 | [ ] `src/content/blog/how-mutual-fund-gains-are-taxed.md`    | Money idea     | Drafted 2026-10-22. Says shares and equity funds follow the same rates, and that selling across years uses the exemption more than once |
 | [ ] `src/content/blog/sip-vs-ppf-15-years.md`                | Decision       | Drafted 2026-10-22. PPF loan and withdrawal years and the old-regime deduction from the NSI page                                        |
+| [ ] `src/content/blog/prepay-home-loan-or-invest.md`         | Decision       | Drafted 2026-10-22. The ₹2 lakh interest limit is labelled illustrative, not stated as the rule                                         |
+| [ ] `src/content/blog/lower-emi-or-shorter-loan.md`          | Money idea     | Drafted 2026-10-22. Same ₹40 lakh loan both ways                                                                                        |
+| [ ] `src/content/blog/plot-vs-mutual-fund.md`                | Decision       | Drafted 2026-10-22. 7% stamp duty is illustrative; says rates differ by state                                                           |
 | [ ] `blog.*`, `nav.blog`, `footer.link.blog`, `home.notes.*` | Blog interface |                                                                                                                                         |
 | [ ] `takeaway` in the three decision guides' front matter    | Guide cards    | Figure and label for each listing card, taken from the guide's own example (a test checks the figure appears in the text)               |
 

@@ -1,0 +1,34 @@
+---
+title: 'After prepaying: lower the EMI or shorten the loan?'
+description: When you prepay a home loan, the bank asks whether to cut your EMI or the number of EMIs. Keeping the EMI saves far more interest. Here is by how much, and when lowering the EMI still makes sense.
+date: 2026-10-22
+kind: basics
+tool: prepay-or-invest
+---
+
+When you make a part-prepayment on a home loan, the bank usually asks a question: should it **lower your EMI** and keep the end date, or **keep your EMI** and end the loan sooner? The choice changes how much interest you save, and by more than most people expect.
+
+## The same ₹5 lakh, two ways
+
+A ₹40 lakh loan at 9% with 20 years left has an EMI of ₹35,989. You prepay ₹5 lakh.
+
+- **Keep the EMI.** You go on paying ₹35,989, and the loan ends **65 months sooner**. Interest saved: **₹18.42 lakh**.
+- **Lower the EMI.** The EMI drops to **₹31,490**, ₹4,499 a month less, and the loan ends on the same date. Interest saved: **₹5.80 lakh**.
+
+The same ₹5 lakh saves over three times as much interest when the EMI stays the same. That is because a shorter loan stops the interest meter years earlier, while a lower EMI keeps a smaller loan running for the full term.
+
+## But what about the money freed up?
+
+Lowering the EMI frees ₹4,499 every month, which you could invest. To compare fairly, assume the freed money is invested at 8% a year after tax in both cases: the monthly saving if you lower the EMI, and the whole EMI once the loan ends early if you keep it.
+
+When the loan's original end date comes, you would have **₹28.97 lakh** invested by keeping the EMI, against **₹25.60 lakh** by lowering it. Keeping the EMI still wins, because the loan rate (9.38% a year once compounded) beats the 8% the freed money earns.
+
+## When lowering the EMI makes sense
+
+- **Your budget is tight.** A lower EMI gives breathing room every month, which can matter more than the extra interest.
+- **You expect higher returns elsewhere and will really invest the difference** every month, for years. The break-even is the same as for prepaying at all: above about 9.38% a year after tax on this loan.
+- **Your income is uncertain.** A smaller fixed payment is easier to keep up through a bad patch.
+
+If none of these apply, keeping the EMI and shortening the loan is usually the cheaper choice.
+
+The [prepay or invest calculator](/tools/prepay-or-invest/) lets you switch between the two and see both answers for your own loan.
