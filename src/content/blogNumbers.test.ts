@@ -16,6 +16,9 @@ import { breakEvenDeductions, compareRegimes, regimeTax } from '@/models/taxRegi
 import { monthlySaving, sipBreakEven } from '@/models/monthlySaving';
 import { prepayFlips, prepayOrInvest, type PrepayInput } from '@/models/prepay';
 import { plotVs, plotVsFlips } from '@/models/plotVs';
+import { acFlips, acPayback } from '@/models/ac';
+import { carLoanFlips, cashOrLoan } from '@/models/carLoan';
+import { irr } from '@/engine/irr';
 
 describe('posts: CNG payback, break-even, Lucknow update', () => {
   const lucknow = verifiedFuelPrices('lucknow')!;
@@ -353,5 +356,100 @@ describe('post: plot vs mutual fund', () => {
     const at8 = plotVs({ ...plotCase, plotGrowth: 0.08 }, incomeTax);
     expect(at8.plot.net / 1e5).toBeCloseTo(39.12, 2);
     expect(at8.best).toBe('fund');
+  });
+});
+
+describe("post: your FD's real return", () => {
+  const afterTax = (tax: number) => 0.07 * (1 - tax);
+  const real = (rate: number) => ((1 + rate) / 1.06 - 1) * 100;
+
+  it('7% at 0%, 10.4%, 20.8% and 31.2% tax, against 6% inflation', () => {
+    expect(real(afterTax(0))).toBeCloseTo(0.94, 2);
+    expect(afterTax(0.104) * 100).toBeCloseTo(6.27, 2);
+    expect(real(afterTax(0.104))).toBeCloseTo(0.26, 2);
+    expect(afterTax(0.208) * 100).toBeCloseTo(5.54, 2);
+    expect(real(afterTax(0.208))).toBeCloseTo(-0.43, 2);
+    expect(afterTax(0.312) * 100).toBeCloseTo(4.82, 2);
+    expect(real(afterTax(0.312))).toBeCloseTo(-1.12, 2);
+    expect(real(0.071)).toBeCloseTo(1.04, 2);
+  });
+
+  it('₹10 lakh for 10 years at 31.2% tax: ₹16.01 lakh, ₹8.94 lakh in today’s rupees', () => {
+    const end = 1_000_000 * Math.pow(1 + afterTax(0.312), 10);
+    expect(end / 1e5).toBeCloseTo(16.01, 2);
+    expect(toTodaysRupees(end, 0.06, 120) / 1e5).toBeCloseTo(8.94, 2);
+    expect((1_000_000 * Math.pow(1.07, 10)) / 1e5).toBeCloseTo(19.67, 2);
+  });
+});
+
+describe('post: is a 5-star AC worth it?', () => {
+  const ac = {
+    basicPrice: 35_000,
+    efficientPrice: 45_000,
+    basicUnits: 1_100,
+    efficientUnits: 750,
+    usage: 1,
+    pricePerUnit: 7,
+    tariffRise: 0.03,
+    interestRate: 0.09,
+    years: 10,
+  };
+  const r = acPayback(ac);
+
+  it('₹2,450 a year; 3 years 11 months simple, 7 years with interest; ₹3,573 after 10 years', () => {
+    expect(r.firstYearSaving).toBeCloseTo(2450, 6);
+    expect(r.breakevenNoInterest!.months).toBe(47);
+    expect(r.breakevenWithInterest!.months).toBe(84);
+    expect(Math.round(r.netGain)).toBe(3_573);
+  });
+
+  it('stops paying below 87% of the label use, ₹6.11 a unit, or above ₹46,458', () => {
+    const f = acFlips(ac);
+    expect(f.find((x) => x.variable === 'usage')!.threshold * 100).toBeCloseTo(87.28, 2);
+    expect(f.find((x) => x.variable === 'pricePerUnit')!.threshold).toBeCloseTo(6.11, 2);
+    expect(Math.round(f.find((x) => x.variable === 'efficientPrice')!.threshold)).toBe(46_458);
+  });
+
+  it('at 150% use: ₹3,675 a year, 3 years 8 months, ₹17,616; at 50%: never, ₹10,470 behind', () => {
+    const heavy = acPayback({ ...ac, usage: 1.5 });
+    expect(heavy.firstYearSaving).toBeCloseTo(3675, 6);
+    expect(heavy.breakevenWithInterest!.months).toBe(44);
+    expect(Math.round(heavy.netGain)).toBe(17_616);
+    const light = acPayback({ ...ac, usage: 0.5 });
+    expect(light.breakevenWithInterest).toBeNull();
+    expect(Math.round(-light.netGain)).toBe(10_470);
+  });
+});
+
+describe('post: car loan or cash', () => {
+  const c = {
+    carPrice: 1_000_000,
+    downPayment: 0.2,
+    loanRate: 0.09,
+    loanYears: 5,
+    processingFee: 5000,
+    investmentReturn: 0.07,
+    inflation: 0.06,
+  };
+  const r = cashOrLoan(c);
+
+  it('EMI ₹16,607, interest ₹1.96 lakh, cash ₹67,298 ahead; true cost 9.67%', () => {
+    expect(Math.round(r.emi)).toBe(16_607);
+    expect(r.totalInterest / 1e5).toBeCloseTo(1.96, 2);
+    expect(Math.round(r.atEnd.difference)).toBe(67_298);
+    expect(carLoanFlips(c, ['investmentReturn'])[0]!.threshold * 100).toBeCloseTo(9.67, 2);
+  });
+
+  it('at a 10% return the loan comes out ₹8,927 ahead', () => {
+    expect(Math.round(-cashOrLoan({ ...c, investmentReturn: 0.1 }).atEnd.difference)).toBe(8_927);
+  });
+
+  it('a flat 5% on ₹8 lakh over 5 years: ₹2 lakh interest, EMI ₹16,667, about 9.15% reducing', () => {
+    const interest = 800_000 * 0.05 * 5;
+    const emi = (800_000 + interest) / 60;
+    expect(interest).toBe(200_000);
+    expect(Math.round(emi)).toBe(16_667);
+    const monthly = irr([800_000, ...Array<number>(60).fill(-emi)])!;
+    expect(monthly * 12 * 100).toBeCloseTo(9.15, 2);
   });
 });

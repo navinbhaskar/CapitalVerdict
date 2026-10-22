@@ -1,0 +1,43 @@
+---
+title: 'Is a 5-star inverter AC worth the extra price?'
+description: An efficient AC saves electricity every summer, but costs more up front. Whether it pays back depends mostly on how much you run it. Worked through with the star label's own numbers.
+date: 2026-10-22
+kind: decision
+tool: ac-payback
+takeaway:
+  figure: '7 years'
+  label: for ₹10,000 extra to pay back at the label's use, counting interest
+---
+
+A 5-star inverter AC costs more than a basic model and uses less electricity. The shop will tell you it "pays for itself". Whether it does for you depends on three things: how much more it costs, how many units it saves, and how much you actually run it.
+
+## Where the numbers come from
+
+Every AC's star label shows its **units a year**: the electricity it uses in a year of typical running. The difference between two labels is the saving, if you use the AC about as much as the label assumes. Multiply by what you pay per unit, from your bill, and you have the yearly saving.
+
+## A worked example
+
+Illustrative figures, not any real model:
+
+- Cheaper AC: ₹35,000, 1,100 units a year.
+- Efficient AC: ₹45,000, 750 units a year.
+- Electricity at ₹7 a unit, rising 3% a year.
+
+The efficient AC saves 350 units, about **₹2,450 a year**. Its ₹10,000 extra pays back in 3 years 11 months if you ignore what that money could have earned. Counting interest at 9% a year on the extra price, it takes **7 years**. After 10 years, it is ₹3,573 ahead: a gain, but a modest one.
+
+## Use decides it
+
+The saving scales with how much you run the AC:
+
+- **Heavy use (150% of the label):** it saves ₹3,675 a year, pays back in 3 years 8 months counting interest, and is ₹17,616 ahead after 10 years.
+- **Light use (50% of the label):** it never pays back within 10 years, and ends ₹10,470 behind.
+
+With these figures, the efficient AC stops paying below about **87%** of the label's use, below about **₹6.11** a unit, or if it costs more than about **₹46,458**.
+
+## Beyond the money
+
+- **Comfort.** Inverter ACs usually run quieter and hold temperature more steadily.
+- **Service.** A good warranty on the compressor and a service centre near you can matter more than the electricity.
+- **How long you will stay.** Payback only counts if you keep the AC that long.
+
+Put in the two labels you are comparing, your bill's rate and your honest guess of use in the [AC payback calculator](/tools/ac-payback/).
