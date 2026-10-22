@@ -60,6 +60,10 @@ describe('plotVs: hand-checked example', () => {
     expect(r.lead).toBeCloseTo(r.fund.net - r.fd.net, 6);
   });
 
+  it('the fund keeps about 9.1% a year after tax (quoted in the "How equity gains are taxed" note)', () => {
+    expect(Math.round(r.fund.yearlyReturn * 1000) / 10).toBe(9.1);
+  });
+
   it('the plot needs about 11.2% a year to match the fund; the fund needs 5.3% to match the FD', () => {
     const flips = plotVsFlips(example, rules);
     expect(flips.find((f) => f.variable === 'plotGrowth')!.threshold).toBeCloseTo(0.1122, 4);

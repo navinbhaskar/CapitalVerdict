@@ -1275,5 +1275,17 @@
   "tool.saving.gives": "TODO_COPY_HI",
   "tool.taxRegime.gives": "TODO_COPY_HI",
   "tool.solar.gives": "TODO_COPY_HI",
-  "tool.ac.gives": "TODO_COPY_HI"
+  "tool.ac.gives": "TODO_COPY_HI",
+  "equityTax.title": "TODO_COPY_HI",
+  "equityTax.short": "TODO_COPY_HI",
+  "equityTax.long": "TODO_COPY_HI",
+  "equityTax.cess": "TODO_COPY_HI",
+  "equityTax.computed": "TODO_COPY_HI",
+  "equityTax.afterTax": "TODO_COPY_HI",
+  "saving.taxNote.sip": "TODO_COPY_HI",
+  "saving.taxNote.ppf": "TODO_COPY_HI",
+  "saving.taxNote.rd": "TODO_COPY_HI",
+  "plotVs.taxNote.plot": "TODO_COPY_HI",
+  "plotVs.taxNote.fd": "TODO_COPY_HI",
+  "plotVs.taxNote.fund": "TODO_COPY_HI"
 }

@@ -1275,5 +1275,17 @@
   "tool.saving.gives": "What each leaves you after tax, over 15 years or more",
   "tool.taxRegime.gives": "Your tax under each for 2026-27, worked out step by step",
   "tool.solar.gives": "Payback time and what the panels save over 25 years",
-  "tool.ac.gives": "How long the extra price takes to pay back on your bill"
+  "tool.ac.gives": "How long the extra price takes to pay back on your bill",
+  "equityTax.title": "How equity gains are taxed",
+  "equityTax.short": "Held {months} months or less: short-term, taxed at {rate} of the gain.",
+  "equityTax.long": "Held longer: long-term, taxed at {rate} of the gains above {exempt} in a year.",
+  "equityTax.cess": "Plus {cess} cess on the tax. PPF interest is tax-free; FD and RD interest is taxed every year at your slab rate.",
+  "equityTax.computed": "The amounts above already have this tax taken off.",
+  "equityTax.afterTax": "This tool asks for your return after tax. For an equity fund held for years, that is lower than its return before tax: in the plot vs FD vs fund example, 10% a year before tax keeps about 9.1% a year after tax over 10 years. For a fixed deposit, it is the rate × (1 − your tax rate).",
+  "saving.taxNote.sip": "After {tax} tax: {short} on short-term gains (the last year's instalments) and {long} on long-term gains above {exempt}",
+  "saving.taxNote.ppf": "Tax-free",
+  "saving.taxNote.rd": "After {tax} tax on the interest, at your rate",
+  "plotVs.taxNote.plot": "After {tax} capital-gains tax on the gain and {upkeep} of yearly costs",
+  "plotVs.taxNote.fd": "After {tax} tax on the interest over the years",
+  "plotVs.taxNote.fund": "After {tax} long-term capital-gains tax on gains above {exempt}"
 }

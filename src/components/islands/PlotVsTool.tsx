@@ -20,6 +20,7 @@ import CompareBars from '@/components/tool/CompareBars';
 import ExampleNote from '@/components/tool/ExampleNote';
 import ResultBar from '@/components/tool/ResultBar';
 import Tier from '@/components/tool/Tier';
+import EquityTaxNote from '@/components/tool/EquityTaxNote';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import SensitivityList, { type FlipLine } from '@/components/tool/SensitivityList';
@@ -368,8 +369,15 @@ export default function PlotVsTool({ locale }: Props) {
                   value: r[o].net,
                   display: formatMoney(r[o].net),
                   best: r.best === o,
+                  tax: r[o].tax,
+                  note: t(locale, `plotVs.taxNote.${o}` as MessageKey, {
+                    tax: formatMoney(r[o].tax),
+                    upkeep: formatMoney(r.plot.upkeep),
+                    exempt: formatINR(incomeTax.capitalGains.equityLongTermExemption),
+                  }),
                 }))}
               />
+              <EquityTaxNote locale={locale} context="computed" />
               <dl class="mt-4 grid grid-cols-3 gap-x-4 gap-y-3 border-t border-line pt-4">
                 {OPTIONS.map((o) => (
                   <Stat key={o} label={t(locale, `plotVs.stat.return.${o}` as MessageKey)}>

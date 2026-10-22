@@ -20,6 +20,7 @@ import CompareBars from '@/components/tool/CompareBars';
 import ExampleNote from '@/components/tool/ExampleNote';
 import ResultBar from '@/components/tool/ResultBar';
 import Tier from '@/components/tool/Tier';
+import EquityTaxNote from '@/components/tool/EquityTaxNote';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import SensitivityList, { type FlipLine } from '@/components/tool/SensitivityList';
@@ -133,6 +134,22 @@ export default function MonthlySavingTool({ locale }: Props) {
       layout="row"
     />
   );
+
+  /** What tax each option paid, in one line under its bar. */
+  const taxNote = (o: SavingOption): string => {
+    if (!r) return '';
+    if (o === 'ppf') return t(locale, 'saving.taxNote.ppf');
+    if (o === 'rd') return t(locale, 'saving.taxNote.rd', { tax: formatMoney(r.rd.tax) });
+    const cg = incomeTax.capitalGains;
+    const shortTax =
+      Math.max(0, r.sip.shortTermGain) * cg.equityShortTermRate * (1 + incomeTax.cessRate);
+    return t(locale, 'saving.taxNote.sip', {
+      tax: formatMoney(r.sip.tax),
+      short: formatMoney(shortTax),
+      long: formatMoney(r.sip.tax - shortTax),
+      exempt: formatINR(cg.equityLongTermExemption),
+    });
+  };
 
   const headline = r
     ? t(locale, `saving.verdict.${r.best}` as MessageKey, {
@@ -325,8 +342,11 @@ export default function MonthlySavingTool({ locale }: Props) {
                   value: r[o].net,
                   display: formatMoney(r[o].net),
                   best: r.best === o,
+                  tax: r[o].tax,
+                  note: taxNote(o),
                 }))}
               />
+              <EquityTaxNote locale={locale} context="computed" />
               <p class="mt-3 text-xs text-ink-muted">{t(locale, 'saving.stat.note')}</p>
             </section>
           ) : (
