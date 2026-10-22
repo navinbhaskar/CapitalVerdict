@@ -1262,5 +1262,18 @@
   "plotVs.summary": "Plot growing {growth} a year, fund returning {fund}, {years} years, buying, holding and selling costs",
   "plotVs.group.assumed": "Growth, returns and years",
   "saving.summary": "{years} years, fund returning {fund}, PPF at {ppf}, inflation",
-  "saving.group.assumed": "Years and fund return"
+  "saving.group.assumed": "Years and fund return",
+  "home.group.car": "Your car",
+  "home.group.home": "Your home and loans",
+  "home.group.money": "Saving, investing and tax",
+  "home.group.power": "Your power bill",
+  "tool.carFuel.gives": "Total cost of each car and when the dearer one pays back",
+  "tool.carLoan.gives": "The loan's true cost and which way leaves you more",
+  "tool.rentVsBuy.gives": "Your net worth either way after the years you choose",
+  "tool.prepay.gives": "Interest saved, and which way leaves you more",
+  "tool.plotVs.gives": "What each leaves you after stamp duty, costs and tax",
+  "tool.saving.gives": "What each leaves you after tax, over 15 years or more",
+  "tool.taxRegime.gives": "Your tax under each for 2026-27, worked out step by step",
+  "tool.solar.gives": "Payback time and what the panels save over 25 years",
+  "tool.ac.gives": "How long the extra price takes to pay back on your bill"
 }

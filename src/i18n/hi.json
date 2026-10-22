@@ -1262,5 +1262,18 @@
   "plotVs.summary": "TODO_COPY_HI",
   "plotVs.group.assumed": "TODO_COPY_HI",
   "saving.summary": "TODO_COPY_HI",
-  "saving.group.assumed": "TODO_COPY_HI"
+  "saving.group.assumed": "TODO_COPY_HI",
+  "home.group.car": "TODO_COPY_HI",
+  "home.group.home": "TODO_COPY_HI",
+  "home.group.money": "TODO_COPY_HI",
+  "home.group.power": "TODO_COPY_HI",
+  "tool.carFuel.gives": "TODO_COPY_HI",
+  "tool.carLoan.gives": "TODO_COPY_HI",
+  "tool.rentVsBuy.gives": "TODO_COPY_HI",
+  "tool.prepay.gives": "TODO_COPY_HI",
+  "tool.plotVs.gives": "TODO_COPY_HI",
+  "tool.saving.gives": "TODO_COPY_HI",
+  "tool.taxRegime.gives": "TODO_COPY_HI",
+  "tool.solar.gives": "TODO_COPY_HI",
+  "tool.ac.gives": "TODO_COPY_HI"
 }

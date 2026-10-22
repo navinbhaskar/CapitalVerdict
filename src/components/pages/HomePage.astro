@@ -12,55 +12,48 @@ interface Props {
 }
 const { locale } = Astro.props;
 
-const liveTools: {
+type ToolIcon =
+  'fuel' | 'sun' | 'home' | 'banknote' | 'car' | 'snowflake' | 'percent' | 'plot' | 'piggy';
+interface Tool {
   question: MessageKey;
+  /** What the answer tells you, in one line. */
+  gives: MessageKey;
   href: string;
-  icon: 'fuel' | 'sun' | 'home' | 'banknote' | 'car' | 'snowflake' | 'percent' | 'plot' | 'piggy';
-}[] = [
+  icon: ToolIcon;
+}
+const tool = (key: string, path: string, icon: ToolIcon): Tool => ({
+  question: `tool.${key}.question` as MessageKey,
+  gives: `tool.${key}.gives` as MessageKey,
+  href: localizePath(path, locale),
+  icon,
+});
+/** The calculators by area of life, so a visitor finds theirs at a glance. */
+const toolGroups: { title: MessageKey; tools: Tool[] }[] = [
   {
-    question: 'tool.carFuel.question',
-    href: localizePath('/tools/car-fuel/', locale),
-    icon: 'fuel',
+    title: 'home.group.car',
+    tools: [
+      tool('carFuel', '/tools/car-fuel/', 'fuel'),
+      tool('carLoan', '/tools/cash-or-car-loan/', 'car'),
+    ],
   },
   {
-    question: 'tool.solar.question',
-    href: localizePath('/tools/solar/', locale),
-    icon: 'sun',
+    title: 'home.group.home',
+    tools: [
+      tool('rentVsBuy', '/tools/rent-vs-buy/', 'home'),
+      tool('prepay', '/tools/prepay-or-invest/', 'banknote'),
+    ],
   },
   {
-    question: 'tool.rentVsBuy.question',
-    href: localizePath('/tools/rent-vs-buy/', locale),
-    icon: 'home',
+    title: 'home.group.money',
+    tools: [
+      tool('plotVs', '/tools/plot-vs-fd-vs-mutual-fund/', 'plot'),
+      tool('saving', '/tools/sip-vs-ppf-vs-fd/', 'piggy'),
+      tool('taxRegime', '/tools/old-or-new-tax-regime/', 'percent'),
+    ],
   },
   {
-    question: 'tool.prepay.question',
-    href: localizePath('/tools/prepay-or-invest/', locale),
-    icon: 'banknote',
-  },
-  {
-    question: 'tool.carLoan.question',
-    href: localizePath('/tools/cash-or-car-loan/', locale),
-    icon: 'car',
-  },
-  {
-    question: 'tool.ac.question',
-    href: localizePath('/tools/ac-payback/', locale),
-    icon: 'snowflake',
-  },
-  {
-    question: 'tool.taxRegime.question',
-    href: localizePath('/tools/old-or-new-tax-regime/', locale),
-    icon: 'percent',
-  },
-  {
-    question: 'tool.plotVs.question',
-    href: localizePath('/tools/plot-vs-fd-vs-mutual-fund/', locale),
-    icon: 'plot',
-  },
-  {
-    question: 'tool.saving.question',
-    href: localizePath('/tools/sip-vs-ppf-vs-fd/', locale),
-    icon: 'piggy',
+    title: 'home.group.power',
+    tools: [tool('solar', '/tools/solar/', 'sun'), tool('ac', '/tools/ac-payback/', 'snowflake')],
   },
 ];
 const notes = (await getCollection('blog')).sort(byDateDesc).slice(0, 3);
@@ -142,20 +135,38 @@ const principles: { title: MessageKey; body: MessageKey }[] = [
           {t(locale, 'home.tools.heading')}
         </h2>
       </div>
-      <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" data-reveal>
-        {liveTools.map((tool) => (
-          <a
-            href={tool.href}
-            class="card-lift group flex items-center gap-3.5 rounded-xl border border-line bg-raised px-4 py-3.5 transition-colors duration-(--duration-base) ease-out-quart hover:border-accent"
-          >
-            <span class="band-dark inline-flex size-9 shrink-0 items-center justify-center rounded-full text-accent">
-              <Icon name={tool.icon} size={18} />
-            </span>
-            <span class="min-w-0 flex-1 font-display text-lg leading-snug font-medium tracking-(--tracking-heading) group-hover:text-accent-strong">
-              {t(locale, tool.question)}
-            </span>
-            <Icon name="arrowRight" size={18} class="nudge shrink-0 text-accent-strong" />
-          </a>
+      <div class="mt-5 grid gap-x-8 gap-y-6 lg:grid-cols-2" data-reveal>
+        {toolGroups.map((group) => (
+          <section class="border-t border-line pt-3" aria-label={t(locale, group.title)}>
+            <h3 class="font-display text-xl font-medium tracking-(--tracking-heading)">
+              {t(locale, group.title)}
+            </h3>
+            <ul class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-1" role="list">
+              {group.tools.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class="card-lift group flex h-full items-start gap-3.5 rounded-xl border border-line bg-raised px-4 py-3.5 transition-colors duration-(--duration-base) ease-out-quart hover:border-accent"
+                  >
+                    <span class="band-dark mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-full text-accent">
+                      <Icon name={item.icon} size={18} />
+                    </span>
+                    <span class="min-w-0 flex-1">
+                      <span class="block font-display text-lg leading-snug font-medium tracking-(--tracking-heading) group-hover:text-accent-strong">
+                        {t(locale, item.question)}
+                      </span>
+                      <span class="mt-1 block text-sm text-ink-muted">{t(locale, item.gives)}</span>
+                    </span>
+                    <Icon
+                      name="arrowRight"
+                      size={18}
+                      class="nudge mt-1 shrink-0 text-accent-strong"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
         ))}
       </div>
     </div>
