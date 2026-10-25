@@ -576,8 +576,6 @@
   "page.about.why.body": "Most calculators show one confident answer and hide the assumptions behind it. A small change in fuel prices, rent or your return can flip that answer. CapitalVerdict shows every assumption, lets you change it, and tells you what would have to change for the other option to win.",
   "page.about.how.title": "How it works",
   "page.about.how.body": "Every tool runs in your browser. Nothing you type is sent anywhere. The formulas are set out on the methodology page and checked against figures worked out by hand. Prices, rates and rules come from the sources listed on each tool and in the assumptions changelog.",
-  "page.about.author.title": "Who makes it",
-  "page.about.author.body": "TODO_COPY",
   "page.about.contact.title": "Found a mistake?",
   "page.about.contact.body": "Use the \"Report an error\" link at the bottom of any tool. Say which number looks wrong and why, and include a source if you have one.",
   "page.disclaimer.title": "Disclaimer",
