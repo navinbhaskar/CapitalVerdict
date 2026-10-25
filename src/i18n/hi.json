@@ -1450,5 +1450,8 @@
   "marketRisk.fund": "TODO_COPY_HI",
   "marketRisk.savings": "TODO_COPY_HI",
   "page.disclaimer.markets.title": "TODO_COPY_HI",
-  "page.disclaimer.markets.body": "TODO_COPY_HI"
+  "page.disclaimer.markets.body": "TODO_COPY_HI",
+  "footer.contact": "TODO_COPY_HI",
+  "page.about.email.title": "TODO_COPY_HI",
+  "page.about.email.body": "TODO_COPY_HI"
 }

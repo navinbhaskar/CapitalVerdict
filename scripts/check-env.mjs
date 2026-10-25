@@ -7,9 +7,13 @@ const site = process.env.SITE_URL ?? '';
 if (!/^https:\/\/[^/]+\.[^/]+/.test(site) || /localhost|127\.0\.0\.1/.test(site)) {
   problems.push('SITE_URL must be the public https origin, e.g. https://capitalverdict.com');
 }
-const email = process.env.PUBLIC_CONTACT_EMAIL ?? '';
-if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.endsWith('.invalid')) {
-  problems.push('PUBLIC_CONTACT_EMAIL must be a real address for "Report an error"');
+// PUBLIC_CONTACT_EMAIL is optional: the site defaults to support@capitalverdict.com.
+const email = process.env.PUBLIC_CONTACT_EMAIL;
+if (
+  email !== undefined &&
+  (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email) || email.endsWith('.invalid'))
+) {
+  problems.push('PUBLIC_CONTACT_EMAIL, when set, must be a real address for "Report an error"');
 }
 if (problems.length > 0) {
   console.error(`Not ready for production:\n- ${problems.join('\n- ')}`);

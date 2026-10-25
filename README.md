@@ -24,11 +24,11 @@ Static Astro + TypeScript site with Preact islands, Tailwind and Vitest. English
 2. Build command `npm run build:prod`, output directory `dist`, Node 22.
 3. Set these environment variables (Settings, Environment variables, Production):
 
-   | Variable                    | Required | What it does                                                                                                |
-   | --------------------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
-   | `SITE_URL`                  | Yes      | Public origin, e.g. `https://capitalverdict.com`. Canonical links, sitemap, RSS, link previews, robots.txt. |
-   | `PUBLIC_CONTACT_EMAIL`      | Yes      | Address for "Report an error" on every tool. Without it the link is hidden.                                 |
-   | `PUBLIC_CF_ANALYTICS_TOKEN` | No       | Cloudflare Web Analytics token. Off without it; when set, the privacy page describes it automatically.      |
+   | Variable                    | Required | What it does                                                                                                   |
+   | --------------------------- | -------- | -------------------------------------------------------------------------------------------------------------- |
+   | `SITE_URL`                  | Yes      | Public origin, e.g. `https://capitalverdict.com`. Canonical links, sitemap, RSS, link previews, robots.txt.    |
+   | `PUBLIC_CONTACT_EMAIL`      | No       | Overrides the contact address (default support@capitalverdict.com) in the footer, About and "Report an error". |
+   | `PUBLIC_CF_ANALYTICS_TOKEN` | No       | Cloudflare Web Analytics token. Off without it; when set, the privacy page describes it automatically.         |
 
 4. Add your domain under Custom domains, then submit `https://<domain>/sitemap-index.xml` in Google
    Search Console.

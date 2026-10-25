@@ -4,6 +4,7 @@ import Icon from './Icon.astro';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { localizePath } from '@/i18n/routes';
 import { TOOL_GROUPS, toolKey } from '@/lib/tools';
+import { site } from '@/config/site';
 
 interface Props {
   locale: Locale;
@@ -49,6 +50,14 @@ const linkClass =
             </li>
           ))}
         </ul>
+        {site.contactEmail && (
+          <p class="mt-4">
+            <span class="block text-ink-subtle">{t(locale, 'footer.contact')}</span>
+            <a href={`mailto:${site.contactEmail}`} class={`${linkClass} text-ink`}>
+              {site.contactEmail}
+            </a>
+          </p>
+        )}
         <button
           type="button"
           data-theme-toggle

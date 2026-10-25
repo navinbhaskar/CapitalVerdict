@@ -1450,5 +1450,8 @@
   "marketRisk.fund": "Equity returns are not guaranteed. A fund can fall in value, and can stay below what you put in for years. The return used here is an assumption, not a forecast; try lower ones to see how the answer changes.",
   "marketRisk.savings": "Investment returns are not guaranteed. Markets can fall, and can stay down for years. The return used here is an assumption, not a forecast; try lower ones to see how the answer changes.",
   "page.disclaimer.markets.title": "Market-linked returns can fall",
-  "page.disclaimer.markets.body": "Results for equity funds, SIPs, shares and property use a return you choose or an illustrative one. Past returns do not predict future ones, and the value of these investments can go down as well as up."
+  "page.disclaimer.markets.body": "Results for equity funds, SIPs, shares and property use a return you choose or an illustrative one. Past returns do not predict future ones, and the value of these investments can go down as well as up.",
+  "footer.contact": "Write to us",
+  "page.about.email.title": "Write to us",
+  "page.about.email.body": "For questions, corrections or anything else about CapitalVerdict, email"
 }
