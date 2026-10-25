@@ -5,8 +5,8 @@
  *   npm run build:pages    build dist/ for the domain only
  *   npm run deploy:pages   build, then force-push dist/ to the gh-pages branch of origin
  *
- * Search engines stay blocked (robots.txt) until the copy is approved: pass --allow-indexing to
- * publish the site's own robots.txt instead.
+ * Search engines may index the site (its own robots.txt, with the sitemap). Pass --block-indexing
+ * to publish a robots.txt that blocks them instead.
  *
  * The gh-pages branch holds build output only; its history is replaced on every deploy.
  */
@@ -17,7 +17,7 @@ import { join } from 'node:path';
 const DOMAIN = 'capitalverdict.com';
 const env = { ...process.env, SITE_URL: `https://${DOMAIN}` };
 const run = (cmd, args, opts = {}) => execFileSync(cmd, args, { stdio: 'inherit', env, ...opts });
-const indexing = process.argv.includes('--allow-indexing');
+const indexing = !process.argv.includes('--block-indexing');
 
 // npx is a .cmd script on Windows, which needs a shell; every other call stays shell-free.
 run('npx', ['astro', 'build'], { shell: process.platform === 'win32' });
