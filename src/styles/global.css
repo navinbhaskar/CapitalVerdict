@@ -553,6 +553,7 @@
 
 @layer components {
   /* Thin track filled up to the thumb (--fill), accent thumb with a soft ring on focus. */
+  /* 4px track filled up to the thumb (--fill), a solid brass thumb with a light edge. */
   .range {
     appearance: none;
     height: 1.5rem;
@@ -561,7 +562,7 @@
     touch-action: pan-y;
   }
   .range::-webkit-slider-runnable-track {
-    height: 2px;
+    height: 4px;
     border-radius: 999px;
     background: linear-gradient(
       to right,
@@ -570,24 +571,24 @@
     );
   }
   .range::-moz-range-track {
-    height: 2px;
+    height: 4px;
     border-radius: 999px;
     background: var(--color-line-strong);
   }
   .range::-moz-range-progress {
-    height: 2px;
+    height: 4px;
     border-radius: 999px;
     background: var(--color-accent);
   }
   .range::-webkit-slider-thumb {
     appearance: none;
-    margin-top: -8px;
+    margin-top: -7px;
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: var(--color-raised);
+    background: var(--color-accent);
     box-shadow:
-      0 0 0 1.5px var(--color-accent),
+      0 0 0 2px var(--color-raised),
       var(--shadow-card);
     transition: transform var(--duration-fast) var(--ease-out-back);
   }
@@ -596,10 +597,13 @@
     height: 18px;
     border: 0;
     border-radius: 50%;
-    background: var(--color-raised);
+    background: var(--color-accent);
     box-shadow:
-      0 0 0 1.5px var(--color-accent),
+      0 0 0 2px var(--color-raised),
       var(--shadow-card);
+  }
+  .range:hover::-webkit-slider-thumb {
+    transform: scale(1.1);
   }
   .range:active::-webkit-slider-thumb {
     transform: scale(1.15);
@@ -609,12 +613,12 @@
   }
   .range:focus-visible::-webkit-slider-thumb {
     box-shadow:
-      0 0 0 1.5px var(--color-accent),
+      0 0 0 2px var(--color-raised),
       0 0 0 5px var(--color-accent-soft);
   }
   .range:focus-visible::-moz-range-thumb {
     box-shadow:
-      0 0 0 1.5px var(--color-accent),
+      0 0 0 2px var(--color-raised),
       0 0 0 5px var(--color-accent-soft);
   }
 

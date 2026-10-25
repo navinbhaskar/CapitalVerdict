@@ -6,6 +6,7 @@ import {
   parseNumberText,
   type NumberRules,
 } from '@/lib/numberInput';
+import { formatMoneyShort, formatNumber } from '@/lib/formatTool';
 
 interface Props extends NumberRules {
   locale: Locale;
@@ -92,8 +93,23 @@ export default function NumberField(props: Props) {
     onChange(null, false);
   };
 
-  const describedBy = [error && `${id}-err`, note && `${id}-note`].filter(Boolean).join(' ');
   const row = layout === 'row';
+  // Rupees read "₹ 10,000"; other units ("years", "%", "km") follow the number.
+  const rupees = unit === '₹';
+  // Big amounts also in words, the way they are said: 5000000 → "₹50 lakh".
+  const words = rupees && value !== null && value >= 1e5 && !error ? formatMoneyShort(value) : null;
+  const describedBy = [error && `${id}-err`, words && `${id}-words`, note && `${id}-note`]
+    .filter(Boolean)
+    .join(' ');
+  const sliderValue = slider ? Math.min(slider.max, Math.max(slider.min, value ?? slider.min)) : 0;
+  const fill = slider ? ((sliderValue - slider.min) / (slider.max - slider.min)) * 100 : 0;
+  // Range ends: ₹ on both; any other unit on the upper end only ("1" … "40 years").
+  const bound = (v: number, end: 'min' | 'max') =>
+    rupees
+      ? formatMoneyShort(v)
+      : unit && end === 'max'
+        ? `${formatNumber(v)} ${unit}`
+        : formatNumber(v);
 
   return (
     <div
@@ -143,35 +159,51 @@ export default function NumberField(props: Props) {
             }}
             aria-invalid={error ? true : undefined}
             aria-describedby={describedBy || undefined}
-            class={`min-h-11 w-full rounded-md border px-3 text-base text-ink num transition-colors duration-(--duration-fast) ease-out-quart hover:border-ink-subtle focus:border-accent-strong ${
-              unit ? 'pr-16' : ''
+            class={`min-h-11 w-full rounded-md border text-base font-medium text-ink num transition-[border-color,box-shadow] duration-(--duration-fast) ease-out-quart hover:border-ink-subtle focus:border-accent-strong focus:ring-3 focus:ring-accent-soft focus:outline-none ${
+              rupees ? 'pr-3 pl-8' : unit ? 'pr-16 pl-3' : 'px-3'
             } ${error ? 'border-danger' : 'border-line-strong'} ${
-              flagged && !example ? 'bg-warn-soft/60' : 'bg-page'
+              flagged && !example ? 'bg-warn-soft/60' : 'bg-raised'
             }`}
           />
           {unit && (
-            <span class="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-sm text-ink-muted">
+            <span
+              class={`pointer-events-none absolute inset-y-0 flex items-center text-sm text-ink-muted ${
+                rupees ? 'left-3' : 'right-3.5'
+              }`}
+            >
               {unit}
             </span>
           )}
         </div>
+        {words && (
+          <p id={`${id}-words`} class="mt-1 text-xs text-ink-muted num">
+            {words}
+          </p>
+        )}
         {slider && (
-          <input
-            type="range"
-            class="range mt-2 w-full"
-            min={slider.min}
-            max={slider.max}
-            step={slider.step}
-            value={value ?? slider.min}
-            aria-label={label}
-            aria-valuetext={unit ? `${text} ${unit}` : text}
-            onInput={(e) => {
-              const v = Number(e.currentTarget.value);
-              setError(null);
-              setText(formatNumberText(v, rules));
-              onChange(v, true);
-            }}
-          />
+          <div class="mt-1.5">
+            <input
+              type="range"
+              class="range w-full"
+              style={{ '--fill': `${fill.toFixed(2)}%` }}
+              min={slider.min}
+              max={slider.max}
+              step={slider.step}
+              value={sliderValue}
+              aria-label={label}
+              aria-valuetext={rupees ? `₹${text}` : unit ? `${text} ${unit}` : text}
+              onInput={(e) => {
+                const v = Number(e.currentTarget.value);
+                setError(null);
+                setText(formatNumberText(v, rules));
+                onChange(v, true);
+              }}
+            />
+            <div class="flex justify-between text-xs text-ink-muted num" aria-hidden="true">
+              <span>{bound(slider.min, 'min')}</span>
+              <span>{bound(slider.max, 'max')}</span>
+            </div>
+          </div>
         )}
         {!row && note && !error && (
           <p id={`${id}-note`} class="mt-1 text-sm text-ink-muted">
