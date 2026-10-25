@@ -1,0 +1,67 @@
+---
+title: 'SWP in retirement: how much can ₹50 lakh pay you each month?'
+description: An SWP pays you a monthly income from a mutual fund. With the income rising 6% a year, ₹50 lakh at 10% a year can pay about ₹26,400 a month for 25 years. Worked through, with the tax.
+date: 2026-10-25
+kind: decision
+tool: swp-calculator
+takeaway:
+  figure: '₹26,409'
+  label: a month, rising 6% a year, that ₹50 lakh can pay for 25 years at 10%
+---
+
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import LineChart from '@/components/guide/LineChart.astro';
+import SwpWidget from '@/components/guide/widgets/SwpWidget';
+import { swpFigures } from '@/content/guideFigures';
+
+<InShort>
+
+- A systematic withdrawal plan (SWP) sells a little of your fund every month to pay you an income, while the rest stays invested.
+- If the income rises 6% a year with prices, ₹50 lakh at an illustrative 10% a year can pay about **₹26,409** a month for 25 years.
+- ₹30,000 a month rising the same way runs out after about 20 years. The tax on the withdrawals is small.
+
+</InShort>
+
+An SWP is the reverse of a SIP. Instead of putting a fixed amount in every month, you take a fixed amount out. The rest of the money stays invested and keeps growing, so the withdrawals can last a long time. The question is how much you can take without running out.
+
+## Flat withdrawals look generous
+
+Put ₹50 lakh in an equity fund at an illustrative 10% a year and take out ₹30,000 a month. Kept at ₹30,000, the withdrawals last all 25 years, with ₹1.72 crore still left at the end.
+
+But a flat ₹30,000 buys less every year. At 6% inflation, ₹30,000 at the end of year 25 buys about what ₹6,990 buys today. If the withdrawals are your living costs, they need to rise with prices.
+
+## Withdrawals that keep up with prices
+
+Raise the ₹30,000 by 6% every year, and the money runs out after **20 years 5 months**. By then you have taken out ₹1.38 crore.
+
+The most that ₹50 lakh can pay for the full 25 years, rising 6% a year, is **₹26,409** a month to start. That rises to ₹1,06,928 a month by year 25.
+
+<LineChart
+  title="What is left in the fund, year by year"
+  data={swpFigures.balance}
+  xTitle="Years of withdrawals"
+  note="₹50 lakh at an illustrative 10% a year before tax, withdrawals at the end of every month. Fund returns are assumed, not promised. Markets can fall."
+/>
+
+## The return decides a lot
+
+<Table
+  title="The most ₹50 lakh can pay for 25 years, rising 6% a year"
+  table={swpFigures.byReturn}
+  note="Withdrawals at the end of every month, raised 6% each year. Fund returns are assumed, not promised. Markets can fall."
+/>
+
+At 7% a year, the starting income falls to ₹19,302 a month. Nobody knows the return you will get, so plan with a cautious one.
+
+## The tax is low
+
+Each withdrawal sells units, and only the gain in those units is taxed. Early on, most of each withdrawal is your own money coming back, so the tax is small. Over the 20 years that ₹30,000 rising 6% lasts, the tax on the gains comes to about ₹8.33 lakh, on ₹1.38 crore withdrawn. Long-term gains up to ₹1.25 lakh a year are tax-free.
+
+## The risk an average hides
+
+These figures assume the same return every year. Real markets move up and down, and **the order matters**. A fall in the first few years, while you are also withdrawing, does far more damage than the same fall later. That is why many retirees keep a year or two of withdrawals somewhere safer, and take less than the maximum.
+
+<SwpWidget client:visible />
+
+Try your own amount, withdrawal and return in the [SWP calculator](/tools/swp-calculator/), which also shows the most you can take for the years you choose.

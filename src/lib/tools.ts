@@ -5,7 +5,18 @@
 import type { MessageKey } from '@/i18n/t';
 
 export type ToolIcon =
-  'fuel' | 'sun' | 'home' | 'banknote' | 'car' | 'snowflake' | 'percent' | 'plot' | 'piggy';
+  | 'fuel'
+  | 'sun'
+  | 'home'
+  | 'banknote'
+  | 'car'
+  | 'snowflake'
+  | 'percent'
+  | 'plot'
+  | 'piggy'
+  | 'bars'
+  | 'trend'
+  | 'outflow';
 
 export interface ToolEntry {
   /** i18n prefix: `tool.{key}.title`, `.question`, `.gives`. */
@@ -35,6 +46,14 @@ export const TOOL_GROUPS: { title: MessageKey; tools: ToolEntry[] }[] = [
       { key: 'plotVs', path: '/tools/plot-vs-fd-vs-mutual-fund/', icon: 'plot' },
       { key: 'saving', path: '/tools/sip-vs-ppf-vs-fd/', icon: 'piggy' },
       { key: 'taxRegime', path: '/tools/old-or-new-tax-regime/', icon: 'percent' },
+    ],
+  },
+  {
+    title: 'home.group.funds',
+    tools: [
+      { key: 'sip', path: '/tools/sip-calculator/', icon: 'bars' },
+      { key: 'lumpsum', path: '/tools/lumpsum-calculator/', icon: 'trend' },
+      { key: 'swp', path: '/tools/swp-calculator/', icon: 'outflow' },
     ],
   },
   {

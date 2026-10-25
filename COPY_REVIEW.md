@@ -167,3 +167,16 @@ All 17 guides now have an "In short" box, tables, charts and a small calculator 
 | ----------------------------------------------------- | ------------------------------------------------------- |
 | [ ] `footer.contact`                                  | Footer, above support@capitalverdict.com: "Write to us" |
 | [ ] `page.about.email.title`, `page.about.email.body` | About: "Write to us" section with the address           |
+
+## SIP, lumpsum and SWP calculators (drafted 2026-10-25)
+
+Three new tools on one model (`src/models/fund.ts`), a "Mutual funds" group on the home page, and two guides.
+
+| Key or file                                                                                                                              | Where it shows                                             |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| [ ] `tool.sip.*`, `tool.lumpsum.*`, `tool.swp.*`, `home.group.funds`                                                                     | Tool titles, questions and home tiles; nav menu and footer |
+| [ ] `fund.*` (inputs, notes, headlines, bars, working, checklists, chart, table, FAQs, explanations, meta descriptions)                  | The three calculator pages                                 |
+| [ ] Example values: SIP ₹10,000 a month for 15 years; lumpsum ₹5 lakh for 10 years; SWP ₹50 lakh, ₹30,000 a month rising 6% for 25 years | Labelled "Example" on each tool                            |
+| [ ] `page.methodology.fund.*`                                                                                                            | Methodology page                                           |
+| [ ] `guide.stepUp.*`, `guide.swp.*`                                                                                                      | The two guide calculators                                  |
+| [ ] `src/content/blog/step-up-sip.mdx`, `src/content/blog/swp-in-retirement.mdx`                                                         | New guides; figure labels in `src/content/guideFigures.ts` |

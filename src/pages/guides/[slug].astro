@@ -31,6 +31,9 @@ const toolTitle: Record<NonNullable<typeof tool>, MessageKey> = {
   'old-or-new-tax-regime': 'tool.taxRegime.question',
   'plot-vs-fd-vs-mutual-fund': 'tool.plotVs.question',
   'sip-vs-ppf-vs-fd': 'tool.saving.question',
+  'sip-calculator': 'tool.sip.question',
+  'lumpsum-calculator': 'tool.lumpsum.question',
+  'swp-calculator': 'tool.swp.question',
 };
 const more = (await getCollection('blog'))
   .filter((p) => p.id !== post.id)

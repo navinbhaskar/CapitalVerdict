@@ -19,6 +19,7 @@ import { plotVs, plotVsFlips } from '@/models/plotVs';
 import { acFlips, acPayback } from '@/models/ac';
 import { carLoanFlips, cashOrLoan } from '@/models/carLoan';
 import { irr } from '@/engine/irr';
+import { fundPlan, maxWithdrawal } from '@/models/fund';
 
 describe('posts: CNG payback, break-even, Lucknow update', () => {
   const lucknow = verifiedFuelPrices('lucknow')!;
@@ -451,5 +452,71 @@ describe('post: car loan or cash', () => {
     expect(Math.round(emi)).toBe(16_667);
     const monthly = irr([800_000, ...Array<number>(60).fill(-emi)])!;
     expect(monthly * 12 * 100).toBeCloseTo(9.15, 2);
+  });
+});
+
+describe('post: step-up SIP', () => {
+  const plan = {
+    lumpSum: 0,
+    monthly: 10_000,
+    stepUp: 0,
+    withdrawal: 0,
+    withdrawalRise: 0,
+    years: 15,
+    annualReturn: 0.1,
+    inflation: 0.06,
+  };
+  const flat = fundPlan(plan, incomeTax);
+  const up = fundPlan({ ...plan, stepUp: 0.1 }, incomeTax);
+  const lakh = (v: number) => v / 1e5;
+
+  it('flat: ₹18 lakh in, ₹40.16 lakh, ₹2.72 lakh tax, ₹37.44 lakh kept', () => {
+    expect(flat.invested).toBe(1_800_000);
+    expect(lakh(flat.value)).toBeCloseTo(40.16, 2);
+    expect(lakh(flat.sale.tax)).toBeCloseTo(2.72, 2);
+    expect(lakh(flat.kept)).toBeCloseTo(37.44, 2);
+  });
+
+  it('10% step-up: ₹37,975 a month by year 15, ₹38.13 lakh in, ₹4.26 lakh tax, ₹67.74 lakh kept', () => {
+    expect(Math.round(10_000 * Math.pow(1.1, 14))).toBe(37_975);
+    expect(lakh(up.invested)).toBeCloseTo(38.13, 2);
+    expect(lakh(up.sale.tax)).toBeCloseTo(4.26, 2);
+    expect(lakh(up.kept)).toBeCloseTo(67.74, 2);
+    expect(lakh(up.invested - flat.invested)).toBeCloseTo(20.13, 2);
+    expect(lakh(up.kept - flat.kept)).toBeCloseTo(30.3, 2);
+  });
+});
+
+describe('post: SWP in retirement', () => {
+  const plan = {
+    lumpSum: 5_000_000,
+    monthly: 0,
+    stepUp: 0,
+    withdrawal: 30_000,
+    withdrawalRise: 0.06,
+    years: 25,
+    annualReturn: 0.1,
+    inflation: 0.06,
+  };
+
+  it('flat ₹30,000 lasts 25 years with ₹1.72 crore left; worth ₹6,990 by then', () => {
+    const flat = fundPlan({ ...plan, withdrawalRise: 0 }, incomeTax);
+    expect(flat.depletedMonth).toBeNull();
+    expect(flat.value / 1e7).toBeCloseTo(1.72, 2);
+    expect(Math.round(toTodaysRupees(30_000, 0.06, 300))).toBe(6_990);
+  });
+
+  it('rising 6%: runs out after 20 years 5 months, ₹1.38 crore taken, ₹8.33 lakh tax', () => {
+    const r = fundPlan(plan, incomeTax);
+    expect(r.depletedMonth).toBe(246);
+    expect(r.withdrawn / 1e7).toBeCloseTo(1.38, 2);
+    expect(r.withdrawalTax / 1e5).toBeCloseTo(8.33, 2);
+  });
+
+  it('most for 25 years: ₹26,409 rising to ₹1,06,928; ₹19,302 at 7%', () => {
+    const max = maxWithdrawal(plan, incomeTax);
+    expect(max).toBe(26_409);
+    expect(Math.round(max * Math.pow(1.06, 24))).toBe(106_928);
+    expect(maxWithdrawal({ ...plan, annualReturn: 0.07 }, incomeTax)).toBe(19_302);
   });
 });

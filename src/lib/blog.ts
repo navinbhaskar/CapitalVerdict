@@ -28,4 +28,7 @@ export const TOOL_PATHS = {
   'old-or-new-tax-regime': '/tools/old-or-new-tax-regime/',
   'plot-vs-fd-vs-mutual-fund': '/tools/plot-vs-fd-vs-mutual-fund/',
   'sip-vs-ppf-vs-fd': '/tools/sip-vs-ppf-vs-fd/',
+  'sip-calculator': '/tools/sip-calculator/',
+  'lumpsum-calculator': '/tools/lumpsum-calculator/',
+  'swp-calculator': '/tools/swp-calculator/',
 } as const;

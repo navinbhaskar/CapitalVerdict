@@ -16,6 +16,7 @@ import { cashOrLoan, type CarLoanInput } from '@/models/carLoan';
 import { compareCarFuel, type CarFuelInput } from '@/models/carFuel';
 import { carFuelExample } from '@/models/carFuel.example';
 import { flatToReducing } from '@/models/flatRate';
+import { fundPlan, maxWithdrawal, type FundInput } from '@/models/fund';
 import { monthlySaving, type MonthlySavingInput } from '@/models/monthlySaving';
 import { plotVs, type PlotVsInput } from '@/models/plotVs';
 import { payback } from '@/models/payback';
@@ -842,4 +843,127 @@ export const todays = {
     ]),
     highlight: 1,
   } satisfies TableData,
+};
+
+/* ---------- Step-up SIP; SWP in retirement ---------- */
+
+export const stepUpCase: FundInput = {
+  lumpSum: 0,
+  monthly: 10_000,
+  stepUp: 0,
+  withdrawal: 0,
+  withdrawalRise: 0,
+  years: 15,
+  annualReturn: 0.1,
+  inflation: 0.06,
+};
+
+const flat = fundPlan(stepUpCase, incomeTax);
+const stepped = fundPlan({ ...stepUpCase, stepUp: 0.1 }, incomeTax);
+
+export const stepUp = {
+  bars: [
+    {
+      label: 'Same ₹10,000 every month',
+      value: flat.kept,
+      display: money(flat.kept),
+      tax: flat.sale.tax,
+      note: `${money(flat.invested)} put in; after ${money(flat.sale.tax)} tax`,
+    },
+    {
+      label: 'Raised 10% every year',
+      value: stepped.kept,
+      display: money(stepped.kept),
+      tax: stepped.sale.tax,
+      note: `${money(stepped.invested)} put in; after ${money(stepped.sale.tax)} tax`,
+      best: true,
+    },
+  ] satisfies CompareItem[],
+  growth: {
+    xLabels: yearLabels(15),
+    ticks: [0, 5, 10, 15],
+    series: [
+      {
+        label: 'Raised 10% every year',
+        values: years(15).map((y) => stepped.valueByMonth[y * 12]!),
+        tone: 'accent',
+      },
+      {
+        label: 'Same every month',
+        values: years(15).map((y) => flat.valueByMonth[y * 12]!),
+        tone: 'ink',
+      },
+      {
+        label: 'Put in, raised 10% a year',
+        values: years(15).map((y) => stepped.investedByMonth[y * 12]!),
+        tone: 'muted',
+        dashed: true,
+      },
+    ],
+  } satisfies LineData,
+  byStepUp: {
+    head: ['Yearly rise', 'Last year’s SIP', 'Put in', 'You keep after tax'],
+    rows: [0, 0.05, 0.1, 0.15].map((s) => {
+      const x = fundPlan({ ...stepUpCase, stepUp: s }, incomeTax);
+      return [
+        s === 0 ? 'None' : pct(s),
+        formatINR(10_000 * Math.pow(1 + s, 14)),
+        money(x.invested),
+        money(x.kept),
+      ];
+    }),
+    highlight: 2,
+  } satisfies TableData,
+};
+
+export const swpCase: FundInput = {
+  lumpSum: 5_000_000,
+  monthly: 0,
+  stepUp: 0,
+  withdrawal: 30_000,
+  withdrawalRise: 0.06,
+  years: 25,
+  annualReturn: 0.1,
+  inflation: 0.06,
+};
+
+const swp = fundPlan(swpCase, incomeTax);
+const swpMax = maxWithdrawal(swpCase, incomeTax);
+const swpAtMax = fundPlan({ ...swpCase, withdrawal: swpMax }, incomeTax);
+const swpFlat = fundPlan({ ...swpCase, withdrawalRise: 0 }, incomeTax);
+
+export const swpFigures = {
+  max: swpMax,
+  balance: {
+    xLabels: yearLabels(25),
+    ticks: [0, 5, 10, 15, 20, 25],
+    series: [
+      {
+        label: '₹30,000 a month, kept flat',
+        values: years(25).map((y) => swpFlat.valueByMonth[y * 12]!),
+        tone: 'muted',
+        dashed: true,
+      },
+      {
+        label: `${formatINR(swpMax)} a month, rising 6% a year`,
+        values: years(25).map((y) => swpAtMax.valueByMonth[y * 12]!),
+        tone: 'accent',
+      },
+      {
+        label: '₹30,000 a month, rising 6% a year',
+        values: years(25).map((y) => swp.valueByMonth[y * 12]!),
+        tone: 'ink',
+      },
+    ],
+  } satisfies LineData,
+  byReturn: {
+    head: ['Fund return a year', 'Most you can take a month', 'Rising to, in year 25'],
+    rows: [0.07, 0.08, 0.1, 0.12].map((ret) => {
+      const m = maxWithdrawal({ ...swpCase, annualReturn: ret }, incomeTax);
+      return [pct(ret), formatINR(m), formatINR(m * Math.pow(1.06, 24))];
+    }),
+    highlight: 2,
+  } satisfies TableData,
+  plan: swp,
+  flatPlan: swpFlat,
 };

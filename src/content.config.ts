@@ -27,6 +27,9 @@ const blog = defineCollection({
         'old-or-new-tax-regime',
         'plot-vs-fd-vs-mutual-fund',
         'sip-vs-ppf-vs-fd',
+        'sip-calculator',
+        'lumpsum-calculator',
+        'swp-calculator',
       ])
       .optional(),
     /** The guide's headline figure for its listing card; must appear in the post's own text. */

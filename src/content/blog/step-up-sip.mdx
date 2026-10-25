@@ -1,0 +1,71 @@
+---
+title: 'Step-up SIP: what raising your SIP 10% a year does'
+description: Raising a ₹10,000 SIP by 10% every year nearly doubles what you keep after 15 years. Most of the gain comes from putting in more, and the rest from giving it longer to grow.
+date: 2026-10-25
+kind: decision
+tool: sip-calculator
+takeaway:
+  figure: '₹67.74 lakh'
+  label: kept after 15 years by raising a ₹10,000 SIP 10% a year
+---
+
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import Bars from '@/components/guide/Bars.astro';
+import LineChart from '@/components/guide/LineChart.astro';
+import StepUpWidget from '@/components/guide/widgets/StepUpWidget';
+import { stepUp } from '@/content/guideFigures';
+
+<InShort>
+
+- ₹10,000 a month for 15 years, at an illustrative 10% a year, leaves about ₹37.44 lakh after tax.
+- Raise it 10% every year and you keep about **₹67.74 lakh**.
+- You also put in more: ₹38.13 lakh instead of ₹18 lakh. A step-up works because your income rises, not by magic.
+
+</InShort>
+
+A SIP that stays at the same amount every month gets smaller in real terms each year, because prices and, usually, your salary keep rising. A **step-up SIP** raises the amount once a year, often in line with a raise at work. Most fund houses let you set this up when you start the SIP.
+
+## Flat or stepped up
+
+Take ₹10,000 a month for 15 years in an equity fund, at an illustrative 10% a year before tax, and sell it all at the end.
+
+- **Kept flat:** you put in ₹18 lakh. The fund grows to ₹40.16 lakh, and after ₹2.72 lakh of capital-gains tax you keep **₹37.44 lakh**.
+- **Raised 10% every year:** the SIP climbs to ₹37,975 a month by year 15. You put in ₹38.13 lakh and, after ₹4.26 lakh of tax, keep **₹67.74 lakh**.
+
+<Bars
+  title="What you keep after 15 years, after tax"
+  items={stepUp.bars}
+  note="₹10,000 a month to start, an illustrative 10% a year before tax, all sold at the end. The lighter end of each bar is the tax. Fund returns are assumed, not promised. Markets can fall."
+/>
+
+## Where the extra comes from
+
+The stepped-up SIP puts in ₹20.13 lakh more and ends ₹30.30 lakh ahead. So most of the difference is simply more money going in. The rest is growth on that money. Because the extra arrives in later years, it has less time to grow than your first instalments did.
+
+<LineChart
+  title="The fund's value, year by year"
+  data={stepUp.growth}
+  xTitle="Years of investing"
+  note="Values before tax. The dashed line is what the stepped-up SIP has put in so far."
+/>
+
+## How big a step-up?
+
+<Table
+  title="₹10,000 a month for 15 years, by the yearly rise"
+  table={stepUp.byStepUp}
+  note="An illustrative 10% a year before tax, all sold at the end."
+/>
+
+A 10% yearly rise is ambitious if your income grows more slowly. A rise you can keep up is worth more than a bigger one you stop after a few years. Some people step up by a fixed amount instead, such as ₹1,000 a year, which is gentler.
+
+<StepUpWidget client:visible />
+
+## Things to weigh
+
+- **Your income.** Set the step-up to what your salary is likely to allow, and keep an emergency fund outside the SIP.
+- **Returns vary.** The 10% here is an illustration. A fund can fall in value for years at a time, and the step-up keeps investing through those falls.
+- **Tax is due when you sell.** Selling in parts across financial years uses the ₹1.25 lakh yearly exemption on long-term gains more than once.
+
+Try your own amount, step-up and return in the [SIP calculator](/tools/sip-calculator/).
