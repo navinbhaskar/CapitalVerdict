@@ -21,8 +21,8 @@
     "verify": "npm run format:check && npm run lint && npm run test && npm run build",
     "build:prod": "node scripts/check-env.mjs && astro check && astro build && node scripts/check-dist.mjs",
     "check:dist": "node scripts/check-dist.mjs",
-    "build:pages": "node scripts/deploy-pages.mjs --build-only",
-    "deploy:pages": "node scripts/deploy-pages.mjs"
+    "build:site": "node scripts/deploy.mjs --build-only",
+    "deploy": "node scripts/deploy.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.1",
@@ -51,6 +51,7 @@
     "prettier-plugin-tailwindcss": "^0.8.1",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.2",
-    "vitest": "^5.0.5"
+    "vitest": "^5.0.5",
+    "wrangler": "^4.152.0"
   }
 }

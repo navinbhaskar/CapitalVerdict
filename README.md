@@ -18,20 +18,23 @@ Static Astro + TypeScript site with Preact islands, Tailwind and Vitest. English
 | `npm run format`     | Prettier (write)                                                     |
 | `npm run verify`     | Format check, lint, test and build in one go (run before committing) |
 
-## Deploy (Cloudflare Pages)
+## Deploy (Cloudflare Workers)
 
-1. Create a Pages project from this repository (or upload `dist` with Wrangler).
-2. Build command `npm run build:prod`, output directory `dist`, Node 22.
-3. Set these environment variables (Settings, Environment variables, Production):
+The site is a Worker with static assets (`wrangler.jsonc`) serving `dist/` on capitalverdict.com and
+www.capitalverdict.com. DNS and email routing are on the same Cloudflare zone. A redirect rule sends
+www to the bare domain, and "Always Use HTTPS" sends http to https.
 
-   | Variable                    | Required | What it does                                                                                                   |
-   | --------------------------- | -------- | -------------------------------------------------------------------------------------------------------------- |
-   | `SITE_URL`                  | Yes      | Public origin, e.g. `https://capitalverdict.com`. Canonical links, sitemap, RSS, link previews, robots.txt.    |
-   | `PUBLIC_CONTACT_EMAIL`      | No       | Overrides the contact address (default support@capitalverdict.com) in the footer, About and "Report an error". |
-   | `PUBLIC_CF_ANALYTICS_TOKEN` | No       | Cloudflare Web Analytics token. Off without it; when set, the privacy page describes it automatically.         |
+`npm run deploy` builds for https://capitalverdict.com and uploads with Wrangler (log in once with
+`npx wrangler login`). Add `-- --block-indexing` to publish a robots.txt that blocks search engines.
 
-4. Add your domain under Custom domains, then submit `https://<domain>/sitemap-index.xml` in Google
-   Search Console.
+Optional build settings:
+
+| Variable                    | What it does                                                                                                   |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `PUBLIC_CONTACT_EMAIL`      | Overrides the contact address (default support@capitalverdict.com) in the footer, About and "Report an error". |
+| `PUBLIC_CF_ANALYTICS_TOKEN` | Cloudflare Web Analytics token. Off without it; when set, the privacy page describes it automatically.         |
+
+The sitemap (`https://capitalverdict.com/sitemap-index.xml`) is submitted in Google Search Console.
 
 `npm run build:prod` fails if a required setting is missing, or if any page, feed or sitemap still
 contains `TODO_COPY`, `TODO_VERIFY`, `example.invalid` or `localhost`. Sections whose copy is still a

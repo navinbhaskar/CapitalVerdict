@@ -1,0 +1,19 @@
+// Cloudflare Workers static assets: serves dist/ (the Astro build) for capitalverdict.com.
+// Deploy with `npm run deploy` (scripts/deploy.mjs), which builds for the domain first.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "capitalverdict",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    // /guides/x and /guides/x/ both serve guides/x/index.html; the trailing slash is canonical.
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+  },
+  // The Worker owns the domain and www; Cloudflare creates their DNS records and certificates.
+  "routes": [
+    { "pattern": "capitalverdict.com", "custom_domain": true },
+    { "pattern": "www.capitalverdict.com", "custom_domain": true },
+  ],
+  "workers_dev": true,
+}

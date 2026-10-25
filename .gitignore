@@ -29,3 +29,6 @@ Thumbs.db
 
 # Local review screenshots
 screenshots/
+
+# Wrangler local state
+.wrangler/

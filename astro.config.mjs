@@ -5,7 +5,7 @@ import preact from '@astrojs/preact';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
-// Production is https://capitalverdict.com (set by scripts/deploy-pages.mjs). Local builds use localhost.
+// Production is https://capitalverdict.com (set by scripts/deploy.mjs). Local builds use localhost.
 const site = process.env.SITE_URL ?? 'http://localhost:4321';
 
 export default defineConfig({
