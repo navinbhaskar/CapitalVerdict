@@ -21,6 +21,7 @@ import ExampleNote from '@/components/tool/ExampleNote';
 import ResultBar from '@/components/tool/ResultBar';
 import Tier from '@/components/tool/Tier';
 import EquityTaxNote from '@/components/tool/EquityTaxNote';
+import MarketRiskNote from '@/components/tool/MarketRiskNote';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import NetPositionChart from '@/components/tool/NetPositionChart';
@@ -381,6 +382,7 @@ export default function RentBuyTool({ locale }: Props) {
               { percent: true, flagged: true },
             )}
           </Tier>
+          <MarketRiskNote locale={locale} kind="savings" />
           <EquityTaxNote locale={locale} context="afterTax" />
 
           <Refine

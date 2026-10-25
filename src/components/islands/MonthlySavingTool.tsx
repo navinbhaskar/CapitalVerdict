@@ -21,6 +21,7 @@ import ExampleNote from '@/components/tool/ExampleNote';
 import ResultBar from '@/components/tool/ResultBar';
 import Tier from '@/components/tool/Tier';
 import EquityTaxNote from '@/components/tool/EquityTaxNote';
+import MarketRiskNote from '@/components/tool/MarketRiskNote';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import SensitivityList, { type FlipLine } from '@/components/tool/SensitivityList';
@@ -346,6 +347,7 @@ export default function MonthlySavingTool({ locale }: Props) {
                   note: taxNote(o),
                 }))}
               />
+              <MarketRiskNote locale={locale} kind="fund" />
               <EquityTaxNote locale={locale} context="computed" />
               <p class="mt-3 text-xs text-ink-muted">{t(locale, 'saving.stat.note')}</p>
             </section>

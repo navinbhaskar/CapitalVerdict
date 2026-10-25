@@ -603,7 +603,7 @@
   "page.terms.changes.title": "Changes to these terms",
   "page.terms.changes.body": "These terms may change. The version on this page is the one that applies.",
   "page.terms.law.title": "Governing law",
-  "page.terms.law.body": "These terms are governed by the laws of India. TODO_COPY",
+  "page.terms.law.body": "These terms are governed by the laws of India, and any dispute is subject to the jurisdiction of Indian courts.",
   "page.privacy.title": "Privacy",
   "page.privacy.description": "CapitalVerdict collects no personal data. The calculators run in your browser and store your settings only on your device.",
   "page.privacy.intro": "CapitalVerdict has no accounts and no sign-up, and the calculators send nothing you type to any server.",
@@ -1448,5 +1448,9 @@
   "guide.todays.real": "Return after inflation",
   "guide.todays.verdict": "{amount} in {n} years buys what {today} buys today.",
   "nav.calculators": "Calculators",
-  "nav.allCalculators": "All calculators, with what each answers"
+  "nav.allCalculators": "All calculators, with what each answers",
+  "marketRisk.fund": "Equity returns are not guaranteed. A fund can fall in value, and can stay below what you put in for years. The return used here is an assumption, not a forecast; try lower ones to see how the answer changes.",
+  "marketRisk.savings": "Investment returns are not guaranteed. Markets can fall, and can stay down for years. The return used here is an assumption, not a forecast; try lower ones to see how the answer changes.",
+  "page.disclaimer.markets.title": "Market-linked returns can fall",
+  "page.disclaimer.markets.body": "Results for equity funds, SIPs, shares and property use a return you choose or an illustrative one. Past returns do not predict future ones, and the value of these investments can go down as well as up."
 }

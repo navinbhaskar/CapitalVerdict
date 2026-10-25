@@ -21,6 +21,7 @@ import ExampleNote from '@/components/tool/ExampleNote';
 import ResultBar from '@/components/tool/ResultBar';
 import Tier from '@/components/tool/Tier';
 import EquityTaxNote from '@/components/tool/EquityTaxNote';
+import MarketRiskNote from '@/components/tool/MarketRiskNote';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
 import SensitivityList, { type FlipLine } from '@/components/tool/SensitivityList';
@@ -377,6 +378,7 @@ export default function PlotVsTool({ locale }: Props) {
                   }),
                 }))}
               />
+              <MarketRiskNote locale={locale} kind="fund" />
               <EquityTaxNote locale={locale} context="computed" />
               <dl class="mt-4 grid grid-cols-3 gap-x-4 gap-y-3 border-t border-line pt-4">
                 {OPTIONS.map((o) => (

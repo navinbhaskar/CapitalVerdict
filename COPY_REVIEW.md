@@ -150,3 +150,13 @@ All 17 guides now have an "In short" box, tables, charts and a small calculator 
 | [ ] `nav.calculators`               | Top nav: replaces "Petrol, CNG or EV" (and "Tools" on phones); opens a list of every calculator |
 | [ ] `nav.allCalculators`            | Last line of that list, linking to the home page's calculators section                          |
 | [ ] Footer uses `principle.*.title` | The four working principles under the logo, ticked (already approved copy, new place)           |
+
+## Governing law and market-risk notes (drafted 2026-10-25)
+
+| Key or file                                                                                  | Where it shows                                                                               |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| [ ] `page.terms.law.body`                                                                    | Terms: governing law, no city named (replaces the TODO_COPY placeholder)                     |
+| [ ] `page.disclaimer.markets.title`, `page.disclaimer.markets.body`                          | Disclaimer: "Market-linked returns can fall"                                                 |
+| [ ] `marketRisk.fund`                                                                        | SIP vs PPF vs RD and plot vs FD vs fund tools, above "How equity gains are taxed"            |
+| [ ] `marketRisk.savings`                                                                     | Prepay or invest, cash or car loan and rent vs buy tools, above "How equity gains are taxed" |
+| [ ] "Fund (or Investment) returns are assumed, not promised. Markets can fall." in footnotes | Guides: SIP vs PPF (two figures), mutual fund tax, plot vs fund, prepay or invest            |
