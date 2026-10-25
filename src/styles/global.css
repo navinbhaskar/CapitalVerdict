@@ -300,49 +300,50 @@
     color: var(--color-ink);
     line-height: 1.7;
   }
+  /* Guide tables, charts and calculators (.not-prose) keep their own styles. */
   .prose-dw > * + * {
     margin-top: 1rem;
   }
-  .prose-dw h2 {
+  .prose-dw h2:not(.not-prose *) {
     margin-top: 2rem;
     font-family: var(--font-display);
     font-size: var(--text-2xl);
     font-weight: 500;
     line-height: var(--text-2xl--line-height);
   }
-  .prose-dw h3 {
+  .prose-dw h3:not(.not-prose *) {
     margin-top: 1.5rem;
     font-family: var(--font-display);
     font-size: var(--text-xl);
     font-weight: 500;
   }
-  .prose-dw ul,
-  .prose-dw ol {
+  .prose-dw ul:not(.not-prose *),
+  .prose-dw ol:not(.not-prose *) {
     padding-left: 1.25rem;
   }
-  .prose-dw ul {
+  .prose-dw ul:not(.not-prose *) {
     list-style: disc;
   }
-  .prose-dw ol {
+  .prose-dw ol:not(.not-prose *) {
     list-style: decimal;
   }
-  .prose-dw li + li {
+  .prose-dw li + li:not(.not-prose *) {
     margin-top: 0.375rem;
   }
-  .prose-dw li::marker {
+  .prose-dw li:not(.not-prose *)::marker {
     color: var(--color-ink-subtle);
   }
-  .prose-dw a {
+  .prose-dw a:not(.not-prose *) {
     color: var(--color-accent-strong);
     text-decoration-line: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.25em;
   }
-  .prose-dw strong {
+  .prose-dw strong:not(.not-prose *) {
     font-weight: 600;
   }
-  .prose-dw p,
-  .prose-dw li {
+  .prose-dw p:not(.not-prose *),
+  .prose-dw li:not(.not-prose *) {
     font-variant-numeric: tabular-nums;
   }
 

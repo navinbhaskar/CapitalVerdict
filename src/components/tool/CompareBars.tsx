@@ -16,6 +16,8 @@ interface Props {
   /** What the bars measure, e.g. "Total cost over 10 years". */
   caption: string;
   items: CompareItem[];
+  /** Inside a frame that already has a title (guides): no rule above, caption hidden. */
+  bare?: boolean;
 }
 
 /**
@@ -24,13 +26,13 @@ interface Props {
  * end, so an option that grows more but loses more to tax reads honestly. The amounts are written
  * out; the bars only repeat them, so they are hidden from screen readers.
  */
-export default function CompareBars({ caption, items }: Props) {
+export default function CompareBars({ caption, items, bare = false }: Props) {
   const gross = (i: CompareItem) => Math.max(0, i.value) + Math.max(0, i.tax ?? 0);
   const max = Math.max(...items.map(gross), 1);
   return (
-    <figure class="mt-4 border-t border-line pt-4">
-      <figcaption class="text-sm text-ink-muted">{caption}</figcaption>
-      <ul class="mt-2.5 space-y-3" role="list">
+    <figure class={bare ? '' : 'mt-4 border-t border-line pt-4'}>
+      <figcaption class={bare ? 'sr-only' : 'text-sm text-ink-muted'}>{caption}</figcaption>
+      <ul class={`space-y-3 ${bare ? '' : 'mt-2.5'}`} role="list">
         {items.map((item) => {
           const kept = Math.max(0, item.value) / max;
           const tax = Math.max(0, item.tax ?? 0) / max;

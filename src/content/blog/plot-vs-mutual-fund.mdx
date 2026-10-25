@@ -9,6 +9,21 @@ takeaway:
   label: yearly price growth a ₹20 lakh plot needs to match the fund
 ---
 
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import Bars from '@/components/guide/Bars.astro';
+import Waterfall from '@/components/guide/Waterfall.astro';
+import PlotWidget from '@/components/guide/widgets/PlotWidget';
+import { plotFigures } from '@/content/guideFigures';
+
+<InShort>
+
+- A ₹20 lakh plot really costs ₹21.6 lakh once stamp duty and fees are paid.
+- Growing 5% a year, it leaves **₹30.08 lakh** after 10 years, about 3.37% a year on your money.
+- To match an equity fund at 10% a year, its price would need to grow **11.22%** a year.
+
+</InShort>
+
 "Land never loses value" is one of the most repeated pieces of money advice in India. Prices often do rise, but a plot's headline price rise is not what you keep. Four costs eat into it, and none of them hits an FD or a mutual fund the same way.
 
 ## The four costs
@@ -24,14 +39,34 @@ A ₹20 lakh plot, with 7% stamp duty and registration and ₹20,000 of other bu
 
 - It sells for ₹32.58 lakh, less ₹65,156 of selling costs, ₹1.34 lakh of tax and ₹50,000 of holding costs. You keep **₹30.08 lakh**: about **3.37%** a year on the ₹21.6 lakh you put in.
 
+<Waterfall
+  title="What the plot leaves you after 10 years"
+  steps={plotFigures.steps}
+  note="₹20 lakh plot; 7% stamp duty and registration plus ₹20,000 of other costs (illustrative); 5% a year growth; ₹5,000 a year upkeep; 2% selling costs; long-term capital-gains tax at 12.5% plus cess."
+/>
+
 Put the same ₹21.6 lakh elsewhere instead:
 
 - **Fixed deposit** at an illustrative 7%, with interest taxed each year at 31.2%: **₹34.57 lakh**.
 - **Equity mutual fund** at an illustrative 10% a year before tax, with long-term capital-gains tax on gains above ₹1.25 lakh when sold: **₹51.71 lakh**, about 9.12% a year after tax.
 
+<Bars
+  title="The same ₹21.6 lakh, three ways, after 10 years"
+  items={plotFigures.bars}
+  note="FD at 7% with interest taxed at 31.2%; fund at 10% a year before tax. The lighter end of each bar is the tax."
+/>
+
 ## What the plot would need
 
 With these figures, the plot's price would have to grow **11.22%** a year to match the fund. Even at 8% a year, it would leave you ₹39.12 lakh, still well behind. The costs are why: they are paid whether the price rises or not.
+
+<Table
+  title="What the plot leaves, by how fast its price grows"
+  table={plotFigures.byGrowth}
+  note="Same plot and costs. The fund leaves ₹51.71 lakh."
+/>
+
+<PlotWidget client:visible />
 
 None of this means plots are always a bad idea. In a fast-growing area, prices can beat these rates. The point is to compare against the right bar: what your money would leave you elsewhere, after all costs and tax.
 

@@ -6,6 +6,20 @@ kind: basics
 tool: sip-vs-ppf-vs-fd
 ---
 
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import Waterfall from '@/components/guide/Waterfall.astro';
+import GainTaxWidget from '@/components/guide/widgets/GainTaxWidget';
+import { fundTax, saving } from '@/content/guideFigures';
+
+<InShort>
+
+- Equity fund gains are taxed only when you sell.
+- Held 12 months or less: 20%. Held longer: 12.5% on gains above **₹1.25 lakh** a year. Add 4% cess.
+- A ₹3 lakh long-term gain costs ₹22,750 in tax; a ₹50,000 short-term gain costs ₹10,400.
+
+</InShort>
+
 When you compare an equity mutual fund with a fixed deposit or PPF, the fund usually shows a bigger number. But that number is often before tax, while PPF's is tax-free. To compare fairly you need to know what the fund's gains will cost in tax when you sell.
 
 This covers equity mutual funds and shares (the same rules apply to both), for resident individuals, for 2026-27.
@@ -15,6 +29,12 @@ This covers equity mutual funds and shares (the same rules apply to both), for r
 - **Held 12 months or less: short-term.** The gain is taxed at **20%**.
 - **Held longer: long-term.** The first **₹1.25 lakh** of long-term gains in a financial year is tax-free; the rest is taxed at **12.5%**.
 - **4% cess** is added to both.
+
+<Table
+  title="Equity fund and share gains, 2026-27"
+  table={fundTax.rules}
+  note="For resident individuals. Surcharge at high incomes is left out."
+/>
 
 You pay this only when you sell (redeem). Until then, the gain grows untaxed, which is a real advantage over an FD, whose interest is taxed every year.
 
@@ -26,11 +46,19 @@ The ₹1.25 lakh exemption is for all your long-term equity gains in the year to
 
 **A long-term sale.** You sell units held for three years, with a gain of ₹3 lakh and no other equity gains that year. The first ₹1.25 lakh is exempt, so tax is 12.5% of ₹1.75 lakh = ₹21,875, plus cess = **₹22,750**.
 
+<GainTaxWidget client:visible />
+
 ## A SIP is many purchases
 
 Each SIP instalment is a separate purchase with its own holding period. If you sell everything at once, the instalments from the last 12 months are short-term and the rest are long-term.
 
 Take ₹10,000 a month for 15 years, at an illustrative 10% a year before tax. The fund grows to about **₹40.16 lakh**. Selling it all, the tax comes to about **₹2.72 lakh**. Only ₹1,332 of that is on the short-term gains from the last year's instalments; the rest is long-term tax above the exemption. You keep about **₹37.44 lakh**.
+
+<Waterfall
+  title="₹10,000 a month for 15 years, then sold"
+  steps={saving.sipSteps}
+  note="An illustrative 10% a year before tax. Tax on the last year's instalments is short-term; the rest is long-term above ₹1.25 lakh."
+/>
 
 That after-tax figure is the one to compare with PPF or an FD. Our [SIP vs PPF vs RD calculator](/tools/sip-vs-ppf-vs-fd/) does this split for you, and shows each option's tax under its result.
 

@@ -9,6 +9,20 @@ takeaway:
   label: of deductions the old regime needs to win on a ₹15 lakh salary
 ---
 
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import LineChart from '@/components/guide/LineChart.astro';
+import RegimeWidget from '@/components/guide/widgets/RegimeWidget';
+import { taxRegime } from '@/content/guideFigures';
+
+<InShort>
+
+- The new regime is the default, and for most salaries it charges less tax.
+- The old regime wins only if your deductions are big enough: above **₹5,43,750** on a ₹15 lakh salary.
+- Up to a ₹12.75 lakh salary, the new regime charges no tax, so the old one can never win.
+
+</InShort>
+
 Every year salaried people face the same choice: stay in the new tax regime, which is the default, or opt for the old one. The old regime lets you deduct things like tax-saving investments, health insurance, home-loan interest and the HRA exemption. The new one has lower slab rates but allows almost none of those deductions.
 
 So the question is simple: **are your deductions big enough to make up for the old regime's higher rates?** For most incomes there is one number of deductions where the two regimes charge the same tax. Below it, the new regime wins. Above it, the old one does.
@@ -21,6 +35,12 @@ The slabs, standard deduction and rebate are the same as last year. The 2026 Bud
 - **Old regime:** nil up to ₹2.5 lakh, 5% to ₹5 lakh, 20% to ₹10 lakh, 30% above. Standard deduction ₹50,000. No tax up to ₹5 lakh of taxable income.
 - Both add 4% health and education cess.
 
+<Table
+  title="Slab rates, side by side"
+  table={taxRegime.slabs}
+  note="On taxable income, after the standard deduction. Add 4% cess. Rebates make tax nil up to ₹12 lakh (new) and ₹5 lakh (old)."
+/>
+
 These are for residents below 60 with income up to ₹50 lakh, where no surcharge applies. The sources are on the [calculator page](/tools/old-or-new-tax-regime/).
 
 ## Three salaries, worked through
@@ -31,7 +51,23 @@ These are for residents below 60 with income up to ₹50 lakh, where no surcharg
 
 **₹20 lakh salary, ₹3.75 lakh of deductions.** New regime: ₹1,92,400. Old regime: ₹2,96,400. The old regime needs deductions above **₹7,08,333** to win.
 
+<Table
+  title="Three salaries, both regimes"
+  table={taxRegime.examples}
+  note="Tax with 4% cess, before rounding. The last column is the deductions the old regime needs to charge less."
+/>
+
+<LineChart
+  title="Deductions the old regime needs, by salary"
+  data={taxRegime.breakEven}
+  xTitle="Salary"
+  missing="Old cannot win"
+  note="If your deductions are above the line, the old regime charges less. There is no line up to ₹12.5 lakh, where the new regime charges no tax. The bump near ₹13 lakh is marginal relief."
+/>
+
 All three include the 4% cess, before the final rounding to the nearest ten rupees.
+
+<RegimeWidget client:visible />
 
 ## What counts as a deduction
 

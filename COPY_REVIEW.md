@@ -131,3 +131,14 @@ Example values the tools now open with. They are labelled "Example" on the page 
 | [ ] `hero.car.*`, `hero.solar.*`, `hero.home.*`                                                                                                        | The three sentences, their answers and the example-figures line |
 | [ ] `hero.rotate.pause`, `hero.rotate.play`                                                                                                            | Home hero card: pause and play button for the rotating examples |
 | [ ] `blog.title`, `blog.description`, `blog.intro`, `blog.kind.basics`, `blog.disclaimer`, `blog.more`, `nav.blog`, `footer.link.blog`, `home.notes.*` | "Notes" renamed to "Guides", "Money ideas" to "Money basics"    |
+
+## Guide tables, charts and calculators (drafted 2026-10-25)
+
+The ten newest guides now have an "In short" box, tables, charts and a small calculator each. Every number comes from the tool models (`src/content/guideFigures.ts`); only the words need review.
+
+| Key or file                                                                                                                                                                   | Where it shows                                 |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| [ ] `guide.inShort`, `guide.seeNumbers`, `guide.tryIt`, `guide.fullTool`, `guide.nil`, `guide.taxFree`, `guide.afterTax`, `guide.salary`, `guide.loanRate`, `guide.inflation` | Shared labels on guide figures and calculators |
+| [ ] `guide.regime.*`, `guide.rebate.*`, `guide.gain.*`, `guide.sip.*`, `guide.lowerEmi.*`, `guide.prepay.*`, `guide.plot.*`, `guide.fd.*`, `guide.ac.*`, `guide.flat.*`       | The ten calculators, one per guide             |
+| [ ] Row and series labels in `src/content/guideFigures.ts`                                                                                                                    | Table headings, chart legends, breakdown steps |
+| [ ] "In short" bullets, figure titles and footnotes in the ten `.mdx` guides                                                                                                  | Each guide                                     |

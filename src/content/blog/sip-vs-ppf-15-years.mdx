@@ -9,6 +9,21 @@ takeaway:
   label: fund return a SIP needs to beat PPF over 15 years
 ---
 
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import Bars from '@/components/guide/Bars.astro';
+import LineChart from '@/components/guide/LineChart.astro';
+import SipWidget from '@/components/guide/widgets/SipWidget';
+import { saving } from '@/content/guideFigures';
+
+<InShort>
+
+- ₹10,000 a month for 15 years: an equity SIP at 10% a year leaves about ₹37.44 lakh after tax; PPF leaves ₹31.56 lakh, tax-free.
+- The SIP needs a fund return above **7.79%** a year to beat PPF.
+- PPF is certain and locked in; a SIP can fall and can be sold any time.
+
+</InShort>
+
 PPF and an equity SIP are two of the most common ways to save every month. PPF pays a rate set by the government, is tax-free and cannot fall. A SIP in an equity fund can grow faster but is taxed when you sell, and its value goes up and down. To compare them fairly, compare what each **leaves you after tax**.
 
 ## The setup
@@ -25,11 +40,32 @@ PPF and an equity SIP are two of the most common ways to save every month. PPF p
 - **PPF: ₹31.56 lakh**, tax-free.
 - **Recurring deposit: ₹26.20 lakh**, after ₹5.09 lakh of tax on the interest.
 
+<Bars
+  title="What ₹18 lakh saved leaves you after 15 years"
+  items={saving.bars}
+  note="The lighter end of a bar is the tax. SIP at 10% a year before tax; PPF at 7.1%; RD at 7% with interest taxed at 31.2%."
+/>
+
+<LineChart
+  title="What each is worth, year by year"
+  data={saving.growth}
+  xTitle="Years of saving"
+  note="The SIP line is what you would keep if you sold that year, after tax."
+/>
+
 At 10% a year, the SIP comes out about ₹5.88 lakh ahead. The recurring deposit trails because its interest is taxed every year, while PPF's is not taxed at all.
 
 ## The number that decides it
 
 The SIP only wins if the fund does well enough. With these figures, it needs a return above **7.79%** a year before tax to beat PPF. At 7% a year, it would keep about ₹29.72 lakh, less than PPF.
+
+<Table
+  title="SIP against PPF, by the fund's return"
+  table={saving.byReturn}
+  note="₹10,000 a month for 15 years. The switch is at 7.79%."
+/>
+
+<SipWidget client:visible />
 
 So the real question is how confident you are of beating that rate, after costs, for 15 years. Nobody knows future returns; the calculator shows the answer at returns 2 points either side of yours.
 

@@ -3,11 +3,11 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 /**
- * Blog posts: Markdown in src/content/blog. Facts in a post must come from the data files or the
+ * Blog posts: Markdown or MDX in src/content/blog. Facts in a post must come from the data files or the
  * tools' own results; illustrative numbers say so in the text.
  */
 const blog = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
   schema: z.object({
     title: z.string().min(1),
     description: z.string().min(1).max(200),

@@ -1,0 +1,16 @@
+---
+import CompareBars, { type CompareItem } from '@/components/tool/CompareBars';
+import Figure from './Figure.astro';
+
+/** The options side by side on one scale, as in the calculators. Rendered at build time. */
+interface Props {
+  title: string;
+  items: CompareItem[];
+  note?: string;
+}
+const { title, items, note } = Astro.props;
+---
+
+<Figure title={title} note={note}>
+  <CompareBars caption={title} items={items} bare />
+</Figure>

@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 
 const dir = 'src/content/blog';
 const posts = readdirSync(dir)
-  .filter((f) => f.endsWith('.md'))
+  .filter((f) => /\.mdx?$/.test(f))
   .map((f) => {
     const text = readFileSync(`${dir}/${f}`, 'utf-8');
     const [, front = '', body = ''] = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/.exec(text) ?? [];

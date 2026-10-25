@@ -1,7 +1,12 @@
-/** Minutes to read at about 200 words a minute, never less than one. */
+/**
+ * Minutes to read at about 200 words a minute, never less than one. MDX imports and component
+ * tags (tables, charts, calculators) are left out; prose inside a component still counts.
+ */
 export function readingMinutes(markdown: string): number {
   const words = markdown
     .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/^import .*$/gm, ' ')
+    .replace(/<\/?[A-Z][^>]*>/g, ' ')
     .replace(/[#>*_`|[\]()-]/g, ' ')
     .split(/\s+/)
     .filter(Boolean).length;

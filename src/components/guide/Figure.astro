@@ -1,0 +1,20 @@
+---
+/**
+ * The frame every guide table, chart and breakdown sits in: a title, the figure, and an optional
+ * footnote saying where the numbers come from. `.not-prose` keeps article styles out.
+ */
+interface Props {
+  title: string;
+  /** Footnote: the assumptions behind the figure. */
+  note?: string;
+}
+const { title, note } = Astro.props;
+---
+
+<figure class="not-prose mt-8 mb-8 rounded-xl border border-line bg-raised p-4 sm:p-5">
+  <figcaption class="font-display text-xl font-medium">{title}</figcaption>
+  <div class="mt-4">
+    <slot />
+  </div>
+  {note && <p class="mt-4 text-xs text-ink-muted">{note}</p>}
+</figure>

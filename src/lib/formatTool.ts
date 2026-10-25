@@ -22,3 +22,8 @@ export function formatMoney(value: number): string {
 export function formatPercent(rate: number): string {
   return `${Number((rate * 100).toFixed(2))}%`;
 }
+
+/** Round amounts for labels and slider values: ₹15.00 lakh → "₹15 lakh", ₹2.50 lakh → "₹2.5 lakh". */
+export function formatMoneyShort(value: number): string {
+  return formatMoney(value).replace(/\.?0+ (lakh|crore)$/, ' $1');
+}

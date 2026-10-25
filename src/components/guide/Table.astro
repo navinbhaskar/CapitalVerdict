@@ -1,0 +1,61 @@
+---
+import type { TableData } from '@/content/guideFigures';
+import Figure from './Figure.astro';
+
+/**
+ * A worked table in a guide. The first column names the row; the rest are numbers, right-aligned.
+ * The guide's own example row is drawn in brass. Wide tables scroll inside their frame, never the
+ * page.
+ */
+interface Props {
+  title: string;
+  table: TableData;
+  note?: string;
+}
+const { title, table, note } = Astro.props;
+---
+
+<Figure title={title} note={note}>
+  <div
+    class="-mx-4 overflow-x-auto px-4 sm:-mx-5 sm:px-5"
+    tabindex="0"
+    role="region"
+    aria-label={title}
+  >
+    <table class="num w-full min-w-max border-collapse text-sm">
+      <thead>
+        <tr class="border-b border-line-strong text-ink-muted">
+          {table.head.map((h, i) => (
+            <th
+              scope="col"
+              class={`py-2 font-medium ${i === 0 ? 'pr-3 pl-2 text-left sm:pr-4' : 'pl-3 text-right sm:pl-4'} ${i > 0 && i === table.head.length - 1 ? 'pr-2' : ''}`}
+            >
+              {h}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {table.rows.map((row, r) => (
+          <tr
+            class={`border-b border-line last:border-b-0 ${r === table.highlight ? 'bg-accent-soft' : ''}`}
+          >
+            {row.map((cell, i) =>
+              i === 0 ? (
+                <th scope="row" class="py-2.5 pr-3 pl-2 text-left font-normal sm:pr-4">
+                  {cell}
+                </th>
+              ) : (
+                <td
+                  class={`py-2.5 pl-3 text-right sm:pl-4 ${i === row.length - 1 ? 'pr-2 font-medium' : ''}`}
+                >
+                  {cell}
+                </td>
+              ),
+            )}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</Figure>

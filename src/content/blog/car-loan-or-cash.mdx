@@ -9,6 +9,20 @@ takeaway:
   label: true yearly cost of a 9% car loan with a ₹5,000 fee
 ---
 
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import Bars from '@/components/guide/Bars.astro';
+import FlatRateWidget from '@/components/guide/widgets/FlatRateWidget';
+import { carLoan } from '@/content/guideFigures';
+
+<InShort>
+
+- A car loan is worth it only if your savings earn more, after tax, than the loan really costs.
+- A 9% loan with a ₹5,000 fee really costs **9.67%** a year. Below that return, paying cash wins.
+- A "flat" rate is not the real rate: a flat 5% over 5 years costs about **9.15%**.
+
+</InShort>
+
 If you have the money for a car, should you pay cash or take a loan and keep your savings invested? The answer comes down to one comparison: **does your money earn more, after tax, than the loan really costs?**
 
 ## The loan's true cost
@@ -24,11 +38,31 @@ A ₹10 lakh car. One buyer pays cash. The other pays 20% down and the fee, take
 
 After 5 years, both own the same car and owe nothing. **Paying cash comes out ₹67,298 ahead.** If savings earned 10% a year after tax instead, the loan would come out ₹8,927 ahead. The switch happens at 9.67%.
 
+<Bars
+  title="After 5 years, both own the car and owe nothing"
+  items={carLoan.bars}
+  note="₹10 lakh car; loan of ₹8 lakh at 9% for 5 years with a ₹5,000 fee; savings earn 7% a year after tax."
+/>
+
+<Table
+  title="Who comes out ahead, by what your savings earn"
+  table={carLoan.byReturn}
+  note="Same car and loan as above. The switch is at 9.67%."
+/>
+
 ## Watch for flat rates
 
 Some car loans are quoted at a **flat rate**, which is worked out on the full amount for the whole term, even though you repay it month by month. It sounds much cheaper than it is.
 
 A "flat 5%" on ₹8 lakh over 5 years means ₹2 lakh of interest (5% × ₹8 lakh × 5 years) and an EMI of **₹16,667**. That is about the same as a **9.15%** loan on the usual reducing balance. So always ask for the reducing-balance rate, and compare that.
+
+<Table
+  title="Flat rates and what they really charge"
+  table={carLoan.flat}
+  note="The real rate is the reducing-balance rate that gives the same EMI."
+/>
+
+<FlatRateWidget client:visible />
 
 ## Beyond the numbers
 

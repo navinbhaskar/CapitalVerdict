@@ -6,6 +6,20 @@ kind: basics
 tool: old-or-new-tax-regime
 ---
 
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import LineChart from '@/components/guide/LineChart.astro';
+import RebateWidget from '@/components/guide/widgets/RebateWidget';
+import { rebate } from '@/content/guideFigures';
+
+<InShort>
+
+- Under the new regime, taxable income up to ₹12 lakh pays no tax: a rebate cancels the slab tax.
+- For a salary, that means up to **₹12.75 lakh**, after the ₹75,000 standard deduction.
+- Just above, marginal relief stops the tax jumping: a ₹13 lakh salary pays **₹26,000**, not ₹66,300.
+
+</InShort>
+
 You may have heard that income up to ₹12 lakh is now tax-free. That is true under the new tax regime, but not because the first ₹12 lakh is exempt. The slab tax is still worked out; a **rebate** then cancels it. Knowing that explains what happens just above ₹12 lakh, where many salaries fall.
 
 ## How the rebate works
@@ -20,7 +34,22 @@ Without help, earning one rupee more than ₹12 lakh would cost you about ₹60,
 
 Take a **₹13 lakh salary**. Taxable income is ₹12.25 lakh, and the slab tax is ₹63,750. But you only have ₹25,000 above ₹12 lakh, so the tax is capped at ₹25,000. With 4% cess, you pay **₹26,000**, not ₹66,300.
 
+<LineChart
+  title="Tax on salaries from ₹11.5 lakh to ₹14 lakh"
+  data={rebate.cliff}
+  xTitle="Salary"
+  note="New regime, 2026-27, with 4% cess. Without marginal relief, tax would jump from nil to over ₹60,000 just past ₹12.75 lakh."
+/>
+
 The relief fades as income rises. It stops mattering at ₹12,70,590 of taxable income, where the slab tax (₹70,588.50) is about the same as the income above ₹12 lakh. Above that, you simply pay the slab tax.
+
+<Table
+  title="The rebate and relief, step by step"
+  table={rebate.steps}
+  note="New regime. You pay the slab tax less the rebate or relief, plus 4% cess."
+/>
+
+<RebateWidget client:visible />
 
 ## What this does not cover
 

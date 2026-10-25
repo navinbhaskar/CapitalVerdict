@@ -1,0 +1,63 @@
+---
+import type { WaterfallStep } from '@/content/guideFigures';
+import { formatMoney } from '@/lib/formatTool';
+import Figure from './Figure.astro';
+
+/**
+ * Where the money goes, step by step: totals are bars from zero, changes float from the running
+ * total, so a cost reads as a bite out of the bar above it. The amounts are written out; the bars
+ * repeat them for the eye and are hidden from screen readers.
+ */
+interface Props {
+  title: string;
+  steps: WaterfallStep[];
+  note?: string;
+}
+const { title, steps, note } = Astro.props;
+
+let running = 0;
+const rows = steps.map((s) => {
+  const from = s.kind === 'total' ? 0 : running;
+  const to = s.kind === 'total' ? s.value : running + s.value;
+  running = to;
+  return { ...s, from, to };
+});
+const max = Math.max(...rows.flatMap((r) => [r.from, r.to]), 1);
+const pct = (v: number) => `${((Math.max(0, v) / max) * 100).toFixed(2)}%`;
+const signed = (v: number) => (v > 0 ? `+${formatMoney(v)}` : formatMoney(v));
+---
+
+<Figure title={title} note={note}>
+  <ol class="space-y-3" role="list">
+    {rows.map((r) => {
+      const left = Math.min(r.from, r.to);
+      const width = Math.abs(r.to - r.from);
+      const fill =
+        r.kind === 'change'
+          ? r.value < 0
+            ? 'bg-danger opacity-70'
+            : 'bg-accent opacity-50'
+          : r.answer
+            ? 'bg-accent'
+            : 'bg-ink-subtle';
+      return (
+        <li>
+          <div class="flex items-baseline justify-between gap-3 text-sm">
+            <span class={r.kind === 'total' ? 'font-medium' : 'text-ink-muted'}>{r.label}</span>
+            <span
+              class={`num shrink-0 ${r.kind === 'total' ? 'font-medium' : r.value < 0 ? 'text-danger' : 'text-ink-muted'}`}
+            >
+              {r.kind === 'total' ? formatMoney(r.value) : signed(r.value)}
+            </span>
+          </div>
+          <div class="relative mt-1 h-2.5 rounded-full bg-line/60" aria-hidden="true">
+            <div
+              class={`absolute inset-y-0 rounded-full ${fill}`}
+              style={{ left: pct(left), width: pct(width) }}
+            />
+          </div>
+        </li>
+      );
+    })}
+  </ol>
+</Figure>
