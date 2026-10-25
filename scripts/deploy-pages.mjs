@@ -15,7 +15,13 @@ import { rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const DOMAIN = 'capitalverdict.com';
-const env = { ...process.env, SITE_URL: `https://${DOMAIN}` };
+// Forwarded by Cloudflare Email Routing; shown as "Report an error" on every tool.
+const CONTACT = 'support@capitalverdict.com';
+const env = {
+  ...process.env,
+  SITE_URL: `https://${DOMAIN}`,
+  PUBLIC_CONTACT_EMAIL: process.env.PUBLIC_CONTACT_EMAIL ?? CONTACT,
+};
 const run = (cmd, args, opts = {}) => execFileSync(cmd, args, { stdio: 'inherit', env, ...opts });
 const indexing = !process.argv.includes('--block-indexing');
 
