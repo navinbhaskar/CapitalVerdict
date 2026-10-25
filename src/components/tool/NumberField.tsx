@@ -159,7 +159,7 @@ export default function NumberField(props: Props) {
             }}
             aria-invalid={error ? true : undefined}
             aria-describedby={describedBy || undefined}
-            class={`min-h-11 w-full rounded-md border text-base font-medium text-ink num transition-[border-color,box-shadow] duration-(--duration-fast) ease-out-quart hover:border-ink-subtle focus:border-accent-strong focus:ring-3 focus:ring-accent-soft focus:outline-none ${
+            class={`min-h-11 w-full rounded-lg border text-base font-medium text-ink num transition-[border-color,box-shadow] duration-(--duration-fast) ease-out-quart hover:border-ink-subtle focus:border-accent-strong focus:ring-3 focus:ring-accent-soft focus:outline-none ${
               rupees ? 'pr-3 pl-8' : unit ? 'pr-16 pl-3' : 'px-3'
             } ${error ? 'border-danger' : 'border-line-strong'} ${
               flagged && !example ? 'bg-warn-soft/60' : 'bg-raised'

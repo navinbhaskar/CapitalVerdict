@@ -16,6 +16,12 @@ export function irr(flows: readonly number[]): number | null {
   let lo = -0.99;
   let hi = 10;
   let fLo = npv(lo, flows);
+  // Over hundreds of periods, (1 − 0.99)ⁿ underflows to 0 and the NPV is not a number; raise
+  // the lower end until it is.
+  while (!Number.isFinite(fLo) && lo < -1e-6) {
+    lo /= 2;
+    fLo = npv(lo, flows);
+  }
   const fHi = npv(hi, flows);
   if (Math.sign(fLo) === Math.sign(fHi)) return null;
   for (let i = 0; i < 300 && hi - lo > 1e-12; i++) {

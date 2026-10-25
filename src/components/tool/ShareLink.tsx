@@ -95,7 +95,7 @@ export default function ShareLink({ locale, url, headline }: Props) {
             readOnly
             value={url}
             aria-label={t(locale, 'share.linkLabel')}
-            class="min-h-11 w-full rounded-md border border-line-strong bg-surface px-3 text-sm"
+            class="min-h-11 w-full rounded-lg border border-line-strong bg-surface px-3 text-sm"
           />
         </div>
       )}

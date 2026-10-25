@@ -30,3 +30,12 @@ describe('annualise', () => {
     expect(annualise(0.01)).toBeCloseTo(0.12682503, 8);
   });
 });
+
+describe('irr over long series', () => {
+  it('finds the rate across 420 months, where (1 − 0.99)ⁿ underflows', () => {
+    const i = 0.005;
+    // ₹1 lakh now, then 420 equal monthly payments worked out at 0.5% a month.
+    const payment = (100_000 * i) / (1 - Math.pow(1 + i, -420));
+    expect(irr([-100_000, ...Array<number>(420).fill(payment)])).toBeCloseTo(i, 10);
+  });
+});

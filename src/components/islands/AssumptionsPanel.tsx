@@ -388,7 +388,7 @@ function SelectRow(props: {
         value={props.value}
         aria-describedby={`${id}-note`}
         onChange={(e) => props.onChange(e.currentTarget.value)}
-        class="min-h-11 w-full rounded-md border border-line-strong bg-page px-3 text-base text-ink transition-colors duration-(--duration-fast) ease-out-quart hover:border-ink-subtle focus:border-accent-strong"
+        class="min-h-11 w-full rounded-lg border border-line-strong bg-page px-3 text-base text-ink transition-colors duration-(--duration-fast) ease-out-quart hover:border-ink-subtle focus:border-accent-strong"
       >
         {props.options.map((o) => (
           <option key={o.value} value={o.value}>
