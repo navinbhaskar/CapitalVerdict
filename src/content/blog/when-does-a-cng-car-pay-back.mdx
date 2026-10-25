@@ -9,6 +9,20 @@ takeaway:
 tool: car-fuel
 ---
 
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import LineChart from '@/components/guide/LineChart.astro';
+import CngWidget from '@/components/guide/widgets/CngWidget';
+import { cngFigures } from '@/content/guideFigures';
+
+<InShort>
+
+- At Lucknow prices, CNG saves ₹1.54 a km over petrol in the illustrative car.
+- At 1,800 km a month, a ₹90,000 higher price pays back in **46 months**, counting 9% interest on it.
+- Below about 1,191 km a month, it never pays back within 10 years.
+
+</InShort>
+
 A CNG car usually costs more to buy than the same car with a petrol engine. You get that money back a little at a time, every kilometre, because CNG costs less per kilometre. The question is how long that takes, and whether it happens before you sell the car.
 
 ## Start with the cost per kilometre
@@ -17,6 +31,12 @@ Divide the fuel price by the mileage. With Lucknow prices (petrol ₹101.86 a li
 
 - Petrol: ₹101.86 ÷ 18 = ₹5.66 a km
 - CNG: ₹107.00 ÷ 26 = ₹4.12 a km
+
+<Table
+  title="Petrol against CNG, per kilometre"
+  table={cngFigures.perKm}
+  note="Lucknow prices: petrol on 19 October 2026, CNG from 3 October 2026 (Green Gas Limited). Mileages are illustrative."
+/>
 
 That is ₹1.54 saved on every kilometre. At 1,800 km a month, about ₹2,778 a month.
 
@@ -30,7 +50,22 @@ But that ₹90,000 is not free. Either you borrow it or you could have invested 
 
 The saving is per kilometre, so the less you drive, the longer the wait. With these figures, below about **1,191 km a month** the CNG car never earns back its extra price within 10 years, and petrol is the cheaper car overall.
 
+<LineChart
+  title="Ahead or behind, by how far you drive"
+  data={cngFigures.net}
+  xTitle="Years from buying"
+  note="Savings so far, less the ₹90,000 extra price with 9% a year interest. Above zero, the CNG car has paid for itself."
+/>
+
+<Table
+  title="Payback at different distances"
+  table={cngFigures.byKm}
+  note="Pays back: the month the savings cover the extra price with interest."
+/>
+
 If you drive a lot, the opposite happens. Over 10 years at 1,800 km a month, the CNG car ends up about ₹1.13 lakh ahead after paying for its extra price and the interest on it.
+
+<CngWidget client:visible />
 
 ## What can change the answer
 

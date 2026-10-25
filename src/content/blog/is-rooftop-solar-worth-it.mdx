@@ -9,6 +9,20 @@ takeaway:
 tool: solar
 ---
 
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import LineChart from '@/components/guide/LineChart.astro';
+import SolarWidget from '@/components/guide/widgets/SolarWidget';
+import { solarFigures } from '@/content/guideFigures';
+
+<InShort>
+
+- Solar pays you back through the units you no longer buy, so start with your own bill.
+- An illustrative 3 kW system at ₹1.8 lakh, covering a 300-unit monthly bill at ₹7 a unit, pays back in about **7.2 years** and is ₹4.5 lakh ahead after 25 years.
+- If exported units earn nothing, a smaller system can pay back sooner.
+
+</InShort>
+
 Rooftop solar is an upfront cost that pays you back through smaller electricity bills. Whether it is worth it comes down to three things: what the system costs after any subsidy, how many units it saves you, and what each of those units is worth.
 
 ## A made-up example
@@ -20,9 +34,22 @@ Take a 3 kW system costing ₹1.8 lakh with no subsidy, on a home that uses 300 
 - ₹1.8 lakh ÷ ₹2,100 a month = **about 86 months, or 7.2 years**, to pay back.
 - Over 25 years it saves about ₹6.3 lakh in bills: a net gain of ₹4.5 lakh, a return of about 14% a year.
 
+<LineChart
+  title="The 3 kW example, year by year"
+  data={solarFigures.net}
+  xTitle="Years from installing"
+  note="₹1.8 lakh, no subsidy; 300 units a month at ₹7; 4 units a kW a day, 0.5% less each year. Above zero, the system has paid for itself."
+/>
+
 ## Units beyond your own use
 
 In that example the panels make about 22% more than the house uses. Those extra units are only worth something if your electricity company credits them. If it does not, a smaller system could pay back faster. The tool has a field for the credit per exported unit; leave it at zero if you get none.
+
+<Table
+  title="Bigger is not always better"
+  table={solarFigures.bySize}
+  note="Each size priced like the example, at ₹60,000 a kW, on the same 300-unit bill, with no credit for exported units."
+/>
 
 ## Your top slab matters more than your average
 
@@ -34,5 +61,7 @@ Many tariffs bill in slabs, where later blocks of units cost more than earlier o
 - **Generation.** Shade, roof direction and dust all lower it. Use your installer's estimate for your roof, and be cautious.
 - **Tariff rises.** If electricity gets dearer, solar saves more each year. The tool starts at no rise and lets you change it.
 - **Inverter replacement.** If you expect to replace the inverter within the period, add the year and the cost your installer quotes.
+
+<SolarWidget client:visible />
 
 Run your own numbers in the tool. The "what would flip the answer" list will tell you the system price and generation at which solar stops paying back.

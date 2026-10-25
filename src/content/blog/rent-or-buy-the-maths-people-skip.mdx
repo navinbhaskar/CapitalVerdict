@@ -9,6 +9,20 @@ takeaway:
 tool: rent-vs-buy
 ---
 
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import LineChart from '@/components/guide/LineChart.astro';
+import RentBuyWidget from '@/components/guide/widgets/RentBuyWidget';
+import { rentBuy } from '@/content/guideFigures';
+
+<InShort>
+
+- Comparing EMI with rent misses half the picture: the renter can invest what the buyer spends.
+- In the illustration, renting and investing is **₹24.50 lakh** ahead after 15 years.
+- It flips if homes grow faster than about 6.58% a year, or your return falls below about 5.64%.
+
+</InShort>
+
 "Why pay rent when an EMI builds an asset?" It sounds right, but it compares the wrong things. A buyer spends a large sum upfront and usually more each month than a tenant. A fair comparison asks what the tenant could do with that money.
 
 ## Follow both households
@@ -27,6 +41,15 @@ A ₹50 lakh home, 20% down, a 9% loan over 20 years, 7% stamp duty and registra
 - In the first month the owner pays ₹38,572 (EMI ₹35,989, maintenance ₹2,083, tax ₹500) and the renter pays ₹15,000. The renter invests the ₹23,572 difference.
 - After 15 years: buyer ₹84.53 lakh, renter ₹1.09 crore. **Renting and investing is ahead by ₹24.50 lakh**, about ₹10.22 lakh in today's rupees.
 
+<Table title="The first month, side by side" table={rentBuy.firstMonth} />
+
+<LineChart
+  title="What each household has, year by year"
+  data={rentBuy.worth}
+  xTitle="Years from buying"
+  note="The buyer's home after selling costs and any loan left, plus investments; the renter's investments and deposit."
+/>
+
 ## What flips it
 
 The same tool shows where the answer changes, one input at a time:
@@ -34,6 +57,14 @@ The same tool shows where the answer changes, one input at a time:
 - If homes grew faster than about **6.58% a year**, buying would win.
 - If the renter's return were below about **5.64% a year**, buying would win.
 - If the loan rate were below about **6.32%**, buying would win.
+
+<Table
+  title="What would make buying win"
+  table={rentBuy.flips}
+  note="One input changed at a time; the rest as in the illustration."
+/>
+
+<RentBuyWidget client:visible />
 
 So the result rests on two numbers you cannot know for sure: how fast home prices grow, and what you really earn on money you invest. Be honest about the second one. Renting only wins if the difference actually gets invested, every month, for years.
 

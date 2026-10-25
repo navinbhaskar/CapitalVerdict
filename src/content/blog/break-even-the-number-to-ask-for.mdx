@@ -6,6 +6,19 @@ kind: basics
 tool: car-fuel
 ---
 
+import InShort from '@/components/guide/InShort.astro';
+import LineChart from '@/components/guide/LineChart.astro';
+import BreakEvenWidget from '@/components/guide/widgets/BreakEvenWidget';
+import { breakEvenFigures } from '@/content/guideFigures';
+
+<InShort>
+
+- When you pay more now to save later, ask how long the savings take to cover the extra.
+- Count interest on the extra: ₹90,000 saved back at ₹2,778 a month takes **46 months**, not 32.
+- Then compare that with how long you will keep the thing.
+
+</InShort>
+
 Many big purchases have the same shape. You pay more upfront to spend less every month: a CNG or electric car, rooftop solar, an inverter AC, a home instead of rent. The salesperson will tell you how much you save each month. The number you need is different: **how long until the savings cover the extra you paid?** That is the break-even point.
 
 ## The simple version
@@ -18,7 +31,16 @@ The extra ₹90,000 has a cost. If you borrowed it, you pay interest. If you pai
 
 At 9% a year, ₹90,000 becomes about ₹1,26,900 after 46 months. In the example above, that is when the savings catch up, so the honest break-even is **46 months, not 32**. The longer the payback, the bigger this gap gets.
 
+<LineChart
+  title="Savings against the extra price, month by month"
+  data={breakEvenFigures.race}
+  xTitle="Months"
+  note="₹90,000 extra, ₹2,778 saved a month, 9% a year interest. The savings pass the flat line after about 32 months, and the rising one only at month 46."
+/>
+
 Our tools always show the break-even with interest as the headline, and the simple one next to it so you can see the difference.
+
+<BreakEvenWidget client:visible />
 
 ## When there is no break-even
 

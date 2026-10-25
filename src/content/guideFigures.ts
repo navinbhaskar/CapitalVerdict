@@ -3,7 +3,9 @@
  * here is typed in by hand: change a model or a data file and every figure follows. Labels are
  * guide copy (see COPY_REVIEW.md); the numbers are not.
  */
-import { incomeTax, smallSavings } from '@/data';
+import { incomeTax, smallSavings, verifiedFuelPrices } from '@/data';
+import { amortise } from '@/engine/loan';
+import { simpleTariff } from '@/engine/tariff';
 import { toTodaysRupees } from '@/engine/timeValue';
 import { formatDuration } from '@/lib/duration';
 import { formatINR } from '@/lib/format';
@@ -11,10 +13,16 @@ import { formatMoney, formatMoneyShort, formatPercent } from '@/lib/formatTool';
 import type { CompareItem } from '@/components/tool/CompareBars';
 import { acPayback, type AcInput } from '@/models/ac';
 import { cashOrLoan, type CarLoanInput } from '@/models/carLoan';
+import { compareCarFuel, type CarFuelInput } from '@/models/carFuel';
+import { carFuelExample } from '@/models/carFuel.example';
 import { flatToReducing } from '@/models/flatRate';
 import { monthlySaving, type MonthlySavingInput } from '@/models/monthlySaving';
 import { plotVs, type PlotVsInput } from '@/models/plotVs';
+import { payback } from '@/models/payback';
 import { prepayOrInvest, type PrepayInput } from '@/models/prepay';
+import { rentBuyFlips, rentVsBuy } from '@/models/rentBuy';
+import { RENT_BUY_EXAMPLE_FORM, toRentBuyInput } from '@/models/rentBuyForm';
+import { solarPayback, type SolarInput } from '@/models/solar';
 import { breakEvenDeductions, compareRegimes, regimeTax } from '@/models/taxRegime';
 
 export interface TableData {
@@ -548,6 +556,289 @@ export const carLoan = {
       `${pct(f)} flat`,
       formatINR((800_000 * (1 + f * 5)) / 60),
       pct(Number(flatToReducing(f, 5).toFixed(4))),
+    ]),
+    highlight: 1,
+  } satisfies TableData,
+};
+
+/* ---------- Rooftop solar ---------- */
+
+export const solarCase: SolarInput = {
+  systemKW: 3,
+  grossCost: 180_000,
+  subsidy: 0,
+  generationPerKWPerDay: 4,
+  degradationPerYear: 0.005,
+  monthlyConsumptionKWh: 300,
+  tariff: simpleTariff(7, 0),
+  sanctionedLoadKW: 3,
+  tariffRisePerYear: 0,
+  exportRatePerKWh: 0,
+  inverter: null,
+  horizonYears: 25,
+};
+
+const solar = solarPayback(solarCase);
+/** The example's price per kW, used to size the other systems in the table. */
+const perKW = solarCase.grossCost / solarCase.systemKW;
+
+export const solarFigures = {
+  net: {
+    xLabels: yearLabels(25),
+    ticks: [0, 5, 10, 15, 20, 25],
+    series: [
+      {
+        label: 'Bill savings so far, less the system’s cost',
+        values: years(25).map((y) => solar.cumulativeNet[y * 12]!),
+        tone: 'accent',
+      },
+    ],
+  } satisfies LineData,
+  bySize: {
+    head: ['System', 'Costs', 'Saves in year 1', 'Pays back', 'After 25 years'],
+    rows: [2, 2.5, 3, 4].map((kw) => {
+      const x = solarPayback(
+        { ...solarCase, systemKW: kw, grossCost: kw * perKW, sanctionedLoadKW: Math.max(3, kw) },
+        { withIrr: false },
+      );
+      return [
+        `${kw} kW`,
+        money(kw * perKW),
+        formatINR(x.firstYearSaving),
+        x.payback ? dur(x.payback.months) : 'Not in 25 years',
+        money(x.netAtHorizon),
+      ];
+    }),
+    highlight: 2,
+  } satisfies TableData,
+};
+
+/* ---------- CNG car payback, break-even, Lucknow update ---------- */
+
+const lucknow = verifiedFuelPrices('lucknow')!;
+export const cngCase: CarFuelInput = {
+  ...carFuelExample,
+  base: { ...carFuelExample.base, energyPrice: lucknow.petrol },
+  alternative: { ...carFuelExample.alternative, energyPrice: lucknow.cng },
+};
+const cng = compareCarFuel(cngCase);
+const netByYear = (input: CarFuelInput) => {
+  const r = compareCarFuel(input);
+  return years(10).map((y) => r.cumulativeSaving[y * 12]! - r.extraPriceWithInterest[y * 12]!);
+};
+
+export const cngFigures = {
+  perKm: {
+    head: ['', 'Petrol', 'CNG'],
+    rows: [
+      ['Fuel price', `₹${lucknow.petrol.toFixed(2)} a litre`, `₹${lucknow.cng.toFixed(2)} a kg`],
+      ['Mileage', `${cngCase.base.mileage} km a litre`, `${cngCase.alternative.mileage} km a kg`],
+      [
+        'Cost a km',
+        `₹${cng.costPerKm.base.toFixed(2)}`,
+        `₹${cng.costPerKm.alternative.toFixed(2)}`,
+      ],
+      [
+        `Fuel for ${formatINR(cngCase.monthlyKm).slice(1)} km a month`,
+        formatINR(cng.costPerKm.base * cngCase.monthlyKm),
+        formatINR(cng.costPerKm.alternative * cngCase.monthlyKm),
+      ],
+    ],
+  } satisfies TableData,
+  net: {
+    xLabels: yearLabels(10),
+    ticks: [0, 2, 4, 6, 8, 10],
+    series: [
+      {
+        label: '1,000 km a month',
+        values: netByYear({ ...cngCase, monthlyKm: 1000 }),
+        tone: 'muted',
+        dashed: true,
+      },
+      { label: '1,800 km a month', values: netByYear(cngCase), tone: 'accent' },
+      {
+        label: '2,500 km a month',
+        values: netByYear({ ...cngCase, monthlyKm: 2500 }),
+        tone: 'ink',
+      },
+    ],
+  } satisfies LineData,
+  byKm: {
+    head: ['Driven a month', 'Saves a month', 'Pays back', 'After 10 years'],
+    rows: [800, 1000, 1500, 1800, 2500].map((km) => {
+      const x = compareCarFuel({ ...cngCase, monthlyKm: km });
+      const net = x.netAt10Years!.withInterest;
+      return [
+        `${formatINR(km).slice(1)} km`,
+        formatINR(x.firstMonthSaving),
+        x.breakevenWithInterest ? `${x.breakevenWithInterest.months} months` : 'Not in 10 years',
+        `${net >= 0 ? 'CNG' : 'Petrol'} ahead ${money(Math.abs(net))}`,
+      ];
+    }),
+    highlight: 3,
+  } satisfies TableData,
+  /** The price update: the same car at the old and new Lucknow CNG price. */
+  update: (() => {
+    const before = compareCarFuel(carFuelExample);
+    const row = (label: string, f: (r: typeof cng) => string) => [label, f(before), f(cng)];
+    return {
+      head: [
+        '',
+        `At ₹${carFuelExample.alternative.energyPrice.toFixed(2)} a kg`,
+        `At ₹${lucknow.cng.toFixed(2)} a kg`,
+      ],
+      rows: [
+        row('CNG cost a km', (r) => `₹${r.costPerKm.alternative.toFixed(2)}`),
+        row('Saved a month', (r) => formatINR(r.firstMonthSaving)),
+        row('Pays back, counting interest', (r) => `${r.breakevenWithInterest!.months} months`),
+        row('CNG ahead after 10 years', (r) => money(r.netAt10Years!.withInterest)),
+      ],
+    } satisfies TableData;
+  })(),
+};
+
+const be = payback(cngCase.extraPrice, cng.firstMonthSaving, cngCase.interestRate, 60);
+
+export const breakEvenFigures = {
+  race: {
+    xLabels: be.saved.map((_, m) => (m === 0 ? 'Today' : `Month ${m}`)),
+    ticks: [0, 12, 24, 36, 48, 60],
+    series: [
+      { label: 'Savings so far', values: be.saved, tone: 'accent' },
+      { label: 'Extra price, with 9% interest', values: be.owed, tone: 'ink' },
+      {
+        label: 'Extra price, ignoring interest',
+        values: be.saved.map(() => cngCase.extraPrice),
+        tone: 'muted',
+        dashed: true,
+      },
+    ],
+  } satisfies LineData,
+};
+
+/* ---------- Rent or buy ---------- */
+
+const rentCase = toRentBuyInput(RENT_BUY_EXAMPLE_FORM)!;
+const rb = rentVsBuy(rentCase);
+const atYear = (series: number[]) =>
+  years(15)
+    .slice(1)
+    .map((y) => series[y * 12 - 1]!);
+
+export const rentBuy = {
+  worth: {
+    xLabels: years(15)
+      .slice(1)
+      .map((y) => `Year ${y}`),
+    ticks: [0, 4, 9, 14],
+    series: [
+      {
+        label: 'Rent and invest the difference',
+        values: atYear(rb.renterNetWorth),
+        tone: 'accent',
+      },
+      { label: 'Buy', values: atYear(rb.buyerNetWorth), tone: 'ink' },
+    ],
+  } satisfies LineData,
+  firstMonth: {
+    head: ['First month', 'Buyer', 'Renter'],
+    rows: [
+      ['EMI or rent', formatINR(rb.emi), formatINR(rb.rent[0]!)],
+      ['Maintenance and property tax', formatINR(rb.buyerOutflow[0]! - rb.emi), '₹0'],
+      ['Paid in all', formatINR(rb.buyerOutflow[0]!), formatINR(rb.rent[0]!)],
+      ['Invested', '₹0', formatINR(rb.buyerOutflow[0]! - rb.rent[0]!)],
+    ],
+  } satisfies TableData,
+  flips: {
+    head: ['If this changes', 'In the illustration', 'Buying wins'],
+    rows: (() => {
+      const f = Object.fromEntries(rentBuyFlips(rentCase).map((x) => [x.variable, x.threshold]));
+      return [
+        [
+          'Home price growth a year',
+          pct(rentCase.appreciation),
+          `Above ${pct(Number(f.appreciation!.toFixed(4)))}`,
+        ],
+        [
+          'Your return after tax',
+          pct(rentCase.investmentReturn),
+          `Below ${pct(Number(f.investmentReturn!.toFixed(4)))}`,
+        ],
+        ['Home-loan rate', pct(rentCase.loanRate), `Below ${pct(Number(f.loanRate!.toFixed(4)))}`],
+      ];
+    })(),
+  } satisfies TableData,
+};
+
+/* ---------- Where your EMI goes ---------- */
+
+const loan = amortise(4_000_000, 0.09, 240);
+const yearSum = (y: number, key: 'interest' | 'principal') =>
+  loan.rows.slice((y - 1) * 12, y * 12).reduce((a, r) => a + r[key], 0);
+
+export const emiFigures = {
+  split: {
+    xLabels: years(20)
+      .slice(1)
+      .map((y) => `Year ${y}`),
+    ticks: [0, 4, 9, 14, 19],
+    series: [
+      {
+        label: 'Interest paid in the year',
+        values: years(20)
+          .slice(1)
+          .map((y) => yearSum(y, 'interest')),
+        tone: 'ink',
+      },
+      {
+        label: 'Loan repaid in the year',
+        values: years(20)
+          .slice(1)
+          .map((y) => yearSum(y, 'principal')),
+        tone: 'accent',
+      },
+    ],
+  } satisfies LineData,
+  byYear: {
+    head: ['Year', 'Interest paid', 'Loan repaid', 'Still owed at the end'],
+    rows: [1, 5, 10, 13, 15, 20].map((y) => [
+      `Year ${y}`,
+      money(yearSum(y, 'interest')),
+      money(yearSum(y, 'principal')),
+      money(loan.rows[y * 12 - 1]!.closing),
+    ]),
+    highlight: 3,
+  } satisfies TableData,
+  total: [
+    { label: 'Borrowed', value: 4_000_000, display: money(4_000_000) },
+    {
+      label: 'Interest over 20 years',
+      value: loan.totalInterest,
+      display: money(loan.totalInterest),
+    },
+  ] satisfies CompareItem[],
+};
+
+/* ---------- Today's rupees ---------- */
+
+const rates = [0.05, 0.06, 0.07];
+
+export const todays = {
+  crore: {
+    xLabels: years(30).map((y) => (y === 0 ? 'Today' : `In ${y} years`)),
+    ticks: [0, 10, 20, 30],
+    series: rates.map((r) => ({
+      label: `At ${pct(r)} inflation`,
+      values: years(30).map((y) => toTodaysRupees(1e7, r, y * 12)),
+      tone: r === 0.06 ? 'accent' : r < 0.06 ? 'ink' : 'muted',
+      dashed: r > 0.06,
+    })) satisfies LineSeries[],
+  } satisfies LineData,
+  grid: {
+    head: ['₹1 crore received in', ...rates.map((r) => `At ${pct(r)}`)],
+    rows: [10, 15, 20, 25].map((y) => [
+      `${y} years`,
+      ...rates.map((r) => money(toTodaysRupees(1e7, r, y * 12))),
     ]),
     highlight: 1,
   } satisfies TableData,

@@ -6,6 +6,10 @@ kind: update
 tool: car-fuel
 ---
 
+import Table from '@/components/guide/Table.astro';
+import CngWidget from '@/components/guide/widgets/CngWidget';
+import { cngFigures } from '@/content/guideFigures';
+
 Green Gas Limited, the city gas distributor for Lucknow, lists CNG at **₹107.00 a kg from 6 am on 3 October 2026** on its price page. The car tool now uses this price for Lucknow. Petrol in Lucknow is ₹101.86 a litre (19 October 2026).
 
 ## What it does to the payback
@@ -16,6 +20,14 @@ With the illustrative car on our home page (18 km a litre on petrol, 26 km a kg 
 - At ₹95.75 a kg, the price the tool used before this update, the CNG car paid back in 33 months. At ₹107.00 it takes **46 months**.
 - Below about 1,191 km a month, petrol is now the cheaper car over 10 years.
 
+<Table
+  title="The same car, before and after the price change"
+  table={cngFigures.update}
+  note="18 km a litre on petrol at ₹101.86, 26 km a kg on CNG, ₹90,000 extra price at 9% a year, 1,800 km a month."
+/>
+
 ## Check your own pump
 
-Prices can differ within a city and change without much notice. If the price at your pump is different, type it into the tool under "Refine the assumptions". Every value we use, with its source and date, is listed in the [assumptions changelog](/assumptions-changelog/).
+Prices can differ within a city and change without much notice. If the price at your pump is different, type it into the tool under "Refine the assumptions". <CngWidget client:visible />
+
+Every value we use, with its source and date, is listed in the [assumptions changelog](/assumptions-changelog/).

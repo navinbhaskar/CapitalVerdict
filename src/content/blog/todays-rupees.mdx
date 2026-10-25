@@ -5,6 +5,20 @@ date: 2026-10-20
 kind: basics
 ---
 
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import LineChart from '@/components/guide/LineChart.astro';
+import TodaysRupeesWidget from '@/components/guide/widgets/TodaysRupeesWidget';
+import { todays } from '@/content/guideFigures';
+
+<InShort>
+
+- A rupee in the future buys less than a rupee today, so convert big future amounts before comparing.
+- At 6% inflation, **₹1 crore in 15 years is worth about ₹41.73 lakh** today.
+- Returns too: 8% with 6% inflation grows your buying power by only about 1.9% a year.
+
+</InShort>
+
 Long-term calculators produce big numbers. A house worth ₹1 crore in 15 years, savings of ₹1 crore by retirement. But a rupee in 15 years buys less than a rupee today, so those numbers need translating before you compare them with anything you know.
 
 ## The conversion
@@ -21,9 +35,20 @@ The inflation rate you assume matters a lot over long periods:
 - At 6%: about ₹41.73 lakh
 - At 7%: about ₹36.24 lakh
 
+<LineChart
+  title="₹1 crore received later, in today's rupees"
+  data={todays.crore}
+  xTitle="When you receive it"
+  note="Today's rupees = amount ÷ (1 + inflation) to the power of the years."
+/>
+
+<Table title="₹1 crore in today's rupees" table={todays.grid} />
+
 ## Real returns
 
 The same idea applies to returns. If your investments earn 8% a year and prices rise 6%, your money grows in buying power by only about 1.9% a year (1.08 ÷ 1.06 − 1). A return that sounds healthy can be close to standing still.
+
+<TodaysRupeesWidget client:visible />
 
 ## How the tools use it
 

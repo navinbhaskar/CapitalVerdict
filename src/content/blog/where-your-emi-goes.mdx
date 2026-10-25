@@ -6,6 +6,21 @@ kind: basics
 tool: rent-vs-buy
 ---
 
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import Bars from '@/components/guide/Bars.astro';
+import LineChart from '@/components/guide/LineChart.astro';
+import EmiWidget from '@/components/guide/widgets/EmiWidget';
+import { emiFigures } from '@/content/guideFigures';
+
+<InShort>
+
+- On a ₹40 lakh loan at 9% over 20 years, the EMI is ₹35,989, and ₹30,000 of the first one is interest.
+- Over 20 years you pay about **₹46.37 lakh** of interest: more than you borrowed.
+- An extra ₹1 lakh a year clears the loan in year 13 and cuts the interest to about ₹27.97 lakh.
+
+</InShort>
+
 An EMI (equated monthly instalment) is the same amount every month, but what it pays for changes. Early on, most of it is interest. Late in the loan, most of it repays what you borrowed.
 
 ## The formula
@@ -26,11 +41,32 @@ Interest is charged on what you owe: ₹40,00,000 × 0.75% = ₹30,000. Only the
 - So the interest is about **₹46.37 lakh**, more than the ₹40 lakh borrowed.
 - After 15 of the 20 years you still owe about ₹17.34 lakh.
 
+<Bars
+  title="₹40 lakh borrowed, and the interest on it"
+  items={emiFigures.total}
+  note="9% a year over 20 years, no prepayment."
+/>
+
+<LineChart
+  title="Where each year's EMIs go"
+  data={emiFigures.split}
+  xTitle="Year of the loan"
+  note="The EMI stays at ₹35,989. Interest takes the larger share of it for the first 12 years."
+/>
+
+<Table
+  title="Year by year"
+  table={emiFigures.byYear}
+  note="Year 13 is the first year the EMIs repay more of the loan than they pay in interest."
+/>
+
 ## What a yearly prepayment does
 
 Paying a little extra each year, while keeping the EMI the same, cuts the interest sharply, because every rupee prepaid stops attracting interest for the rest of the loan. In our rent vs buy tool, paying an extra ₹1 lakh at the end of each year on the loan above clears it in **year 13** instead of year 20, and the interest paid falls to about **₹27.97 lakh**.
 
 That extra money has to come from somewhere, of course. The tool counts it as part of what the owner pays, so the comparison with renting stays fair: the renter gets to invest the same amount.
+
+<EmiWidget client:visible />
 
 ## Before you prepay
 
