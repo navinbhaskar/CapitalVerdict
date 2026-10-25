@@ -5,7 +5,7 @@ import preact from '@astrojs/preact';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
-// TODO_VERIFY: production domain not decided yet. Set SITE_URL at build time.
+// Production is https://capitalverdict.com (set by scripts/deploy-pages.mjs). Local builds use localhost.
 const site = process.env.SITE_URL ?? 'http://localhost:4321';
 
 export default defineConfig({
