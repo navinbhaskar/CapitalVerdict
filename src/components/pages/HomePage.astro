@@ -6,14 +6,13 @@ import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { localizePath } from '@/i18n/routes';
 import { getCollection } from 'astro:content';
 import { byDateDesc } from '@/lib/blog';
+import { TOOL_GROUPS, toolKey, type ToolIcon } from '@/lib/tools';
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 
-type ToolIcon =
-  'fuel' | 'sun' | 'home' | 'banknote' | 'car' | 'snowflake' | 'percent' | 'plot' | 'piggy';
 interface Tool {
   question: MessageKey;
   /** What the answer tells you, in one line. */
@@ -21,41 +20,16 @@ interface Tool {
   href: string;
   icon: ToolIcon;
 }
-const tool = (key: string, path: string, icon: ToolIcon): Tool => ({
-  question: `tool.${key}.question` as MessageKey,
-  gives: `tool.${key}.gives` as MessageKey,
-  href: localizePath(path, locale),
-  icon,
-});
 /** The calculators by area of life, so a visitor finds theirs at a glance. */
-const toolGroups: { title: MessageKey; tools: Tool[] }[] = [
-  {
-    title: 'home.group.car',
-    tools: [
-      tool('carFuel', '/tools/car-fuel/', 'fuel'),
-      tool('carLoan', '/tools/cash-or-car-loan/', 'car'),
-    ],
-  },
-  {
-    title: 'home.group.home',
-    tools: [
-      tool('rentVsBuy', '/tools/rent-vs-buy/', 'home'),
-      tool('prepay', '/tools/prepay-or-invest/', 'banknote'),
-    ],
-  },
-  {
-    title: 'home.group.money',
-    tools: [
-      tool('plotVs', '/tools/plot-vs-fd-vs-mutual-fund/', 'plot'),
-      tool('saving', '/tools/sip-vs-ppf-vs-fd/', 'piggy'),
-      tool('taxRegime', '/tools/old-or-new-tax-regime/', 'percent'),
-    ],
-  },
-  {
-    title: 'home.group.power',
-    tools: [tool('solar', '/tools/solar/', 'sun'), tool('ac', '/tools/ac-payback/', 'snowflake')],
-  },
-];
+const toolGroups: { title: MessageKey; tools: Tool[] }[] = TOOL_GROUPS.map((group) => ({
+  title: group.title,
+  tools: group.tools.map((entry) => ({
+    question: toolKey(entry, 'question'),
+    gives: toolKey(entry, 'gives'),
+    href: localizePath(entry.path, locale),
+    icon: entry.icon,
+  })),
+}));
 const notes = (await getCollection('blog')).sort(byDateDesc).slice(0, 3);
 
 const principles: { title: MessageKey; body: MessageKey }[] = [

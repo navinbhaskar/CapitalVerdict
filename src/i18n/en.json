@@ -1446,5 +1446,7 @@
   "guide.todays.return": "Return a year, to compare",
   "guide.todays.worth": "Worth today",
   "guide.todays.real": "Return after inflation",
-  "guide.todays.verdict": "{amount} in {n} years buys what {today} buys today."
+  "guide.todays.verdict": "{amount} in {n} years buys what {today} buys today.",
+  "nav.calculators": "Calculators",
+  "nav.allCalculators": "All calculators, with what each answers"
 }

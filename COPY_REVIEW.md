@@ -142,3 +142,11 @@ All 17 guides now have an "In short" box, tables, charts and a small calculator 
 | [ ] `guide.regime.*`, `guide.rebate.*`, `guide.gain.*`, `guide.sip.*`, `guide.lowerEmi.*`, `guide.prepay.*`, `guide.plot.*`, `guide.fd.*`, `guide.ac.*`, `guide.flat.*`, `guide.solar.*`, `guide.cng.*`, `guide.breakEven.*`, `guide.rentBuy.*`, `guide.emi.*`, `guide.todays.*`, `guide.months` | The calculators, one per guide                 |
 | [ ] Row and series labels in `src/content/guideFigures.ts`                                                                                                                                                                                                                                       | Table headings, chart legends, breakdown steps |
 | [ ] "In short" bullets, figure titles and footnotes in the 17 `.mdx` guides (the Lucknow update has no In short box)                                                                                                                                                                             | Each guide                                     |
+
+## Nav Calculators menu and footer (drafted 2026-10-25)
+
+| Key                                 | Where it shows                                                                                  |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------- |
+| [ ] `nav.calculators`               | Top nav: replaces "Petrol, CNG or EV" (and "Tools" on phones); opens a list of every calculator |
+| [ ] `nav.allCalculators`            | Last line of that list, linking to the home page's calculators section                          |
+| [ ] Footer uses `principle.*.title` | The four working principles under the logo, ticked (already approved copy, new place)           |
