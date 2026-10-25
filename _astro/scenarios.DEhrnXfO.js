@@ -1,0 +1,1 @@
+function e(e,t,n){let r=r=>{let i={...t,...n[r]};return{input:i,output:e(i)}};return{pessimistic:r(`pessimistic`),base:r(`base`),optimistic:r(`optimistic`)}}export{e as t};

@@ -1,0 +1,1 @@
+function e(e,t){return t.reduce((t,n,r)=>t+n/(1+e)**+r,0)}function t(t){if(!t.some(e=>e<0)||!t.some(e=>e>0))return null;let n=-.99,r=10,i=e(n,t),a=e(r,t);if(Math.sign(i)===Math.sign(a))return null;for(let a=0;a<300&&r-n>1e-12;a++){let a=(n+r)/2,o=e(a,t);Math.sign(o)===Math.sign(i)?(n=a,i=o):r=a}return(n+r)/2}function n(e){return(1+e)**12-1}export{t as n,n as t};

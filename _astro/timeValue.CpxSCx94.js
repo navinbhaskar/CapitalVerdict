@@ -1,0 +1,1 @@
+function e(e){return e/12}function t(e){return(1+e)**(1/12)-1}function n(e,t){return(1+e)**+t}function r(e,t,r){return e/n(t,r)}function i(e,t){return(1+e)/(1+t)-1}function a(e,n,i){return r(e,t(n),i)}function o(e,t,r){if(r<1)throw RangeError(`month is 1-based`);return e*n(t,Math.floor((r-1)/12))}export{a,i,n,o,e as r,t};

@@ -1,0 +1,1 @@
+import{i as e}from"./jsxRuntime.BFdAEbp9.js";function t(t,n){let r=Math.max(0,Math.round(n)),i=Math.floor(r/12),a=r%12,o=[];return i>0&&o.push(e(t,i===1?`duration.year`:`duration.years`,{n:i})),(a>0||i===0)&&o.push(e(t,a===1?`duration.month`:`duration.months`,{n:a})),o.join(` `)}export{t};
