@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import type { ComponentChildren } from 'preact';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { smallSavings } from '@/data';
 import { decodeShare, encodeShare, pickKeys } from '@/lib/shareLink';
@@ -8,12 +7,9 @@ import { formatMoney, formatPercent } from '@/lib/formatTool';
 import { useGlobalAssumptions } from '@/lib/useAssumptions';
 import { payoutScaleAt, planReturn, type PlanInput, type PlanResult } from '@/models/planReturn';
 import {
-  INCOME_FREQUENCIES,
   INTEGER_KEYS,
   LUMP_SLOTS,
-  PAY_FREQUENCIES,
   PLAN_LIMITS,
-  PLAN_SHAPES,
   applyShape,
   hasPayout,
   invalidPlanFields,
@@ -28,7 +24,12 @@ import {
 import CompareBars, { type CompareItem } from '@/components/tool/CompareBars';
 import ExampleNote from '@/components/tool/ExampleNote';
 import ResultBar from '@/components/tool/ResultBar';
-import Tier from '@/components/tool/Tier';
+import PlanSteps, {
+  Group,
+  filledSlots,
+  withoutSlot,
+  type PlanFieldOpts,
+} from '@/components/tool/PlanSteps';
 import MarketRiskNote from '@/components/tool/MarketRiskNote';
 import NumberField from '@/components/tool/NumberField';
 import WorkingBlock, { type WorkingRow } from '@/components/tool/WorkingBlock';
@@ -76,14 +77,6 @@ const STEP_KEYS: PlanNumberKey[] = [
 
 /** The return a year, to one decimal: "6.2%". */
 const rate1 = (r: number) => `${(r * 100).toFixed(1)}%`.replace('-', '−');
-const filledSlots = (form: PlanForm) => {
-  let last = 0;
-  for (let s = 1; s <= LUMP_SLOTS; s++) {
-    const [amount, year] = lumpKeys(s);
-    if (form[amount] !== null || form[year] !== null) last = s;
-  }
-  return last;
-};
 
 /** A savings plan judged by what goes in and what comes out: its return a year. */
 export default function PlanReturnTool({ locale }: Props) {
@@ -169,24 +162,13 @@ export default function PlanReturnTool({ locale }: Props) {
   };
 
   const removeSlot = (slot: number) => {
-    const next = { ...form };
-    for (let s = slot; s <= LUMP_SLOTS; s++) {
-      const [amount, year] = lumpKeys(s);
-      const [nextAmount, nextYear] = s < LUMP_SLOTS ? lumpKeys(s + 1) : [null, null];
-      next[amount] = nextAmount ? form[nextAmount] : null;
-      next[year] = nextYear ? form[nextYear] : null;
-      pinned.current.add(amount);
-      pinned.current.add(year);
-    }
-    setForm(next);
+    for (let s = slot; s <= LUMP_SLOTS; s++) for (const key of lumpKeys(s)) pinned.current.add(key);
+    setForm(withoutSlot(form, slot));
     setSlots((n) => Math.max(1, n - 1));
     setRev((n) => n + 1);
   };
 
-  const field = (
-    key: PlanNumberKey,
-    opts: { label?: string; note?: string; optional?: boolean; flagged?: boolean } = {},
-  ) => {
+  const field = (key: PlanNumberKey, opts: PlanFieldOpts = {}) => {
     const percent = PERCENT.has(key);
     return (
       <NumberField
@@ -366,138 +348,19 @@ export default function PlanReturnTool({ locale }: Props) {
           </div>
           <p class="mt-1 text-sm text-ink-muted">{t(locale, 'plan.scope')}</p>
 
-          <fieldset class="mt-4">
-            <legend class="text-sm font-medium">{t(locale, 'plan.shape.label')}</legend>
-            <div class="mt-2 grid gap-2 sm:grid-cols-2">
-              {PLAN_SHAPES.map((shape) => (
-                <label
-                  key={shape}
-                  class="flex min-h-11 cursor-pointer items-center gap-3 rounded-lg border border-line-strong bg-raised px-3 py-2 text-sm transition-colors duration-(--duration-fast) ease-out-quart hover:border-ink-subtle has-[:checked]:border-accent-strong has-[:checked]:bg-accent-soft has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent-strong"
-                >
-                  <input
-                    type="radio"
-                    name="plan-shape"
-                    value={shape}
-                    checked={form.shape === shape}
-                    onChange={() => chooseShape(shape)}
-                    class="size-4 shrink-0 accent-(--color-accent-strong)"
-                  />
-                  <span class="font-medium text-ink">
-                    {t(locale, `plan.shape.${shape}` as MessageKey)}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-
-          <Tier
-            tone="yours"
-            title={t(locale, 'plan.step.pay')}
-            hint={t(locale, 'plan.step.payHint')}
-          >
-            <Segmented
-              label={t(locale, 'plan.freq.pay')}
-              name="plan-pay-frequency"
-              options={PAY_FREQUENCIES.map((f) => ({
-                value: f,
-                label: t(locale, `plan.freq.${f}` as MessageKey),
-              }))}
-              value={form.payFrequency}
-              onChange={(f) => set('payFrequency')(f)}
-            />
-            {field('premium', {
-              label: t(locale, `plan.in.premium.${form.payFrequency}` as MessageKey),
-              note: t(locale, `plan.note.premium.${form.payFrequency}` as MessageKey),
-            })}
-            {form.payFrequency !== 'once' && field('payYears')}
-          </Tier>
-
-          <Tier
-            tone="yours"
-            title={t(locale, 'plan.step.income')}
-            hint={t(locale, 'plan.step.incomeHint')}
-          >
-            {field('income', {
-              label: t(locale, `plan.in.income.${form.incomeFrequency}` as MessageKey),
-              optional: true,
-            })}
-            {form.income !== null && (
-              <>
-                <Segmented
-                  label={t(locale, 'plan.freq.income')}
-                  name="plan-income-frequency"
-                  options={INCOME_FREQUENCIES.map((f) => ({
-                    value: f,
-                    label: t(locale, `plan.freq.${f}` as MessageKey),
-                  }))}
-                  value={form.incomeFrequency}
-                  onChange={(f) => set('incomeFrequency')(f)}
-                />
-                {field('incomeStartYear')}
-                {field('incomeYears')}
-              </>
-            )}
-          </Tier>
-
-          <Tier
-            tone="yours"
-            title={t(locale, 'plan.step.lump')}
-            hint={t(locale, 'plan.step.lumpHint')}
-          >
-            {Array.from({ length: slots }, (_, i) => i + 1).map((slot) => {
-              const [amount, year] = lumpKeys(slot);
-              return (
-                <div key={`${slot}-${rev}`} class="py-1">
-                  <div class="flex items-center justify-between gap-3 pt-2">
-                    <p class="text-sm font-medium text-ink-muted">
-                      {t(locale, 'plan.lump.title', { n: slot })}
-                    </p>
-                    {(slots > 1 || form[amount] !== null || form[year] !== null) && (
-                      <button
-                        type="button"
-                        onClick={() => removeSlot(slot)}
-                        class="inline-flex min-h-11 items-center rounded-md px-2 text-sm font-medium text-accent-strong hover:bg-surface"
-                        aria-label={t(locale, 'plan.lump.removeLabel', { n: slot })}
-                      >
-                        {t(locale, 'plan.lump.remove')}
-                      </button>
-                    )}
-                  </div>
-                  <div class="divide-y divide-line">
-                    {field(amount, {
-                      label: t(locale, 'plan.in.lump'),
-                      note: t(locale, 'plan.note.lump'),
-                      optional: true,
-                    })}
-                    {field(year, {
-                      label: t(locale, 'plan.in.lumpYear'),
-                      note: t(locale, 'plan.note.lumpYear'),
-                      optional: form[amount] === null,
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-            {slots < LUMP_SLOTS && (
-              <div class="py-2">
-                <button
-                  type="button"
-                  onClick={() => setSlots((n) => n + 1)}
-                  class="inline-flex min-h-11 items-center gap-2 rounded-md px-2 text-sm font-medium text-accent-strong hover:bg-surface"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path
-                      d="M12 5v14M5 12h14"
-                      stroke="currentColor"
-                      stroke-width="1.75"
-                      stroke-linecap="round"
-                    />
-                  </svg>
-                  {t(locale, 'plan.lump.add')}
-                </button>
-              </div>
-            )}
-          </Tier>
+          <PlanSteps
+            locale={locale}
+            form={form}
+            idPrefix="plan"
+            rev={rev}
+            slots={slots}
+            onShape={chooseShape}
+            onPayFrequency={(f) => set('payFrequency')(f)}
+            onIncomeFrequency={(f) => set('incomeFrequency')(f)}
+            onAddSlot={() => setSlots((n) => n + 1)}
+            onRemoveSlot={removeSlot}
+            field={field}
+          />
 
           <Refine
             locale={locale}
@@ -852,62 +715,5 @@ function Timeline({
         )}
       </p>
     </figure>
-  );
-}
-
-function Segmented<T extends string>({
-  label,
-  name,
-  options,
-  value,
-  onChange,
-}: {
-  label: string;
-  name: string;
-  options: { value: T; label: string }[];
-  value: T;
-  onChange: (value: T) => void;
-}) {
-  const id = `${name}-label`;
-  return (
-    <div class="py-3 sm:flex sm:items-center sm:justify-between sm:gap-4">
-      <p id={id} class="text-sm font-medium">
-        {label}
-      </p>
-      <div
-        role="radiogroup"
-        aria-labelledby={id}
-        class="mt-2 grid w-full gap-1 rounded-lg bg-surface p-1 sm:mt-0 sm:max-w-xs"
-        style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
-      >
-        {options.map((o) => (
-          <label
-            key={o.value}
-            class="flex min-h-10 cursor-pointer items-center justify-center rounded-md px-2 text-center text-sm font-medium text-ink-muted transition-colors duration-(--duration-fast) ease-out-quart has-[:checked]:bg-raised has-[:checked]:text-ink has-[:checked]:shadow-card has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent-strong"
-          >
-            <input
-              type="radio"
-              name={name}
-              value={o.value}
-              checked={value === o.value}
-              onChange={() => onChange(o.value)}
-              class="sr-only"
-            />
-            {o.label}
-          </label>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function Group({ title, children }: { title: string; children: ComponentChildren }) {
-  return (
-    <fieldset class="mt-4">
-      <legend class="w-full border-b border-line-strong pb-1.5 font-display text-lg font-medium">
-        {title}
-      </legend>
-      <div class="divide-y divide-line">{children}</div>
-    </fieldset>
   );
 }

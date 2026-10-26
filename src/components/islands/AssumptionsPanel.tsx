@@ -35,6 +35,7 @@ const USED_BY: Partial<Record<AssumptionKey, MessageKey[]>> = {
     'tool.lumpsum.title',
     'tool.swp.title',
     'tool.planReturn.title',
+    'tool.termPlan.title',
   ],
 };
 /**

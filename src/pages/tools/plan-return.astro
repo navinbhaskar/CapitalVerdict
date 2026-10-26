@@ -39,6 +39,10 @@ const rows: AssumptionRow[] = [
 
 const FAQ = [1, 2, 3] as const;
 const related = [
+  {
+    href: localizePath('/tools/term-plus-investing/', locale),
+    label: t(locale, 'tool.termPlan.title'),
+  },
   { href: localizePath('/tools/sip-vs-ppf-vs-fd/', locale), label: t(locale, 'tool.saving.title') },
   { href: localizePath('/tools/swp-calculator/', locale), label: t(locale, 'tool.swp.title') },
   { href: localizePath('/tools/sip-calculator/', locale), label: t(locale, 'tool.sip.title') },
