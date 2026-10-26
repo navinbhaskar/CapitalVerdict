@@ -562,3 +562,29 @@ describe('post: a plan that pays back 3 times', () => {
     expect(Math.pow(3, 1 / 40) - 1).toBeCloseTo(0.0278, 4);
   });
 });
+
+describe('post: old or new tax regime, what counts as a deduction', () => {
+  it('the limits it quotes', () => {
+    const d = incomeTax.deductions;
+    expect(d.section80C).toBe(150_000);
+    expect(d.nps80CCD1B).toBe(50_000);
+    expect([d.health80D.self, d.health80D.parents, d.health80D.selfSenior]).toEqual([
+      25_000, 25_000, 50_000,
+    ]);
+    expect(d.homeLoanInterestSelfOccupied).toBe(200_000);
+    expect(incomeTax.hra.largeCities).toHaveLength(8);
+    expect([incomeTax.hra.largeCityShare, incomeTax.hra.otherShare]).toEqual([0.5, 0.4]);
+  });
+
+  it('₹15 lakh with HRA, full 80C and health: ₹4.15 lakh, about ₹1.29 lakh short of ₹5,43,750', () => {
+    const input = {
+      salary: 1_500_000,
+      otherIncome: 0,
+      oldDeductions: 240_000 + 150_000 + 25_000,
+      newDeductions: 0,
+    };
+    const breakEven = breakEvenDeductions(input, incomeTax)!;
+    expect(breakEven).toBeCloseTo(543_750, 0);
+    expect((breakEven - input.oldDeductions) / 1e5).toBeCloseTo(1.29, 2);
+  });
+});
