@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { byDateDesc, readingMinutes } from './blog';
+import { TOOL_PATHS, areaId, byDateDesc, guideArea, readingMinutes } from './blog';
 
 describe('blog helpers', () => {
   it('reading time: 200 words a minute, at least one', () => {
@@ -29,5 +29,19 @@ ${'word '.repeat(400)}
     const a = { data: { date: new Date('2026-01-01') } };
     const b = { data: { date: new Date('2026-03-01') } };
     expect([a, b].sort(byDateDesc)).toEqual([b, a]);
+  });
+});
+
+describe('guideArea', () => {
+  it('every tool a guide can name belongs to a calculator area', () => {
+    for (const tool of Object.keys(TOOL_PATHS) as (keyof typeof TOOL_PATHS)[]) {
+      expect(guideArea(tool), tool).not.toBeNull();
+    }
+    expect(guideArea(undefined)).toBeNull();
+  });
+
+  it('areas have short anchors', () => {
+    expect(areaId(guideArea('car-fuel')!)).toBe('car');
+    expect(areaId(guideArea('emi-calculator')!)).toBe('home');
   });
 });

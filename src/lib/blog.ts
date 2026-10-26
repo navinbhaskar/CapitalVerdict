@@ -1,3 +1,5 @@
+import { TOOL_GROUPS } from './tools';
+
 /**
  * Minutes to read at about 200 words a minute, never less than one. MDX imports and component
  * tags (tables, charts, calculators) are left out; prose inside a component still counts.
@@ -34,3 +36,17 @@ export const TOOL_PATHS = {
   'plan-return': '/tools/plan-return/',
   'emi-calculator': '/tools/emi-calculator/',
 } as const;
+
+/**
+ * The calculator area a guide belongs to: the index in TOOL_GROUPS of the group holding its
+ * tool, or null for a guide without one. Guides pages group posts the same way as the tools.
+ */
+export function guideArea(tool: keyof typeof TOOL_PATHS | undefined): number | null {
+  if (!tool) return null;
+  const path = TOOL_PATHS[tool];
+  const index = TOOL_GROUPS.findIndex((g) => g.tools.some((entry) => entry.path === path));
+  return index < 0 ? null : index;
+}
+
+/** A stable anchor for an area, from its heading key: 'home.group.car' → 'car'. */
+export const areaId = (index: number) => TOOL_GROUPS[index]!.title.split('.').at(-1)!;

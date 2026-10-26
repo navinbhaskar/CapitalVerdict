@@ -233,3 +233,11 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | [ ] Changed: `taxRegime.scope`, `taxRegime.note.salary` (now gross salary), `taxRegime.note.oldDeductions`, `taxRegime.faq.1.a`, `taxRegime.exampleNote`       | Tax regime tool                                                              |
 | [ ] Example: ₹15 lakh salary, basic ₹6 lakh, HRA ₹2.4 lakh, rent ₹3 lakh in a large city, 80C ₹1.5 lakh, health ₹25,000                                        | Labelled "Example"                                                           |
 | [ ] `src/content/blog/old-or-new-tax-regime-2026-27.mdx`: link after the calculator, the itemised "What counts as a deduction" list, and the closing paragraph | Old or new tax regime guide                                                  |
+
+## Guides pages (drafted 2026-10-26)
+
+| Key                                                 | Where it shows                                      |
+| --------------------------------------------------- | --------------------------------------------------- |
+| [ ] `blog.topics`                                   | /guides/: the topic chips' label for screen readers |
+| [ ] `blog.kindShort.decision`, `.basics`, `.update` | The small badge on each guide card                  |
+| [ ] `home.notes.allCount`                           | Home page: "All 20 guides" link                     |

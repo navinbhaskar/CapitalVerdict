@@ -2,22 +2,25 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageIntro from '@/components/layout/PageIntro.astro';
-import Icon from '@/components/layout/Icon.astro';
+import GuideCard from '@/components/blog/GuideCard.astro';
 import { t } from '@/i18n/t';
-import { byDateDesc, readingMinutes, TOOL_PATHS } from '@/lib/blog';
+import { areaId, byDateDesc, guideArea } from '@/lib/blog';
+import { TOOL_GROUPS } from '@/lib/tools';
 
 const locale = 'en';
 const posts = (await getCollection('blog')).sort(byDateDesc);
-const toolOrder = Object.keys(TOOL_PATHS);
-const rank = (p: CollectionEntry<'blog'>) =>
-  p.data.tool ? toolOrder.indexOf(p.data.tool) : toolOrder.length;
-// Decisions follow the calculators' order (car, solar, home); the rest stay newest first.
-const decisions = posts.filter((p) => p.data.kind === 'decision').sort((a, b) => rank(a) - rank(b));
-const basics = posts.filter((p) => p.data.kind === 'basics');
-const updates = posts.filter((p) => p.data.kind === 'update');
-const dateFormat = new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeZone: 'UTC' });
-const iso = (d: Date) => d.toISOString().slice(0, 10);
-const href = (p: CollectionEntry<'blog'>) => `/guides/${p.id}/`;
+const KIND_ORDER = { decision: 0, basics: 1, update: 2 } as const;
+// Within an area: the worked decisions first, then the basics, then dated updates; newest first.
+const inArea = (index: number | null) =>
+  posts
+    .filter((p) => guideArea(p.data.tool) === index)
+    .sort((a, b) => KIND_ORDER[a.data.kind] - KIND_ORDER[b.data.kind]);
+const areas = TOOL_GROUPS.map((group, index) => ({
+  id: areaId(index),
+  title: group.title,
+  posts: inArea(index),
+})).filter((a) => a.posts.length > 0);
+const general: CollectionEntry<'blog'>[] = inArea(null);
 ---
 
 <BaseLayout
@@ -27,119 +30,56 @@ const href = (p: CollectionEntry<'blog'>) => `/guides/${p.id}/`;
 >
   <PageIntro title={t(locale, 'blog.title')} lead={t(locale, 'blog.intro')} />
   <div class="container-page pt-2 pb-10 sm:pb-12">
-    {decisions.length > 0 && (
-      <section class="mt-6" aria-labelledby="k-decision">
+    <nav aria-label={t(locale, 'blog.topics')} class="mt-6">
+      <ul class="flex flex-wrap gap-2" role="list">
+        {areas.map((area) => (
+          <li>
+            <a
+              href={`#${area.id}`}
+              class="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong bg-raised px-4 text-sm font-medium text-ink transition-colors duration-(--duration-fast) ease-out-quart hover:border-accent hover:text-accent-strong"
+            >
+              {t(locale, area.title)}
+              <span class="num text-ink-muted">{area.posts.length}</span>
+            </a>
+          </li>
+        ))}
+        {general.length > 0 && (
+          <li>
+            <a
+              href="#basics"
+              class="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong bg-raised px-4 text-sm font-medium text-ink transition-colors duration-(--duration-fast) ease-out-quart hover:border-accent hover:text-accent-strong"
+            >
+              {t(locale, 'blog.kind.basics')}
+              <span class="num text-ink-muted">{general.length}</span>
+            </a>
+          </li>
+        )}
+      </ul>
+    </nav>
+
+    {areas.map((area) => (
+      <section id={area.id} class="mt-10 scroll-mt-24" aria-labelledby={`${area.id}-h`}>
         <span class="rule-brass" aria-hidden="true" />
-        <h2 id="k-decision" class="mt-3 font-display text-2xl font-medium">
-          {t(locale, 'blog.kind.decision')}
+        <h2 id={`${area.id}-h`} class="mt-3 font-display text-2xl font-medium">
+          {t(locale, area.title)}
         </h2>
-        <ul class="mt-4 grid gap-4 md:grid-cols-3" role="list">
-          {decisions.map((post) => (
-            <li class="card-lift relative flex flex-col rounded-xl border border-line bg-raised p-5 transition-colors duration-(--duration-base) ease-out-quart hover:border-accent">
-              {post.data.takeaway && (
-                <p class="border-b border-line pb-4">
-                  <span class="block font-display text-2xl font-medium tracking-(--tracking-heading) text-accent-strong num">
-                    {post.data.takeaway.figure}
-                  </span>
-                  <span class="mt-1 block text-sm text-ink-muted">{post.data.takeaway.label}</span>
-                </p>
-              )}
-              <h3 class="mt-4 font-display text-xl font-medium tracking-(--tracking-heading) text-balance">
-                <a
-                  href={href(post)}
-                  class="after:absolute after:inset-0 after:rounded-xl hover:text-accent-strong"
-                >
-                  {post.data.title}
-                </a>
-              </h3>
-              <p class="mt-2 flex-1 text-sm text-ink-muted">{post.data.description}</p>
-              <div class="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-sm">
-                <span class="num text-ink-muted">
-                  {t(locale, 'blog.minutes', { n: readingMinutes(post.body ?? '') })}
-                  {post.data.updated && (
-                    <>
-                      {', '}
-                      {t(locale, 'blog.updated', { date: dateFormat.format(post.data.updated) })}
-                    </>
-                  )}
-                </span>
-                {post.data.tool && (
-                  <a
-                    href={TOOL_PATHS[post.data.tool]}
-                    class="link relative z-10 inline-flex min-h-11 items-center gap-1.5"
-                  >
-                    {t(locale, 'blog.openTool')}
-                    <span class="sr-only">
-                      {' '}
-                      {t(locale, 'blog.forGuide', { title: post.data.title })}
-                    </span>
-                    <Icon name="arrowRight" size={16} class="nudge" />
-                  </a>
-                )}
-              </div>
-            </li>
+        <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
+          {area.posts.map((post) => (
+            <GuideCard locale={locale} post={post} />
           ))}
         </ul>
       </section>
-    )}
+    ))}
 
-    {basics.length > 0 && (
-      <section class="mt-10" aria-labelledby="k-basics">
+    {general.length > 0 && (
+      <section id="basics" class="mt-10 scroll-mt-24" aria-labelledby="basics-h">
         <span class="rule-brass" aria-hidden="true" />
-        <h2 id="k-basics" class="mt-3 font-display text-2xl font-medium">
+        <h2 id="basics-h" class="mt-3 font-display text-2xl font-medium">
           {t(locale, 'blog.kind.basics')}
         </h2>
-        <ul class="mt-4 grid gap-4 md:grid-cols-3" role="list">
-          {basics.map((post) => (
-            <li class="card-lift relative flex flex-col rounded-xl border border-line bg-raised p-5 transition-colors duration-(--duration-base) ease-out-quart hover:border-accent">
-              <h3 class="font-display text-xl font-medium tracking-(--tracking-heading) text-balance">
-                <a
-                  href={href(post)}
-                  class="after:absolute after:inset-0 after:rounded-xl hover:text-accent-strong"
-                >
-                  {post.data.title}
-                </a>
-              </h3>
-              <p class="mt-2 flex-1 text-sm text-ink-muted">{post.data.description}</p>
-              <p class="num mt-4 text-sm text-ink-muted">
-                {t(locale, 'blog.minutes', { n: readingMinutes(post.body ?? '') })}
-                {post.data.updated && (
-                  <>
-                    {', '}
-                    {t(locale, 'blog.updated', { date: dateFormat.format(post.data.updated) })}
-                  </>
-                )}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )}
-
-    {updates.length > 0 && (
-      <section class="mt-10 max-w-3xl" aria-labelledby="k-update">
-        <span class="rule-brass" aria-hidden="true" />
-        <h2 id="k-update" class="mt-3 font-display text-2xl font-medium">
-          {t(locale, 'blog.kind.update')}
-        </h2>
-        <ul class="mt-3 divide-y divide-line border-y border-line" role="list">
-          {updates.map((post) => (
-            <li>
-              <a
-                href={href(post)}
-                class="group grid gap-x-6 gap-y-1 py-4 sm:grid-cols-[8rem_minmax(0,1fr)]"
-              >
-                <time datetime={iso(post.data.date)} class="num text-sm text-ink-muted sm:pt-0.5">
-                  {dateFormat.format(post.data.date)}
-                </time>
-                <span>
-                  <span class="block font-medium text-ink group-hover:text-accent-strong">
-                    {post.data.title}
-                  </span>
-                  <span class="mt-1 block text-sm text-ink-muted">{post.data.description}</span>
-                </span>
-              </a>
-            </li>
+        <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
+          {general.map((post) => (
+            <GuideCard locale={locale} post={post} />
           ))}
         </ul>
       </section>

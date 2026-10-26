@@ -1901,5 +1901,10 @@
   "taxRegime.a.limit80TTA": "Savings interest, 80TTA (old regime)",
   "taxRegime.a.limitEmployerNps": "Employer's NPS, share of basic pay, new / old",
   "taxRegime.a.hra": "HRA exemption (old regime)",
-  "taxRegime.a.hraValue": "Least of HRA, rent − 10% of basic pay, and {large} of basic pay in eight large cities ({other} elsewhere)"
+  "taxRegime.a.hraValue": "Least of HRA, rent − 10% of basic pay, and {large} of basic pay in eight large cities ({other} elsewhere)",
+  "blog.topics": "Guides by topic",
+  "blog.kindShort.decision": "Decision",
+  "blog.kindShort.basics": "Basics",
+  "blog.kindShort.update": "Update",
+  "home.notes.allCount": "All {n} guides"
 }

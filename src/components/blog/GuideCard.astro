@@ -1,0 +1,49 @@
+---
+/**
+ * One guide as a card: its headline figure (when it has one), title, a short description, and a
+ * small line with the kind of guide and the reading time. The whole card is the link.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { t, type Locale, type MessageKey } from '@/i18n/t';
+import { readingMinutes } from '@/lib/blog';
+
+interface Props {
+  locale: Locale;
+  post: CollectionEntry<'blog'>;
+  /** Heading level for the title, so the card fits the page outline. */
+  level?: 'h3' | 'h4';
+}
+const { locale, post, level = 'h3' } = Astro.props;
+const Heading = level;
+const { title, description, kind, takeaway, updated } = post.data;
+const dateFormat = new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium', timeZone: 'UTC' });
+---
+
+<li class="card-lift relative flex flex-col rounded-xl border border-line bg-raised p-4 transition-colors duration-(--duration-base) ease-out-quart hover:border-accent sm:p-5">
+  {takeaway && (
+    <p class="mb-3 border-b border-line pb-3">
+      <span class="block font-display text-2xl font-medium tracking-(--tracking-heading) text-accent-strong num">
+        {takeaway.figure}
+      </span>
+      <span class="mt-0.5 block text-sm text-ink-muted">{takeaway.label}</span>
+    </p>
+  )}
+  <Heading class="font-display text-xl font-medium tracking-(--tracking-heading) text-balance">
+    <a
+      href={`/guides/${post.id}/`}
+      class="after:absolute after:inset-0 after:rounded-xl hover:text-accent-strong"
+    >
+      {title}
+    </a>
+  </Heading>
+  <p class="mt-1.5 line-clamp-3 flex-1 text-sm text-ink-muted">{description}</p>
+  <p class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-muted">
+    <span class="rounded-full bg-surface px-2 py-0.5 text-xs font-medium text-ink">
+      {t(locale, `blog.kindShort.${kind}` as MessageKey)}
+    </span>
+    <span class="num">
+      {t(locale, 'blog.minutes', { n: readingMinutes(post.body ?? '') })}
+      {updated && <>, {t(locale, 'blog.updated', { date: dateFormat.format(updated) })}</>}
+    </span>
+  </p>
+</li>

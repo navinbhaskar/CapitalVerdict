@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Icon from '@/components/layout/Icon.astro';
+import GuideCard from '@/components/blog/GuideCard.astro';
 import HeroDecider from '@/components/islands/HeroDecider';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { localizePath } from '@/i18n/routes';
@@ -56,7 +57,12 @@ function balancedColumns<T extends { tools: unknown[] }>(groups: T[]): [T[], T[]
   return best;
 }
 const toolColumns = balancedColumns(toolGroups);
-const notes = (await getCollection('blog')).sort(byDateDesc).slice(0, 3);
+const allGuides = (await getCollection('blog')).sort(byDateDesc);
+// The newest guides with a headline figure: the number is what makes a guide worth opening.
+const notes = [
+  ...allGuides.filter((p) => p.data.takeaway),
+  ...allGuides.filter((p) => !p.data.takeaway),
+].slice(0, 3);
 
 const principles: { title: MessageKey; body: MessageKey }[] = [
   { title: 'principle.assumptions.title', body: 'principle.assumptions.body' },
@@ -221,20 +227,17 @@ const principles: { title: MessageKey; body: MessageKey }[] = [
             {t(locale, 'home.notes.heading')}
           </h2>
         </div>
-        <a href={localizePath('/guides/', locale)} class="link">
-          {t(locale, 'home.notes.all')}
+        <a
+          href={localizePath('/guides/', locale)}
+          class="link inline-flex min-h-11 items-center gap-1.5"
+        >
+          {t(locale, 'home.notes.allCount', { n: allGuides.length })}
+          <Icon name="arrowRight" size={16} class="nudge" />
         </a>
       </div>
-      <ul class="mt-5 grid gap-x-8 sm:grid-cols-3" role="list" data-reveal>
+      <ul class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list" data-reveal>
         {notes.map((post) => (
-          <li class="border-t border-line-strong">
-            <a href={`/guides/${post.id}/`} class="group block py-4">
-              <span class="block font-display text-xl font-medium tracking-(--tracking-heading) group-hover:text-accent-strong">
-                {post.data.title}
-              </span>
-              <span class="mt-1 block text-sm text-ink-muted">{post.data.description}</span>
-            </a>
-          </li>
+          <GuideCard locale={locale} post={post} />
         ))}
       </ul>
     </section>

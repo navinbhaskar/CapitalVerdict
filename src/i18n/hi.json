@@ -1901,5 +1901,10 @@
   "taxRegime.a.limit80TTA": "TODO_COPY_HI",
   "taxRegime.a.limitEmployerNps": "TODO_COPY_HI",
   "taxRegime.a.hra": "TODO_COPY_HI",
-  "taxRegime.a.hraValue": "TODO_COPY_HI"
+  "taxRegime.a.hraValue": "TODO_COPY_HI",
+  "blog.topics": "TODO_COPY_HI",
+  "blog.kindShort.decision": "TODO_COPY_HI",
+  "blog.kindShort.basics": "TODO_COPY_HI",
+  "blog.kindShort.update": "TODO_COPY_HI",
+  "home.notes.allCount": "TODO_COPY_HI"
 }
