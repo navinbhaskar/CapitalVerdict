@@ -1,0 +1,81 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import Icon from '@/components/layout/Icon.astro';
+import AssumptionsTable, { type AssumptionRow } from '@/components/tool/AssumptionsTable.astro';
+import PlanReturnTool from '@/components/islands/PlanReturnTool';
+import { t, type MessageKey } from '@/i18n/t';
+import { localizePath } from '@/i18n/routes';
+import { defaults, smallSavings } from '@/data';
+import { formatPercent } from '@/lib/formatTool';
+
+const locale = 'en';
+const ppf = smallSavings.ppf;
+const v = defaults.scenarioVariables;
+const triple = (x: { pessimistic: number; base: number; optimistic: number }) =>
+  [x.pessimistic, x.base, x.optimistic].map(formatPercent).join(' / ');
+const rows: AssumptionRow[] = [
+  {
+    label: t(locale, 'plan.a.ppf'),
+    value: formatPercent(ppf.rate),
+    source: ppf.source,
+    date: ppf.effectiveDate,
+    verified: ppf.status === 'verified',
+  },
+  {
+    label: t(locale, 'plotVs.a.fundReturn'),
+    value: triple(v.equityReturnNominal.values),
+    source: v.equityReturnNominal.source,
+    date: v.equityReturnNominal.effectiveDate,
+    verified: v.equityReturnNominal.status === 'verified',
+  },
+  {
+    label: t(locale, 'fund.in.inflation'),
+    value: triple(v.inflation.values),
+    source: v.inflation.source,
+    date: v.inflation.effectiveDate,
+    verified: v.inflation.status === 'verified',
+  },
+];
+
+const FAQ = [1, 2, 3] as const;
+const related = [
+  { href: localizePath('/tools/sip-vs-ppf-vs-fd/', locale), label: t(locale, 'tool.saving.title') },
+  { href: localizePath('/tools/swp-calculator/', locale), label: t(locale, 'tool.swp.title') },
+  { href: localizePath('/tools/sip-calculator/', locale), label: t(locale, 'tool.sip.title') },
+];
+---
+
+<ToolLayout
+  locale={locale}
+  title={t(locale, 'tool.planReturn.question')}
+  description={t(locale, 'plan.metaDescription')}
+  related={related}
+  faq={FAQ.map((n) => ({
+    q: t(locale, `plan.faq.${n}.q` as MessageKey),
+    a: t(locale, `plan.faq.${n}.a` as MessageKey),
+  }))}
+>
+  <PlanReturnTool client:load locale={locale} />
+
+  <p slot="explanation">{t(locale, 'plan.explanation')}</p>
+
+  <AssumptionsTable slot="assumptions" locale={locale} rows={rows} />
+
+  <div slot="faq" class="divide-y divide-line border-y border-line">
+    {FAQ.map((n) => (
+      <details class="group">
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-2.5 font-medium text-ink">
+          {t(locale, `plan.faq.${n}.q` as MessageKey)}
+          <Icon
+            name="chevronDown"
+            size={18}
+            class="shrink-0 text-ink-muted transition-transform duration-(--duration-base) ease-out-quart group-open:rotate-180"
+          />
+        </summary>
+        <p class="max-w-(--container-prose) pb-3 text-sm">
+          {t(locale, `plan.faq.${n}.a` as MessageKey)}
+        </p>
+      </details>
+    ))}
+  </div>
+</ToolLayout>
