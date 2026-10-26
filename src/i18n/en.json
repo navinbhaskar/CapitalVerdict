@@ -2125,5 +2125,6 @@
   "search.kind.guide": "Guide",
   "search.kind.other": "Page",
   "search.countTop": "{n} results; the best {shown} shown",
-  "footer.link.calculators": "All calculators"
+  "footer.link.calculators": "All calculators",
+  "search.searching": "Searching…"
 }

@@ -124,13 +124,15 @@ export default function SiteSearch({ locale }: Props) {
   const message =
     status === 'unavailable'
       ? t(locale, 'search.unavailable')
-      : status === 'loading' && query.trim() !== ''
+      : query.trim() !== '' && status === 'loading'
         ? t(locale, 'search.loading')
-        : searched !== '' && hits.length === 0
-          ? t(locale, 'search.none', { query: searched })
-          : query.trim() === ''
-            ? t(locale, 'search.hint')
-            : '';
+        : query.trim() !== '' && searched !== query.trim()
+          ? t(locale, 'search.searching')
+          : searched !== '' && hits.length === 0
+            ? t(locale, 'search.none', { query: searched })
+            : query.trim() === ''
+              ? t(locale, 'search.hint')
+              : '';
 
   return (
     <>
