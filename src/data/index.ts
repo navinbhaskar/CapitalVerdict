@@ -5,12 +5,15 @@
 import defaultsJson from './defaults.json';
 import fuelPricesJson from './fuelPrices.json';
 import upTariffJson from './tariffs/UP.json';
-import solarJson from './solar.json';
+import solarJson from './solar/UP.json';
+import dlTariffJson from './tariffs/DL.json';
+import dlSolarJson from './solar/DL.json';
 import propertyJson from './property.json';
 import changelogJson from './changelog.json';
 import incomeTaxJson from './incomeTax.json';
 import smallSavingsJson from './smallSavings.json';
 import type {
+  DataRecord,
   Changelog,
   Defaults,
   FuelPrices,
@@ -40,7 +43,11 @@ export const verifiedCityIds: readonly string[] = cityIds.filter(
 );
 
 export const upTariff = upTariffJson as unknown as TariffData;
-export const solarData = solarJson as unknown as SolarData;
+/** UP's solar figures: one subsidy amount, so `subsidy` is always present. */
+export const solarData = solarJson as unknown as SolarData & { subsidy: DataRecord };
+/** Delhi's tariff and solar figures. The tools start using them in the next milestone. */
+export const dlTariff = dlTariffJson as unknown as TariffData;
+export const dlSolarData = dlSolarJson as unknown as SolarData;
 
 /** The state's tariff as an engine Tariff once verified; null while it is TODO_VERIFY. */
 export function verifiedTariff(data: TariffData = upTariff): Tariff | null {
@@ -49,9 +56,11 @@ export function verifiedTariff(data: TariffData = upTariff): Tariff | null {
 }
 
 /** A solar data value once verified, else null. */
-export function verifiedSolarValue(key: Exclude<keyof SolarData, 'state'>): number | null {
+export function verifiedSolarValue(
+  key: 'generationPerKWPerDay' | 'degradationPerYear' | 'exportRatePerKWh' | 'subsidy',
+): number | null {
   const record = solarData[key];
-  return record.status === 'verified' ? record.value : null;
+  return record && record.status === 'verified' ? record.value : null;
 }
 
 export const propertyData = propertyJson as unknown as PropertyData;

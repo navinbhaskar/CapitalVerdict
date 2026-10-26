@@ -1,6 +1,24 @@
 {
   "cities": [
     {
+      "id": "delhi",
+      "state": "DL",
+      "petrol": {
+        "value": 102.12,
+        "unit": "₹/L",
+        "source": "Delhi retail price on 26 Oct 2026: ₹102.12 a litre in Goodreturns and Business Today, unchanged since at least 16 Oct (goodreturns.in/petrol-price-in-new-delhi.html, businesstoday.in/fuel-price/petrol-price-in-delhi-today). Indian Oil publishes city prices only by SMS (RSP 102090 to 92249 92249 for Delhi) and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-10-26",
+        "status": "verified"
+      },
+      "cng": {
+        "value": 86.98,
+        "unit": "₹/kg",
+        "source": "Indraprastha Gas Limited (IGL), the city gas distributor for Delhi: raised to ₹86.98/kg from ₹83.09 with effect from 6 am on 29 Aug 2026 (PTI report, 29 Aug 2026, dtnext.in). Still ₹86.98 on 23 Oct 2026 per Goodreturns. IGL's own price page still shows its April 2023 notice.",
+        "effectiveDate": "2026-08-29",
+        "status": "verified"
+      }
+    },
+    {
       "id": "lucknow",
       "state": "UP",
       "petrol": {

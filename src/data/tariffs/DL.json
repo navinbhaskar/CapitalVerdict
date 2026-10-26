@@ -1,0 +1,91 @@
+{
+  "state": "DL",
+  "category": "Domestic (DERC tariff applicable from 1 Aug 2019, same for BRPL, BYPL, TPDDL and NDMC)",
+  "method": "telescopic",
+  "slabs": [
+    {
+      "upTo": 200,
+      "rate": 3
+    },
+    {
+      "upTo": 400,
+      "rate": 4.5
+    },
+    {
+      "upTo": 800,
+      "rate": 6.5
+    },
+    {
+      "upTo": 1200,
+      "rate": 7
+    },
+    {
+      "upTo": null,
+      "rate": 8
+    }
+  ],
+  "fixedCharges": [
+    {
+      "basis": "perKW",
+      "amount": 20,
+      "loadUpToKW": 2
+    },
+    {
+      "basis": "perKW",
+      "amount": 50,
+      "loadUpToKW": 5
+    },
+    {
+      "basis": "perKW",
+      "amount": 100,
+      "loadUpToKW": 15
+    },
+    {
+      "basis": "perKW",
+      "amount": 200,
+      "loadUpToKW": 25
+    },
+    {
+      "basis": "perKW",
+      "amount": 250,
+      "loadUpToKW": null
+    }
+  ],
+  "levies": [
+    {
+      "name": "Surcharge (revenue gap and regulatory assets)",
+      "rate": 0.08,
+      "on": "energyAndFixed"
+    },
+    {
+      "name": "Pension trust surcharge",
+      "rate": 0.07,
+      "on": "energyAndFixed"
+    },
+    {
+      "name": "Electricity tax",
+      "rate": 0.05,
+      "on": "energyAndEnergyLevies"
+    }
+  ],
+  "ppac": {
+    "value": null,
+    "unit": "decimal of energy and fixed charges",
+    "source": "TODO_VERIFY: Power Purchase Adjustment Charge, set by DERC per DISCOM and revised through the year; shown on each bill. Tata Power-DDL Customer Handbook FY26 (tatapower-ddl.com, Customer_Handbook_FY26.pdf, March 2026), 'Know your Bill Calculation', step 5.",
+    "effectiveDate": "2026-10-26",
+    "status": "TODO_VERIFY"
+  },
+  "subsidy": {
+    "fullUpToUnits": 200,
+    "partialUpToUnits": 400,
+    "partialShare": 0.5,
+    "partialCapPerMonth": 800,
+    "optIn": true,
+    "source": "Government of NCT of Delhi subsidy for domestic consumers who opt in, under GoNCTD order F.6/24/Power/2021/2447-59 dated 23 Jun 2021, cited in Tata Power-DDL Customer Handbook FY26 (tatapower-ddl.com, March 2026), page 11. Up to 200 units a month the whole bill is subsidised (the handbook's sample bill for 107 units shows a subsidy equal to the full current demand, page 8). From 201 to 400 units the subsidy is 50% capped at ₹800 a month: the handbook's solar leaflet counts ₹9,600 a year (₹800 a month) for the 0-200 and 201-400 unit slabs (page 19); the 50% share is as widely reported. None above 400 units. Continued for 2026-27 per reports of the Delhi budget (₹3,500 crore for power subsidy); no 2026-27 notification found online.",
+    "effectiveDate": "2026-03-02",
+    "status": "verified"
+  },
+  "source": "DERC domestic tariff applicable from 1 Aug 2019: energy slabs ₹3.00 (0-200 units), ₹4.50 (201-400), ₹6.50 (401-800), ₹7.00 (801-1200), ₹8.00 (above 1200), billed by block; fixed charge per kW of sanctioned load at the rate of the load band (₹20 up to 2 kW, ₹50 above 2 up to 5 kW, ₹100 above 5 up to 15 kW, ₹200 above 15 up to 25 kW, ₹250 above 25 kW); 8% surcharge and 7% pension trust surcharge on energy and fixed charges; 5% electricity tax on energy charges plus PPAC and surcharge on them. Tata Power-DDL Customer Handbook FY26 (tatapower-ddl.com, Customer_Handbook_FY26.pdf, March 2026), pages 8-10. DERC's site (derc.gov.in) could not be reached to cross-check.",
+  "effectiveDate": "2019-08-01",
+  "status": "verified"
+}

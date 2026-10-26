@@ -1,0 +1,75 @@
+{
+  "state": "DL",
+  "centralSubsidy": {
+    "bands": [
+      {
+        "upToKW": 2,
+        "perKW": 30000
+      },
+      {
+        "upToKW": 3,
+        "perKW": 18000
+      },
+      {
+        "upToKW": null,
+        "perKW": 0
+      }
+    ],
+    "unit": "₹ per kW of system size, by band",
+    "source": "PM Surya Ghar central subsidy for residential rooftop solar: ₹30,000 for 1 kW, ₹60,000 for 2 kW, ₹78,000 for 3 kW to 10 kW, as listed in Tata Power-DDL Customer Handbook FY26 (tatapower-ddl.com, Customer_Handbook_FY26.pdf, March 2026), page 19.",
+    "effectiveDate": "2026-03-02",
+    "status": "verified"
+  },
+  "stateCapitalSubsidy": {
+    "perKW": 2000,
+    "max": 10000,
+    "unit": "₹ per kW, capped",
+    "source": "Delhi Government capital subsidy for residential rooftop solar: ₹2,000 per kW up to ₹10,000. Tata Power-DDL Customer Handbook FY26 (tatapower-ddl.com, Customer_Handbook_FY26.pdf, March 2026), page 19.",
+    "effectiveDate": "2026-03-02",
+    "status": "verified"
+  },
+  "generationIncentive": {
+    "bands": [
+      {
+        "upToKW": 3,
+        "perKWh": 3
+      },
+      {
+        "upToKW": 10,
+        "perKWh": 2
+      }
+    ],
+    "unit": "₹ per kWh generated, by system size",
+    "source": "Delhi Government generation-based incentive for residential rooftop solar, paid monthly: ₹3 per kWh up to 3 kW, ₹2 per kWh for 4 kW to 10 kW. Tata Power-DDL Customer Handbook FY26 (tatapower-ddl.com, Customer_Handbook_FY26.pdf, March 2026), page 19.",
+    "effectiveDate": "2026-03-02",
+    "status": "verified"
+  },
+  "generationIncentiveYears": {
+    "value": null,
+    "unit": "years",
+    "source": "TODO_VERIFY: how many years the Delhi generation-based incentive is paid (Delhi Solar Policy); not stated in the DISCOM handbook.",
+    "effectiveDate": "2026-10-26",
+    "status": "TODO_VERIFY"
+  },
+  "generationPerKWPerDay": {
+    "value": 2.9589,
+    "unit": "kWh per kW per day",
+    "source": "1,080 units a year per kW in Delhi (2.96 a day), before maintenance and degradation, per Tata Power-DDL Customer Handbook FY26 (tatapower-ddl.com, Customer_Handbook_FY26.pdf, March 2026), page 19.",
+    "effectiveDate": "2026-03-02",
+    "status": "verified"
+  },
+  "degradationPerYear": {
+    "value": null,
+    "unit": "decimal per year",
+    "source": "TODO_VERIFY: panel manufacturer's performance warranty",
+    "effectiveDate": "2026-10-26",
+    "status": "TODO_VERIFY"
+  },
+  "exportRatePerKWh": {
+    "value": null,
+    "unit": "₹/kWh",
+    "source": "TODO_VERIFY: under DERC net-metering regulations, units still in credit at the end of the financial year are paid at the average power purchase cost (APPC) in DERC's tariff order (BSES rooftop solar FAQ, rts.bsesdelhi.com). The current APPC figure was not found.",
+    "effectiveDate": "2026-10-26",
+    "status": "TODO_VERIFY"
+  }
+}

@@ -10,7 +10,9 @@ import { z } from 'zod';
 import defaultsJson from './defaults.json';
 import fuelPricesJson from './fuelPrices.json';
 import upTariffJson from './tariffs/UP.json';
-import solarJson from './solar.json';
+import dlTariffJson from './tariffs/DL.json';
+import upSolarJson from './solar/UP.json';
+import dlSolarJson from './solar/DL.json';
 import propertyJson from './property.json';
 import incomeTaxJson from './incomeTax.json';
 import smallSavingsJson from './smallSavings.json';
@@ -55,12 +57,15 @@ export const defaultsSchema = z.object({
 });
 export type Defaults = z.infer<typeof defaultsSchema>;
 
+/** States with data: Delhi and Uttar Pradesh. */
+export const stateId = z.enum(['DL', 'UP']);
+
 export const fuelPricesSchema = z.object({
   cities: z
     .array(
       z.object({
         id: z.string().regex(/^[a-z]+$/),
-        state: z.enum(['UP']),
+        state: stateId,
         petrol: dataRecord,
         cng: dataRecord,
       }),
@@ -80,16 +85,45 @@ export const tariffSchema = z
     category: z.string().min(1),
     method: z.enum(['telescopic', 'wholeUnitsAtSlabRate']).nullable(),
     slabs: z.array(z.object({ upTo: z.number().positive().nullable(), rate: z.number().min(0) })),
+    /**
+     * With `loadUpToKW`, the charges are load bands: the whole sanctioned load is billed at the
+     * rate of the band it falls in (Delhi). Without it, every charge applies (UP).
+     */
     fixedCharges: z.array(
-      z.object({ basis: z.enum(['perConnection', 'perKW']), amount: z.number().min(0) }),
+      z.object({
+        basis: z.enum(['perConnection', 'perKW']),
+        amount: z.number().min(0),
+        loadUpToKW: z.number().positive().nullable().optional(),
+      }),
     ),
+    /**
+     * `energyAndEnergyLevies`: on the energy charge plus the other levies' (and PPAC's) share on
+     * the energy charge, as Delhi's electricity tax is.
+     */
     levies: z.array(
       z.object({
         name: z.string().min(1),
         rate: z.number().min(0),
-        on: z.enum(['energy', 'energyAndFixed']),
+        on: z.enum(['energy', 'energyAndFixed', 'energyAndEnergyLevies']),
       }),
     ),
+    /** Power purchase adjustment, a share of the energy and fixed charges; varies through the year. */
+    ppac: dataRecord.optional(),
+    /** A state government subsidy on domestic bills, for consumers who opt in. */
+    subsidy: z
+      .object({
+        /** The whole bill is subsidised up to this many units a month. */
+        fullUpToUnits: z.number().min(0),
+        /** A share of the bill, capped, up to this many units; nothing above. */
+        partialUpToUnits: z.number().min(0),
+        partialShare: z.number().min(0).max(1),
+        partialCapPerMonth: z.number().min(0),
+        optIn: z.boolean(),
+        source: z.string().min(1),
+        effectiveDate: z.iso.date(),
+        status: verificationStatus,
+      })
+      .optional(),
     source: z.string().min(1),
     effectiveDate: z.iso.date(),
     status: verificationStatus,
@@ -99,13 +133,50 @@ export const tariffSchema = z
   });
 export type TariffData = z.infer<typeof tariffSchema>;
 
-export const solarSchema = z.object({
-  state: z.string().min(1),
-  subsidy: dataRecord,
-  generationPerKWPerDay: dataRecord,
-  degradationPerYear: dataRecord,
-  exportRatePerKWh: dataRecord,
-});
+const sourced = {
+  unit: z.string().min(1),
+  source: z.string().min(1),
+  effectiveDate: z.iso.date(),
+  status: verificationStatus,
+};
+
+/**
+ * A state's rooftop solar figures. The subsidy is either one amount (`subsidy`, UP) or set by
+ * system size (`centralSubsidy` bands, plus any state capital subsidy and generation incentive).
+ */
+export const solarSchema = z
+  .object({
+    state: stateId,
+    subsidy: dataRecord.optional(),
+    /** ₹ per kW within each size band (progressive), e.g. PM Surya Ghar. */
+    centralSubsidy: z
+      .object({
+        bands: z
+          .array(z.object({ upToKW: z.number().positive().nullable(), perKW: z.number().min(0) }))
+          .min(1),
+        ...sourced,
+      })
+      .optional(),
+    stateCapitalSubsidy: z
+      .object({ perKW: z.number().min(0), max: z.number().min(0), ...sourced })
+      .optional(),
+    /** ₹ per kWh generated, by system size band (the whole system at its band's rate). */
+    generationIncentive: z
+      .object({
+        bands: z
+          .array(z.object({ upToKW: z.number().positive().nullable(), perKWh: z.number().min(0) }))
+          .min(1),
+        ...sourced,
+      })
+      .optional(),
+    generationIncentiveYears: dataRecord.optional(),
+    generationPerKWPerDay: dataRecord,
+    degradationPerYear: dataRecord,
+    exportRatePerKWh: dataRecord,
+  })
+  .refine((d) => d.subsidy !== undefined || d.centralSubsidy !== undefined, {
+    message: 'a state needs a subsidy amount or subsidy bands',
+  });
 export type SolarData = z.infer<typeof solarSchema>;
 
 export const propertySchema = z.object({
@@ -177,7 +248,9 @@ export function validateAllData(): void {
   defaultsSchema.parse(defaultsJson);
   fuelPricesSchema.parse(fuelPricesJson);
   tariffSchema.parse(upTariffJson);
-  solarSchema.parse(solarJson);
+  tariffSchema.parse(dlTariffJson);
+  solarSchema.parse(upSolarJson);
+  solarSchema.parse(dlSolarJson);
   propertySchema.parse(propertyJson);
   incomeTaxSchema.parse(incomeTaxJson);
   smallSavingsSchema.parse(smallSavingsJson);
