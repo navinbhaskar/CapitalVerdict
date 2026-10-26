@@ -12,8 +12,10 @@ import propertyJson from './property.json';
 import changelogJson from './changelog.json';
 import incomeTaxJson from './incomeTax.json';
 import smallSavingsJson from './smallSavings.json';
+import evTwoWheelerJson from './evTwoWheeler.json';
 import type {
   DataRecord,
+  EvTwoWheelerData,
   Changelog,
   Defaults,
   FuelPrices,
@@ -125,3 +127,39 @@ export const changelog = changelogJson as unknown as Changelog;
 
 export const incomeTax = incomeTaxJson as unknown as IncomeTaxData;
 export const smallSavings = smallSavingsJson as unknown as SmallSavingsData;
+
+export const evTwoWheeler = evTwoWheelerJson as unknown as EvTwoWheelerData;
+
+/**
+ * The central incentive on an electric two-wheeler, ₹: per kWh up to the cap per vehicle, and no
+ * more than its share of the ex-factory price (when known). Nil above the price limit or outside
+ * the scheme's dates. It comes off the price at purchase.
+ */
+export function centralEv2wIncentive(
+  batteryKWh: number,
+  onDate: string,
+  exFactoryPrice: number | null = null,
+): number {
+  const c = evTwoWheeler.central;
+  if (c.status !== 'verified' || onDate < c.validFrom || onDate > c.validUntil) return 0;
+  if (exFactoryPrice !== null && exFactoryPrice > c.maxExFactoryPrice) return 0;
+  const byShare = exFactoryPrice === null ? Infinity : exFactoryPrice * c.shareOfExFactoryCap;
+  return Math.max(0, Math.min(batteryKWh * c.perKWh, c.capPerVehicle, byShare));
+}
+
+/**
+ * A state's own incentive on an electric two-wheeler registered on `onDate`, ₹: the rate and cap
+ * of that registration year, nil above the price limit or outside the years. Paid after
+ * registration. 0 for a state without one.
+ */
+export function stateEv2wIncentive(
+  state: StateId,
+  batteryKWh: number,
+  exShowroomPrice: number,
+  onDate: string,
+): number {
+  const p = evTwoWheeler.states.find((s) => s.state === state)?.purchase;
+  if (!p || p.status !== 'verified' || exShowroomPrice > p.maxExShowroomPrice) return 0;
+  const year = p.years.find((y) => onDate >= y.from && onDate <= y.until);
+  return year ? Math.max(0, Math.min(batteryKWh * year.perKWh, year.cap)) : 0;
+}

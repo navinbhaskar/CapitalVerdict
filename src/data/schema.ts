@@ -17,6 +17,7 @@ import propertyJson from './property.json';
 import incomeTaxJson from './incomeTax.json';
 import smallSavingsJson from './smallSavings.json';
 import changelogJson from './changelog.json';
+import evTwoWheelerJson from './evTwoWheeler.json';
 
 export const verificationStatus = z.enum(['TODO_VERIFY', 'verified']);
 
@@ -181,6 +182,48 @@ export const solarSchema = z
   });
 export type SolarData = z.infer<typeof solarSchema>;
 
+/**
+ * Purchase incentives for electric two-wheelers: the central scheme (an upfront price cut, so a
+ * dealer's price already includes it) and each state's own (paid after registration).
+ */
+export const evTwoWheelerSchema = z.object({
+  central: z.object({
+    scheme: z.string().min(1),
+    perKWh: z.number().min(0),
+    capPerVehicle: z.number().min(0),
+    shareOfExFactoryCap: z.number().min(0).max(1),
+    maxExFactoryPrice: z.number().positive(),
+    validFrom: z.iso.date(),
+    validUntil: z.iso.date(),
+    paidAs: z.literal('upfront'),
+    ...sourced,
+  }),
+  states: z.array(
+    z.object({
+      state: stateId,
+      purchase: z.object({
+        maxExShowroomPrice: z.number().positive(),
+        /** By date of registration; each band's own rate and cap. */
+        years: z
+          .array(
+            z.object({
+              from: z.iso.date(),
+              until: z.iso.date(),
+              perKWh: z.number().min(0),
+              cap: z.number().min(0),
+            }),
+          )
+          .min(1),
+        paidAs: z.literal('bankTransfer'),
+        ...sourced,
+      }),
+      scrapping: z.object({ amount: z.number().min(0), ...sourced }).optional(),
+      roadTaxWaiver: z.object({ share: z.number().min(0).max(1), ...sourced }).optional(),
+    }),
+  ),
+});
+export type EvTwoWheelerData = z.infer<typeof evTwoWheelerSchema>;
+
 export const propertySchema = z.object({
   state: z.string().min(1),
   stampDutyAndRegistration: dataRecord,
@@ -288,5 +331,6 @@ export function validateAllData(): void {
   propertySchema.parse(propertyJson);
   incomeTaxSchema.parse(incomeTaxJson);
   smallSavingsSchema.parse(smallSavingsJson);
+  evTwoWheelerSchema.parse(evTwoWheelerJson);
   changelogSchema.parse(changelogJson);
 }
