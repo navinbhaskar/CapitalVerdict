@@ -6,9 +6,10 @@ import { compareCarFuel } from '@/models/carFuel';
 import { carFuelCurrentExample } from '@/models/carFuel.example';
 import { Frame, Inputs, Results, Slider, Verdict } from './parts';
 
-/** The guide's petrol and CNG cars, starting at the example city's verified prices: your distance, prices and gap. */
+/** The guide's petrol and CNG cars, starting at Lucknow's verified prices: your distance, prices and gap. */
 export default function CngWidget() {
-  const example = carFuelCurrentExample();
+  // The guide is about Lucknow, so its calculator starts at Lucknow's verified prices.
+  const example = carFuelCurrentExample('lucknow');
   const [km, setKm] = useState(example.monthlyKm);
   const [cng, setCng] = useState(example.alternative.energyPrice);
   const [petrol, setPetrol] = useState(example.base.energyPrice);

@@ -1,7 +1,7 @@
 /**
  * The home page's "ask in one sentence" card: a few blanks per decision, everything else from the
  * same example forms the tools open with, so the card and the tools always agree.
- * Car prices use the verified city (Lucknow); the rest are the tools' labelled examples.
+ * Fuel prices are the example city's verified prices; the rest are the tools' labelled examples.
  */
 import { verifiedFuelPrices, verifiedTariff } from '@/data';
 import { carFuelFlips, carFuelVerdict, type CarFuelVerdict } from './carFuel';

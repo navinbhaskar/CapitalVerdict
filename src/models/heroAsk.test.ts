@@ -10,11 +10,17 @@ import {
 } from './heroAsk';
 
 describe('home page sentence card: the starting answers match the tools and the blog posts', () => {
-  it('car: CNG pays back in 46 months, ₹1.13 lakh ahead, answer changes at 1,191 km', () => {
+  it('car, Delhi prices: CNG pays back in 27 months, ₹2.82 lakh ahead, answer changes at 790 km', () => {
+    // Saving 1,800 × (102.12 ÷ 18 − 86.98 ÷ 26) = ₹4,190.31 a month. The ₹90,000 grows at 0.75% a
+    // month: 26 months of saving (1,08,948) fall short of 1,09,297, 27 months (1,13,138) pass 1,10,117.
+    // After 120 months: 5,02,837 − 90,000 × 1.0075^120 (2,20,623) = 2,82,215.
     const a = carAsk(CAR_ASK_START)!;
-    expect(a.verdict).toMatchObject({ kind: 'payback', payer: 'alternative', months: 46 });
-    expect(a.dearerNet / 1e5).toBeCloseTo(1.13, 2);
-    expect(Math.round(a.flipKm!.threshold)).toBe(1191);
+    const saving = 1800 * (102.12 / 18 - 86.98 / 26);
+    expect(saving).toBeCloseTo(4_190.31, 2);
+    expect(a.verdict).toMatchObject({ kind: 'payback', payer: 'alternative', months: 27 });
+    expect(a.dearerNet).toBeCloseTo(saving * 120 - 90_000 * Math.pow(1.0075, 120), 4);
+    expect(a.dearerNet / 1e5).toBeCloseTo(2.82, 2);
+    expect(Math.round(a.flipKm!.threshold)).toBe(790);
     expect(a.flipKm!.cheaperBelow).toBe('base');
     expect(a.query).toBe('?alt=cng&km=1800&pcp=700000&ccp=790000');
   });

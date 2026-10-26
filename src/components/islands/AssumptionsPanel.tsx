@@ -1,7 +1,8 @@
 import { useId, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
-import { cityIds, verifiedCityIds, verifiedFuelPrices } from '@/data';
+import { cityIds, fuelPrices, verifiedCityIds, verifiedFuelPrices } from '@/data';
+import { EXAMPLE_PRICE_CITY } from '@/models/carFuel.example';
 import {
   DEFAULT_ASSUMPTIONS,
   RATE_LIMITS,
@@ -50,6 +51,9 @@ function changedKeys(a: GlobalAssumptions): AssumptionKey[] {
 export default function AssumptionsPanel({ locale }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { assumptions, update, reset } = useGlobalAssumptions();
+  // The state follows the city, or the example city until one is chosen.
+  const stateOfCity =
+    fuelPrices.cities.find((c) => c.id === (assumptions.city ?? EXAMPLE_PRICE_CITY))?.state ?? 'DL';
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [confirmReset, setConfirmReset] = useState(false);
   /** Bumped on each save so the checkmark redraws, and on reset so fields reload. */
@@ -185,7 +189,7 @@ export default function AssumptionsPanel({ locale }: Props) {
                   <p class="text-sm font-medium">{t(locale, 'assumptions.state')}</p>
                   <p class="mt-0.5 text-sm text-ink-muted">{t(locale, 'assumptions.stateNote')}</p>
                 </div>
-                <p class="text-sm font-medium">{t(locale, 'state.UP')}</p>
+                <p class="text-sm font-medium">{t(locale, `state.${stateOfCity}` as MessageKey)}</p>
               </div>
               <Row
                 key={`city-${formKey}`}

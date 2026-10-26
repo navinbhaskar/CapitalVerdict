@@ -55,7 +55,8 @@
     {
       "name": "Surcharge (revenue gap and regulatory assets)",
       "rate": 0.08,
-      "on": "energyAndFixed"
+      "on": "energyAndFixed",
+      "inTaxBase": true
     },
     {
       "name": "Pension trust surcharge",
@@ -85,7 +86,7 @@
     "effectiveDate": "2026-03-02",
     "status": "verified"
   },
-  "source": "DERC domestic tariff applicable from 1 Aug 2019: energy slabs ₹3.00 (0-200 units), ₹4.50 (201-400), ₹6.50 (401-800), ₹7.00 (801-1200), ₹8.00 (above 1200), billed by block; fixed charge per kW of sanctioned load at the rate of the load band (₹20 up to 2 kW, ₹50 above 2 up to 5 kW, ₹100 above 5 up to 15 kW, ₹200 above 15 up to 25 kW, ₹250 above 25 kW); 8% surcharge and 7% pension trust surcharge on energy and fixed charges; 5% electricity tax on energy charges plus PPAC and surcharge on them. Tata Power-DDL Customer Handbook FY26 (tatapower-ddl.com, Customer_Handbook_FY26.pdf, March 2026), pages 8-10. DERC's site (derc.gov.in) could not be reached to cross-check.",
+  "source": "DERC domestic tariff applicable from 1 Aug 2019: energy slabs ₹3.00 (0-200 units), ₹4.50 (201-400), ₹6.50 (401-800), ₹7.00 (801-1200), ₹8.00 (above 1200), billed by block; fixed charge per kW of sanctioned load at the rate of the load band (₹20 up to 2 kW, ₹50 above 2 up to 5 kW, ₹100 above 5 up to 15 kW, ₹200 above 15 up to 25 kW, ₹250 above 25 kW); 8% surcharge and 7% pension trust surcharge on energy and fixed charges; 5% electricity tax on the energy charge plus the PPAC and 8% surcharge on it, not the pension trust surcharge (page 10). Tata Power-DDL Customer Handbook FY26 (tatapower-ddl.com, Customer_Handbook_FY26.pdf, March 2026), pages 8-10. DERC's site (derc.gov.in) could not be reached to cross-check.",
   "effectiveDate": "2019-08-01",
   "status": "verified"
 }

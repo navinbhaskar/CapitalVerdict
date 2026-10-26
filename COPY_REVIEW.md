@@ -241,3 +241,10 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | [ ] `blog.topics`                                   | /guides/: the topic chips' label for screen readers |
 | [ ] `blog.kindShort.decision`, `.basics`, `.update` | The small badge on each guide card                  |
 | [ ] `home.notes.allCount`                           | Home page: "All 20 guides" link                     |
+
+## Delhi as the default city (drafted 2026-10-26)
+
+| Key                                             | Where it shows                                                                             |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| [ ] `hero.car.contextCng`, `hero.car.contextEv` | Home page car card: now names the city ("Delhi fuel prices of …")                          |
+| [ ] `assumptions.stateNote`, `state.DL`         | Assumptions panel: "State: Delhi. Set by your city. Tools use Delhi until you choose one." |

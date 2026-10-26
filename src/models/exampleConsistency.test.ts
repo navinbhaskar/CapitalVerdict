@@ -5,7 +5,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { verifiedFuelPrices } from '@/data';
-import { cngCase, cngFigures } from '@/content/guideFigures';
+import { GUIDE_CNG_CITY, cngCase, cngFigures } from '@/content/guideFigures';
 import { carFuelFlips, compareCarFuel } from './carFuel';
 import { EXAMPLE_PRICE_CITY, carFuelCurrentExample, carFuelExample } from './carFuel.example';
 import { CAR_FUEL_START_FORM, toCarFuelInput } from './carFuelForm';
@@ -23,7 +23,13 @@ describe('one car example everywhere', () => {
     expect(CAR_FUEL_START_FORM.cngPrice).toBe(prices.cng);
     expect(worked.base.energyPrice).toBe(prices.petrol);
     expect(worked.alternative.energyPrice).toBe(prices.cng);
-    expect(cngCase).toEqual(worked);
+    expect(EXAMPLE_PRICE_CITY).toBe('delhi');
+  });
+
+  it("the CNG guides stay on Lucknow, with the tool's own cars, distance and premium", () => {
+    expect(GUIDE_CNG_CITY).toBe('lucknow');
+    expect(cngCase).toEqual(carFuelCurrentExample('lucknow'));
+    expect(cngCase.alternative.energyPrice).toBe(verifiedFuelPrices('lucknow')!.cng);
   });
 
   it('the tool starts with the same cars, distance and premium as the home page', () => {
@@ -32,14 +38,12 @@ describe('one car example everywhere', () => {
     expect(tool.interestRate).toBe(worked.interestRate);
   });
 
-  it('home page, tool, worked example and guide: same payback, net and flip distance', () => {
+  it('home page, tool and worked example: same payback, net and flip distance', () => {
     const home = carAsk(CAR_ASK_START)!;
     const fromTool = compareCarFuel(tool);
     const fromWorked = compareCarFuel(worked);
-    const fromGuide = compareCarFuel(cngCase);
     const months = fromWorked.breakevenWithInterest!.months;
     expect(fromTool.breakevenWithInterest!.months).toBe(months);
-    expect(fromGuide.breakevenWithInterest!.months).toBe(months);
     expect(home.verdict.kind).not.toBe('never');
     expect(fromTool.netAt10Years!.withInterest).toBeCloseTo(
       fromWorked.netAt10Years!.withInterest,

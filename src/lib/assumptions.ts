@@ -5,7 +5,8 @@
 import { defaults, verifiedCityIds } from '@/data';
 
 export interface GlobalAssumptions {
-  state: 'UP';
+  /** Follows the city: Delhi until the visitor picks a city elsewhere. */
+  state: 'DL' | 'UP';
   city: string | null;
   taxRegime: 'new' | 'old';
   /** Including cess. Entered by the user; null until they do. */
@@ -29,7 +30,7 @@ export const RATE_LIMITS = {
 } as const satisfies Partial<Record<AssumptionKey, number>>;
 
 export const DEFAULT_ASSUMPTIONS: GlobalAssumptions = {
-  state: 'UP',
+  state: 'DL',
   city: null,
   taxRegime: 'new',
   marginalTaxRate: null,
@@ -45,7 +46,7 @@ const isRate = (max: number, nullable: boolean) => (v: unknown) =>
 
 /** One validator per field. Hand-written so the browser bundle does not need a schema library. */
 const validators: { [K in AssumptionKey]: (v: unknown) => boolean } = {
-  state: (v) => v === 'UP',
+  state: (v) => v === 'DL' || v === 'UP',
   // A city whose prices are not verified cannot be chosen; a stored one falls back to none.
   city: (v) => v === null || (typeof v === 'string' && verifiedCityIds.includes(v)),
   taxRegime: (v) => v === 'new' || v === 'old',

@@ -157,6 +157,7 @@ export default function HeroDecider({ locale }: Props) {
       below: inline(fuel(carA.flipKm.cheaperBelow)),
     });
   const carContext = t(locale, car.alt === 'cng' ? 'hero.car.contextCng' : 'hero.car.contextEv', {
+    city: t(locale, `city.${HERO_PRICE_CITY}` as MessageKey),
     date: PRICE_DATE,
     rate: formatPercent(CAR_FUEL_START_FORM.interestRate!),
     pm: formatNumber(CAR_FUEL_START_FORM.petrolMileage!),

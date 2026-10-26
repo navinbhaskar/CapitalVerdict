@@ -105,6 +105,8 @@ export const tariffSchema = z
         name: z.string().min(1),
         rate: z.number().min(0),
         on: z.enum(['energy', 'energyAndFixed', 'energyAndEnergyLevies']),
+        /** This levy's share on the energy charge is part of the tax base. */
+        inTaxBase: z.boolean().optional(),
       }),
     ),
     /** Power purchase adjustment, a share of the energy and fixed charges; varies through the year. */

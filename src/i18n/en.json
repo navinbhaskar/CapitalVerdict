@@ -264,7 +264,7 @@
   "assumptions.notUsedYet": "Not used by a live tool yet",
   "assumptions.default": "Default {value}",
   "assumptions.noDefault": "No default; enter yours",
-  "assumptions.stateNote": "More states will follow.",
+  "assumptions.stateNote": "Set by your city. Tools use Delhi until you choose one.",
   "assumptions.cityUnverified": "Fuel prices for this city are not verified yet, so tools keep their example prices.",
   "assumptions.changed": "Changed",
   "assumptions.resetOne": "Reset",
@@ -744,8 +744,8 @@
   "hero.ask.extra": "How much more it costs than the petrol car",
   "hero.car.ahead": "It comes out {amount} ahead after {years} years.",
   "hero.car.noPayback": "Its {extra} higher price does not pay back in that time.",
-  "hero.car.contextCng": "Lucknow fuel prices of {date}; {pm} km/L against {cm} km/kg; {rate} a year interest on the extra price. Example figures.",
-  "hero.car.contextEv": "Lucknow petrol price of {date}; {pm} km/L against {ee} km a kWh, {home} charged at home at ₹{hr} a unit; {rate} a year interest. Example figures.",
+  "hero.car.contextCng": "{city} fuel prices of {date}; {pm} km/L against {cm} km/kg; {rate} a year interest on the extra price. Example figures.",
+  "hero.car.contextEv": "{city} petrol price of {date}; {pm} km/L against {ee} km a kWh, {home} charged at home at ₹{hr} a unit; {rate} a year interest. Example figures.",
   "hero.solar.sentence": "My electricity bill is about {bill} a month, and a {kw} system costs {cost} after any subsidy.",
   "hero.ask.bill": "Electricity bill a month",
   "hero.ask.kw": "Solar system size",
@@ -1906,5 +1906,6 @@
   "blog.kindShort.decision": "Decision",
   "blog.kindShort.basics": "Basics",
   "blog.kindShort.update": "Update",
-  "home.notes.allCount": "All {n} guides"
+  "home.notes.allCount": "All {n} guides",
+  "state.DL": "Delhi"
 }
