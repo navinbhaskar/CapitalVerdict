@@ -29,10 +29,23 @@ interface Props {
 }
 
 type Tab = 'car' | 'solar' | 'home';
-const TABS: { id: Tab; label: MessageKey }[] = [
-  { id: 'car', label: 'hero.tab.car' },
-  { id: 'solar', label: 'hero.tab.solar' },
-  { id: 'home', label: 'hero.tab.home' },
+/** Icons are the same paths as Icon.astro's fuel, sun and home. */
+const TABS: { id: Tab; label: MessageKey; icon: string }[] = [
+  {
+    id: 'car',
+    label: 'hero.tab.car',
+    icon: 'M4 20V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v15M3 20h12M4 10h10M14 8h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V9l-3-3',
+  },
+  {
+    id: 'solar',
+    label: 'hero.tab.solar',
+    icon: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4',
+  },
+  {
+    id: 'home',
+    label: 'hero.tab.home',
+    icon: 'M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z',
+  },
 ];
 
 /** Auto-rotation: a few seconds per example, two rounds at most, then it rests on its own. */
@@ -80,6 +93,8 @@ export default function HeroDecider({ locale }: Props) {
   const [steps, setSteps] = useState(0);
   const box = useRef<HTMLDivElement>(null);
   const stop = () => setAuto(false);
+  /** The timer is counting down to the next example right now. */
+  const running = auto && !held && onScreen && steps < MAX_STEPS;
 
   useEffect(() => {
     const el = box.current;
@@ -321,7 +336,7 @@ export default function HeroDecider({ locale }: Props) {
         <div
           role="tablist"
           aria-label={t(locale, 'hero.tablist')}
-          class="flex gap-1"
+          class="hero-tabs"
           onKeyDown={(e) => {
             if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
             stop();
@@ -346,7 +361,25 @@ export default function HeroDecider({ locale }: Props) {
               }}
               class={`hero-tab ${tab === tb.id ? 'is-active' : ''}`}
             >
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d={tb.icon}
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
               {t(locale, tb.label)}
+              {/* While the examples rotate, a brass line fills under the active tab until the next. */}
+              {tab === tb.id && running && (
+                <span
+                  key={steps}
+                  class="hero-tab-progress"
+                  style={{ animationDuration: `${ROTATE_MS}ms` }}
+                  aria-hidden="true"
+                />
+              )}
             </button>
           ))}
         </div>
@@ -360,7 +393,7 @@ export default function HeroDecider({ locale }: Props) {
             }
           }}
           aria-label={t(locale, auto ? 'hero.rotate.pause' : 'hero.rotate.play')}
-          class="inline-flex size-11 shrink-0 items-center justify-center rounded-full text-ink-muted transition-colors duration-(--duration-fast) ease-out-quart hover:bg-surface hover:text-ink"
+          class="hero-rotate"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             {auto ? (
