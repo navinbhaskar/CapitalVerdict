@@ -174,7 +174,7 @@
   "checklist.carFuel.3": "Resale value difference",
   "checklist.carFuel.4": "Performance of the petrol variant",
   "carFuel.explanation": "Each car’s monthly fuel cost is distance ÷ mileage × fuel price, plus any extra upkeep. The CNG car’s saving adds up month by month, and it breaks even when that running total covers the extra price of the CNG variant. The stricter test also charges interest on the extra price, at your loan rate or what the money could have earned, compounded monthly. Fuel prices rise each year by the rates you set; by default they stay flat.",
-  "carFuel.workedExample.intro": "Petrol at ₹101.86 a litre and CNG at ₹95.75 a kg (Lucknow, September 2026), 18 km/L against 26 km/kg, 1,800 km a month and a ₹90,000 premium at 9% a year:",
+  "carFuel.workedExample.intro": "Petrol at {petrol} a litre and CNG at {cng} a kg ({city}: petrol on {petrolDate}, CNG from {cngDate}), {pm} km/L against {cm} km/kg, {km} km a month and a {extra} premium at {rate} a year:",
   "assumptionsTable.item": "Assumption",
   "assumptionsTable.value": "Value",
   "assumptionsTable.source": "Source",

@@ -7,7 +7,7 @@ import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { localizePath } from '@/i18n/routes';
 import { defaults, fuelPrices } from '@/data';
 import { compareCarFuel } from '@/models/carFuel';
-import { carFuelExample } from '@/models/carFuel.example';
+import { carFuelCurrentExample, examplePrices } from '@/models/carFuel.example';
 import { formatMoney, formatNumber, formatPercent, formatRupeesPrecise } from '@/lib/formatTool';
 
 interface Props {
@@ -63,7 +63,13 @@ const rows: AssumptionRow[] = [
     : []),
 ];
 
+const carFuelExample = carFuelCurrentExample();
 const ex = compareCarFuel(carFuelExample);
+const exPrices = examplePrices();
+const longDate = (iso: string) =>
+  new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }).format(
+    new Date(`${iso}T00:00:00`),
+  );
 const cngName = { alt: t(locale, 'fuel.cng') };
 const worked: [string, string][] = [
   [
@@ -121,7 +127,20 @@ const related = [
   <p slot="explanation">{t(locale, 'carFuel.explanation')}</p>
 
   <Fragment slot="worked-example">
-    <p>{t(locale, 'carFuel.workedExample.intro')}</p>
+    <p>
+      {t(locale, 'carFuel.workedExample.intro', {
+        petrol: formatRupeesPrecise(carFuelExample.base.energyPrice),
+        cng: formatRupeesPrecise(carFuelExample.alternative.energyPrice),
+        city: exPrices ? t(locale, `city.${exPrices.city}` as MessageKey) : '',
+        petrolDate: exPrices ? longDate(exPrices.petrolDate) : '',
+        cngDate: exPrices ? longDate(exPrices.cngDate) : '',
+        pm: formatNumber(carFuelExample.base.mileage),
+        cm: formatNumber(carFuelExample.alternative.mileage),
+        km: formatNumber(carFuelExample.monthlyKm),
+        extra: formatMoney(carFuelExample.extraPrice),
+        rate: formatPercent(carFuelExample.interestRate),
+      })}
+    </p>
     <dl class="grid gap-x-8 sm:grid-cols-2">
       {worked.map(([label, value]) => (
         <div class="flex items-baseline justify-between gap-4 border-b border-line py-2.5">

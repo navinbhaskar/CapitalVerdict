@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { defaults } from '@/data';
 import { decodeShare, encodeShare } from '@/lib/shareLink';
 import { carFuelScenarios } from './carFuel';
-import { carFuelExample } from './carFuel.example';
+import { carFuelCurrentExample, carFuelExample } from './carFuel.example';
 import {
   CAR_FUEL_EXAMPLE_FORM,
   CAR_FUEL_EXAMPLE_KEYS,
@@ -28,12 +28,24 @@ describe('car fuel form', () => {
     expect(toCarFuelInput(CAR_FUEL_EXAMPLE_FORM)).toBeNull();
   });
 
-  it('maps to the spec / workbook example once prices are in', () => {
+  it('maps to the current example once prices are in', () => {
     expect(toCarFuelInput(priced)).toEqual({
-      ...carFuelExample,
+      ...carFuelCurrentExample(),
       purchasePrices: { base: 700_000, alternative: 790_000 },
     });
     expect(extraPriceOf(priced)).toBe(90_000);
+  });
+
+  it("maps to the spec / workbook fixture at the fixture's own fuel prices", () => {
+    const atFixturePrices = {
+      ...priced,
+      petrolPrice: carFuelExample.base.energyPrice,
+      cngPrice: carFuelExample.alternative.energyPrice,
+    };
+    expect(toCarFuelInput(atFixturePrices)).toEqual({
+      ...carFuelExample,
+      purchasePrices: { base: 700_000, alternative: 790_000 },
+    });
   });
 
   it('allows the CNG car to be the cheaper one', () => {

@@ -7,7 +7,10 @@
  */
 import type { ShareSchema } from '@/lib/shareLink';
 import type { CarFuelInput, FuelOption } from './carFuel';
-import { carFuelExample } from './carFuel.example';
+import { carFuelCurrentExample } from './carFuel.example';
+
+/** The tool's starting cars, distance and premium, at the example city's verified prices. */
+const example = carFuelCurrentExample();
 
 export type AltKind = 'cng' | 'ev';
 /** What petrol is compared with: one alternative, or both side by side. */
@@ -62,16 +65,16 @@ export type NumericField = Exclude<keyof CarFuelForm, 'alt'>;
 
 export const CAR_FUEL_EXAMPLE_FORM: CarFuelForm = {
   alt: 'cng',
-  monthlyKm: carFuelExample.monthlyKm,
+  monthlyKm: example.monthlyKm,
   petrolCarPrice: null,
   cngCarPrice: null,
-  petrolPrice: carFuelExample.base.energyPrice,
-  cngPrice: carFuelExample.alternative.energyPrice,
-  petrolMileage: carFuelExample.base.mileage,
-  cngMileage: carFuelExample.alternative.mileage,
-  interestRate: carFuelExample.interestRate,
-  petrolPriceRise: carFuelExample.base.annualPriceRise,
-  cngPriceRise: carFuelExample.alternative.annualPriceRise,
+  petrolPrice: example.base.energyPrice,
+  cngPrice: example.alternative.energyPrice,
+  petrolMileage: example.base.mileage,
+  cngMileage: example.alternative.mileage,
+  interestRate: example.interestRate,
+  petrolPriceRise: example.base.annualPriceRise,
+  cngPriceRise: example.alternative.annualPriceRise,
   petrolUpkeep: 0,
   cngUpkeep: 0,
   evCarPrice: null,
@@ -81,7 +84,7 @@ export const CAR_FUEL_EXAMPLE_FORM: CarFuelForm = {
   publicRate: null,
   evPriceRise: 0,
   evUpkeep: 0,
-  horizonYears: carFuelExample.horizonMonths / 12,
+  horizonYears: example.horizonMonths / 12,
   petrolInsurance: null,
   cngInsurance: null,
   evInsurance: null,

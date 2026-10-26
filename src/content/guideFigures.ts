@@ -14,7 +14,11 @@ import type { CompareItem } from '@/components/tool/CompareBars';
 import { acPayback, type AcInput } from '@/models/ac';
 import { cashOrLoan, type CarLoanInput } from '@/models/carLoan';
 import { compareCarFuel, type CarFuelInput } from '@/models/carFuel';
-import { carFuelExample } from '@/models/carFuel.example';
+import {
+  EXAMPLE_PRICE_CITY,
+  carFuelCurrentExample,
+  carFuelExample,
+} from '@/models/carFuel.example';
 import { flatToReducing } from '@/models/flatRate';
 import { fundPlan, maxWithdrawal, type FundInput } from '@/models/fund';
 import { monthlySaving, type MonthlySavingInput } from '@/models/monthlySaving';
@@ -617,12 +621,9 @@ export const solarFigures = {
 
 /* ---------- CNG car payback, break-even, Lucknow update ---------- */
 
-const lucknow = verifiedFuelPrices('lucknow')!;
-export const cngCase: CarFuelInput = {
-  ...carFuelExample,
-  base: { ...carFuelExample.base, energyPrice: lucknow.petrol },
-  alternative: { ...carFuelExample.alternative, energyPrice: lucknow.cng },
-};
+const lucknow = verifiedFuelPrices(EXAMPLE_PRICE_CITY)!;
+/** The tool's own example at today's verified prices, so the guide and the tool agree. */
+export const cngCase: CarFuelInput = carFuelCurrentExample();
 const cng = compareCarFuel(cngCase);
 const netByYear = (input: CarFuelInput) => {
   const r = compareCarFuel(input);

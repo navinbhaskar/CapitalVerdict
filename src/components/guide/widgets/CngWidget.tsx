@@ -1,27 +1,26 @@
 import { useMemo, useState } from 'preact/hooks';
 import { t } from '@/i18n/t';
-import { verifiedFuelPrices } from '@/data';
 import { formatINR } from '@/lib/format';
 import { formatMoney, formatMoneyShort as short } from '@/lib/formatTool';
 import { compareCarFuel } from '@/models/carFuel';
-import { carFuelExample } from '@/models/carFuel.example';
+import { carFuelCurrentExample } from '@/models/carFuel.example';
 import { Frame, Inputs, Results, Slider, Verdict } from './parts';
 
-/** The guide's petrol and CNG cars, starting at Lucknow prices: your distance, prices and gap. */
+/** The guide's petrol and CNG cars, starting at the example city's verified prices: your distance, prices and gap. */
 export default function CngWidget() {
-  const lucknow = verifiedFuelPrices('lucknow')!;
-  const [km, setKm] = useState(carFuelExample.monthlyKm);
-  const [cng, setCng] = useState(lucknow.cng);
-  const [petrol, setPetrol] = useState(lucknow.petrol);
-  const [extra, setExtra] = useState(carFuelExample.extraPrice);
+  const example = carFuelCurrentExample();
+  const [km, setKm] = useState(example.monthlyKm);
+  const [cng, setCng] = useState(example.alternative.energyPrice);
+  const [petrol, setPetrol] = useState(example.base.energyPrice);
+  const [extra, setExtra] = useState(example.extraPrice);
   const r = useMemo(
     () =>
       compareCarFuel({
-        ...carFuelExample,
+        ...example,
         monthlyKm: km,
         extraPrice: extra,
-        base: { ...carFuelExample.base, energyPrice: petrol },
-        alternative: { ...carFuelExample.alternative, energyPrice: cng },
+        base: { ...example.base, energyPrice: petrol },
+        alternative: { ...example.alternative, energyPrice: cng },
       }),
     [km, cng, petrol, extra],
   );

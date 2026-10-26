@@ -6,12 +6,13 @@
 import { verifiedFuelPrices, verifiedTariff } from '@/data';
 import { carFuelFlips, carFuelVerdict, type CarFuelVerdict } from './carFuel';
 import { CAR_FUEL_START_FORM, altCarPriceField, toCarFuelInput, type AltKind } from './carFuelForm';
+import { EXAMPLE_PRICE_CITY } from './carFuel.example';
 import { rentVsBuy } from './rentBuy';
 import { RENT_BUY_EXAMPLE_FORM, toRentBuyInput } from './rentBuyForm';
 import { solarPayback } from './solar';
 import { SOLAR_EXAMPLE_FORM, toSolarInput } from './solarForm';
 
-export const HERO_PRICE_CITY = 'lucknow';
+export const HERO_PRICE_CITY = EXAMPLE_PRICE_CITY;
 /** Petrol car price behind the "costs ₹X more" blank (an example, as in the car tool). */
 const PETROL_CAR_PRICE = CAR_FUEL_START_FORM.petrolCarPrice!;
 

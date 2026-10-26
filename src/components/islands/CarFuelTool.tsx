@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { defaults, fuelPrices, verifiedFuelPrices } from '@/data';
+import { EXAMPLE_PRICE_CITY } from '@/models/carFuel.example';
 import { decodeShare, encodeShare, pickKeys } from '@/lib/shareLink';
 import { formatINR } from '@/lib/format';
 import { formatMoney, formatNumber, formatPercent } from '@/lib/formatTool';
@@ -55,7 +56,7 @@ interface Props {
 
 const RISE_RATES = defaults.scenarioVariables.energyPriceRise.values;
 /** Prices shown until the visitor picks a city: the city whose prices are verified. */
-const DEFAULT_PRICE_CITY = 'lucknow';
+const DEFAULT_PRICE_CITY = EXAMPLE_PRICE_CITY;
 const CHECKLIST: Record<AltKind, MessageKey[]> = {
   cng: ['checklist.carFuel.1', 'checklist.carFuel.2', 'checklist.carFuel.3', 'checklist.carFuel.4'],
   ev: ['checklist.ev.1', 'checklist.ev.2', 'checklist.ev.3', 'checklist.ev.4', 'checklist.ev.5'],
