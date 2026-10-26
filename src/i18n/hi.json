@@ -1753,5 +1753,6 @@
   "guide.plan.times": "TODO_COPY_HI",
   "guide.plan.timesValue": "TODO_COPY_HI",
   "guide.plan.ppf": "TODO_COPY_HI",
-  "guide.plan.verdict": "TODO_COPY_HI"
+  "guide.plan.verdict": "TODO_COPY_HI",
+  "assumptions.cityNotVerified": "TODO_COPY_HI"
 }

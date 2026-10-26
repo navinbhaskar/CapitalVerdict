@@ -199,3 +199,13 @@ A new tool at `/tools/plan-return/` (`src/models/planReturn.ts`), in the "Saving
 | [ ] `src/content/blog/plan-pays-back-3-times.mdx`                                               | New guide; figure labels in `guideFigures.ts` (`planFigures`) |
 | [ ] `guide.plan.*`                                                                              | The guide's calculator                                        |
 | [ ] Example: ₹50,000 a year for 15 years, ₹5,000 a month for 25 years, premiums back in year 40 | Labelled as an example in the guide; not any real plan        |
+
+## Review fixes (drafted 2026-10-26)
+
+| Key or file                                                                                              | Where it shows                                                              |
+| -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [ ] `carFuel.workedExample.intro`                                                                        | Car tool worked example; prices, city and dates now filled in from the data |
+| [ ] `carFuel.faq.3.a`                                                                                    | Car tool FAQ: resale, insurance and one-off costs can be entered            |
+| [ ] `checklist.carFuel.3`, `checklist.ev.4`                                                              | "Not modelled" lists: replace "Resale value difference"                     |
+| [ ] `source` of the scenario variables and car rate in `src/data/defaults.json`, and the changelog entry | Assumptions tables on every tool; assumptions changelog                     |
+| [ ] `assumptions.cityNotVerified`                                                                        | Assumptions panel: "Kanpur: prices not verified yet" (cannot be chosen)     |

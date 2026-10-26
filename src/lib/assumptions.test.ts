@@ -94,3 +94,13 @@ describe('save / load / clear', () => {
     expect(saveAssumptions(null, DEFAULT_ASSUMPTIONS)).toBe(false);
   });
 });
+
+describe('city', () => {
+  it('keeps a city with verified prices', () => {
+    expect(parseStored(JSON.stringify({ city: 'lucknow' })).city).toBe('lucknow');
+  });
+
+  it('drops a stored city whose prices are not verified', () => {
+    expect(parseStored(JSON.stringify({ city: 'kanpur' })).city).toBeNull();
+  });
+});

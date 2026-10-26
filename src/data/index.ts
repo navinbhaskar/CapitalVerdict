@@ -34,6 +34,11 @@ export function verifiedFuelPrices(cityId: string | null): { petrol: number; cng
   return { petrol: city.petrol.value, cng: city.cng.value };
 }
 
+/** Cities whose petrol and CNG prices are both verified: the only ones a visitor can choose. */
+export const verifiedCityIds: readonly string[] = cityIds.filter(
+  (id) => verifiedFuelPrices(id) !== null,
+);
+
 export const upTariff = upTariffJson as unknown as TariffData;
 export const solarData = solarJson as unknown as SolarData;
 

@@ -1,7 +1,7 @@
 import { useId, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
-import { cityIds, verifiedFuelPrices } from '@/data';
+import { cityIds, verifiedCityIds, verifiedFuelPrices } from '@/data';
 import {
   DEFAULT_ASSUMPTIONS,
   RATE_LIMITS,
@@ -203,10 +203,16 @@ export default function AssumptionsPanel({ locale }: Props) {
                   value={assumptions.city ?? ''}
                   options={[
                     { value: '', label: t(locale, 'assumptions.cityNone') },
-                    ...cityIds.map((id) => ({
-                      value: id,
-                      label: t(locale, `city.${id}` as MessageKey),
-                    })),
+                    // Cities without verified prices are listed but cannot be chosen yet.
+                    ...cityIds.map((id) => {
+                      const city = t(locale, `city.${id}` as MessageKey);
+                      const verified = verifiedCityIds.includes(id);
+                      return {
+                        value: id,
+                        label: verified ? city : t(locale, 'assumptions.cityNotVerified', { city }),
+                        disabled: !verified,
+                      };
+                    }),
                   ]}
                   onChange={(v) => set('city', v === '' ? null : v)}
                 />
@@ -337,7 +343,7 @@ function SelectRow(props: {
   label: string;
   note: string;
   value: string;
-  options: { value: string; label: string }[];
+  options: { value: string; label: string; disabled?: boolean }[];
   onChange: (value: string) => void;
 }) {
   const id = useId();
@@ -359,7 +365,7 @@ function SelectRow(props: {
         class="min-h-11 w-full rounded-lg border border-line-strong bg-page px-3 text-base text-ink transition-colors duration-(--duration-fast) ease-out-quart hover:border-ink-subtle focus:border-accent-strong"
       >
         {props.options.map((o) => (
-          <option key={o.value} value={o.value}>
+          <option key={o.value} value={o.value} disabled={o.disabled}>
             {o.label}
           </option>
         ))}

@@ -1753,5 +1753,6 @@
   "guide.plan.times": "Paid back",
   "guide.plan.timesValue": "{n} times",
   "guide.plan.ppf": "At PPF's {rate}, a month",
-  "guide.plan.verdict": "You pay {paid} and get back {received}. You have your money back, with no growth on it, in year {year}."
+  "guide.plan.verdict": "You pay {paid} and get back {received}. You have your money back, with no growth on it, in year {year}.",
+  "assumptions.cityNotVerified": "{city}: prices not verified yet"
 }
