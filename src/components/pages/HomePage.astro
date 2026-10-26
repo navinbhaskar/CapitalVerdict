@@ -22,15 +22,40 @@ interface Tool {
   icon: ToolIcon;
 }
 /** The calculators by area of life, so a visitor finds theirs at a glance. */
-const toolGroups: { title: MessageKey; tools: Tool[] }[] = TOOL_GROUPS.map((group) => ({
-  title: group.title,
-  tools: group.tools.map((entry) => ({
-    title: toolKey(entry, 'title'),
-    gives: toolKey(entry, 'gives'),
-    href: localizePath(entry.path, locale),
-    icon: entry.icon,
-  })),
-}));
+const toolGroups: { title: MessageKey; order: number; tools: Tool[] }[] = TOOL_GROUPS.map(
+  (group, order) => ({
+    title: group.title,
+    order,
+    tools: group.tools.map((entry) => ({
+      title: toolKey(entry, 'title'),
+      gives: toolKey(entry, 'gives'),
+      href: localizePath(entry.path, locale),
+      icon: entry.icon,
+    })),
+  }),
+);
+/**
+ * Two columns of about equal height on wide screens: of every way to split the areas between
+ * them (keeping their order), the one whose columns differ least, counting a heading as a row.
+ */
+function balancedColumns<T extends { tools: unknown[] }>(groups: T[]): [T[], T[]] {
+  const size = (g: T) => g.tools.length + 1;
+  let best: [T[], T[]] = [groups, []];
+  let bestGap = Infinity;
+  for (let mask = 0; mask < 1 << groups.length; mask++) {
+    const left = groups.filter((_, i) => !(mask & (1 << i)));
+    const right = groups.filter((_, i) => mask & (1 << i));
+    const gap = Math.abs(
+      left.reduce((n, g) => n + size(g), 0) - right.reduce((n, g) => n + size(g), 0),
+    );
+    if (gap < bestGap) {
+      bestGap = gap;
+      best = [left, right];
+    }
+  }
+  return best;
+}
+const toolColumns = balancedColumns(toolGroups);
 const notes = (await getCollection('blog')).sort(byDateDesc).slice(0, 3);
 
 const principles: { title: MessageKey; body: MessageKey }[] = [
@@ -110,41 +135,56 @@ const principles: { title: MessageKey; body: MessageKey }[] = [
           {t(locale, 'home.tools.heading')}
         </h2>
       </div>
-      <!-- One row per area of life: its name, then its calculators in an even grid. -->
-      <div class="mt-5 divide-y divide-line border-y border-line" data-reveal>
-        {toolGroups.map((group) => (
-          <section class="py-5" aria-label={t(locale, group.title)}>
-            <h3 class="font-display text-xl font-medium tracking-(--tracking-heading)">
-              {t(locale, group.title)}
-            </h3>
-            <ul class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" role="list">
-              {group.tools.map((item) => (
-                <li>
-                  <a
-                    href={item.href}
-                    class="card-lift group flex h-full items-start gap-3 rounded-xl border border-line bg-raised px-4 py-3.5 transition-colors duration-(--duration-base) ease-out-quart hover:border-accent"
-                  >
-                    <span class="band-dark mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-full text-accent">
-                      <Icon name={item.icon} size={18} />
-                    </span>
-                    <span class="min-w-0 flex-1">
-                      <span class="flex items-baseline justify-between gap-2">
-                        <span class="font-display text-lg leading-snug font-medium tracking-(--tracking-heading) group-hover:text-accent-strong">
-                          {t(locale, item.title)}
+      <!-- Each area of life is a compact list; the areas sit in two columns of about equal height. -->
+      <div
+        class="mt-5 flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8"
+        data-reveal
+      >
+        {toolColumns.map((column) => (
+          // On phones the columns dissolve and the areas keep their own order.
+          <div class="contents lg:block lg:space-y-6">
+            {column.map((group) => (
+              <section
+                aria-label={t(locale, group.title)}
+                class="order-(--o) lg:order-none"
+                style={`--o: ${group.order}`}
+              >
+                <h3 class="font-display text-xl font-medium tracking-(--tracking-heading)">
+                  {t(locale, group.title)}
+                </h3>
+                <ul
+                  class="mt-2.5 divide-y divide-line overflow-hidden rounded-xl border border-line bg-raised"
+                  role="list"
+                >
+                  {group.tools.map((item) => (
+                    <li>
+                      <a
+                        href={item.href}
+                        class="group flex min-h-11 items-center gap-3 px-3.5 py-2.5 transition-colors duration-(--duration-fast) ease-out-quart hover:bg-surface"
+                      >
+                        <span class="band-dark inline-flex size-8 shrink-0 items-center justify-center rounded-full text-accent">
+                          <Icon name={item.icon} size={16} />
+                        </span>
+                        <span class="min-w-0 flex-1">
+                          <span class="block font-medium text-ink group-hover:text-accent-strong">
+                            {t(locale, item.title)}
+                          </span>
+                          <span class="hidden text-sm text-ink-muted sm:block">
+                            {t(locale, item.gives)}
+                          </span>
                         </span>
                         <Icon
                           name="arrowRight"
                           size={18}
-                          class="nudge shrink-0 self-center text-accent-strong"
+                          class="nudge shrink-0 text-accent-strong"
                         />
-                      </span>
-                      <span class="mt-1 block text-sm text-ink-muted">{t(locale, item.gives)}</span>
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
         ))}
       </div>
     </div>
