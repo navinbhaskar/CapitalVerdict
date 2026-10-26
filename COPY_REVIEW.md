@@ -326,3 +326,9 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | [ ] `page.methodology.scooter.*`                                                                                                                                                                                                     | Methodology page                                  |
 | [ ] `assumptionsTable.pmEdrive*`, `assumptionsTable.dlEv2w*`, `assumptionsTable.dlScrapping`, `assumptionsTable.dlRoadTax*`, `assumptionsTable.dlPetrol`                                                                             | Scooter assumptions table                         |
 | [ ] Example: 750 km a month for 7 years; a ₹95,000 petrol scooter at 45 km/L against a ₹1.3 lakh e-scooter at 30 km a unit with a 3 kWh battery; a home using 250 other units on a 3 kW load. Illustrative, not any model's figures. | Labelled "Example"                                |
+
+## Group heading (changed 2026-10-26)
+
+| Key                                                       | Where it shows                      |
+| --------------------------------------------------------- | ----------------------------------- |
+| [x] `home.group.home` is now "Your loans" (chosen by you) | Home page, Calculators menu, footer |

@@ -1262,7 +1262,7 @@
   "saving.summary": "{years} years, fund returning {fund}, PPF at {ppf}, inflation",
   "saving.group.assumed": "Years and fund return",
   "home.group.car": "Your vehicle",
-  "home.group.home": "Your home and loans",
+  "home.group.home": "Your loans",
   "home.group.money": "Saving, investing and tax",
   "home.group.power": "Your power bill",
   "tool.carFuel.gives": "Total cost of each car and when the dearer one pays back",
