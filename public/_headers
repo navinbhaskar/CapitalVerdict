@@ -1,9 +1,10 @@
 # Cloudflare Pages response headers. See README, "Deploy".
 # Inline scripts are allowed because Astro inlines its island loader and the theme script; the site
 # has no user-submitted content. Cloudflare Web Analytics is the only third-party origin, used only
-# when PUBLIC_CF_ANALYTICS_TOKEN is set.
+# when PUBLIC_CF_ANALYTICS_TOKEN is set. 'wasm-unsafe-eval' lets site search (Pagefind) run its
+# WebAssembly index; it does not allow eval() of JavaScript.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY

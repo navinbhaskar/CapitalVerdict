@@ -61,60 +61,69 @@ const sections = [
 ---
 
 <BaseLayout locale={locale} title={title} description={description} jsonLd={jsonLd}>
-  <header class="band-dark">
-    <div class="container-page pt-6 pb-7 sm:pt-8 sm:pb-9">
-      <span class="rule-brass" aria-hidden="true"></span>
-      <h1 class="mt-4 max-w-3xl font-display text-2xl font-medium tracking-(--tracking-display) sm:text-3xl">
-        {title}
-      </h1>
-      <p class="mt-3 max-w-2xl text-sm text-ink-muted">{t(locale, 'tool.disclaimer')}</p>
-    </div>
-  </header>
-  <article class="container-page pt-5 pb-10 sm:pt-6 sm:pb-12">
-    <div>
-      <slot />
-    </div>
+  <!-- Site search indexes the title and the written sections, not the calculator itself. -->
+  <div data-pagefind-body>
+    <header class="band-dark">
+      <div class="container-page pt-6 pb-7 sm:pt-8 sm:pb-9">
+        <span class="rule-brass" aria-hidden="true"></span>
+        <h1 class="mt-4 max-w-3xl font-display text-2xl font-medium tracking-(--tracking-display) sm:text-3xl">
+          {title}
+        </h1>
+        <p class="mt-3 max-w-2xl text-sm text-ink-muted" data-pagefind-ignore>
+          {t(locale, 'tool.disclaimer')}
+        </p>
+      </div>
+    </header>
+    <article class="container-page pt-5 pb-10 sm:pt-6 sm:pb-12">
+      <div data-pagefind-ignore="all">
+        <slot />
+      </div>
 
-    {sections.map(({ slot, heading }) => (
-      <section class="mt-8 max-w-3xl border-t border-line pt-5" aria-labelledby={`s-${slot}`}>
-        <h2 id={`s-${slot}`} class="font-display text-2xl font-medium">
-          {heading}
-        </h2>
-        <div class="mt-4 space-y-4 text-ink-muted">
-          {slot === 'explanation' && <slot name="explanation" />}
-          {slot === 'worked-example' && <slot name="worked-example" />}
-          {slot === 'assumptions' && <slot name="assumptions" />}
-          {slot === 'faq' && <slot name="faq" />}
-        </div>
-      </section>
-    ))}
+      {sections.map(({ slot, heading }) => (
+        <section class="mt-8 max-w-3xl border-t border-line pt-5" aria-labelledby={`s-${slot}`}>
+          <h2 id={`s-${slot}`} class="font-display text-2xl font-medium">
+            {heading}
+          </h2>
+          <div class="mt-4 space-y-4 text-ink-muted">
+            {slot === 'explanation' && <slot name="explanation" />}
+            {slot === 'worked-example' && <slot name="worked-example" />}
+            {slot === 'assumptions' && <slot name="assumptions" />}
+            {slot === 'faq' && <slot name="faq" />}
+          </div>
+        </section>
+      ))}
 
-    {related.length > 0 && (
-      <nav class="mt-8 border-t border-line pt-5" aria-labelledby="s-related">
-        <h2 id="s-related" class="font-display text-2xl font-medium">
-          {t(locale, 'tool.section.related')}
-        </h2>
-        <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" role="list">
-          {related.map((r) => (
-            <li>
-              <a
-                href={r.href}
-                class="flex min-h-11 items-center rounded-lg border border-line px-4 py-3 font-medium transition-colors duration-(--duration-fast) ease-out-quart hover:border-line-strong hover:bg-surface"
-              >
-                {r.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    )}
+      {related.length > 0 && (
+        <nav
+          class="mt-8 border-t border-line pt-5"
+          aria-labelledby="s-related"
+          data-pagefind-ignore="all"
+        >
+          <h2 id="s-related" class="font-display text-2xl font-medium">
+            {t(locale, 'tool.section.related')}
+          </h2>
+          <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" role="list">
+            {related.map((r) => (
+              <li>
+                <a
+                  href={r.href}
+                  class="flex min-h-11 items-center rounded-lg border border-line px-4 py-3 font-medium transition-colors duration-(--duration-fast) ease-out-quart hover:border-line-strong hover:bg-surface"
+                >
+                  {r.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
 
-    {reportHref && (
-      <p class="mt-6 text-sm">
-        <a href={reportHref} class="link">
-          {t(locale, 'tool.reportError')}
-        </a>
-      </p>
-    )}
-  </article>
+      {reportHref && (
+        <p class="mt-6 text-sm" data-pagefind-ignore="all">
+          <a href={reportHref} class="link">
+            {t(locale, 'tool.reportError')}
+          </a>
+        </p>
+      )}
+    </article>
+  </div>
 </BaseLayout>

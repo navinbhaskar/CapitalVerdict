@@ -526,6 +526,14 @@
     transform: scale(0.97);
     transition-duration: var(--duration-instant);
   }
+
+  /* Site search: the matched words in each result's excerpt. */
+  .search-excerpt mark {
+    border-radius: 2px;
+    background-color: var(--color-accent-soft);
+    color: var(--color-ink);
+    font-weight: 500;
+  }
 }
 
 /* ---------- Calculators menu in the nav ---------- */

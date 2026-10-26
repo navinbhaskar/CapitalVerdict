@@ -297,3 +297,11 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | [ ] `src/content/blog/what-a-1-percent-rate-rise-does-to-your-emi.mdx` (title, description, takeaway, all text)                                               | /guides/what-a-1-percent-rate-rise-does-to-your-emi/ |
 | [ ] Chart and table labels in `rateRise` in `src/content/guideFigures.ts`                                                                                     | The guide's bars and table                           |
 | [ ] The guide makes no claim about how lenders handle rate changes or how long fixed rates last; it tells readers to ask. Add a sourced line if you want one. | "Before you choose"                                  |
+
+## Site search (drafted 2026-10-26)
+
+| Key                                                                                                                            | Where it shows                             |
+| ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| [ ] `search.open`, `search.title`, `search.close`, `search.label`, `search.placeholder`                                        | Header search button and the search dialog |
+| [ ] `search.hint`, `search.loading`, `search.unavailable`, `search.none`, `search.count`, `search.countOne`, `search.countTop` | Search dialog status line                  |
+| [ ] `search.kind.tool`, `.guide`, `.other`                                                                                     | The label above each result                |

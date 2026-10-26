@@ -2109,5 +2109,20 @@
   "debt.faq.3.a": "TODO_COPY_HI",
   "page.methodology.debtOrder.title": "TODO_COPY_HI",
   "page.methodology.debtOrder.body": "TODO_COPY_HI",
-  "page.methodology.debtOrder.formula": "TODO_COPY_HI"
+  "page.methodology.debtOrder.formula": "TODO_COPY_HI",
+  "search.open": "TODO_COPY_HI",
+  "search.title": "TODO_COPY_HI",
+  "search.close": "TODO_COPY_HI",
+  "search.label": "TODO_COPY_HI",
+  "search.placeholder": "TODO_COPY_HI",
+  "search.hint": "TODO_COPY_HI",
+  "search.loading": "TODO_COPY_HI",
+  "search.unavailable": "TODO_COPY_HI",
+  "search.none": "TODO_COPY_HI",
+  "search.count": "TODO_COPY_HI",
+  "search.countOne": "TODO_COPY_HI",
+  "search.kind.tool": "TODO_COPY_HI",
+  "search.kind.guide": "TODO_COPY_HI",
+  "search.kind.other": "TODO_COPY_HI",
+  "search.countTop": "TODO_COPY_HI"
 }

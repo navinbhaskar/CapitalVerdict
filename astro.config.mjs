@@ -4,6 +4,7 @@ import mdx from '@astrojs/mdx';
 import preact from '@astrojs/preact';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import pagefind from './integrations/pagefind.mjs';
 
 // Production is https://capitalverdict.com (set by scripts/deploy.mjs). Local builds use localhost.
 const site = process.env.SITE_URL ?? 'http://localhost:4321';
@@ -19,6 +20,8 @@ export default defineConfig({
     // Hindi is paused: only English pages are built. Re-add 'hi' here and in
     // PUBLISHED_LOCALES (src/i18n/routes.ts) when the Hindi copy is ready.
     sitemap(),
+    // Site search over the calculators and guides, indexed after each build.
+    pagefind(),
   ],
   i18n: {
     locales: ['en'],

@@ -2109,5 +2109,20 @@
   "debt.faq.3.a": "The same way as a loan's: the yearly rate ÷ 12 on what is carried over, each month. Cards charge interest on daily balances and can charge it on new spending too, so the real cost of carrying a balance is often higher.",
   "page.methodology.debtOrder.title": "Which debt to pay off first",
   "page.methodology.debtOrder.body": "Each month, interest is added to every debt at its yearly rate ÷ 12 on its balance, and its regular payment is made, or the whole balance if that is less. The spare money then goes to the first debt in the chosen order that is still owed, and any left over to the next. When a debt is cleared, its regular payment joins the spare money from the next month, and any part of it not needed in the month it clears goes to the next debt at once. A one-off amount today goes to the debts in the same order before the first month. Three orders are compared: highest rate first, smallest balance first and lowest rate first, against regular payments only. A run stops at 50 years; debts still owed then are shown as never cleared.",
-  "page.methodology.debtOrder.formula": "balance(m) = balance(m − 1) × (1 + rate ÷ 12) − payment − spare money aimed at it\nspare      = extra + payments of cleared debts"
+  "page.methodology.debtOrder.formula": "balance(m) = balance(m − 1) × (1 + rate ÷ 12) − payment − spare money aimed at it\nspare      = extra + payments of cleared debts",
+  "search.open": "Search calculators and guides",
+  "search.title": "Search",
+  "search.close": "Close search",
+  "search.label": "Search calculators and guides",
+  "search.placeholder": "EMI, solar, tax regime…",
+  "search.hint": "Search the calculators and guides. Press / to search from any page.",
+  "search.loading": "Loading search…",
+  "search.unavailable": "Search isn't available right now. Try the Calculators menu or the guides list.",
+  "search.none": "Nothing found for “{query}”. Try a shorter or different word.",
+  "search.count": "{n} results",
+  "search.countOne": "1 result",
+  "search.kind.tool": "Calculator",
+  "search.kind.guide": "Guide",
+  "search.kind.other": "Page",
+  "search.countTop": "{n} results; the best {shown} shown"
 }

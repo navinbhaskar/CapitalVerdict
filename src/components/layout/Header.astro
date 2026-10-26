@@ -3,6 +3,7 @@ import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import { TOOL_GROUPS, toolKey } from '@/lib/tools';
 import AssumptionsPanel from '@/components/islands/AssumptionsPanel';
+import SiteSearch from '@/components/islands/SiteSearch';
 import { t, type Locale } from '@/i18n/t';
 import { localizePath } from '@/i18n/routes';
 
@@ -26,7 +27,7 @@ const onBlog = path.startsWith('/guides');
 -->
 <header class="site-header band-dark print:hidden sticky top-0 z-40 isolate">
   <div class="container-page">
-    <div class="nav-bar flex h-16 items-center justify-between gap-2">
+    <div class="nav-bar flex h-16 items-center justify-between gap-1 sm:gap-2">
       <a href={home} aria-label={t(locale, 'a11y.home')} class="shrink-0 rounded-sm py-1">
         <Logo intro />
       </a>
@@ -35,7 +36,7 @@ const onBlog = path.startsWith('/guides');
           <li class="sm:relative" data-tools-menu>
             <button
               type="button"
-              class="nav-link group gap-1"
+              class="nav-link group gap-1 max-sm:px-1.5"
               aria-expanded="false"
               aria-controls="tools-menu"
               data-current={onTool ? '' : undefined}
@@ -108,7 +109,10 @@ const onBlog = path.startsWith('/guides');
               {t(locale, 'nav.principles')}
             </a>
           </li>
-          <li class="ml-1 sm:ml-2">
+          <li class="sm:ml-2">
+            <SiteSearch client:idle locale={locale} />
+          </li>
+          <li class="sm:ml-1">
             <AssumptionsPanel client:idle locale={locale} />
           </li>
         </ul>
