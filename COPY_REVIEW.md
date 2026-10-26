@@ -289,3 +289,11 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | [ ] `debt.explanation`, `debt.faq.1` to `.3`                                                                                                                                                                      | How this works, questions                                                                       |
 | [ ] `page.methodology.debtOrder.*`                                                                                                                                                                                | Methodology page                                                                                |
 | [ ] Example: home loan ₹30 lakh at 9% (EMI ₹30,428, for 15 years), personal loan ₹60,000 at 14% paying ₹5,000, credit card ₹1.5 lakh at 36% paying ₹6,000, ₹10,000 a month spare. Illustrative, not market rates. | Labelled "Example"                                                                              |
+
+## Guide: what a 1% rate rise does to your EMI (drafted 2026-10-26)
+
+| Item                                                                                                                                                          | Where it shows                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| [ ] `src/content/blog/what-a-1-percent-rate-rise-does-to-your-emi.mdx` (title, description, takeaway, all text)                                               | /guides/what-a-1-percent-rate-rise-does-to-your-emi/ |
+| [ ] Chart and table labels in `rateRise` in `src/content/guideFigures.ts`                                                                                     | The guide's bars and table                           |
+| [ ] The guide makes no claim about how lenders handle rate changes or how long fixed rates last; it tells readers to ask. Add a sourced line if you want one. | "Before you choose"                                  |

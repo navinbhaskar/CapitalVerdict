@@ -21,6 +21,7 @@ import { carLoanFlips, cashOrLoan } from '@/models/carLoan';
 import { irr } from '@/engine/irr';
 import { fundPlan, maxWithdrawal } from '@/models/fund';
 import { payoutScaleAt, planReturn } from '@/models/planReturn';
+import { rateRise } from '@/content/guideFigures';
 
 describe('posts: CNG payback, break-even, Lucknow update', () => {
   const lucknow = verifiedFuelPrices('lucknow')!;
@@ -586,5 +587,45 @@ describe('post: old or new tax regime, what counts as a deduction', () => {
     const breakEven = breakEvenDeductions(input, incomeTax)!;
     expect(breakEven).toBeCloseTo(543_750, 0);
     expect((breakEven - input.oldDeductions) / 1e5).toBeCloseTo(1.29, 2);
+  });
+});
+
+describe('post: what a 1% rate rise does to your EMI', () => {
+  const lakh = (x: number) => Math.round(x / 1e3) / 100;
+  const f = rateRise;
+
+  it('the loan, and what is owed after three years', () => {
+    expect(Math.round(f.base.emi)).toBe(35_989);
+    expect(lakh(f.base.totalInterest!)).toBe(46.37);
+    expect(lakh(f.base.balanceAtChange)).toBe(37.54);
+  });
+
+  it('way one: the EMI rises by ₹2,342 to ₹38,331, ₹4.78 lakh more interest', () => {
+    expect(Math.round(f.up1Emi.newEmi)).toBe(38_331);
+    expect(Math.round(f.up1Emi.newEmi) - Math.round(f.base.emi)).toBe(2_342);
+    expect(lakh(f.up1Emi.totalInterest!)).toBe(51.15);
+    expect(lakh(f.up1Emi.totalInterest! - f.base.totalInterest!)).toBe(4.78);
+    expect(Math.round(f.fromStart.emi === f.base.emi ? f.fromStart.newEmi : 0)).toBe(38_601);
+    expect(f.fromStart.newEmi / f.base.emi - 1).toBeCloseTo(0.07, 2);
+  });
+
+  it('way two: 23 years 6 months, ₹61.15 lakh, ₹14.77 lakh more', () => {
+    expect(f.up1Tenure.totalMonths).toBe(282);
+    expect(lakh(f.up1Tenure.totalInterest!)).toBe(61.15);
+    expect(lakh(f.up1Tenure.totalInterest! - f.base.totalInterest!)).toBe(14.77);
+  });
+
+  it('bigger rises, and a fall', () => {
+    expect(Math.round(f.up2Emi.newEmi)).toBe(40_740);
+    expect(f.up2Tenure.totalMonths).toBe(379);
+    expect(lakh(f.up2Tenure.totalInterest!)).toBe(96.2);
+    expect(Math.round(f.up3Tenure.balanceAtChange * 0.01)).toBe(37_535);
+    expect(f.up3Tenure.emiBelowInterest).toBe(true);
+    expect(Math.round(f.up3Emi.newEmi)).toBe(43_211);
+    expect(240 - f.down1Tenure.totalMonths!).toBe(25);
+  });
+
+  it('break-even floating rates for a fixed 9.5% and 10%', () => {
+    expect(f.breakEven.map((b) => Math.round(b.floating * 10_000) / 100)).toEqual([9.65, 10.31]);
   });
 });

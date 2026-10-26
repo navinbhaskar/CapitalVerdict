@@ -22,6 +22,7 @@ import { plotVs, type PlotVsInput } from '@/models/plotVs';
 import { payback } from '@/models/payback';
 import { payoutScaleAt, planReturn, type PlanInput } from '@/models/planReturn';
 import { prepayOrInvest, type PrepayInput } from '@/models/prepay';
+import { breakEvenRise, rateChange } from '@/models/rateChange';
 import { rentBuyFlips, rentVsBuy } from '@/models/rentBuy';
 import { RENT_BUY_EXAMPLE_FORM, toRentBuyInput } from '@/models/rentBuyForm';
 import { solarPayback, type SolarInput } from '@/models/solar';
@@ -816,6 +817,70 @@ export const emiFigures = {
       label: 'Interest over 20 years',
       value: loan.totalInterest,
       display: money(loan.totalInterest),
+    },
+  ] satisfies CompareItem[],
+};
+
+/* ---------- Floating or fixed: a rate rise ---------- */
+
+/** The EMI guide's loan, with the rate changing after three years. */
+export const rateLoan = { amount: 4_000_000, annualRate: 0.09, months: 240, changeAfter: 36 };
+const atRate = (newRate: number, mode: 'emi' | 'tenure') =>
+  rateChange({ ...rateLoan, newRate, mode });
+const rateSteps = [0.08, 0.09, 0.1, 0.11, 0.12];
+
+export const rateRise = {
+  base: atRate(0.09, 'emi'),
+  up1Emi: atRate(0.1, 'emi'),
+  up1Tenure: atRate(0.1, 'tenure'),
+  up2Emi: atRate(0.11, 'emi'),
+  up2Tenure: atRate(0.11, 'tenure'),
+  up3Emi: atRate(0.12, 'emi'),
+  up3Tenure: atRate(0.12, 'tenure'),
+  down1Tenure: atRate(0.08, 'tenure'),
+  /** From the first EMI, a 1% higher rate. */
+  fromStart: rateChange({ ...rateLoan, changeAfter: 0, newRate: 0.1, mode: 'emi' }),
+  /** The floating rate after 3 years that costs as much as a fixed rate for the whole loan. */
+  breakEven: [0.095, 0.1].map((fixed) => ({
+    fixed,
+    floating: breakEvenRise({ ...rateLoan }, fixed),
+  })),
+  table: {
+    head: [
+      'Rate from year 4',
+      'EMI if reset',
+      'Length if EMI kept',
+      'Interest, EMI reset',
+      'Interest, EMI kept',
+    ],
+    rows: rateSteps.map((rate) => {
+      const e = atRate(rate, 'emi');
+      const k = atRate(rate, 'tenure');
+      return [
+        rate === 0.09 ? `${pct(rate)} (no change)` : pct(rate),
+        formatINR(e.newEmi),
+        k.totalMonths === null ? 'Never repaid' : dur(k.totalMonths),
+        money(e.totalInterest!),
+        k.totalInterest === null ? 'Grows' : money(k.totalInterest),
+      ];
+    }),
+    highlight: 2,
+  } satisfies TableData,
+  bars: [
+    {
+      label: 'No change',
+      value: atRate(0.09, 'emi').totalInterest!,
+      display: money(atRate(0.09, 'emi').totalInterest!),
+    },
+    {
+      label: '1% more, EMI raised',
+      value: atRate(0.1, 'emi').totalInterest!,
+      display: money(atRate(0.1, 'emi').totalInterest!),
+    },
+    {
+      label: '1% more, EMI kept',
+      value: atRate(0.1, 'tenure').totalInterest!,
+      display: money(atRate(0.1, 'tenure').totalInterest!),
     },
   ] satisfies CompareItem[],
 };

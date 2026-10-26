@@ -1,0 +1,76 @@
+---
+title: 'Floating or fixed: what a 1% rate rise does to your EMI'
+description: On a ₹40 lakh home loan, a 1% rise after three years adds ₹2,342 to the EMI, or 3½ years and ₹14.77 lakh of interest if the EMI stays the same.
+date: 2026-10-26
+kind: basics
+tool: emi-calculator
+takeaway:
+  figure: '₹14.77 lakh'
+  label: More interest if a 1% rise lengthens the loan instead
+---
+
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import Bars from '@/components/guide/Bars.astro';
+import { rateRise } from '@/content/guideFigures';
+
+<InShort>
+
+- On a ₹40 lakh loan at 9% over 20 years, a 1% rise after three years adds **₹2,342** to the EMI.
+- If the EMI stays the same instead, the loan runs **3 years 6 months** longer and costs **₹14.77 lakh** more in interest.
+- After a 3% rise, the old EMI no longer covers the interest, and the loan would never be repaid.
+
+</InShort>
+
+A floating-rate home loan moves with the lender's benchmark. When the rate goes up, one of two things has to give: the EMI or the length of the loan. Which one changes makes a large difference to what you pay.
+
+## The loan
+
+Take the loan from our guide [Where your EMI goes](/guides/where-your-emi-goes/): ₹40 lakh at 9% over 20 years. The EMI is **₹35,989**, and over 20 years the interest comes to about **₹46.37 lakh**.
+
+After three years of EMIs, you still owe about **₹37.54 lakh**. Now the rate rises to 10%.
+
+## Way one: the EMI goes up
+
+The lender works out a new EMI that clears ₹37.54 lakh at 10% in the 17 years left. It is **₹38,331**, ₹2,342 a month more. Over the whole loan, the interest rises to about **₹51.15 lakh**, ₹4.78 lakh more than with no change.
+
+As a rough guide, on a 20-year loan each 1% on the rate adds about 7% to the EMI. Had the rate been 10% from the first month, the EMI would have been ₹38,601.
+
+## Way two: the EMI stays, the loan gets longer
+
+If the EMI stays at ₹35,989, less of each one repays the loan, because more goes on interest. The loan then runs **23 years 6 months** instead of 20: 3 years 6 months longer. The interest comes to about **₹61.15 lakh**, which is **₹14.77 lakh** more than with no change, about three times the ₹4.78 lakh extra in way one.
+
+The extra years cost so much because every month of them is a month of interest on what is still owed.
+
+<Bars
+  title="Interest over the whole loan"
+  items={rateRise.bars}
+  note="₹40 lakh at 9% over 20 years; the rate rises to 10% after three years."
+/>
+
+## Bigger rises
+
+A 2% rise, to 11%, raises the EMI to ₹40,740. Keep the EMI instead and the loan runs 31 years 7 months, with about ₹96.20 lakh of interest.
+
+At a 3% rise, to 12%, the interest on ₹37.54 lakh is ₹37,535 a month. That is more than the ₹35,989 EMI, so with the EMI unchanged, what you owe would grow every month. The EMI has to rise, to ₹43,211, for the loan to end at all.
+
+<Table
+  title="If the rate changes after three years"
+  table={rateRise.table}
+  note="₹40 lakh at 9% over 20 years. A fall works the other way: at 8% with the EMI kept, the loan ends 2 years 1 month early."
+/>
+
+## Floating or fixed?
+
+A fixed rate removes this risk, at a price if it starts higher than the floating rate. You can work out how far the floating rate would have to rise for the fixed one to come out cheaper.
+
+On the same loan, a fixed **10%** for all 20 years costs as much interest as a floating 9% that rises to **10.31%** after three years and stays there. A fixed 9.5% matches a floating rate that rises to 9.65%. If you expect rates to rise by more than that, and soon, the fixed rate wins; if they stay put or fall, floating does.
+
+Rates rarely move once and stay put, so treat these as a yardstick, not a forecast.
+
+## Before you choose
+
+- Ask your lender what happens when the rate changes: does the EMI rise, or the loan get longer, and can you choose?
+- If you are offered a fixed rate, check in the loan agreement how long it stays fixed, and what it changes to after that.
+- Check the charge, if any, for switching from one to the other later.
+- If the loan gets longer after a rise, a prepayment or a higher EMI can pull the end date back. The [EMI calculator](/tools/emi-calculator/) shows the effect of a yearly prepayment.
