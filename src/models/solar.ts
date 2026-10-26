@@ -14,6 +14,10 @@
  * Simplifications, stated on the page: units are netted month by month (no banking of exported
  * units across months), the export credit cannot push the bill below the fixed charges, and the
  * inverter replacement cost is in today's rupees.
+ *
+ * Where the state subsidises bills (Delhi), both bills run through the subsidy: solar can only
+ * save what the visitor still pays. A state generation incentive (₹ per unit generated) counts as
+ * a saving for the years it is paid. The tariff rise scales the whole bill, subsidy included.
  */
 import { breakeven } from '@/engine/breakeven';
 import { annualise, irr } from '@/engine/irr';
@@ -43,6 +47,10 @@ export interface SolarInput {
   /** One inverter replacement, if any. */
   inverter: { year: number; cost: number } | null;
   horizonYears: number;
+  /** PPAC and the state subsidy opt-in, passed to every bill. */
+  billOptions?: { ppacRate?: number; subsidy?: boolean };
+  /** A state payment per unit generated, for the first `years` years. */
+  generationIncentive?: { perKWh: number; years: number } | null;
 }
 
 export interface SolarResult {
@@ -52,6 +60,8 @@ export interface SolarResult {
   billWithout: number[];
   billWith: number[];
   saving: number[];
+  /** The generation incentive in each month's saving, ₹. */
+  incentive: number[];
   exportedKWh: number[];
   /** Index = month, 0 = installation: savings so far minus net cost and any inverter spend. */
   cumulativeNet: number[];
@@ -90,14 +100,16 @@ function validate(i: SolarInput): void {
 export function solarPayback(input: SolarInput, { withIrr = true } = {}): SolarResult {
   validate(input);
   const months = input.horizonYears * 12;
-  const fixedOnly = bill(0, input.tariff, { sanctionedLoadKW: input.sanctionedLoadKW }).total;
-  const opts = { sanctionedLoadKW: input.sanctionedLoadKW };
+  const opts = { sanctionedLoadKW: input.sanctionedLoadKW, ...input.billOptions };
+  const fixedOnly = bill(0, input.tariff, opts).total;
+  const gi = input.generationIncentive;
   const withoutBase = bill(input.monthlyConsumptionKWh, input.tariff, opts).total;
 
   const generation: number[] = [];
   const billWithout: number[] = [];
   const billWith: number[] = [];
   const saving: number[] = [];
+  const incentive: number[] = [];
   const exportedKWh: number[] = [];
   const netCost = input.grossCost - input.subsidy;
   const cumulativeNet = [-netCost];
@@ -118,7 +130,8 @@ export function solarPayback(input: SolarInput, { withIrr = true } = {}): SolarR
       bill(imported, input.tariff, opts).total * factor - exported * input.exportRatePerKWh,
       fixedOnly * factor,
     );
-    const save = without - withSolar;
+    const paid = gi && year < gi.years ? gen * gi.perKWh : 0;
+    const save = without - withSolar + paid;
     const inverterSpend =
       input.inverter && m === input.inverter.year * 12 ? input.inverter.cost : 0;
 
@@ -126,6 +139,7 @@ export function solarPayback(input: SolarInput, { withIrr = true } = {}): SolarR
     billWithout.push(without);
     billWith.push(withSolar);
     saving.push(save);
+    incentive.push(paid);
     exportedKWh.push(exported);
     cumulativeNet.push(cumulativeNet[m - 1]! + save - inverterSpend);
     flows.push(save - inverterSpend);
@@ -143,6 +157,7 @@ export function solarPayback(input: SolarInput, { withIrr = true } = {}): SolarR
     billWithout,
     billWith,
     saving,
+    incentive,
     exportedKWh,
     cumulativeNet,
     payback: be && { months: be.month, years: be.month / 12 },

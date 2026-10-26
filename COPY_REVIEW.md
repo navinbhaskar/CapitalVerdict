@@ -248,3 +248,15 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------ |
 | [ ] `hero.car.contextCng`, `hero.car.contextEv` | Home page car card: now names the city ("Delhi fuel prices of …")                          |
 | [ ] `assumptions.stateNote`, `state.DL`         | Assumptions panel: "State: Delhi. Set by your city. Tools use Delhi until you choose one." |
+
+## Delhi on the solar and AC tools (drafted 2026-10-26)
+
+| Key                                                                                                                                                                                            | Where it shows                                                   |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [ ] `solar.in.subsidyOptIn`, `solar.note.subsidyOptIn`, `solar.note.subsidySized`, `solar.subsidyNote`                                                                                         | Solar tool: subsidy opt-in, sized subsidy note, answer card line |
+| [ ] `solar.in.ppac`, `solar.note.ppac`, `solar.in.gbiYears`, `solar.note.gbiYears`, `solar.w.incentive`, `solar.col.incentive`                                                                 | Solar tool: PPAC and generation incentive                        |
+| [ ] `ac.in.otherUnits`, `ac.note.otherUnits`, `ac.unit.unitsMonth`, `ac.in.load`, `ac.note.load`, `ac.note.subsidyOptIn`, `ac.w.firstYearBill`, `ac.verdict.perUnit`, `ac.verdict.flipUsageUp` | AC tool on a real bill                                           |
+| [ ] Changed: `solar.note.averageRate`, `solar.faq.2.*`, `solar.explanation`, `ac.explanation`, `ac.exampleNote`                                                                                | Solar and AC tools                                               |
+| [ ] `hero.solar.sentence`, `hero.solar.context`, `hero.ask.units` (changed: asks for units, not rupees)                                                                                        | Home page solar card                                             |
+| [ ] `assumptionsTable.dl*`, `assumptionsTable.upPricePerUnit`                                                                                                                                  | Solar and AC assumptions tables                                  |
+| [ ] Example: 250 other units a month and a 3 kW load (AC); 300 units, 3 kW at ₹1.8 lakh (solar)                                                                                                | Labelled "Example"                                               |

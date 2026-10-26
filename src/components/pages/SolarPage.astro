@@ -5,7 +5,8 @@ import AssumptionsTable, { type AssumptionRow } from '@/components/tool/Assumpti
 import SolarTool from '@/components/islands/SolarTool';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { localizePath } from '@/i18n/routes';
-import { defaults, solarData, upTariff } from '@/data';
+import { defaults, dlSolarData, dlTariff, solarData, upTariff } from '@/data';
+import { formatINR } from '@/lib/format';
 import { formatPercent } from '@/lib/formatTool';
 
 interface Props {
@@ -21,7 +22,60 @@ const record = (label: MessageKey, r: (typeof solarData)['subsidy']): Assumption
   verified: r.status === 'verified',
 });
 const rise = defaults.scenarioVariables.energyPriceRise;
+const dl = dlSolarData;
+const sourced = (
+  label: MessageKey,
+  value: string,
+  r: { source: string; effectiveDate: string; status: string },
+): AssumptionRow => ({
+  label: t(locale, label),
+  value,
+  source: r.source,
+  date: r.effectiveDate,
+  verified: r.status === 'verified',
+});
+// Delhi first: the tool's default state, with verified figures.
+const delhiRows: AssumptionRow[] = [
+  sourced('assumptionsTable.dlTariff', t(locale, 'assumptionsTable.dlTariffValue'), dlTariff),
+  ...(dlTariff.subsidy
+    ? [
+        sourced(
+          'assumptionsTable.dlSubsidy',
+          t(locale, 'assumptionsTable.dlSubsidyValue', {
+            full: dlTariff.subsidy.fullUpToUnits,
+            partial: dlTariff.subsidy.partialUpToUnits,
+            cap: formatINR(dlTariff.subsidy.partialCapPerMonth),
+          }),
+          dlTariff.subsidy,
+        ),
+      ]
+    : []),
+  ...(dl.centralSubsidy
+    ? [
+        sourced(
+          'assumptionsTable.dlSolarSubsidy',
+          t(locale, 'assumptionsTable.dlSolarSubsidyValue', {
+            capital: formatINR(dl.stateCapitalSubsidy?.perKW ?? 0),
+            max: formatINR(dl.stateCapitalSubsidy?.max ?? 0),
+          }),
+          dl.centralSubsidy,
+        ),
+      ]
+    : []),
+  ...(dl.generationIncentive
+    ? [
+        sourced(
+          'assumptionsTable.dlIncentive',
+          dl.generationIncentive.bands.map((b) => `${formatINR(b.perKWh)}/kWh`).join(' / '),
+          dl.generationIncentive,
+        ),
+      ]
+    : []),
+  record('assumptionsTable.dlGeneration', dl.generationPerKWPerDay),
+  record('assumptionsTable.dlExport', dl.exportRatePerKWh),
+];
 const rows: AssumptionRow[] = [
+  ...delhiRows,
   {
     label: t(locale, 'assumptionsTable.upTariff'),
     value: '—',

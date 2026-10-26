@@ -5,7 +5,7 @@ import AssumptionsTable, { type AssumptionRow } from '@/components/tool/Assumpti
 import AcTool from '@/components/islands/AcTool';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { localizePath } from '@/i18n/routes';
-import { defaults, upTariff } from '@/data';
+import { defaults, dlTariff, upTariff } from '@/data';
 import { formatPercent } from '@/lib/formatTool';
 
 interface Props {
@@ -18,7 +18,29 @@ const rise = defaults.scenarioVariables.energyPriceRise;
 const tariff = upTariff;
 const rows: AssumptionRow[] = [
   {
-    label: t(locale, 'ac.in.pricePerUnit'),
+    label: t(locale, 'assumptionsTable.dlTariff'),
+    value: t(locale, 'assumptionsTable.dlTariffValue'),
+    source: dlTariff.source,
+    date: dlTariff.effectiveDate,
+    verified: dlTariff.status === 'verified',
+  },
+  ...(dlTariff.subsidy
+    ? [
+        {
+          label: t(locale, 'assumptionsTable.dlSubsidy'),
+          value: t(locale, 'assumptionsTable.dlSubsidyValue', {
+            full: dlTariff.subsidy.fullUpToUnits,
+            partial: dlTariff.subsidy.partialUpToUnits,
+            cap: `₹${dlTariff.subsidy.partialCapPerMonth}`,
+          }),
+          source: dlTariff.subsidy.source,
+          date: dlTariff.subsidy.effectiveDate,
+          verified: dlTariff.subsidy.status === 'verified',
+        },
+      ]
+    : []),
+  {
+    label: t(locale, 'assumptionsTable.upPricePerUnit'),
     value: '—',
     source: tariff.source,
     date: tariff.effectiveDate,

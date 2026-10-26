@@ -1,4 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { tariffFor } from '@/data';
+import { solarPayback } from './solar';
+import { solarExampleForm, toSolarInput } from './solarForm';
 import {
   CAR_ASK_START,
   EV_EXTRA_START,
@@ -36,11 +39,15 @@ describe('home page sentence card: the starting answers match the tools and the 
     expect(carAsk({ ...CAR_ASK_START, km: 600 })!.verdict.kind).toBe('never');
   });
 
-  it('solar: ₹2,100 a month, 3 kW for ₹1.8 lakh pays back in month 86, ₹4.5 lakh ahead', () => {
-    expect(SOLAR_ASK_START).toEqual({ bill: 2100, kw: 3, cost: 180_000 });
+  it("solar, Delhi: 300 units, 3 kW for ₹1.8 lakh pays back in month 134, as the tool's example", () => {
+    // Subsidy ₹84,000, net cost ₹96,000; the subsidised bill falls from ₹718.35 to nil.
+    expect(SOLAR_ASK_START).toEqual({ units: 300, kw: 3, cost: 180_000 });
     const a = solarAsk(SOLAR_ASK_START)!;
-    expect(a.payback!.months).toBe(86);
-    expect(a.netAtHorizon).toBeCloseTo(450_000, 0);
+    expect(a.subsidy).toBe(84_000);
+    expect(a.payback!.months).toBe(134);
+    const tool = solarPayback(toSolarInput(solarExampleForm('DL'), tariffFor('DL'), 'DL')!);
+    expect(a.payback!.months).toBe(tool.payback!.months);
+    expect(a.netAtHorizon).toBeCloseTo(tool.netAtHorizon, 6);
   });
 
   it('home: renting and investing is ₹24.50 lakh ahead after 15 years', () => {

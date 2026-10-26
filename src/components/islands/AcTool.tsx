@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
-import { defaults } from '@/data';
+import { defaults, stateOfCity, tariffFor } from '@/data';
 import { decodeShare, encodeShare, pickKeys } from '@/lib/shareLink';
 import { formatINR } from '@/lib/format';
 import { formatMoney, formatNumber, formatPercent } from '@/lib/formatTool';
@@ -16,6 +16,7 @@ import {
   invalidAcFields,
   toAcInput,
   type AcForm,
+  type AcNumberKey,
 } from '@/models/acForm';
 import CompareBars from '@/components/tool/CompareBars';
 import ExampleNote from '@/components/tool/ExampleNote';
@@ -45,12 +46,14 @@ const CHECKLIST: MessageKey[] = [
   'ac.checklist.3',
   'ac.checklist.4',
 ];
-const QUICK: (keyof AcForm)[] = [
+const QUICK: AcNumberKey[] = [
   'basicPrice',
   'basicUnits',
   'efficientPrice',
   'efficientUnits',
   'pricePerUnit',
+  'otherUnits',
+  'sanctionedLoadKW',
   'usage',
 ];
 
@@ -60,8 +63,15 @@ export default function AcTool({ locale }: Props) {
   const [shareHref, setShareHref] = useState('');
   const pinned = useRef(new Set<keyof AcForm>());
   const { assumptions } = useGlobalAssumptions();
+  // With the city's tariff verified (Delhi), the saving comes from two real bills; otherwise from
+  // the visitor's average price per unit.
+  const state = stateOfCity(assumptions.city);
+  const TARIFF = useMemo(() => tariffFor(state), [state]);
+  const exampleKeys = AC_EXAMPLE_KEYS.filter((k) =>
+    TARIFF ? k !== 'pricePerUnit' : k !== 'otherUnits' && k !== 'sanctionedLoadKW',
+  );
 
-  const set = (key: keyof AcForm) => (value: number | null) => {
+  const set = (key: AcNumberKey) => (value: number | null) => {
     pinned.current.add(key);
     setForm((f) => ({ ...f, [key]: value }));
   };
@@ -97,7 +107,7 @@ export default function AcTool({ locale }: Props) {
     return () => clearTimeout(timer);
   }, [form, ready]);
 
-  const input = useMemo(() => toAcInput(form), [form]);
+  const input = useMemo(() => toAcInput(form, TARIFF), [form, TARIFF]);
   const r = useMemo(() => (input ? acPayback(input) : null), [input]);
   // The verdict's own line needs only the usage flip, so it paints with the answer.
   const keyFlips = useMemo(() => (input ? acFlips(input, ['usage']) : []), [input]);
@@ -119,13 +129,13 @@ export default function AcTool({ locale }: Props) {
   const usageFlip = flips.find((f) => f.variable === 'usage');
 
   const years = form.years ?? 10;
-  const missing = invalidAcFields(form);
+  const missing = invalidAcFields(form, TARIFF !== null);
   const quickInvalid = missing.filter((k) => QUICK.includes(k));
   const refineInvalid = missing.some((k) => !QUICK.includes(k));
-  const isExample = AC_EXAMPLE_KEYS.some((k) => !pinned.current.has(k));
+  const isExample = exampleKeys.some((k) => !pinned.current.has(k));
 
   const field = (
-    key: keyof AcForm,
+    key: AcNumberKey,
     label: MessageKey,
     unit: string,
     note: string,
@@ -144,7 +154,7 @@ export default function AcTool({ locale }: Props) {
       note={note}
       value={form[key]}
       onChange={set(key)}
-      example={AC_EXAMPLE_KEYS.includes(key) && !pinned.current.has(key)}
+      example={exampleKeys.includes(key) && !pinned.current.has(key)}
       {...AC_LIMITS[key]}
       {...extra}
       layout="row"
@@ -181,7 +191,9 @@ export default function AcTool({ locale }: Props) {
           },
           {
             label: t(locale, 'ac.w.firstYear'),
-            formula: `${formatNumber(Math.round(r.unitsSavedYearly))} × ₹${formatNumber(input.pricePerUnit)}`,
+            formula: input.bill
+              ? t(locale, 'ac.w.firstYearBill')
+              : `${formatNumber(Math.round(r.unitsSavedYearly))} × ₹${formatNumber(input.pricePerUnit)}`,
             value: formatINR(r.firstYearSaving),
             strong: true,
           },
@@ -307,14 +319,47 @@ export default function AcTool({ locale }: Props) {
           </Tier>
 
           <Tier tone="check" title={t(locale, 'tier.check')} hint={t(locale, 'tier.checkHint')}>
-            {field(
-              'pricePerUnit',
-              'ac.in.pricePerUnit',
-              t(locale, 'ac.unit.perUnit'),
-              t(locale, 'ac.note.pricePerUnit'),
-              {
-                flagged: true,
-              },
+            {TARIFF ? (
+              <>
+                {field(
+                  'otherUnits',
+                  'ac.in.otherUnits',
+                  t(locale, 'ac.unit.unitsMonth'),
+                  t(locale, 'ac.note.otherUnits'),
+                )}
+                {field('sanctionedLoadKW', 'ac.in.load', 'kW', t(locale, 'ac.note.load'))}
+                {TARIFF.subsidy && (
+                  <label class="flex min-h-11 cursor-pointer items-start gap-3 py-3 text-sm">
+                    <input
+                      type="checkbox"
+                      name="subsidyOptIn"
+                      checked={form.subsidyOptIn}
+                      onChange={(e) => {
+                        pinned.current.add('subsidyOptIn');
+                        const on = e.currentTarget.checked;
+                        setForm((f) => ({ ...f, subsidyOptIn: on }));
+                      }}
+                      class="mt-0.5 size-5 shrink-0 accent-(--color-accent-strong)"
+                    />
+                    <span>
+                      <span class="block font-medium">{t(locale, 'solar.in.subsidyOptIn')}</span>
+                      <span class="mt-0.5 block text-ink-muted">
+                        {t(locale, 'ac.note.subsidyOptIn')}
+                      </span>
+                    </span>
+                  </label>
+                )}
+              </>
+            ) : (
+              field(
+                'pricePerUnit',
+                'ac.in.pricePerUnit',
+                t(locale, 'ac.unit.perUnit'),
+                t(locale, 'ac.note.pricePerUnit'),
+                {
+                  flagged: true,
+                },
+              )
             )}
             {field('usage', 'ac.in.usage', '%', t(locale, 'ac.note.usage'), {
               percent: true,
@@ -334,6 +379,10 @@ export default function AcTool({ locale }: Props) {
             forceOpen={refineInvalid && quickInvalid.length === 0}
           >
             <Group title={t(locale, 'ac.group.money')}>
+              {TARIFF &&
+                field('ppacRate', 'solar.in.ppac', '%', t(locale, 'solar.note.ppac'), {
+                  percent: true,
+                })}
               {field('tariffRise', 'ac.in.tariffRise', '%', t(locale, 'ac.note.tariffRise'), {
                 percent: true,
               })}
@@ -378,9 +427,18 @@ export default function AcTool({ locale }: Props) {
                   years,
                 })}
               </p>
+              {input.bill && r.unitsSavedYearly > 0 && (
+                <p class="mt-2 text-ink-muted">
+                  {t(locale, 'ac.verdict.perUnit', {
+                    rate: `₹${(r.monthlySaving[0]! / (r.unitsSavedYearly / 12)).toFixed(2)}`,
+                  })}
+                </p>
+              )}
               {usageFlip && r.extraPrice > 0 && (
                 <p class="mt-2 font-medium">
-                  {t(locale, 'ac.verdict.flipUsage', { value: formatPercent(usageFlip.threshold) })}
+                  {t(locale, r.netGain >= 0 ? 'ac.verdict.flipUsage' : 'ac.verdict.flipUsageUp', {
+                    value: formatPercent(usageFlip.threshold),
+                  })}
                 </p>
               )}
               {isExample && (
@@ -447,10 +505,14 @@ export default function AcTool({ locale }: Props) {
                     { label: t(locale, 'ac.stat.extra'), value: formatMoney(r.extraPrice) },
                     { label: t(locale, 'ac.stat.saving'), value: formatMoney(r.firstYearSaving) },
                     { label: t(locale, 'ac.in.usage'), value: formatPercent(input.usage) },
-                    {
-                      label: t(locale, 'ac.in.pricePerUnit'),
-                      value: `₹${formatNumber(input.pricePerUnit)}`,
-                    },
+                    ...(input.bill
+                      ? []
+                      : [
+                          {
+                            label: t(locale, 'ac.in.pricePerUnit'),
+                            value: `₹${formatNumber(input.pricePerUnit)}`,
+                          },
+                        ]),
                   ]
                 : null
             }

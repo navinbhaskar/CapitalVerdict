@@ -1,19 +1,29 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
-import { defaults, verifiedSolarValue, verifiedTariff } from '@/data';
+import {
+  defaults,
+  generationIncentiveFor,
+  solarSubsidyFor,
+  stateOfCity,
+  tariffFor,
+  verifiedSolarValue,
+} from '@/data';
+import { bill } from '@/engine/tariff';
+import { useGlobalAssumptions } from '@/lib/useAssumptions';
 import { decodeShare, encodeShare, pickKeys } from '@/lib/shareLink';
 import { formatINR } from '@/lib/format';
 import { formatMoney, formatNumber, formatPercent } from '@/lib/formatTool';
 import { solarFlips, solarPayback, solarScenarios, type SolarVariable } from '@/models/solar';
 import {
   SOLAR_LIMITS,
-  SOLAR_EXAMPLE_FORM,
-  SOLAR_EXAMPLE_KEYS,
   invalidSolarFields,
+  solarExampleForm,
+  solarExampleKeys,
   solarShareSchema,
   toSolarInput,
   type SolarForm,
+  type SolarNumberKey,
 } from '@/models/solarForm';
 import CompareBars from '@/components/tool/CompareBars';
 import ExampleNote from '@/components/tool/ExampleNote';
@@ -37,7 +47,6 @@ interface Props {
 }
 
 const RISE_RATES = defaults.scenarioVariables.energyPriceRise.values;
-const SLAB_TARIFF = verifiedTariff();
 const CHECKLIST: MessageKey[] = [
   'solar.checklist.1',
   'solar.checklist.2',
@@ -47,15 +56,40 @@ const CHECKLIST: MessageKey[] = [
 ];
 
 export default function SolarTool({ locale }: Props) {
-  const [form, setForm] = useState<SolarForm>(SOLAR_EXAMPLE_FORM);
+  // The state follows the visitor's city (Delhi until they choose one): its tariff, subsidy and
+  // solar figures fill in wherever they are verified.
+  const { assumptions } = useGlobalAssumptions();
+  const state = stateOfCity(assumptions.city);
+  const SLAB_TARIFF = useMemo(() => tariffFor(state), [state]);
+  const exampleKeys = solarExampleKeys(state);
+  const [form, setForm] = useState<SolarForm>(() => solarExampleForm('DL'));
   const [ready, setReady] = useState(false);
   const [shareHref, setShareHref] = useState('');
   const pinned = useRef(new Set<keyof SolarForm>());
 
-  const set = (key: keyof SolarForm) => (value: number | null) => {
+  const set = (key: SolarNumberKey) => (value: number | null) => {
     pinned.current.add(key);
     setForm((f) => ({ ...f, [key]: value }));
   };
+
+  // A different state brings its own verified figures, except where the visitor typed their own.
+  useEffect(() => {
+    setForm((f) => {
+      const fresh = solarExampleForm(state);
+      const next = { ...f } as Record<keyof SolarForm, unknown>;
+      for (const key of Object.keys(fresh) as (keyof SolarForm)[]) {
+        if (!pinned.current.has(key)) next[key] = fresh[key];
+      }
+      return next as unknown as SolarForm;
+    });
+  }, [state]);
+
+  // Where the subsidy is set by system size (Delhi), it follows the size until the visitor types one.
+  useEffect(() => {
+    if (pinned.current.has('subsidy') || form.systemKW === null) return;
+    const sized = solarSubsidyFor(state, form.systemKW);
+    if (sized !== null && sized !== form.subsidy) setForm((f) => ({ ...f, subsidy: sized }));
+  }, [state, form.systemKW]);
 
   useEffect(() => {
     const fromUrl = decodeShare(window.location.search, solarShareSchema);
@@ -78,7 +112,7 @@ export default function SolarTool({ locale }: Props) {
     return () => clearTimeout(timer);
   }, [form, ready]);
 
-  const input = useMemo(() => toSolarInput(form, SLAB_TARIFF), [form]);
+  const input = useMemo(() => toSolarInput(form, SLAB_TARIFF, state), [form, state]);
   const result = useMemo(() => (input ? solarPayback(input) : null), [input]);
   // Scenarios and the "what would flip it" sweeps can follow a moment after the answer.
   const extras = useIdleValue(() => {
@@ -117,10 +151,23 @@ export default function SolarTool({ locale }: Props) {
   const quickInvalid = missing.filter((k) => QUICK.includes(k));
   const refineInvalid = missing.some((k) => !QUICK.includes(k));
   const unverified = (key: Parameters<typeof verifiedSolarValue>[0]) =>
-    verifiedSolarValue(key) === null;
+    key === 'subsidy'
+      ? solarSubsidyFor(state, form.systemKW ?? 1) === null
+      : verifiedSolarValue(key, state) === null;
+  const incentiveRate =
+    form.systemKW === null ? null : generationIncentiveFor(state, form.systemKW);
+  // The bill without solar before the state subsidy, to show how much of it the subsidy covers.
+  const grossWithout =
+    input && SLAB_TARIFF?.subsidy && input.billOptions?.subsidy
+      ? bill(input.monthlyConsumptionKWh, SLAB_TARIFF, {
+          sanctionedLoadKW: input.sanctionedLoadKW,
+          ppacRate: input.billOptions.ppacRate,
+          subsidy: false,
+        }).total
+      : null;
 
   const field = (
-    key: keyof SolarForm,
+    key: SolarNumberKey,
     label: MessageKey,
     unit: string,
     note: string,
@@ -140,7 +187,7 @@ export default function SolarTool({ locale }: Props) {
       note={note}
       value={form[key]}
       onChange={set(key)}
-      example={SOLAR_EXAMPLE_KEYS.includes(key) && !pinned.current.has(key)}
+      example={exampleKeys.includes(key) && !pinned.current.has(key)}
       {...SOLAR_LIMITS[key]}
       {...extra}
       layout={extra.layout ?? 'row'}
@@ -199,9 +246,21 @@ export default function SolarTool({ locale }: Props) {
           },
           { label: t(locale, 'solar.w.billWithout'), value: formatINR(r.billWithout[0]!) },
           { label: t(locale, 'solar.w.billWith'), value: formatINR(r.billWith[0]!) },
+          ...(r.incentive[0]! > 0
+            ? [
+                {
+                  label: t(locale, 'solar.w.incentive'),
+                  formula: `${formatNumber(first.generation)} × ${formatINR(input.generationIncentive!.perKWh)}`,
+                  value: formatINR(r.incentive[0]!),
+                },
+              ]
+            : []),
           {
             label: t(locale, 'solar.w.saving'),
-            formula: `${formatINR(r.billWithout[0]!)} − ${formatINR(r.billWith[0]!)}`,
+            formula:
+              r.incentive[0]! > 0
+                ? `${formatINR(r.billWithout[0]!)} − ${formatINR(r.billWith[0]!)} + ${formatINR(r.incentive[0]!)}`
+                : `${formatINR(r.billWithout[0]!)} − ${formatINR(r.billWith[0]!)}`,
             value: formatINR(r.saving[0]!),
             strong: true,
           },
@@ -233,6 +292,15 @@ export default function SolarTool({ locale }: Props) {
         { label: t(locale, 'solar.col.exported'), kind: 'count', values: r.exportedKWh },
         { label: t(locale, 'solar.col.billWithout'), kind: 'money', values: r.billWithout },
         { label: t(locale, 'solar.col.billWith'), kind: 'money', values: r.billWith },
+        ...(r.incentive.some((v) => v > 0)
+          ? [
+              {
+                label: t(locale, 'solar.col.incentive'),
+                kind: 'money' as const,
+                values: r.incentive,
+              },
+            ]
+          : []),
         { label: t(locale, 'solar.col.saving'), kind: 'money', values: r.saving },
         { label: t(locale, 'solar.col.net'), kind: 'money', values: r.cumulativeNet.slice(1) },
       ]
@@ -257,7 +325,7 @@ export default function SolarTool({ locale }: Props) {
               type="button"
               onClick={() => {
                 pinned.current.clear();
-                setForm(SOLAR_EXAMPLE_FORM);
+                setForm(solarExampleForm(state));
               }}
               class="inline-flex min-h-11 items-center rounded-md px-2 text-sm font-medium text-accent-strong hover:bg-surface"
             >
@@ -284,10 +352,42 @@ export default function SolarTool({ locale }: Props) {
                   '₹/kWh',
                   t(locale, 'solar.note.averageRate'),
                 )}
-            {field('subsidy', 'solar.in.subsidy', '₹', t(locale, 'solar.note.subsidy'), {
-              optional: true,
-              flagged: unverified('subsidy'),
-            })}
+            {SLAB_TARIFF?.subsidy && (
+              <label class="flex min-h-11 cursor-pointer items-start gap-3 py-3 text-sm">
+                <input
+                  type="checkbox"
+                  name="subsidyOptIn"
+                  checked={form.subsidyOptIn}
+                  onChange={(e) => {
+                    pinned.current.add('subsidyOptIn');
+                    const on = e.currentTarget.checked;
+                    setForm((f) => ({ ...f, subsidyOptIn: on }));
+                  }}
+                  class="mt-0.5 size-5 shrink-0 accent-(--color-accent-strong)"
+                />
+                <span>
+                  <span class="block font-medium">{t(locale, 'solar.in.subsidyOptIn')}</span>
+                  <span class="mt-0.5 block text-ink-muted">
+                    {t(locale, 'solar.note.subsidyOptIn')}
+                  </span>
+                </span>
+              </label>
+            )}
+            {field(
+              'subsidy',
+              'solar.in.subsidy',
+              '₹',
+              t(
+                locale,
+                solarSubsidyFor(state, 1) !== null && state === 'DL'
+                  ? 'solar.note.subsidySized'
+                  : 'solar.note.subsidy',
+              ),
+              {
+                optional: true,
+                flagged: unverified('subsidy'),
+              },
+            )}
             {field(
               'generationPerKWPerDay',
               'solar.in.generation',
@@ -317,6 +417,11 @@ export default function SolarTool({ locale }: Props) {
             forceOpen={refineInvalid && quickInvalid.length === 0}
           >
             <Group title={t(locale, 'solar.group.bill')}>
+              {SLAB_TARIFF &&
+                field('ppacRate', 'solar.in.ppac', '%', t(locale, 'solar.note.ppac'), {
+                  percent: true,
+                  optional: true,
+                })}
               {!SLAB_TARIFF &&
                 field(
                   'fixedCharge',
@@ -357,6 +462,14 @@ export default function SolarTool({ locale }: Props) {
                 t(locale, 'solar.note.horizon'),
                 { integer: true, layout: 'stack' },
               )}
+              {incentiveRate !== null &&
+                field(
+                  'gbiYears',
+                  'solar.in.gbiYears',
+                  t(locale, 'input.horizonYears.unit'),
+                  t(locale, 'solar.note.gbiYears', { rate: formatINR(incentiveRate) }),
+                  { integer: true, optional: true, layout: 'stack' },
+                )}
               {field(
                 'inverterYear',
                 'solar.in.inverterYear',
@@ -421,7 +534,15 @@ export default function SolarTool({ locale }: Props) {
                   </p>
                 );
               })()}
-              {SOLAR_EXAMPLE_KEYS.some((k) => !pinned.current.has(k)) && (
+              {grossWithout !== null && r.billWithout[0]! < grossWithout - 0.5 && (
+                <p class="mt-2 text-ink-muted">
+                  {t(locale, 'solar.subsidyNote', {
+                    gross: formatINR(grossWithout),
+                    paid: formatINR(r.billWithout[0]!),
+                  })}
+                </p>
+              )}
+              {exampleKeys.some((k) => !pinned.current.has(k)) && (
                 <ExampleNote
                   locale={locale}
                   text={t(locale, 'solar.exampleNote')}

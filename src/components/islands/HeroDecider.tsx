@@ -17,7 +17,7 @@ import {
   HOME_ASK_START,
   SOLAR_ASK_LIMITS,
   SOLAR_ASK_START,
-  SOLAR_RATE,
+  SOLAR_STATE,
   carAsk,
   homeAsk,
   solarAsk,
@@ -183,7 +183,8 @@ export default function HeroDecider({ locale }: Props) {
         })
       : '';
   const solarContext = t(locale, 'hero.solar.context', {
-    rate: formatNumber(SOLAR_RATE),
+    state: t(locale, `state.${SOLAR_STATE}` as MessageKey),
+    subsidy: formatMoney(solarA?.subsidy ?? 0),
     gen: formatNumber(solarA?.generationPerKWPerDay ?? 0, 1),
   });
 
@@ -253,13 +254,12 @@ export default function HeroDecider({ locale }: Props) {
     },
     solar: {
       sentence: fill(t(locale, 'hero.solar.sentence'), {
-        bill: (
+        units: (
           <Blank
-            label={t(locale, 'hero.ask.bill')}
-            value={solar.bill}
-            {...SOLAR_ASK_LIMITS.bill}
-            prefix="₹"
-            onChange={(bill) => setSolar((s) => ({ ...s, bill }))}
+            label={t(locale, 'hero.ask.units')}
+            value={solar.units}
+            {...SOLAR_ASK_LIMITS.units}
+            onChange={(units) => setSolar((s) => ({ ...s, units }))}
           />
         ),
         kw: (

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { generationIncentiveFor, solarSubsidyFor, tariffFor } from '@/data';
 import { simpleTariff, type Tariff } from '@/engine/tariff';
 import { solarFlips, solarPayback, solarScenarios, type SolarInput } from './solar';
 
@@ -144,5 +145,58 @@ describe('solar: IRR can be skipped for sweeps', () => {
     expect(fast.irr).toBeNull();
     expect(fast.netAtHorizon).toBe(full.netAtHorizon);
     expect(fast.payback).toEqual(full.payback);
+  });
+});
+
+describe('Delhi: the bill subsidy and the generation incentive', () => {
+  const dl = tariffFor('DL')!;
+  const delhi: SolarInput = {
+    systemKW: 3,
+    grossCost: 180_000,
+    subsidy: solarSubsidyFor('DL', 3)!,
+    generationPerKWPerDay: 1080 / 365,
+    degradationPerYear: 0,
+    monthlyConsumptionKWh: 300,
+    tariff: dl,
+    sanctionedLoadKW: 3,
+    tariffRisePerYear: 0,
+    exportRatePerKWh: 0,
+    inverter: null,
+    horizonYears: 25,
+  };
+
+  it('subsidy: 2 × ₹30,000 + ₹18,000 (PM Surya Ghar) + 3 × ₹2,000 (Delhi) = ₹84,000', () => {
+    expect(delhi.subsidy).toBe(84_000);
+    expect(solarSubsidyFor('DL', 1)).toBe(32_000);
+    expect(solarSubsidyFor('DL', 10)).toBe(88_000);
+  });
+
+  it('opted in: solar saves only the ₹718.35 still paid at 300 units; pays back in month 134', () => {
+    const r = solarPayback(delhi);
+    expect(r.generation[0]).toBeCloseTo(270, 9);
+    // Without: 1,050 + 150 + 96 + 84 + 56.70 = 1,436.70, half subsidised (under ₹800): 718.35.
+    expect(r.billWithout[0]).toBeCloseTo(718.35, 6);
+    // With: 30 units imported, fully subsidised.
+    expect(r.billWith[0]).toBeCloseTo(0, 9);
+    expect(r.saving[0]).toBeCloseTo(718.35, 6);
+    expect(r.payback!.months).toBe(134);
+    expect(r.netAtHorizon).toBeCloseTo(718.35 * 300 - 96_000, 4);
+  });
+
+  it('not opted in: the full bill is saved, ₹1,155.84 a month, payback in month 84', () => {
+    const r = solarPayback({ ...delhi, billOptions: { subsidy: false } });
+    // 1,436.70 − (90 + 150 + 19.20 + 16.80 + 4.86 = 280.86).
+    expect(r.saving[0]).toBeCloseTo(1_155.84, 6);
+    expect(r.payback!.months).toBe(84);
+  });
+
+  it('a ₹3 a unit incentive for 5 years: ₹810 more a month, payback in month 66', () => {
+    expect(generationIncentiveFor('DL', 3)).toBe(3);
+    expect(generationIncentiveFor('DL', 5)).toBe(2);
+    const r = solarPayback({ ...delhi, generationIncentive: { perKWh: 3, years: 5 } });
+    expect(r.incentive[0]).toBeCloseTo(810, 9);
+    expect(r.incentive[60]).toBe(0);
+    // 60 × 1,528.35 = 91,701; then 718.35 a month: 6 more months to pass 96,000.
+    expect(r.payback!.months).toBe(66);
   });
 });

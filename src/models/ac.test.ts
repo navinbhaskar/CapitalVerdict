@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { tariffFor } from '@/data';
 import { acFlips, acPayback, type AcInput } from './ac';
 
 /** ₹10,000 extra for 300 fewer units a year at ₹8 a unit: ₹2,400 a year, ₹200 a month. */
@@ -76,5 +77,41 @@ describe('acPayback: input checks', () => {
   it('rejects negatives and part years', () => {
     expect(() => acPayback({ ...simple, usage: -1 })).toThrow(RangeError);
     expect(() => acPayback({ ...simple, years: 2.5 })).toThrow(RangeError);
+  });
+});
+
+describe('on a real Delhi bill', () => {
+  const dl = tariffFor('DL')!;
+  const delhi: AcInput = {
+    basicPrice: 35_000,
+    efficientPrice: 45_000,
+    basicUnits: 1_100,
+    efficientUnits: 750,
+    usage: 1,
+    pricePerUnit: 0,
+    tariffRise: 0,
+    interestRate: 0.09,
+    years: 10,
+    bill: { tariff: dl, otherUnitsPerMonth: 250, options: { sanctionedLoadKW: 3 } },
+  };
+
+  it('opted in: ₹862.45 − ₹752.21 = ₹110.24 a month, about half a flat ₹7 a unit', () => {
+    // 341.67 units: 1,237.50 + 150 + 111 + 97.125 + 66.825 = 1,662.45, ₹800 off (cap).
+    // 312.50 units: 1,106.25 + 150 + 100.50 + 87.9375 + 59.7375 = 1,504.425, half off.
+    const r = acPayback(delhi);
+    expect(r.monthlySaving[0]).toBeCloseTo(862.45 - 752.2125, 6);
+    expect(r.monthlySaving[0]).toBeCloseTo(110.2375, 6);
+  });
+
+  it('not opted in: the gross bills, ₹158.03 a month', () => {
+    const r = acPayback({
+      ...delhi,
+      bill: { ...delhi.bill!, options: { sanctionedLoadKW: 3, subsidy: false } },
+    });
+    expect(r.monthlySaving[0]).toBeCloseTo(1_662.45 - 1_504.425, 6);
+  });
+
+  it('the price per unit does not flip anything on a real bill', () => {
+    expect(acFlips(delhi).map((f) => f.variable)).not.toContain('pricePerUnit');
   });
 });

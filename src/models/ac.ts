@@ -11,10 +11,18 @@
  *                     the extra price carries its borrowing or opportunity cost; savings are
  *                     not reinvested)
  *   net gain        = savings over the years − extra price with interest
+ *
+ * With a verified state tariff (Delhi), the saving is the difference between two real monthly
+ * bills, the rest of the home's units plus each AC's, so slabs and the state subsidy (with its
+ * 400-unit cliff) count:
+ *   saving(month)   = (bill(other + basic units ÷ 12) − bill(other + efficient units ÷ 12))
+ *                     × the tariff rise so far
+ * The AC's units are spread evenly over the year, as in the flat-rate case.
  */
 import { breakeven, cumulative } from '@/engine/breakeven';
 import { findFlip, type Flip } from '@/engine/sensitivity';
 import { growthFactor, nominalToMonthly, yearlySteppedPrice } from '@/engine/timeValue';
+import { bill, type BillOptions, type Tariff } from '@/engine/tariff';
 
 export interface AcInput {
   /** Price of the cheaper AC, ₹. */
@@ -33,6 +41,8 @@ export interface AcInput {
   /** Interest on the extra price, annual nominal, monthly compounding. */
   interestRate: number;
   years: number;
+  /** Price the saving on the state's real bill instead of `pricePerUnit`. */
+  bill?: { tariff: Tariff; otherUnitsPerMonth: number; options: BillOptions };
 }
 
 export interface AcResult {
@@ -59,7 +69,10 @@ export interface AcResult {
 
 function validate(i: AcInput): void {
   for (const [name, v] of Object.entries(i)) {
-    if (!(v >= 0)) throw new RangeError(`${name} must not be negative`);
+    if (typeof v === 'number' && !(v >= 0)) throw new RangeError(`${name} must not be negative`);
+  }
+  if (i.bill && !(i.bill.otherUnitsPerMonth >= 0)) {
+    throw new RangeError('otherUnitsPerMonth must not be negative');
   }
   if (!Number.isInteger(i.years) || i.years < 1) {
     throw new RangeError('years must be a positive whole number');
@@ -74,9 +87,25 @@ export function acPayback(input: AcInput): AcResult {
   const r = nominalToMonthly(input.interestRate);
 
   const monthlySaving: number[] = [];
+  // On a real bill, one month's saving at today's tariff; it then rises with the tariff.
+  const billSaving = input.bill
+    ? bill(
+        input.bill.otherUnitsPerMonth + (input.basicUnits * input.usage) / 12,
+        input.bill.tariff,
+        input.bill.options,
+      ).total -
+      bill(
+        input.bill.otherUnitsPerMonth + (input.efficientUnits * input.usage) / 12,
+        input.bill.tariff,
+        input.bill.options,
+      ).total
+    : null;
   for (let m = 1; m <= months; m++) {
-    const price = yearlySteppedPrice(input.pricePerUnit, input.tariffRise, m);
-    monthlySaving.push((unitsSavedYearly / 12) * price);
+    monthlySaving.push(
+      billSaving !== null
+        ? yearlySteppedPrice(billSaving, input.tariffRise, m)
+        : (unitsSavedYearly / 12) * yearlySteppedPrice(input.pricePerUnit, input.tariffRise, m),
+    );
   }
   const cumulativeSaving = cumulative(monthlySaving);
   const extraWithInterest = cumulativeSaving.map((_, m) => extraPrice * growthFactor(r, m));
@@ -119,6 +148,8 @@ export function acFlips(input: AcInput, only?: AcVariable[]): AcFlip[] {
   const flips: AcFlip[] = [];
   for (const { variable, lo, hi } of probes) {
     if (only && !only.includes(variable)) continue;
+    // On a real bill the price per unit comes from the tariff, so there is nothing to flip.
+    if (variable === 'pricePerUnit' && input.bill) continue;
     const flip = findFlip((x) => gain({ ...input, [variable]: x }), { lo, hi, steps: 60 });
     if (flip) flips.push({ variable, ...flip });
   }

@@ -45,22 +45,72 @@ export const verifiedCityIds: readonly string[] = cityIds.filter(
 export const upTariff = upTariffJson as unknown as TariffData;
 /** UP's solar figures: one subsidy amount, so `subsidy` is always present. */
 export const solarData = solarJson as unknown as SolarData & { subsidy: DataRecord };
-/** Delhi's tariff and solar figures. The tools start using them in the next milestone. */
+/** Delhi's tariff and solar figures. */
 export const dlTariff = dlTariffJson as unknown as TariffData;
 export const dlSolarData = dlSolarJson as unknown as SolarData;
 
-/** The state's tariff as an engine Tariff once verified; null while it is TODO_VERIFY. */
-export function verifiedTariff(data: TariffData = upTariff): Tariff | null {
-  if (data.status !== 'verified' || data.method === null || data.slabs.length === 0) return null;
-  return data as unknown as Tariff;
+export type StateId = 'DL' | 'UP';
+
+/** The state a city is in; the example city (Delhi) when none is chosen. */
+export function stateOfCity(cityId: string | null): StateId {
+  return (fuelPrices.cities.find((c) => c.id === (cityId ?? 'delhi'))?.state ?? 'DL') as StateId;
 }
 
-/** A solar data value once verified, else null. */
-export function verifiedSolarValue(
-  key: 'generationPerKWPerDay' | 'degradationPerYear' | 'exportRatePerKWh' | 'subsidy',
-): number | null {
-  const record = solarData[key];
+/**
+ * The state's tariff as an engine Tariff once verified; null while it is TODO_VERIFY. A subsidy
+ * is kept only while its own record is verified.
+ */
+export function verifiedTariff(data: TariffData = upTariff): Tariff | null {
+  if (data.status !== 'verified' || data.method === null || data.slabs.length === 0) return null;
+  const { subsidy, ...rest } = data;
+  return {
+    ...(rest as unknown as Tariff),
+    ...(subsidy && subsidy.status === 'verified' ? { subsidy } : {}),
+  };
+}
+
+export const tariffFor = (state: StateId): Tariff | null =>
+  verifiedTariff(state === 'DL' ? dlTariff : upTariff);
+
+export const solarDataFor = (state: StateId): SolarData =>
+  state === 'DL' ? dlSolarData : solarData;
+
+type SolarValueKey =
+  'generationPerKWPerDay' | 'degradationPerYear' | 'exportRatePerKWh' | 'subsidy';
+
+/** A solar data value once verified, else null (UP unless a state is named). */
+export function verifiedSolarValue(key: SolarValueKey, state: StateId = 'UP'): number | null {
+  const record = solarDataFor(state)[key];
   return record && record.status === 'verified' ? record.value : null;
+}
+
+/**
+ * The subsidy on a rooftop system of `kW`: the state's one amount (UP), or the central bands plus
+ * the state's capital subsidy (Delhi). Null while unverified.
+ */
+export function solarSubsidyFor(state: StateId, kW: number): number | null {
+  const data = solarDataFor(state);
+  if (data.subsidy) return data.subsidy.status === 'verified' ? data.subsidy.value : null;
+  const central = data.centralSubsidy;
+  if (!central || central.status !== 'verified') return null;
+  let total = 0;
+  let from = 0;
+  for (const band of central.bands) {
+    const to = Math.min(kW, band.upToKW ?? Infinity);
+    if (to > from) total += (to - from) * band.perKW;
+    from = band.upToKW ?? Infinity;
+  }
+  const capital = data.stateCapitalSubsidy;
+  if (capital && capital.status === 'verified') total += Math.min(capital.perKW * kW, capital.max);
+  return total;
+}
+
+/** ₹ per unit generated that the state pays a system of `kW`, or null if there is none. */
+export function generationIncentiveFor(state: StateId, kW: number): number | null {
+  const gbi = solarDataFor(state).generationIncentive;
+  if (!gbi || gbi.status !== 'verified') return null;
+  const band = gbi.bands.find((b) => b.upToKW === null || kW <= b.upToKW);
+  return band ? band.perKWh : null;
 }
 
 export const propertyData = propertyJson as unknown as PropertyData;

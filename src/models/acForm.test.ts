@@ -33,6 +33,10 @@ describe('AC form', () => {
 
   it('round-trips through a share link', () => {
     const query = encodeShare(AC_EXAMPLE_FORM, acShareSchema);
-    expect(decodeShare(`?${query}`, acShareSchema)).toMatchObject(AC_EXAMPLE_FORM);
+    // Empty fields (no PPAC) are left out of the link, so compare the filled ones.
+    const filled = Object.fromEntries(
+      Object.entries(AC_EXAMPLE_FORM).filter(([, v]) => v !== null),
+    );
+    expect(decodeShare(`?${query}`, acShareSchema)).toMatchObject(filled);
   });
 });

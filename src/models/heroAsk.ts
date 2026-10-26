@@ -3,14 +3,14 @@
  * same example forms the tools open with, so the card and the tools always agree.
  * Fuel prices are the example city's verified prices; the rest are the tools' labelled examples.
  */
-import { verifiedFuelPrices, verifiedTariff } from '@/data';
+import { solarSubsidyFor, stateOfCity, tariffFor, verifiedFuelPrices } from '@/data';
 import { carFuelFlips, carFuelVerdict, type CarFuelVerdict } from './carFuel';
 import { CAR_FUEL_START_FORM, altCarPriceField, toCarFuelInput, type AltKind } from './carFuelForm';
 import { EXAMPLE_PRICE_CITY } from './carFuel.example';
 import { rentVsBuy } from './rentBuy';
 import { RENT_BUY_EXAMPLE_FORM, toRentBuyInput } from './rentBuyForm';
 import { solarPayback } from './solar';
-import { SOLAR_EXAMPLE_FORM, toSolarInput } from './solarForm';
+import { solarExampleForm, toSolarInput } from './solarForm';
 
 export const HERO_PRICE_CITY = EXAMPLE_PRICE_CITY;
 /** Petrol car price behind the "costs ₹X more" blank (an example, as in the car tool). */
@@ -73,37 +73,43 @@ export function carAsk(a: CarAsk): CarAnswer | null {
   };
 }
 
-/** Price per unit behind the "my bill is ₹X" blank: the solar tool's example average rate. */
-export const SOLAR_RATE = SOLAR_EXAMPLE_FORM.averageRate!;
+/**
+ * The solar card runs on the example city's state (Delhi): its tariff with the bill subsidy for
+ * homes that opt in, the subsidy by system size, and its output per kW, as the solar tool does.
+ * It asks for units, not rupees: with a subsidy, a bill in rupees does not say how many units.
+ */
+export const SOLAR_STATE = stateOfCity(HERO_PRICE_CITY);
+const SOLAR_EXAMPLE = solarExampleForm(SOLAR_STATE);
 
 export interface SolarAsk {
-  /** Electricity bill a month, ₹. */
-  bill: number;
+  /** Units used a month. */
+  units: number;
   kw: number;
-  /** System cost after any subsidy, ₹. */
+  /** System price before any subsidy, ₹. */
   cost: number;
 }
 export const SOLAR_ASK_START: SolarAsk = {
-  bill: SOLAR_EXAMPLE_FORM.monthlyConsumptionKWh! * SOLAR_RATE,
-  kw: SOLAR_EXAMPLE_FORM.systemKW!,
-  cost: SOLAR_EXAMPLE_FORM.grossCost! - (SOLAR_EXAMPLE_FORM.subsidy ?? 0),
+  units: SOLAR_EXAMPLE.monthlyConsumptionKWh!,
+  kw: SOLAR_EXAMPLE.systemKW!,
+  cost: SOLAR_EXAMPLE.grossCost!,
 };
 export const SOLAR_ASK_LIMITS = {
-  bill: { min: 100, max: 70_000 },
+  units: { min: 10, max: 10_000 },
   kw: { min: 0.5, max: 50 },
   cost: { min: 1_000, max: 50_00_000 },
 };
 
 export function solarAsk(a: SolarAsk) {
-  const units = a.bill / SOLAR_RATE;
+  const subsidy = Math.min(solarSubsidyFor(SOLAR_STATE, a.kw) ?? 0, a.cost);
   const form = {
-    ...SOLAR_EXAMPLE_FORM,
+    ...SOLAR_EXAMPLE,
     systemKW: a.kw,
     grossCost: a.cost,
-    subsidy: 0,
-    monthlyConsumptionKWh: units,
+    subsidy,
+    monthlyConsumptionKWh: a.units,
+    sanctionedLoadKW: Math.max(SOLAR_EXAMPLE.sanctionedLoadKW ?? 1, Math.ceil(a.kw)),
   };
-  const input = toSolarInput(form, verifiedTariff());
+  const input = toSolarInput(form, tariffFor(SOLAR_STATE), SOLAR_STATE);
   if (!input) return null;
   const result = solarPayback(input, { withIrr: false });
   return {
@@ -111,7 +117,8 @@ export function solarAsk(a: SolarAsk) {
     netAtHorizon: result.netAtHorizon,
     horizonYears: input.horizonYears,
     generationPerKWPerDay: input.generationPerKWPerDay,
-    query: `?kw=${a.kw}&c=${a.cost}&s=0&u=${Math.round(units)}&rate=${SOLAR_RATE}`,
+    subsidy,
+    query: `?kw=${a.kw}&c=${a.cost}&u=${a.units}`,
   };
 }
 
