@@ -7,7 +7,7 @@
         "base": 0.06,
         "optimistic": 0.05
       },
-      "source": "CapitalVerdict default assumption from project spec; user-editable, not a forecast",
+      "source": "CapitalVerdict's working assumption for comparing options, not a forecast. Change it to your own.",
       "effectiveDate": "2026-10-19",
       "status": "verified"
     },
@@ -18,7 +18,7 @@
         "base": 0.1,
         "optimistic": 0.12
       },
-      "source": "CapitalVerdict default assumption from project spec; user-editable, not a forecast",
+      "source": "CapitalVerdict's working assumption for comparing options, not a forecast. Change it to your own.",
       "effectiveDate": "2026-10-19",
       "status": "verified"
     },
@@ -29,7 +29,7 @@
         "base": 0.05,
         "optimistic": 0.07
       },
-      "source": "CapitalVerdict default assumption from project spec; user-editable, not a forecast",
+      "source": "CapitalVerdict's working assumption for comparing options, not a forecast. Change it to your own.",
       "effectiveDate": "2026-10-19",
       "status": "verified"
     },
@@ -40,7 +40,7 @@
         "base": 0.05,
         "optimistic": 0.04
       },
-      "source": "CapitalVerdict default assumption from project spec; user-editable, not a forecast",
+      "source": "CapitalVerdict's working assumption for comparing options, not a forecast. Change it to your own.",
       "effectiveDate": "2026-10-19",
       "status": "verified"
     },
@@ -51,7 +51,7 @@
         "base": 0.03,
         "optimistic": 0.05
       },
-      "source": "CapitalVerdict default assumption from project spec (fuel/tariff rise); user-editable, not a forecast",
+      "source": "CapitalVerdict's working assumption for how fast fuel and electricity prices rise, not a forecast. Change it to your own.",
       "effectiveDate": "2026-10-19",
       "status": "verified"
     }
@@ -60,7 +60,7 @@
     "carLoanRate": {
       "value": 0.09,
       "unit": "decimal per year",
-      "source": "Project spec default for interest on the extra car price; user-editable",
+      "source": "CapitalVerdict's working assumption for what the extra car price costs you a year: a car-loan rate, or what the money could earn instead. Change it to your own.",
       "effectiveDate": "2026-10-19",
       "status": "verified"
     },

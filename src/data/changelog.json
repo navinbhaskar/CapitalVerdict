@@ -26,7 +26,7 @@
     },
     {
       "date": "2026-10-19",
-      "change": "Set the default scenario table (inflation, equity return, home prices, rent, fuel and electricity prices) and the 9% default rate on the extra car price, from the project spec."
+      "change": "Set the default scenario table (inflation, equity return, home prices, rent, fuel and electricity prices) and the 9% default rate on the extra car price, as CapitalVerdict's working assumptions."
     }
   ]
 }
