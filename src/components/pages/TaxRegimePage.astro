@@ -52,6 +52,42 @@ const rows: AssumptionRow[] = [
   ),
   row(t(locale, 'taxRegime.a.cess'), formatPercent(rules.cessRate)),
 ];
+// The limits the itemised deductions are held to, each with its own source.
+const d = rules.deductions;
+const fromDeductions = (label: MessageKey, value: string): AssumptionRow => ({
+  label: t(locale, label),
+  value,
+  source: d.source,
+  date: d.effectiveDate,
+  verified: d.status === 'verified',
+});
+rows.push(
+  fromDeductions('taxRegime.a.limit80C', lakh(d.section80C)),
+  fromDeductions('taxRegime.a.limitNps', lakh(d.nps80CCD1B)),
+  fromDeductions(
+    'taxRegime.a.limit80D',
+    t(locale, 'taxRegime.a.limit80DValue', {
+      self: lakh(d.health80D.self),
+      senior: lakh(d.health80D.selfSenior),
+    }),
+  ),
+  fromDeductions('taxRegime.a.limitHomeLoan', lakh(d.homeLoanInterestSelfOccupied)),
+  fromDeductions('taxRegime.a.limit80TTA', lakh(d.savingsInterest80TTA)),
+  fromDeductions(
+    'taxRegime.a.limitEmployerNps',
+    `${formatPercent(d.employerNps80CCD2.new)} / ${formatPercent(d.employerNps80CCD2.old)}`,
+  ),
+  {
+    label: t(locale, 'taxRegime.a.hra'),
+    value: t(locale, 'taxRegime.a.hraValue', {
+      large: formatPercent(rules.hra.largeCityShare),
+      other: formatPercent(rules.hra.otherShare),
+    }),
+    source: rules.hra.source,
+    date: rules.hra.effectiveDate,
+    verified: rules.hra.status === 'verified',
+  },
+);
 
 const FAQ = [1, 2, 3] as const;
 const related = [

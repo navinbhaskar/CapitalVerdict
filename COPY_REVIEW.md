@@ -220,3 +220,15 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | [ ] `emi.*` (inputs, notes, headline, verdict lines, bars, tables, checklist, working, chart, FAQs) | The calculator page                                |
 | [ ] Example: ₹40 lakh at 9% for 20 years (the guide's loan)                                         | Labelled "Example" on the tool                     |
 | [ ] `page.methodology.emi.*`                                                                        | Methodology page                                   |
+
+## Tax regime tool, item by item (drafted 2026-10-26)
+
+| Key or file                                                                                                                                              | Where it shows                                                               |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| [ ] `taxRegime.mode.*`, `taxRegime.groups.*`, `taxRegime.group.*` (claim chips)                                                                          | Tax regime tool: "Deductions: Item by item / One total I know" and the chips |
+| [ ] `taxRegime.in.*` and `taxRegime.note.*` for basic pay, HRA, rent, 80C, health, home loan, NPS, education loan, savings interest                      | The itemised fields                                                          |
+| [ ] `taxRegime.check.*`, `taxRegime.hraResult`, `taxRegime.cap.*`                                                                                        | City, senior and government-employer ticks; HRA result; limit lines          |
+| [ ] `taxRegime.verdict.itemsTotal`, `.roomFlips`, `.roomStays`, `.roomMore`                                                                              | Answer card                                                                  |
+| [ ] `taxRegime.w.*` (itemised working), `taxRegime.item.*`, `taxRegime.a.limit*`, `taxRegime.a.hra*`                                                     | Working and assumptions table                                                |
+| [ ] Changed: `taxRegime.scope`, `taxRegime.note.salary` (now gross salary), `taxRegime.note.oldDeductions`, `taxRegime.faq.1.a`, `taxRegime.exampleNote` | Tax regime tool                                                              |
+| [ ] Example: ₹15 lakh salary, basic ₹6 lakh, HRA ₹2.4 lakh, rent ₹3 lakh in a large city, 80C ₹1.5 lakh, health ₹25,000                                  | Labelled "Example"                                                           |
