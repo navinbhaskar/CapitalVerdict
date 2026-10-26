@@ -22,7 +22,7 @@ export default function EmiWidget() {
   const emi = emiOf(amount, rate, months);
   const firstInterest = amount * (rate / 12);
   return (
-    <Frame title={t('en', 'guide.emi.title')} toolPath="/tools/prepay-or-invest/">
+    <Frame title={t('en', 'guide.emi.title')} toolPath="/tools/emi-calculator/">
       <Inputs>
         <Slider
           label={t('en', 'guide.emi.amount')}

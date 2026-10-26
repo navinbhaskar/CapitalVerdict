@@ -32,4 +32,5 @@ export const TOOL_PATHS = {
   'lumpsum-calculator': '/tools/lumpsum-calculator/',
   'swp-calculator': '/tools/swp-calculator/',
   'plan-return': '/tools/plan-return/',
+  'emi-calculator': '/tools/emi-calculator/',
 } as const;

@@ -209,3 +209,14 @@ A new tool at `/tools/plan-return/` (`src/models/planReturn.ts`), in the "Saving
 | [ ] `checklist.carFuel.3`, `checklist.ev.4`                                                              | "Not modelled" lists: replace "Resale value difference"                     |
 | [ ] `source` of the scenario variables and car rate in `src/data/defaults.json`, and the changelog entry | Assumptions tables on every tool; assumptions changelog                     |
 | [ ] `assumptions.cityNotVerified`                                                                        | Assumptions panel: "Kanpur: prices not verified yet" (cannot be chosen)     |
+
+## EMI calculator (drafted 2026-10-26)
+
+A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home and loans" group. The "Where your EMI goes" guide now links to it.
+
+| Key or file                                                                                         | Where it shows                                     |
+| --------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| [ ] `tool.emi.*`                                                                                    | Tool title, question and home tile; nav and footer |
+| [ ] `emi.*` (inputs, notes, headline, verdict lines, bars, tables, checklist, working, chart, FAQs) | The calculator page                                |
+| [ ] Example: ₹40 lakh at 9% for 20 years (the guide's loan)                                         | Labelled "Example" on the tool                     |
+| [ ] `page.methodology.emi.*`                                                                        | Methodology page                                   |

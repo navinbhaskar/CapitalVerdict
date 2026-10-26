@@ -1,0 +1,69 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import Icon from '@/components/layout/Icon.astro';
+import AssumptionsTable, { type AssumptionRow } from '@/components/tool/AssumptionsTable.astro';
+import EmiTool from '@/components/islands/EmiTool';
+import { t, type MessageKey } from '@/i18n/t';
+import { localizePath } from '@/i18n/routes';
+import { defaults } from '@/data';
+import { formatPercent } from '@/lib/formatTool';
+
+const locale = 'en';
+const inflation = defaults.scenarioVariables.inflation;
+const rows: AssumptionRow[] = [
+  {
+    label: t(locale, 'fund.in.inflation'),
+    value: [inflation.values.pessimistic, inflation.values.base, inflation.values.optimistic]
+      .map(formatPercent)
+      .join(' / '),
+    source: inflation.source,
+    date: inflation.effectiveDate,
+    verified: inflation.status === 'verified',
+  },
+];
+
+const FAQ = [1, 2, 3] as const;
+const related = [
+  { href: localizePath('/tools/prepay-or-invest/', locale), label: t(locale, 'tool.prepay.title') },
+  { href: localizePath('/tools/rent-vs-buy/', locale), label: t(locale, 'tool.rentVsBuy.title') },
+  {
+    href: localizePath('/tools/cash-or-car-loan/', locale),
+    label: t(locale, 'tool.carLoan.title'),
+  },
+];
+---
+
+<ToolLayout
+  locale={locale}
+  title={t(locale, 'tool.emi.question')}
+  description={t(locale, 'emi.metaDescription')}
+  related={related}
+  faq={FAQ.map((n) => ({
+    q: t(locale, `emi.faq.${n}.q` as MessageKey),
+    a: t(locale, `emi.faq.${n}.a` as MessageKey),
+  }))}
+>
+  <EmiTool client:load locale={locale} />
+
+  <p slot="explanation">{t(locale, 'emi.explanation')}</p>
+
+  <AssumptionsTable slot="assumptions" locale={locale} rows={rows} />
+
+  <div slot="faq" class="divide-y divide-line border-y border-line">
+    {FAQ.map((n) => (
+      <details class="group">
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-2.5 font-medium text-ink">
+          {t(locale, `emi.faq.${n}.q` as MessageKey)}
+          <Icon
+            name="chevronDown"
+            size={18}
+            class="shrink-0 text-ink-muted transition-transform duration-(--duration-base) ease-out-quart group-open:rotate-180"
+          />
+        </summary>
+        <p class="max-w-(--container-prose) pb-3 text-sm">
+          {t(locale, `emi.faq.${n}.a` as MessageKey)}
+        </p>
+      </details>
+    ))}
+  </div>
+</ToolLayout>
