@@ -3,7 +3,7 @@
 English copy drafted on 2026-10-19 to replace `TODO_COPY` placeholders. Every string lives in
 `src/i18n/en.json`; edit it there. Tick a line once you have approved or rewritten it.
 
-**All 144 items were approved on 2026-10-26.** New drafts are added below as unticked lines.
+**All 144 items were approved on 2026-10-26, and the 38 added since on 2026-10-27.** New drafts are added below as unticked lines.
 Hindi (`src/i18n/hi.json`) is still `TODO_COPY_HI` everywhere except the site name and the language
 switch.
 
@@ -267,65 +267,65 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 
 | Key                                                                                                                                                                                                                                 | Where it shows                                              |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| [ ] `tool.termPlan.title`, `.question`, `.gives`, `term.metaDescription`                                                                                                                                                            | Page title, menus, home page list, search snippet           |
-| [ ] `term.scope`, `term.step.cover`, `term.step.coverHint`, `term.in.*`, `term.note.*`, `term.group.plan`, `term.summary`                                                                                                           | Inputs: the life cover step and the tax and inflation panel |
-| [ ] `term.headline.*`, `term.sub`, `term.getQuote`, `term.today`, `term.tie`, `term.tiePlan`, `term.short`, `term.exampleNote`, `term.coverNote`                                                                                    | Answer card                                                 |
-| [ ] `term.rates.*`, `term.checklist.1` to `.4`                                                                                                                                                                                      | "At other returns" list and "Not modelled"                  |
-| [ ] `term.w.*`, `term.chart.*`, `term.table.*`, `term.tableNote`, `term.col.*`, `term.monthNote`                                                                                                                                    | Working, chart, year and month tables                       |
-| [ ] `term.explanation`, `term.a.ppf`, `term.faq.1` to `.3`                                                                                                                                                                          | How this works, assumptions table, questions                |
-| [ ] `page.methodology.termPlan.*`                                                                                                                                                                                                   | Methodology page                                            |
-| [ ] Example covers: ₹10 lakh for 20 years (endowment), ₹5 lakh for 35 years (income), ₹12.5 lakh for 25 years (single premium), ₹4 lakh for 20 years (money back). Example return: PPF's rate. The term premium is never filled in. | Labelled "Example"                                          |
+| [x] `tool.termPlan.title`, `.question`, `.gives`, `term.metaDescription`                                                                                                                                                            | Page title, menus, home page list, search snippet           |
+| [x] `term.scope`, `term.step.cover`, `term.step.coverHint`, `term.in.*`, `term.note.*`, `term.group.plan`, `term.summary`                                                                                                           | Inputs: the life cover step and the tax and inflation panel |
+| [x] `term.headline.*`, `term.sub`, `term.getQuote`, `term.today`, `term.tie`, `term.tiePlan`, `term.short`, `term.exampleNote`, `term.coverNote`                                                                                    | Answer card                                                 |
+| [x] `term.rates.*`, `term.checklist.1` to `.4`                                                                                                                                                                                      | "At other returns" list and "Not modelled"                  |
+| [x] `term.w.*`, `term.chart.*`, `term.table.*`, `term.tableNote`, `term.col.*`, `term.monthNote`                                                                                                                                    | Working, chart, year and month tables                       |
+| [x] `term.explanation`, `term.a.ppf`, `term.faq.1` to `.3`                                                                                                                                                                          | How this works, assumptions table, questions                |
+| [x] `page.methodology.termPlan.*`                                                                                                                                                                                                   | Methodology page                                            |
+| [x] Example covers: ₹10 lakh for 20 years (endowment), ₹5 lakh for 35 years (income), ₹12.5 lakh for 25 years (single premium), ₹4 lakh for 20 years (money back). Example return: PPF's rate. The term premium is never filled in. | Labelled "Example"                                          |
 
 ## Which debt to pay off first (drafted 2026-10-26)
 
 | Key                                                                                                                                                                                                               | Where it shows                                                                                  |
 | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| [ ] `tool.debtOrder.title`, `.question`, `.gives`, `debt.metaDescription`                                                                                                                                         | Page title, menus, home page list, search snippet                                               |
-| [ ] `debt.scope`, `debt.slot.*`, `debt.in.*`, `debt.note.*`, `debt.kindLabel.*`, `debt.step.*`                                                                                                                    | Inputs: each debt and the spare money                                                           |
-| [ ] `debt.headline`, `debt.headline.never`, `debt.kind.*`, `debt.kindNth`, `debt.sub`, `debt.vsWorst`, `debt.vsNow`, `debt.vsNowNever`, `debt.notCovering`, `debt.exampleNote`                                    | Answer card                                                                                     |
-| [ ] `debt.orderTitle`, `debt.cleared*`, `debt.never`, `debt.compare`, `debt.bar.note`, `debt.order.*`, `debt.orderShort.*`, `debt.needTwo`, `debt.needInputs`                                                     | Answer card: the order and the interest bars                                                    |
-| [ ] `debt.checklist.1` to `.4`                                                                                                                                                                                    | "Not modelled" (`.3` mentions the old regime's home-loan interest relief in general terms only) |
-| [ ] `debt.w.*`, `debt.chart.*`, `debt.col.*`, `debt.monthNote`                                                                                                                                                    | Working, chart, month table                                                                     |
-| [ ] `debt.explanation`, `debt.faq.1` to `.3`                                                                                                                                                                      | How this works, questions                                                                       |
-| [ ] `page.methodology.debtOrder.*`                                                                                                                                                                                | Methodology page                                                                                |
-| [ ] Example: home loan ₹30 lakh at 9% (EMI ₹30,428, for 15 years), personal loan ₹60,000 at 14% paying ₹5,000, credit card ₹1.5 lakh at 36% paying ₹6,000, ₹10,000 a month spare. Illustrative, not market rates. | Labelled "Example"                                                                              |
+| [x] `tool.debtOrder.title`, `.question`, `.gives`, `debt.metaDescription`                                                                                                                                         | Page title, menus, home page list, search snippet                                               |
+| [x] `debt.scope`, `debt.slot.*`, `debt.in.*`, `debt.note.*`, `debt.kindLabel.*`, `debt.step.*`                                                                                                                    | Inputs: each debt and the spare money                                                           |
+| [x] `debt.headline`, `debt.headline.never`, `debt.kind.*`, `debt.kindNth`, `debt.sub`, `debt.vsWorst`, `debt.vsNow`, `debt.vsNowNever`, `debt.notCovering`, `debt.exampleNote`                                    | Answer card                                                                                     |
+| [x] `debt.orderTitle`, `debt.cleared*`, `debt.never`, `debt.compare`, `debt.bar.note`, `debt.order.*`, `debt.orderShort.*`, `debt.needTwo`, `debt.needInputs`                                                     | Answer card: the order and the interest bars                                                    |
+| [x] `debt.checklist.1` to `.4`                                                                                                                                                                                    | "Not modelled" (`.3` mentions the old regime's home-loan interest relief in general terms only) |
+| [x] `debt.w.*`, `debt.chart.*`, `debt.col.*`, `debt.monthNote`                                                                                                                                                    | Working, chart, month table                                                                     |
+| [x] `debt.explanation`, `debt.faq.1` to `.3`                                                                                                                                                                      | How this works, questions                                                                       |
+| [x] `page.methodology.debtOrder.*`                                                                                                                                                                                | Methodology page                                                                                |
+| [x] Example: home loan ₹30 lakh at 9% (EMI ₹30,428, for 15 years), personal loan ₹60,000 at 14% paying ₹5,000, credit card ₹1.5 lakh at 36% paying ₹6,000, ₹10,000 a month spare. Illustrative, not market rates. | Labelled "Example"                                                                              |
 
 ## Guide: what a 1% rate rise does to your EMI (drafted 2026-10-26)
 
 | Item                                                                                                                                                          | Where it shows                                       |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| [ ] `src/content/blog/what-a-1-percent-rate-rise-does-to-your-emi.mdx` (title, description, takeaway, all text)                                               | /guides/what-a-1-percent-rate-rise-does-to-your-emi/ |
-| [ ] Chart and table labels in `rateRise` in `src/content/guideFigures.ts`                                                                                     | The guide's bars and table                           |
-| [ ] The guide makes no claim about how lenders handle rate changes or how long fixed rates last; it tells readers to ask. Add a sourced line if you want one. | "Before you choose"                                  |
+| [x] `src/content/blog/what-a-1-percent-rate-rise-does-to-your-emi.mdx` (title, description, takeaway, all text)                                               | /guides/what-a-1-percent-rate-rise-does-to-your-emi/ |
+| [x] Chart and table labels in `rateRise` in `src/content/guideFigures.ts`                                                                                     | The guide's bars and table                           |
+| [x] The guide makes no claim about how lenders handle rate changes or how long fixed rates last; it tells readers to ask. Add a sourced line if you want one. | "Before you choose"                                  |
 
 ## Site search (drafted 2026-10-26)
 
 | Key                                                                                                                                                | Where it shows                             |
 | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| [ ] `search.open`, `search.title`, `search.close`, `search.label`, `search.placeholder`                                                            | Header search button and the search dialog |
-| [ ] `search.hint`, `search.loading`, `search.searching`, `search.unavailable`, `search.none`, `search.count`, `search.countOne`, `search.countTop` | Search dialog status line                  |
-| [ ] `search.kind.tool`, `.guide`, `.other`                                                                                                         | The label above each result                |
+| [x] `search.open`, `search.title`, `search.close`, `search.label`, `search.placeholder`                                                            | Header search button and the search dialog |
+| [x] `search.hint`, `search.loading`, `search.searching`, `search.unavailable`, `search.none`, `search.count`, `search.countOne`, `search.countTop` | Search dialog status line                  |
+| [x] `search.kind.tool`, `.guide`, `.other`                                                                                                         | The label above each result                |
 
 ## Compact footer (drafted 2026-10-26)
 
 | Key                                               | Where it shows                                    |
 | ------------------------------------------------- | ------------------------------------------------- |
-| [ ] `footer.link.calculators` ("All calculators") | Footer on phones, in place of the full tool lists |
+| [x] `footer.link.calculators` ("All calculators") | Footer on phones, in place of the full tool lists |
 
 ## Electric or petrol scooter (drafted 2026-10-26)
 
 | Key                                                                                                                                                                                                                                  | Where it shows                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- |
-| [ ] `tool.scooter.title`, `.question`, `.gives`, `scooter.metaDescription`                                                                                                                                                           | Page title, menus, home page list, search snippet |
-| [ ] Changed: `home.group.car` is now "Your vehicle" (chosen by you)                                                                                                                                                                  | Home page, Calculators menu, footer               |
-| [ ] `scooter.step.*`, `scooter.group.*`, `scooter.summary`, `scooter.unit.*`, `scooter.unitsValue`, `scooter.in.*`, `scooter.note.*`, `scooter.centralNote`                                                                          | Inputs                                            |
-| [ ] `scooter.verdict.*`, `scooter.exampleNote`, `scooter.compare`, `scooter.compareNote`, `scooter.bar.*`, `scooter.stat.*`, `scooter.needInputs`                                                                                    | Answer card                                       |
-| [ ] `scooter.distance.*`, `scooter.checklist.1` to `.4`                                                                                                                                                                              | "By distance" list and "Not modelled"             |
-| [ ] `scooter.w.*`, `scooter.chart.title`, `scooter.col.*`                                                                                                                                                                            | Working, chart, month table                       |
-| [ ] `scooter.explanation`, `scooter.faq.1` to `.3`                                                                                                                                                                                   | How this works, questions                         |
-| [ ] `page.methodology.scooter.*`                                                                                                                                                                                                     | Methodology page                                  |
-| [ ] `assumptionsTable.pmEdrive*`, `assumptionsTable.dlEv2w*`, `assumptionsTable.dlScrapping`, `assumptionsTable.dlRoadTax*`, `assumptionsTable.dlPetrol`                                                                             | Scooter assumptions table                         |
-| [ ] Example: 750 km a month for 7 years; a ₹95,000 petrol scooter at 45 km/L against a ₹1.3 lakh e-scooter at 30 km a unit with a 3 kWh battery; a home using 250 other units on a 3 kW load. Illustrative, not any model's figures. | Labelled "Example"                                |
+| [x] `tool.scooter.title`, `.question`, `.gives`, `scooter.metaDescription`                                                                                                                                                           | Page title, menus, home page list, search snippet |
+| [x] Changed: `home.group.car` is now "Your vehicle" (chosen by you)                                                                                                                                                                  | Home page, Calculators menu, footer               |
+| [x] `scooter.step.*`, `scooter.group.*`, `scooter.summary`, `scooter.unit.*`, `scooter.unitsValue`, `scooter.in.*`, `scooter.note.*`, `scooter.centralNote`                                                                          | Inputs                                            |
+| [x] `scooter.verdict.*`, `scooter.exampleNote`, `scooter.compare`, `scooter.compareNote`, `scooter.bar.*`, `scooter.stat.*`, `scooter.needInputs`                                                                                    | Answer card                                       |
+| [x] `scooter.distance.*`, `scooter.checklist.1` to `.4`                                                                                                                                                                              | "By distance" list and "Not modelled"             |
+| [x] `scooter.w.*`, `scooter.chart.title`, `scooter.col.*`                                                                                                                                                                            | Working, chart, month table                       |
+| [x] `scooter.explanation`, `scooter.faq.1` to `.3`                                                                                                                                                                                   | How this works, questions                         |
+| [x] `page.methodology.scooter.*`                                                                                                                                                                                                     | Methodology page                                  |
+| [x] `assumptionsTable.pmEdrive*`, `assumptionsTable.dlEv2w*`, `assumptionsTable.dlScrapping`, `assumptionsTable.dlRoadTax*`, `assumptionsTable.dlPetrol`                                                                             | Scooter assumptions table                         |
+| [x] Example: 750 km a month for 7 years; a ₹95,000 petrol scooter at 45 km/L against a ₹1.3 lakh e-scooter at 30 km a unit with a 3 kWh battery; a home using 250 other units on a 3 kW load. Illustrative, not any model's figures. | Labelled "Example"                                |
 
 ## Group heading (changed 2026-10-26)
 
@@ -337,7 +337,7 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 
 | Key                                                                        | Where it shows                                     |
 | -------------------------------------------------------------------------- | -------------------------------------------------- |
-| [ ] Changed: `assumptions.intro`                                           | Top of the panel                                   |
-| [ ] `assumptions.what.city`, `.inflation`, `.carLoanRate`, `.homeLoanRate` | One line under each setting on what it changes     |
-| [ ] `assumptions.usedByCount`, `assumptions.usedByOne`                     | The folded list of calculators under each setting  |
-| [ ] `assumptions.stateFromCity`, `assumptions.stateDefault`                | Under the city, in place of the separate State row |
+| [x] Changed: `assumptions.intro`                                           | Top of the panel                                   |
+| [x] `assumptions.what.city`, `.inflation`, `.carLoanRate`, `.homeLoanRate` | One line under each setting on what it changes     |
+| [x] `assumptions.usedByCount`, `assumptions.usedByOne`                     | The folded list of calculators under each setting  |
+| [x] `assumptions.stateFromCity`, `assumptions.stateDefault`                | Under the city, in place of the separate State row |
