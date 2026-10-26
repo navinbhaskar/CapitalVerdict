@@ -7,6 +7,7 @@ import { formatDuration } from '@/lib/duration';
 import { formatMoney, formatNumber, formatPercent } from '@/lib/formatTool';
 import { CAR_FUEL_START_FORM } from '@/models/carFuelForm';
 import { RENT_BUY_EXAMPLE_FORM } from '@/models/rentBuyForm';
+import BlankSelect from './BlankSelect';
 import {
   CAR_ASK_LIMITS,
   CAR_ASK_START,
@@ -202,25 +203,21 @@ export default function HeroDecider({ locale }: Props) {
           />
         ),
         alt: (
-          <select
-            aria-label={t(locale, 'hero.ask.alt')}
-            class="blank-select"
-            style={{
-              width: `calc(${textWidth(t(locale, car.alt === 'cng' ? 'hero.ask.altCng' : 'hero.ask.altEv'))} + 0.9em)`,
-            }}
+          <BlankSelect<CarAsk['alt']>
+            label={t(locale, 'hero.ask.alt')}
+            options={[
+              { value: 'cng', label: t(locale, 'hero.ask.altCng') },
+              { value: 'ev', label: t(locale, 'hero.ask.altEv') },
+            ]}
             value={car.alt}
-            onChange={(e) => {
-              const alt = (e.currentTarget as HTMLSelectElement).value as CarAsk['alt'];
+            onChange={(alt) =>
               setCar((c) => ({
                 ...c,
                 alt,
                 extra: alt === 'ev' ? EV_EXTRA_START : CAR_ASK_START.extra,
-              }));
-            }}
-          >
-            <option value="cng">{t(locale, 'hero.ask.altCng')}</option>
-            <option value="ev">{t(locale, 'hero.ask.altEv')}</option>
-          </select>
+              }))
+            }
+          />
         ),
         extra: (
           <Blank

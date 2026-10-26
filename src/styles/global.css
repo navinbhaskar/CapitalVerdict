@@ -680,22 +680,75 @@
   .blank.is-bad {
     border-bottom-color: var(--color-danger);
   }
+  /* A choice inside a sentence (BlankSelect): looks like a blank, opens a short list. */
   .blank-select {
-    appearance: none;
-    padding: 0.12em 1em 0.12em 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    padding: 0.12em 0.1em;
     border: 0;
     border-bottom: 2px solid var(--color-accent);
     border-radius: 0;
     color: var(--color-accent-strong);
     font: inherit;
-    background: transparent
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d6b878' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
-      no-repeat right center / 0.7em;
+    background: transparent;
     cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-out-quart);
+  }
+  .blank-select:hover,
+  .blank-select[aria-expanded='true'] {
+    background-color: var(--color-accent-soft);
   }
   .blank-select:focus-visible {
-    outline: none;
-    background-color: var(--color-accent-soft);
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+  .blank-select-chevron {
+    width: 0.65em;
+    height: 0.65em;
+    color: var(--color-accent);
+    transition: transform var(--duration-fast) var(--ease-out-quart);
+  }
+  .blank-select-chevron.is-open {
+    transform: rotate(180deg);
+  }
+  .blank-select-list {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    left: 0;
+    z-index: 20;
+    min-width: max(100%, 9rem);
+    padding: 0.3rem;
+    border-radius: var(--radius-lg);
+    /* Elevation by edge, not shadow: a shadow barely shows on the forest card it opens over. */
+    border: 1px solid var(--color-line-strong);
+    background: var(--color-raised);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    animation: dw-fade var(--duration-fast) var(--ease-out-quart) both;
+  }
+  .blank-select-option {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0 0.75rem;
+    border-radius: var(--radius-md);
+    color: var(--color-ink);
+    cursor: pointer;
+  }
+  .blank-select-option.is-active {
+    background: var(--color-accent-soft);
+  }
+  .blank-select-option[aria-selected='true'] {
+    color: var(--color-accent-strong);
+    font-weight: 500;
+  }
+  .blank-select-option svg {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
   }
 }
 
