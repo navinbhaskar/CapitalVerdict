@@ -1740,5 +1740,18 @@
   "plan.faq.3.a": "TODO_COPY_HI",
   "page.methodology.planReturn.title": "TODO_COPY_HI",
   "page.methodology.planReturn.body": "TODO_COPY_HI",
-  "page.methodology.planReturn.formula": "TODO_COPY_HI"
+  "page.methodology.planReturn.formula": "TODO_COPY_HI",
+  "guide.plan.title": "TODO_COPY_HI",
+  "guide.plan.premium": "TODO_COPY_HI",
+  "guide.plan.payYears": "TODO_COPY_HI",
+  "guide.plan.income": "TODO_COPY_HI",
+  "guide.plan.incomeYears": "TODO_COPY_HI",
+  "guide.plan.returned": "TODO_COPY_HI",
+  "guide.plan.returnedYes": "TODO_COPY_HI",
+  "guide.plan.returnedNo": "TODO_COPY_HI",
+  "guide.plan.return": "TODO_COPY_HI",
+  "guide.plan.times": "TODO_COPY_HI",
+  "guide.plan.timesValue": "TODO_COPY_HI",
+  "guide.plan.ppf": "TODO_COPY_HI",
+  "guide.plan.verdict": "TODO_COPY_HI"
 }

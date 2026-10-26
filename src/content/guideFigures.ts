@@ -20,6 +20,7 @@ import { fundPlan, maxWithdrawal, type FundInput } from '@/models/fund';
 import { monthlySaving, type MonthlySavingInput } from '@/models/monthlySaving';
 import { plotVs, type PlotVsInput } from '@/models/plotVs';
 import { payback } from '@/models/payback';
+import { payoutScaleAt, planReturn, type PlanInput } from '@/models/planReturn';
 import { prepayOrInvest, type PrepayInput } from '@/models/prepay';
 import { rentBuyFlips, rentVsBuy } from '@/models/rentBuy';
 import { RENT_BUY_EXAMPLE_FORM, toRentBuyInput } from '@/models/rentBuyForm';
@@ -966,4 +967,74 @@ export const swpFigures = {
   } satisfies TableData,
   plan: swp,
   flatPlan: swpFlat,
+};
+
+// Plan return: ₹50,000 a year for 15 years, then ₹5,000 a month for 25 years and the ₹7.5 lakh of
+// premiums back at the end. It pays back 3 times what goes in.
+const planCase: PlanInput = {
+  premium: 50_000,
+  payFrequency: 'yearly',
+  payYears: 15,
+  income: 5_000,
+  incomeFrequency: 'monthly',
+  incomeStartYear: 16,
+  incomeYears: 25,
+  lumpSums: [{ amount: 750_000, year: 40 }],
+  taxRate: 0,
+  inflation: 0.06,
+};
+const plan = planReturn(planCase);
+const planAtPpf = payoutScaleAt(plan, smallSavings.ppf.rate)!;
+const planAtFund = payoutScaleAt(plan, 0.1)!;
+/** Net so far at the end of each year: everything got back (scaled), minus every premium. */
+const planNet = (scale: number) => {
+  let net = 0;
+  return [0, ...plan.years.map((y) => (net += (y.received - y.tax) * scale - y.paid))];
+};
+
+export const planFigures = {
+  plan,
+  input: planCase,
+  ppfIncome: planCase.income * planAtPpf,
+  times: {
+    head: ['Got back in one go, after', 'Return a year'],
+    rows: [5, 10, 20, 30, 40].map((n) => [
+      `${n} years`,
+      pct(Number((Math.pow(3, 1 / n) - 1).toFixed(4))),
+    ]),
+  } satisfies TableData,
+  bars: [
+    {
+      label: 'This plan',
+      value: plan.kept,
+      display: money(plan.kept),
+      note: `${pct(Number(plan.annualReturn!.toFixed(4)))} a year`,
+    },
+    {
+      label: `At PPF's ${pct(smallSavings.ppf.rate)}`,
+      value: plan.kept * planAtPpf,
+      display: money(plan.kept * planAtPpf),
+      note: 'Tax-free',
+    },
+    {
+      label: 'At an illustrative 10% in a fund',
+      value: plan.kept * planAtFund,
+      display: money(plan.kept * planAtFund),
+      note: 'Before tax on gains. Not guaranteed.',
+      best: true,
+    },
+  ] satisfies CompareItem[],
+  net: {
+    xLabels: yearLabels(40),
+    ticks: [0, 10, 15, 20, 30, 40],
+    series: [
+      {
+        label: `The same premiums at PPF's ${pct(smallSavings.ppf.rate)}`,
+        values: planNet(planAtPpf),
+        tone: 'muted',
+        dashed: true,
+      },
+      { label: 'This plan', values: planNet(1), tone: 'accent' },
+    ],
+  } satisfies LineData,
 };

@@ -31,4 +31,5 @@ export const TOOL_PATHS = {
   'sip-calculator': '/tools/sip-calculator/',
   'lumpsum-calculator': '/tools/lumpsum-calculator/',
   'swp-calculator': '/tools/swp-calculator/',
+  'plan-return': '/tools/plan-return/',
 } as const;

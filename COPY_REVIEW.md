@@ -191,3 +191,11 @@ A new tool at `/tools/plan-return/` (`src/models/planReturn.ts`), in the "Saving
 | [ ] `plan.*` (shapes, steps, inputs, notes, headline, comparison lines, bars, timeline, checklist, working, chart, table, FAQs, explanation, meta description)                                                                                                                                                     | The calculator page                                |
 | [ ] Example shapes: ₹50,000 a year for 15 years then ₹8,000 a month for 20 years and ₹5 lakh at the end; ₹1 lakh a year for 12 years then ₹20 lakh in year 20; ₹10 lakh once, ₹5,000 a month for 25 years and the ₹10 lakh back; ₹40,000 a year for 15 years, ₹1 lakh in years 5, 10 and 15 and ₹6 lakh in year 20 | Labelled "Example" on the tool; not any real plan  |
 | [ ] `page.methodology.planReturn.*`                                                                                                                                                                                                                                                                                | Methodology page                                   |
+
+## Plan return guide (drafted 2026-10-26)
+
+| Key or file                                                                                     | Where it shows                                                |
+| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| [ ] `src/content/blog/plan-pays-back-3-times.mdx`                                               | New guide; figure labels in `guideFigures.ts` (`planFigures`) |
+| [ ] `guide.plan.*`                                                                              | The guide's calculator                                        |
+| [ ] Example: ₹50,000 a year for 15 years, ₹5,000 a month for 25 years, premiums back in year 40 | Labelled as an example in the guide; not any real plan        |

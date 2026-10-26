@@ -1740,5 +1740,18 @@
   "plan.faq.3.a": "Enter only the amounts the plan guarantees. Bonuses in a benefit illustration are not promised and can be lower. You can add them separately to see the best case.",
   "page.methodology.planReturn.title": "Plan return calculator",
   "page.methodology.planReturn.body": "Premiums are placed at the start of each month or year, and the plan's income and lump sums at the end of each month or year, on a monthly timeline. Tax, if any, is taken off everything paid back at one rate. The return is the internal rate of return of these cash flows: the monthly rate at which they net to zero, found by bisection and turned into a yearly rate. To compare with PPF, an FD or a fund, every payout is scaled by one factor so that, at that rate, the same premiums pay for them exactly.",
-  "page.methodology.planReturn.formula": "0      = Σ cash flow in month m ÷ (1 + i)^m\nreturn = (1 + i)^12 − 1\nscale  = PV(premiums at rate) ÷ PV(payouts at rate)\nreal   = (1 + return) ÷ (1 + inflation) − 1"
+  "page.methodology.planReturn.formula": "0      = Σ cash flow in month m ÷ (1 + i)^m\nreturn = (1 + i)^12 − 1\nscale  = PV(premiums at rate) ÷ PV(payouts at rate)\nreal   = (1 + return) ÷ (1 + inflation) − 1",
+  "guide.plan.title": "What does the plan really earn?",
+  "guide.plan.premium": "Premium a year",
+  "guide.plan.payYears": "Years of premiums",
+  "guide.plan.income": "Income a month, once premiums end",
+  "guide.plan.incomeYears": "Years of income",
+  "guide.plan.returned": "Premiums paid back at the end",
+  "guide.plan.returnedYes": "Yes",
+  "guide.plan.returnedNo": "No",
+  "guide.plan.return": "Return a year",
+  "guide.plan.times": "Paid back",
+  "guide.plan.timesValue": "{n} times",
+  "guide.plan.ppf": "At PPF's {rate}, a month",
+  "guide.plan.verdict": "You pay {paid} and get back {received}. You have your money back, with no growth on it, in year {year}."
 }

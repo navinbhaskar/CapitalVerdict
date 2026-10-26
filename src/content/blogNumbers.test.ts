@@ -20,6 +20,7 @@ import { acFlips, acPayback } from '@/models/ac';
 import { carLoanFlips, cashOrLoan } from '@/models/carLoan';
 import { irr } from '@/engine/irr';
 import { fundPlan, maxWithdrawal } from '@/models/fund';
+import { payoutScaleAt, planReturn } from '@/models/planReturn';
 
 describe('posts: CNG payback, break-even, Lucknow update', () => {
   const lucknow = verifiedFuelPrices('lucknow')!;
@@ -518,5 +519,46 @@ describe('post: SWP in retirement', () => {
     expect(max).toBe(26_409);
     expect(Math.round(max * Math.pow(1.06, 24))).toBe(106_928);
     expect(maxWithdrawal({ ...plan, annualReturn: 0.07 }, incomeTax)).toBe(19_302);
+  });
+});
+
+describe('post: a plan that pays back 3 times', () => {
+  const r = planReturn({
+    premium: 50_000,
+    payFrequency: 'yearly',
+    payYears: 15,
+    income: 5_000,
+    incomeFrequency: 'monthly',
+    incomeStartYear: 16,
+    incomeYears: 25,
+    lumpSums: [{ amount: 750_000, year: 40 }],
+    taxRate: 0,
+    inflation: 0.06,
+  });
+
+  it('₹7.5 lakh in, ₹22.5 lakh back: 4.8% a year, −1.1% after inflation, even in year 28', () => {
+    expect(r.paid).toBe(750_000);
+    expect(r.received).toBe(2_250_000);
+    expect(r.annualReturn).toBeCloseTo(0.048, 3);
+    expect(r.realReturn).toBeCloseTo(-0.011, 3);
+    expect(r.paybackYear).toBe(28);
+  });
+
+  it("at PPF's 7.1%: ₹7,975 a month and ₹11.96 lakh at the end", () => {
+    expect(smallSavings.ppf.rate).toBe(0.071);
+    const scale = payoutScaleAt(r, smallSavings.ppf.rate)!;
+    expect(Math.round(5_000 * scale)).toBe(7_975);
+    expect((750_000 * scale) / 1e5).toBeCloseTo(11.96, 2);
+  });
+
+  it("today's rupees: ₹2,076 in year 16, ₹486 in year 40, ₹72,900 for the ₹7.5 lakh", () => {
+    expect(Math.round(r.firstIncomeToday!)).toBe(2_076);
+    expect(Math.round(toTodaysRupees(5_000, 0.06, 480))).toBe(486);
+    expect(Math.round(toTodaysRupees(750_000, 0.06, 480) / 100) * 100).toBe(72_900);
+  });
+
+  it('3 times in one go: 24.57% over 5 years down to 2.78% over 40', () => {
+    expect(Math.pow(3, 1 / 5) - 1).toBeCloseTo(0.2457, 4);
+    expect(Math.pow(3, 1 / 40) - 1).toBeCloseTo(0.0278, 4);
   });
 });

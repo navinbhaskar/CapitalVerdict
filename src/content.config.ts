@@ -30,6 +30,7 @@ const blog = defineCollection({
         'sip-calculator',
         'lumpsum-calculator',
         'swp-calculator',
+        'plan-return',
       ])
       .optional(),
     /** The guide's headline figure for its listing card; must appear in the post's own text. */

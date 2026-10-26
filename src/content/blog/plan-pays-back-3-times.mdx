@@ -1,0 +1,83 @@
+---
+title: 'A plan that pays back 3 times your money can still earn under 5% a year'
+description: Pay ₹50,000 a year for 15 years and get ₹22.5 lakh back, 3 times what you put in. Spread over 40 years, that is a return of 4.8% a year. Worked through, against PPF.
+date: 2026-10-26
+kind: decision
+tool: plan-return
+takeaway:
+  figure: '4.8%'
+  label: a year, from a plan that pays back 3 times its premiums over 40 years
+---
+
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import Bars from '@/components/guide/Bars.astro';
+import LineChart from '@/components/guide/LineChart.astro';
+import PlanWidget from '@/components/guide/widgets/PlanWidget';
+import { planFigures } from '@/content/guideFigures';
+
+<InShort>
+
+- Pay ₹50,000 a year for 15 years and get ₹5,000 a month for 25 years, plus your ₹7.5 lakh back at the end. That is ₹22.5 lakh for ₹7.5 lakh: 3 times your money.
+- Spread over 40 years, it is a return of **4.8% a year**. After 6% inflation, you lose about 1.1% a year.
+- At PPF's 7.1%, the same premiums would pay about ₹7,975 a month instead of ₹5,000.
+
+</InShort>
+
+Many savings plans are sold on one number: how much you get back compared with what you pay. "Pay ₹7.5 lakh, get ₹22.5 lakh" sounds like a lot. But the number that tells you whether it is a good deal is the return a year, and that depends on how long your money is tied up.
+
+## The plan
+
+Take a plan of a common shape. The figures are an example, not any real plan's.
+
+- **You pay** ₹50,000 at the start of every year for 15 years: ₹7.5 lakh in all.
+- **You get** ₹5,000 at the end of every month for the next 25 years: ₹15 lakh.
+- **At the end of year 40**, your ₹7.5 lakh of premiums comes back.
+
+You put in ₹7.5 lakh and get back ₹22.5 lakh. On these dates, the one rate at which your premiums would grow into exactly these payouts is **4.8% a year**. That rate is the plan's return.
+
+## Why 3 times is not much over 40 years
+
+Getting 3 times your money back is a lot over 5 years and very little over 40. If the whole amount came back in one go, here is what each wait would be worth.
+
+<Table
+  title="Turning ₹1 into ₹3, in one go"
+  table={planFigures.times}
+  note="The return a year that turns 1 into 3 over each period: 3^(1 ÷ years) − 1."
+/>
+
+The plan's money does not wait 40 years in one go: you pay over 15 years and are paid back over 25. On average, each rupee stays in for a long time, so 3 times works out to 4.8% a year.
+
+## What the same premiums would pay elsewhere
+
+Put the same ₹50,000 a year somewhere else, and take money out on the same dates. At PPF's 7.1% a year, the same premiums would pay about **₹7,975 a month** instead of ₹5,000, and ₹11.96 lakh at the end instead of ₹7.5 lakh.
+
+<Bars
+  title="What the same premiums would pay back in all, on the same dates"
+  items={planFigures.bars}
+  note="PPF itself takes at most ₹1.5 lakh a year and runs for 15 years at a time, so this is a comparison of rates, not a PPF plan. The fund's 10% is an illustration: fund returns are not promised, and markets can fall."
+/>
+
+<LineChart
+  title="Got back minus paid in, so far"
+  data={planFigures.net}
+  xTitle="Years from the first premium"
+  note="Everything got back, minus every premium paid, at the end of each year. The dashed line takes the same premiums and pays out, on the same dates, what they could fund at PPF's 7.1%."
+/>
+
+You have your money back, with no growth on it, only in **year 28**. By then, the first premium has been in the plan for 28 years.
+
+## And after inflation
+
+A return of 4.8% a year is below 6% inflation, so the money you get back buys less than the money you paid in. The first ₹5,000, paid in year 16, buys about what ₹2,076 buys today. The last, in year 40, buys about what ₹486 does. The ₹7.5 lakh returned at the end is worth about ₹72,900 in today's rupees.
+
+<PlanWidget client:visible />
+
+## Things to weigh
+
+- **Life cover.** Many such plans include insurance, and the return above does not count it. A fair comparison is a term plan for the same cover, plus investing the rest of the premium.
+- **Guaranteed or not.** Enter only the amounts the plan guarantees. Bonuses in a benefit illustration are not promised and can be lower.
+- **Stopping early.** If you stop paying, what you get back can be far below what you have paid. Ask for the surrender value in each year before you sign.
+- **Tax.** Whether the payouts are tax-free depends on the plan and the size of the premium. Check the treatment of your plan.
+
+Try your own plan's figures, including money back every few years or a single premium, in the [plan return calculator](/tools/plan-return/).

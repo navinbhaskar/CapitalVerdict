@@ -19,6 +19,7 @@ import {
   rebate,
   saving,
   taxRegime,
+  planFigures,
 } from './guideFigures';
 
 const cell = (rows: string[][], r: number, c: number) => rows[r]![c];
@@ -147,5 +148,20 @@ describe('guide figures agree with the guide text', () => {
 
   it("today's rupees: ₹1 crore in 15 years at 5%, 6%, 7%", () => {
     expect(todays.grid.rows[1]).toEqual(['15 years', '₹48.10 lakh', '₹41.73 lakh', '₹36.24 lakh']);
+  });
+
+  it('plan return: 4.8% bar, the PPF line ends ahead, the plan ends ₹15 lakh up', () => {
+    expect(planFigures.bars[0]!.note).toBe('4.8% a year');
+    expect(planFigures.bars.map((b) => b.display)).toEqual([
+      '₹22.50 lakh',
+      '₹35.89 lakh',
+      '₹61.59 lakh',
+    ]);
+    const [ppf, plan] = planFigures.net.series.map((s) => s.values as number[]);
+    expect(plan!.at(-1)).toBeCloseTo(1_500_000, 6);
+    expect(plan![15]).toBe(-750_000);
+    expect(plan!.findIndex((v) => v >= 0 && v !== 0)).toBe(28);
+    expect(ppf!.at(-1)!).toBeGreaterThan(plan!.at(-1)!);
+    expect(planFigures.times.rows[4]).toEqual(['40 years', '2.78%']);
   });
 });
