@@ -332,3 +332,12 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | Key                                                       | Where it shows                      |
 | --------------------------------------------------------- | ----------------------------------- |
 | [x] `home.group.home` is now "Your loans" (chosen by you) | Home page, Calculators menu, footer |
+
+## Assumptions panel (drafted 2026-10-26)
+
+| Key                                                                        | Where it shows                                     |
+| -------------------------------------------------------------------------- | -------------------------------------------------- |
+| [ ] Changed: `assumptions.intro`                                           | Top of the panel                                   |
+| [ ] `assumptions.what.city`, `.inflation`, `.carLoanRate`, `.homeLoanRate` | One line under each setting on what it changes     |
+| [ ] `assumptions.usedByCount`, `assumptions.usedByOne`                     | The folded list of calculators under each setting  |
+| [ ] `assumptions.stateFromCity`, `assumptions.stateDefault`                | Under the city, in place of the separate State row |

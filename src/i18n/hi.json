@@ -2258,5 +2258,13 @@
   "assumptionsTable.dlScrapping": "TODO_COPY_HI",
   "assumptionsTable.dlRoadTax": "TODO_COPY_HI",
   "assumptionsTable.dlRoadTaxValue": "TODO_COPY_HI",
-  "assumptionsTable.dlPetrol": "TODO_COPY_HI"
+  "assumptionsTable.dlPetrol": "TODO_COPY_HI",
+  "assumptions.what.city": "TODO_COPY_HI",
+  "assumptions.what.inflation": "TODO_COPY_HI",
+  "assumptions.what.carLoanRate": "TODO_COPY_HI",
+  "assumptions.what.homeLoanRate": "TODO_COPY_HI",
+  "assumptions.usedByCount": "TODO_COPY_HI",
+  "assumptions.usedByOne": "TODO_COPY_HI",
+  "assumptions.stateFromCity": "TODO_COPY_HI",
+  "assumptions.stateDefault": "TODO_COPY_HI"
 }

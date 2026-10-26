@@ -12,6 +12,8 @@ import {
 import { formatPercent } from '@/lib/formatTool';
 import { useGlobalAssumptions } from '@/lib/useAssumptions';
 import NumberField from '@/components/tool/NumberField';
+import { TOOL_GROUPS, toolKey } from '@/lib/tools';
+import { localizePath } from '@/i18n/routes';
 
 type RateKey = keyof typeof RATE_LIMITS;
 type SaveState = 'idle' | 'saved' | 'notSaved';
@@ -38,6 +40,19 @@ const USED_BY: Partial<Record<AssumptionKey, MessageKey[]>> = {
     'tool.termPlan.title',
   ],
 };
+/** What each setting changes, in one line. */
+const WHAT: Partial<Record<AssumptionKey, MessageKey>> = {
+  city: 'assumptions.what.city',
+  inflation: 'assumptions.what.inflation',
+  carLoanRate: 'assumptions.what.carLoanRate',
+  homeLoanRate: 'assumptions.what.homeLoanRate',
+};
+
+/** A calculator's page, from its title key. */
+const TOOL_PATH = new Map(
+  TOOL_GROUPS.flatMap((g) => g.tools).map((entry) => [toolKey(entry, 'title'), entry.path]),
+);
+
 /**
  * Settings shown in the panel: only those a live tool reads. Tax regime, marginal tax rate, equity
  * return and FD rate stay in storage but are hidden until a tool uses them.
@@ -87,24 +102,16 @@ export default function AssumptionsPanel({ locale }: Props) {
   };
   const close = () => dialogRef.current?.close();
 
-  /** "Used in Petrol vs CNG · Default 9%" style note, built from parts that exist. */
-  const noteFor = (key: AssumptionKey, defaultText: string | null) => {
-    const used = USED_BY[key];
-    const parts = [
-      used
-        ? t(locale, 'assumptions.usedIn', { tool: used.map((k) => t(locale, k)).join(', ') })
-        : t(locale, 'assumptions.notUsedYet'),
-      defaultText,
-    ].filter(Boolean);
-    return parts.join('. ') + '.';
-  };
+  /** What the setting changes, then its default: the full list of tools sits under the field. */
+  const noteFor = (key: AssumptionKey, defaultText: string | null) =>
+    [WHAT[key] ? t(locale, WHAT[key]!) : null, defaultText].filter(Boolean).join(' ');
 
   const rateField = (key: RateKey, label: MessageKey, optional: boolean, unit: string) => {
     const d = DEFAULT_ASSUMPTIONS[key];
     const defaultText =
       d === null
         ? t(locale, 'assumptions.noDefault')
-        : t(locale, 'assumptions.default', { value: formatPercent(d) });
+        : t(locale, 'assumptions.default', { value: formatPercent(d) }) + '.';
     return (
       <Row
         key={`${key}-${formKey}`}
@@ -128,6 +135,7 @@ export default function AssumptionsPanel({ locale }: Props) {
             if (valid && value !== assumptions[key]) set(key, value as never);
           }}
         />
+        <UsedBy locale={locale} tools={USED_BY[key] ?? []} />
       </Row>
     );
   };
@@ -185,13 +193,6 @@ export default function AssumptionsPanel({ locale }: Props) {
             <p class="text-sm text-ink-muted">{t(locale, 'assumptions.intro')}</p>
 
             <Group title={t(locale, 'assumptions.group.location')}>
-              <div class="flex items-center justify-between gap-4 py-2.5">
-                <div>
-                  <p class="text-sm font-medium">{t(locale, 'assumptions.state')}</p>
-                  <p class="mt-0.5 text-sm text-ink-muted">{t(locale, 'assumptions.stateNote')}</p>
-                </div>
-                <p class="text-sm font-medium">{t(locale, `state.${stateOfCity}` as MessageKey)}</p>
-              </div>
               <Row
                 key={`city-${formKey}`}
                 locale={locale}
@@ -200,11 +201,18 @@ export default function AssumptionsPanel({ locale }: Props) {
               >
                 <SelectRow
                   label={t(locale, 'assumptions.city')}
-                  note={
+                  note={[
                     assumptions.city && !cityPricesVerified
                       ? t(locale, 'assumptions.cityUnverified')
-                      : noteFor('city', null)
-                  }
+                      : noteFor('city', null),
+                    t(
+                      locale,
+                      assumptions.city ? 'assumptions.stateFromCity' : 'assumptions.stateDefault',
+                      {
+                        state: t(locale, `state.${stateOfCity}` as MessageKey),
+                      },
+                    ),
+                  ].join(' ')}
                   value={assumptions.city ?? ''}
                   options={[
                     { value: '', label: t(locale, 'assumptions.cityNone') },
@@ -221,6 +229,7 @@ export default function AssumptionsPanel({ locale }: Props) {
                   ]}
                   onChange={(v) => set('city', v === '' ? null : v)}
                 />
+                <UsedBy locale={locale} tools={USED_BY.city ?? []} />
               </Row>
             </Group>
 
@@ -319,7 +328,54 @@ function Group({ title, children }: { title: string; children: ComponentChildren
   );
 }
 
-/** A field with a "Changed · Reset" marker when it differs from the default. */
+/** The calculators that read a setting, folded away: names as links. */
+function UsedBy({ locale, tools }: { locale: Locale; tools: MessageKey[] }) {
+  if (tools.length === 0) {
+    return <p class="-mt-1 pb-2.5 text-sm text-ink-muted">{t(locale, 'assumptions.notUsedYet')}</p>;
+  }
+  return (
+    <details class="group -mt-1 pb-1.5">
+      <summary class="inline-flex min-h-11 cursor-pointer list-none items-center gap-1 text-sm font-medium text-accent-strong">
+        {t(locale, tools.length === 1 ? 'assumptions.usedByOne' : 'assumptions.usedByCount', {
+          n: tools.length,
+        })}
+        <svg
+          class="size-4 transition-transform duration-(--duration-fast) ease-out-quart group-open:rotate-180"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          aria-hidden="true"
+        >
+          <path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </summary>
+      <ul class="grid grid-cols-2 gap-x-4 pb-1" role="list">
+        {tools.map((key) => {
+          const path = TOOL_PATH.get(key);
+          return (
+            <li key={key}>
+              {path ? (
+                <a
+                  href={localizePath(path, locale)}
+                  class="inline-flex min-h-11 items-center text-sm text-ink-muted hover:text-accent-strong"
+                >
+                  {t(locale, key)}
+                </a>
+              ) : (
+                <span class="inline-flex min-h-11 items-center text-sm text-ink-muted">
+                  {t(locale, key)}
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </details>
+  );
+}
+
+/** A field with a "Changed" marker and its own reset when it differs from the default. */
 function Row(props: {
   locale: Locale;
   changed: boolean;

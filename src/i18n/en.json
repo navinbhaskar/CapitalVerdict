@@ -32,7 +32,7 @@
   "theme.dark": "Dark theme",
   "assumptions.open": "Assumptions",
   "assumptions.title": "Your assumptions",
-  "assumptions.intro": "Set these once and every tool uses them. You can still change a value inside a tool for that calculation.",
+  "assumptions.intro": "Set these once and every calculator uses them. A value you change inside a calculator applies to that calculation only.",
   "assumptions.privacy": "Saved in this browser only. Nothing is sent to us.",
   "assumptions.close": "Close",
   "assumptions.reset": "Reset all",
@@ -2258,5 +2258,13 @@
   "assumptionsTable.dlScrapping": "Delhi scrapping bonus",
   "assumptionsTable.dlRoadTax": "Delhi road tax on electric vehicles",
   "assumptionsTable.dlRoadTaxValue": "Waived in full",
-  "assumptionsTable.dlPetrol": "Petrol price, Delhi"
+  "assumptionsTable.dlPetrol": "Petrol price, Delhi",
+  "assumptions.what.city": "Sets the petrol and CNG prices and your state's electricity tariff.",
+  "assumptions.what.inflation": "Turns rupees years from now into today's rupees.",
+  "assumptions.what.carLoanRate": "The interest charged on a car loan, or on the extra price of a dearer car, scooter or AC.",
+  "assumptions.what.homeLoanRate": "Your home loan's rate, for rent vs buy and prepay or invest.",
+  "assumptions.usedByCount": "Used by {n} calculators",
+  "assumptions.usedByOne": "Used by 1 calculator",
+  "assumptions.stateFromCity": "State: {state}, from your city.",
+  "assumptions.stateDefault": "Until you choose one, calculators use {state}."
 }
