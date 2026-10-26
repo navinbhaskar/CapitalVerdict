@@ -305,3 +305,9 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | [ ] `search.open`, `search.title`, `search.close`, `search.label`, `search.placeholder`                                        | Header search button and the search dialog |
 | [ ] `search.hint`, `search.loading`, `search.unavailable`, `search.none`, `search.count`, `search.countOne`, `search.countTop` | Search dialog status line                  |
 | [ ] `search.kind.tool`, `.guide`, `.other`                                                                                     | The label above each result                |
+
+## Compact footer (drafted 2026-10-26)
+
+| Key                                               | Where it shows                                    |
+| ------------------------------------------------- | ------------------------------------------------- |
+| [ ] `footer.link.calculators` ("All calculators") | Footer on phones, in place of the full tool lists |

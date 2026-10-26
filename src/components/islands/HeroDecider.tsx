@@ -429,10 +429,11 @@ export default function HeroDecider({ locale }: Props) {
           const p = panels[key];
           return (
             <div key={key} class={panelClass(tab === key)}>
-              <p class="font-display text-lg leading-loose">{p.sentence}</p>
-              <div class="mt-3 border-t border-line pt-3">
+              {/* A div, not a p: the car sentence holds a list (the fuel choice), which a p cannot. */}
+              <div class="hero-sentence text-base leading-loose font-medium">{p.sentence}</div>
+              <div class="mt-2.5 border-t border-line pt-2.5">
                 <p
-                  class="font-display text-xl font-medium tracking-(--tracking-heading) text-accent-strong"
+                  class="font-display text-lg font-medium tracking-(--tracking-heading) text-accent-strong"
                   aria-live={auto ? 'off' : 'polite'}
                 >
                   <span key={p.head} class="tick block">
@@ -447,7 +448,7 @@ export default function HeroDecider({ locale }: Props) {
                   </p>
                 )}
               </div>
-              <p class="mt-3 text-xs text-ink-muted">{p.context}</p>
+              <p class="mt-2.5 text-xs text-ink-muted">{p.context}</p>
               <a
                 href={p.href}
                 class="link mt-1 inline-flex min-h-11 items-center text-sm font-medium"

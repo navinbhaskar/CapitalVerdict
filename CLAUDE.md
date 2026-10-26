@@ -27,9 +27,9 @@ paused: strings stay in `hi.json`, but no Hindi pages are built (see `PUBLISHED_
   Use the one type scale defined as `--text-*` tokens in `src/styles/global.css`; no arbitrary font
   sizes in components. One job per size, and no breakpoint size changes except page titles:
   `text-display` home hero headline only; `text-2xl sm:text-3xl` page titles (h1); `text-2xl`
-  section headings (h2) and answer headlines; `text-xl` card titles, sub-headings (h3), the hero
-  answer; `text-lg` hero sentence, answer-card figures, input group titles; `text-base` body,
-  intros, articles; `text-sm` notes, labels, meta, nav; `text-xs` fine print only (badges,
+  section headings (h2) and answer headlines; `text-xl` card titles, sub-headings (h3); `text-lg`
+  the hero answer, answer-card figures, input group titles; `text-base` body, intros, articles,
+  the hero sentence (body face, medium weight); `text-sm` notes, labels, meta, nav; `text-xs` fine print only (badges,
   formulas, footnotes). Display type, including the wordmark, is weight 500. Tabular figures (`.num`) for every number that can change.
 - **Tokens.** Colours, spacing, radius, shadows and motion (durations and easing curves) are CSS custom
   properties on `:root` in `src/styles/global.css`, exposed to Tailwind through `@theme`. Components use

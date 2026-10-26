@@ -765,6 +765,12 @@
   .blank:focus-within {
     background: var(--color-accent-soft);
   }
+  /* The hero sentence is set in the body face: crisp at this size. Its blanks carry the figures. */
+  .hero-sentence .blank,
+  .hero-sentence .blank-select {
+    font-weight: 600;
+    border-bottom-width: 1.5px;
+  }
   .blank.is-bad {
     border-bottom-color: var(--color-danger);
   }

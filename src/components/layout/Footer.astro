@@ -1,6 +1,5 @@
 ---
 import Logo from './Logo.astro';
-import Icon from './Icon.astro';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { localizePath } from '@/i18n/routes';
 import { TOOL_GROUPS, toolKey } from '@/lib/tools';
@@ -23,50 +22,30 @@ const legal: [MessageKey, string][] = [
   ['footer.link.privacy', '/privacy/'],
   ['footer.link.trademarks', '/trademarks/'],
 ];
-/** What every tool promises, from the methodology page. */
-const promises: MessageKey[] = [
-  'principle.assumptions.title',
-  'principle.conservative.title',
-  'principle.realTerms.title',
-  'principle.noProducts.title',
-];
 // 44px tap targets on touch screens, a tighter list on wider ones.
 const linkClass =
-  'inline-flex min-h-11 items-center rounded-sm hover:text-ink sm:min-h-0 sm:py-1 transition-colors duration-(--duration-fast) ease-out-quart';
+  'inline-flex min-h-11 items-center rounded-sm hover:text-ink sm:min-h-0 sm:py-0.5 transition-colors duration-(--duration-fast) ease-out-quart';
 ---
 
 <footer class="band-dark print:hidden">
-  <div class="container-page py-8 text-sm text-ink-muted sm:py-10">
-    <span class="rule-brass" aria-hidden="true"></span>
-
-    <!-- Who we are and how to reach us, then every link in one even grid. -->
-    <div class="mt-6 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between lg:gap-12">
-      <div>
+  <div class="container-page py-6 text-sm text-ink-muted sm:py-8">
+    <!-- Who we are, how to reach us and the theme, on one line; then the links; then the small print. -->
+    <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+      <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
         <Logo />
-        <p class="mt-2 max-w-sm">{t(locale, 'site.tagline')}</p>
-        <ul class="mt-3 hidden flex-wrap gap-x-5 gap-y-1.5 sm:flex" role="list">
-          {promises.map((key) => (
-            <li class="flex items-center gap-1.5">
-              <Icon name="check" size={14} class="shrink-0 text-accent" />
-              {t(locale, key)}
-            </li>
-          ))}
-        </ul>
+        <p class="hidden md:block">{t(locale, 'site.tagline')}</p>
       </div>
-      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 lg:shrink-0 lg:justify-end">
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
         {site.contactEmail && (
-          <p>
-            <span class="block text-ink-subtle">{t(locale, 'footer.contact')}</span>
-            <a href={`mailto:${site.contactEmail}`} class={`${linkClass} text-ink`}>
-              {site.contactEmail}
-            </a>
-          </p>
+          <a href={`mailto:${site.contactEmail}`} class={`${linkClass} text-ink`}>
+            {site.contactEmail}
+          </a>
         )}
         <button
           type="button"
           data-theme-toggle
           aria-pressed="false"
-          class="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line-strong px-3.5 transition-colors duration-(--duration-fast) ease-out-quart hover:border-accent hover:text-ink"
+          class="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line-strong px-3.5 transition-colors duration-(--duration-fast) ease-out-quart hover:border-accent hover:text-ink sm:min-h-9"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path
@@ -81,41 +60,55 @@ const linkClass =
       </div>
     </div>
 
-    <nav
-      aria-label={t(locale, 'footer.nav')}
-      class="mt-8 grid grid-cols-2 gap-x-6 gap-y-7 border-t border-line pt-6 sm:grid-cols-3 xl:grid-cols-6"
-    >
-      {TOOL_GROUPS.map((group) => (
+    <nav aria-label={t(locale, 'footer.nav')} class="mt-5 border-t border-line pt-5">
+      <!-- Phones: the Calculators menu lists every tool, so the footer keeps only the short links. -->
+      <ul class="flex flex-wrap gap-x-5 sm:hidden" role="list">
+        <li>
+          <a href={`${localizePath('/', locale)}#tools`} class={linkClass}>
+            {t(locale, 'footer.link.calculators')}
+          </a>
+        </li>
+        {learn.map(([label, path]) => (
+          <li>
+            <a href={localizePath(path, locale)} class={linkClass}>
+              {t(locale, label)}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div class="hidden gap-x-6 gap-y-5 sm:grid sm:grid-cols-3 lg:grid-cols-6">
+        {TOOL_GROUPS.map((group) => (
+          <div>
+            <h2 class="font-medium text-ink">{t(locale, group.title)}</h2>
+            <ul class="mt-1.5" role="list">
+              {group.tools.map((entry) => (
+                <li>
+                  <a href={localizePath(entry.path, locale)} class={linkClass}>
+                    {t(locale, toolKey(entry, 'title'))}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
         <div>
-          <h2 class="font-medium text-ink">{t(locale, group.title)}</h2>
-          <ul class="mt-2 sm:space-y-0.5" role="list">
-            {group.tools.map((entry) => (
+          <h2 class="font-medium text-ink">{t(locale, 'footer.group.learn')}</h2>
+          <ul class="mt-1.5" role="list">
+            {learn.map(([label, path]) => (
               <li>
-                <a href={localizePath(entry.path, locale)} class={linkClass}>
-                  {t(locale, toolKey(entry, 'title'))}
+                <a href={localizePath(path, locale)} class={linkClass}>
+                  {t(locale, label)}
                 </a>
               </li>
             ))}
           </ul>
         </div>
-      ))}
-      <div>
-        <h2 class="font-medium text-ink">{t(locale, 'footer.group.learn')}</h2>
-        <ul class="mt-2 sm:space-y-0.5" role="list">
-          {learn.map(([label, path]) => (
-            <li>
-              <a href={localizePath(path, locale)} class={linkClass}>
-                {t(locale, label)}
-              </a>
-            </li>
-          ))}
-        </ul>
       </div>
     </nav>
 
-    <div class="mt-8 flex flex-col gap-3 border-t border-line pt-4 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+    <div class="mt-5 flex flex-col gap-2 border-t border-line pt-4 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
       <p class="max-w-2xl text-xs">{t(locale, 'footer.disclaimer')}</p>
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 lg:shrink-0">
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs lg:shrink-0">
         <ul class="flex flex-wrap gap-x-4" role="list" aria-label={t(locale, 'footer.legal')}>
           {legal.map(([label, path]) => (
             <li>
