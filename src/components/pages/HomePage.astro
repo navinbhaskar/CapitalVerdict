@@ -14,7 +14,8 @@ interface Props {
 const { locale } = Astro.props;
 
 interface Tool {
-  question: MessageKey;
+  /** Short name, e.g. "EMI calculator". The full question heads the tool's own page. */
+  title: MessageKey;
   /** What the answer tells you, in one line. */
   gives: MessageKey;
   href: string;
@@ -24,7 +25,7 @@ interface Tool {
 const toolGroups: { title: MessageKey; tools: Tool[] }[] = TOOL_GROUPS.map((group) => ({
   title: group.title,
   tools: group.tools.map((entry) => ({
-    question: toolKey(entry, 'question'),
+    title: toolKey(entry, 'title'),
     gives: toolKey(entry, 'gives'),
     href: localizePath(entry.path, locale),
     icon: entry.icon,
@@ -109,51 +110,42 @@ const principles: { title: MessageKey; body: MessageKey }[] = [
           {t(locale, 'home.tools.heading')}
         </h2>
       </div>
-      <div class="mt-5 grid gap-x-8 gap-y-6 lg:grid-cols-2" data-reveal>
-        {toolGroups.map((group, i) => {
-          // An odd last group spans both columns, its tiles side by side.
-          const wide = i === toolGroups.length - 1 && toolGroups.length % 2 === 1;
-          return (
-            <section
-              class={`border-t border-line pt-3 ${wide ? 'lg:col-span-2' : ''}`}
-              aria-label={t(locale, group.title)}
-            >
-              <h3 class="font-display text-xl font-medium tracking-(--tracking-heading)">
-                {t(locale, group.title)}
-              </h3>
-              <ul
-                class={`mt-3 grid gap-3 sm:grid-cols-2 ${wide ? '' : 'lg:grid-cols-1'}`}
-                role="list"
-              >
-                {group.tools.map((item) => (
-                  <li>
-                    <a
-                      href={item.href}
-                      class="card-lift group flex h-full items-start gap-3.5 rounded-xl border border-line bg-raised px-4 py-3.5 transition-colors duration-(--duration-base) ease-out-quart hover:border-accent"
-                    >
-                      <span class="band-dark mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-full text-accent">
-                        <Icon name={item.icon} size={18} />
-                      </span>
-                      <span class="min-w-0 flex-1">
-                        <span class="block font-display text-lg leading-snug font-medium tracking-(--tracking-heading) group-hover:text-accent-strong">
-                          {t(locale, item.question)}
+      <!-- One row per area of life: its name, then its calculators in an even grid. -->
+      <div class="mt-5 divide-y divide-line border-y border-line" data-reveal>
+        {toolGroups.map((group) => (
+          <section class="py-5" aria-label={t(locale, group.title)}>
+            <h3 class="font-display text-xl font-medium tracking-(--tracking-heading)">
+              {t(locale, group.title)}
+            </h3>
+            <ul class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" role="list">
+              {group.tools.map((item) => (
+                <li>
+                  <a
+                    href={item.href}
+                    class="card-lift group flex h-full items-start gap-3 rounded-xl border border-line bg-raised px-4 py-3.5 transition-colors duration-(--duration-base) ease-out-quart hover:border-accent"
+                  >
+                    <span class="band-dark mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-full text-accent">
+                      <Icon name={item.icon} size={18} />
+                    </span>
+                    <span class="min-w-0 flex-1">
+                      <span class="flex items-baseline justify-between gap-2">
+                        <span class="font-display text-lg leading-snug font-medium tracking-(--tracking-heading) group-hover:text-accent-strong">
+                          {t(locale, item.title)}
                         </span>
-                        <span class="mt-1 block text-sm text-ink-muted">
-                          {t(locale, item.gives)}
-                        </span>
+                        <Icon
+                          name="arrowRight"
+                          size={18}
+                          class="nudge shrink-0 self-center text-accent-strong"
+                        />
                       </span>
-                      <Icon
-                        name="arrowRight"
-                        size={18}
-                        class="nudge mt-1 shrink-0 text-accent-strong"
-                      />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          );
-        })}
+                      <span class="mt-1 block text-sm text-ink-muted">{t(locale, item.gives)}</span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
       </div>
     </div>
   </section>
