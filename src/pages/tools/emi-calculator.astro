@@ -24,6 +24,10 @@ const rows: AssumptionRow[] = [
 
 const FAQ = [1, 2, 3] as const;
 const related = [
+  {
+    href: localizePath('/tools/which-debt-first/', locale),
+    label: t(locale, 'tool.debtOrder.title'),
+  },
   { href: localizePath('/tools/prepay-or-invest/', locale), label: t(locale, 'tool.prepay.title') },
   { href: localizePath('/tools/rent-vs-buy/', locale), label: t(locale, 'tool.rentVsBuy.title') },
   {

@@ -19,7 +19,8 @@ export type ToolIcon =
   | 'outflow'
   | 'exchange'
   | 'calendar'
-  | 'shield';
+  | 'shield'
+  | 'sort';
 
 export interface ToolEntry {
   /** i18n prefix: `tool.{key}.title`, `.question`, `.gives`. */
@@ -42,6 +43,7 @@ export const TOOL_GROUPS: { title: MessageKey; tools: ToolEntry[] }[] = [
       { key: 'rentVsBuy', path: '/tools/rent-vs-buy/', icon: 'home' },
       { key: 'prepay', path: '/tools/prepay-or-invest/', icon: 'banknote' },
       { key: 'emi', path: '/tools/emi-calculator/', icon: 'calendar' },
+      { key: 'debtOrder', path: '/tools/which-debt-first/', icon: 'sort' },
     ],
   },
   {

@@ -1,0 +1,52 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import Icon from '@/components/layout/Icon.astro';
+import DebtOrderTool from '@/components/islands/DebtOrderTool';
+import { t, type MessageKey } from '@/i18n/t';
+import { localizePath } from '@/i18n/routes';
+
+const locale = 'en';
+
+const FAQ = [1, 2, 3] as const;
+const related = [
+  { href: localizePath('/tools/emi-calculator/', locale), label: t(locale, 'tool.emi.title') },
+  { href: localizePath('/tools/prepay-or-invest/', locale), label: t(locale, 'tool.prepay.title') },
+  {
+    href: localizePath('/tools/cash-or-car-loan/', locale),
+    label: t(locale, 'tool.carLoan.title'),
+  },
+];
+---
+
+<ToolLayout
+  locale={locale}
+  title={t(locale, 'tool.debtOrder.question')}
+  description={t(locale, 'debt.metaDescription')}
+  related={related}
+  faq={FAQ.map((n) => ({
+    q: t(locale, `debt.faq.${n}.q` as MessageKey),
+    a: t(locale, `debt.faq.${n}.a` as MessageKey),
+  }))}
+>
+  <DebtOrderTool client:load locale={locale} />
+
+  <p slot="explanation">{t(locale, 'debt.explanation')}</p>
+
+  <div slot="faq" class="divide-y divide-line border-y border-line">
+    {FAQ.map((n) => (
+      <details class="group">
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-2.5 font-medium text-ink">
+          {t(locale, `debt.faq.${n}.q` as MessageKey)}
+          <Icon
+            name="chevronDown"
+            size={18}
+            class="shrink-0 text-ink-muted transition-transform duration-(--duration-base) ease-out-quart group-open:rotate-180"
+          />
+        </summary>
+        <p class="max-w-(--container-prose) pb-3 text-sm">
+          {t(locale, `debt.faq.${n}.a` as MessageKey)}
+        </p>
+      </details>
+    ))}
+  </div>
+</ToolLayout>
