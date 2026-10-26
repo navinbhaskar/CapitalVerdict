@@ -30,14 +30,21 @@ const USED_BY: Partial<Record<AssumptionKey, MessageKey[]>> = {
     'tool.carLoan.title',
     'tool.plotVs.title',
     'tool.saving.title',
+    'tool.sip.title',
+    'tool.lumpsum.title',
+    'tool.swp.title',
+    'tool.planReturn.title',
   ],
 };
+/**
+ * Settings shown in the panel: only those a live tool reads. Tax regime, marginal tax rate, equity
+ * return and FD rate stay in storage but are hidden until a tool uses them.
+ */
+const SHOWN: AssumptionKey[] = ['city', 'inflation', 'carLoanRate', 'homeLoanRate'];
 
 /** Fields the user has changed from the defaults. */
 function changedKeys(a: GlobalAssumptions): AssumptionKey[] {
-  return (Object.keys(DEFAULT_ASSUMPTIONS) as AssumptionKey[]).filter(
-    (k) => a[k] !== DEFAULT_ASSUMPTIONS[k],
-  );
+  return SHOWN.filter((k) => a[k] !== DEFAULT_ASSUMPTIONS[k]);
 }
 
 export default function AssumptionsPanel({ locale }: Props) {
@@ -206,38 +213,6 @@ export default function AssumptionsPanel({ locale }: Props) {
               </Row>
             </Group>
 
-            <Group title={t(locale, 'assumptions.group.tax')}>
-              <div class="py-2.5">
-                <p class="text-sm font-medium" id={`${titleId}-regime`}>
-                  {t(locale, 'assumptions.taxRegime')}
-                </p>
-                <p class="mt-0.5 text-sm text-ink-muted">{noteFor('taxRegime', null)}</p>
-                <div
-                  role="radiogroup"
-                  aria-labelledby={`${titleId}-regime`}
-                  class="mt-2 grid grid-cols-2 gap-1 rounded-md bg-surface p-1"
-                >
-                  {(['new', 'old'] as const).map((regime) => (
-                    <label
-                      key={regime}
-                      class="flex min-h-10 cursor-pointer items-center justify-center rounded-sm text-sm font-medium text-ink-muted transition-colors duration-(--duration-fast) ease-out-quart has-[:checked]:bg-raised has-[:checked]:text-ink has-[:checked]:shadow-card has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent-strong"
-                    >
-                      <input
-                        type="radio"
-                        name={`${titleId}-regime`}
-                        value={regime}
-                        checked={assumptions.taxRegime === regime}
-                        onChange={() => set('taxRegime', regime)}
-                        class="sr-only"
-                      />
-                      {t(locale, `taxRegime.${regime}`)}
-                    </label>
-                  ))}
-                </div>
-              </div>
-              {rateField('marginalTaxRate', 'assumptions.marginalTaxRate', true, '%')}
-            </Group>
-
             <Group title={t(locale, 'assumptions.group.economy')}>
               {rateField(
                 'inflation',
@@ -245,13 +220,6 @@ export default function AssumptionsPanel({ locale }: Props) {
                 false,
                 t(locale, 'assumptions.perYear'),
               )}
-              {rateField(
-                'equityReturn',
-                'assumptions.equityReturn',
-                false,
-                t(locale, 'assumptions.perYear'),
-              )}
-              {rateField('fdRate', 'assumptions.fdRate', true, t(locale, 'assumptions.perYear'))}
             </Group>
 
             <Group title={t(locale, 'assumptions.group.loans')}>
