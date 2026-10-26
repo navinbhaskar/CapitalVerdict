@@ -84,15 +84,13 @@ describe('tariffs/UP.json and solar.json', () => {
     expect(upTariff.status).toBe('TODO_VERIFY');
     expect(upTariff.slabs).toEqual([]);
     expect(verifiedTariff()).toBeNull();
-    for (const key of [
-      'subsidy',
-      'generationPerKWPerDay',
-      'degradationPerYear',
-      'exportRatePerKWh',
-    ] as const) {
+    for (const key of ['subsidy', 'generationPerKWPerDay', 'exportRatePerKWh'] as const) {
       expect(solarData[key]!.value).toBeNull();
       expect(verifiedSolarValue(key)).toBeNull();
     }
+    // Panel degradation is a property of the panels, not the state: sourced for both.
+    expect(verifiedSolarValue('degradationPerYear')).toBe(0.0077);
+    expect(verifiedSolarValue('degradationPerYear', 'DL')).toBe(0.0077);
   });
 
   it('a verified tariff must have a method and slabs', () => {
@@ -175,6 +173,13 @@ describe('Delhi data', () => {
     expect([1, 2, 3, 10].map(central)).toEqual([30_000, 60_000, 78_000, 78_000]);
     expect(dlSolarData.stateCapitalSubsidy).toMatchObject({ perKW: 2000, max: 10_000 });
     expect(dlSolarData.generationPerKWPerDay.value! * 365).toBeCloseTo(1080, 1);
+    expect(dlSolarData.exportRatePerKWh.status).toBe('TODO_VERIFY');
+  });
+});
+
+describe('Delhi solar figures', () => {
+  it('the generation incentive runs 5 years; the export credit is still to verify', () => {
+    expect(dlSolarData.generationIncentiveYears).toMatchObject({ value: 5, status: 'verified' });
     expect(dlSolarData.exportRatePerKWh.status).toBe('TODO_VERIFY');
   });
 });

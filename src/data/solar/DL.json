@@ -45,11 +45,11 @@
     "status": "verified"
   },
   "generationIncentiveYears": {
-    "value": null,
+    "value": 5,
     "unit": "years",
-    "source": "TODO_VERIFY: how many years the Delhi generation-based incentive is paid (Delhi Solar Policy); not stated in the DISCOM handbook.",
-    "effectiveDate": "2026-10-26",
-    "status": "TODO_VERIFY"
+    "source": "Delhi Solar Policy 2024, as announced by the Government of NCT of Delhi on 30 Jan 2024: a generation-based incentive of ₹3 a unit for residential systems up to 3 kW and ₹2 for 3 to 10 kW, for 5 years from the date of installation, with no minimum generation. It is adjusted against the monthly bill and any excess is paid into the consumer's bank account every month (archive.aamaadmiparty.org, 'Kejriwal Govt introduces new solar policy'). The same rates are listed in Tata Power-DDL's FY26 customer handbook, page 19.",
+    "effectiveDate": "2024-01-30",
+    "status": "verified"
   },
   "generationPerKWPerDay": {
     "value": 2.9589,
@@ -59,16 +59,16 @@
     "status": "verified"
   },
   "degradationPerYear": {
-    "value": null,
+    "value": 0.0077,
     "unit": "decimal per year",
-    "source": "TODO_VERIFY: panel manufacturer's performance warranty",
+    "source": "Tata Power Solar TP540HG10B mono PERC module datasheet (tatapowersolar.com): linear power output warranty of at least 97.5% after year 1 and at most 0.6% a year lost after that, so at least 83.1% at year 25. The tool uses one yearly rate, so this is the steady rate that reaches the same 83.1% at year 25 from new: 1 - 0.831^(1/24) = 0.77% a year. It is the warranty's worst case; real panels usually lose less. Other makers warrant 0.3% to 0.55% a year after year 1.",
     "effectiveDate": "2026-10-26",
-    "status": "TODO_VERIFY"
+    "status": "verified"
   },
   "exportRatePerKWh": {
     "value": null,
     "unit": "₹/kWh",
-    "source": "TODO_VERIFY: under DERC net-metering regulations, units still in credit at the end of the financial year are paid at the average power purchase cost (APPC) in DERC's tariff order (BSES rooftop solar FAQ, rts.bsesdelhi.com). The current APPC figure was not found.",
+    "source": "TODO_VERIFY: under DERC net-metering regulations, units still in credit at the end of the financial year are paid at the average power purchase cost (APPC) in DERC's tariff order (BSES rooftop solar FAQ, rts.bsesdelhi.com). DERC's tariff order could not be opened and no official figure was found; trade sites put it at about ₹3 to ₹4 a unit. Until verified the tool counts no credit for exported units, which can only understate the saving.",
     "effectiveDate": "2026-10-26",
     "status": "TODO_VERIFY"
   }

@@ -27,7 +27,8 @@ describe('solar form', () => {
   it('starts without invented data: unverified values are empty', () => {
     expect(SOLAR_START_FORM.subsidy).toBeNull();
     expect(SOLAR_START_FORM.generationPerKWPerDay).toBeNull();
-    expect(SOLAR_START_FORM.degradationPerYear).toBeNull();
+    // Sourced from a module warranty: 97.5% after year 1, −0.6% a year, 83.1% at year 25.
+    expect(SOLAR_START_FORM.degradationPerYear).toBeCloseTo(1 - Math.pow(0.831, 1 / 24), 4);
     expect(SOLAR_START_FORM.exportRatePerKWh).toBeNull();
     expect(SOLAR_START_FORM.tariffRisePerYear).toBe(0);
     expect(toSolarInput(SOLAR_START_FORM, null)).toBeNull();
@@ -36,7 +37,6 @@ describe('solar form', () => {
   it('lists what is missing before a result is possible', () => {
     expect(invalidSolarFields(SOLAR_START_FORM, false).sort()).toEqual([
       'averageRate',
-      'degradationPerYear',
       'generationPerKWPerDay',
       'grossCost',
       'monthlyConsumptionKWh',

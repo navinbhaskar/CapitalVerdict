@@ -15,11 +15,11 @@
     "status": "TODO_VERIFY"
   },
   "degradationPerYear": {
-    "value": null,
+    "value": 0.0077,
     "unit": "decimal per year",
-    "source": "TODO_VERIFY: panel manufacturer's performance warranty",
-    "effectiveDate": "2026-10-19",
-    "status": "TODO_VERIFY"
+    "source": "Tata Power Solar TP540HG10B mono PERC module datasheet (tatapowersolar.com): linear power output warranty of at least 97.5% after year 1 and at most 0.6% a year lost after that, so at least 83.1% at year 25. The tool uses one yearly rate, so this is the steady rate that reaches the same 83.1% at year 25 from new: 1 - 0.831^(1/24) = 0.77% a year. It is the warranty's worst case; real panels usually lose less. Other makers warrant 0.3% to 0.55% a year after year 1.",
+    "effectiveDate": "2026-10-26",
+    "status": "verified"
   },
   "exportRatePerKWh": {
     "value": null,

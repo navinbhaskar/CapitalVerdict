@@ -5,7 +5,13 @@
  * fixed monthly charge instead (see simpleTariff). The state follows the visitor's city: Delhi's
  * verified figures (tariff, subsidy by system size, output) fill in; UP's are still to verify.
  */
-import { generationIncentiveFor, solarSubsidyFor, verifiedSolarValue, type StateId } from '@/data';
+import {
+  generationIncentiveFor,
+  solarDataFor,
+  solarSubsidyFor,
+  verifiedSolarValue,
+  type StateId,
+} from '@/data';
 import { simpleTariff, type Tariff } from '@/engine/tariff';
 import type { ShareSchema } from '@/lib/shareLink';
 import type { SolarInput } from './solar';
@@ -36,6 +42,12 @@ export interface SolarForm {
 
 export type SolarNumberKey = Exclude<keyof SolarForm, 'subsidyOptIn'>;
 
+/** Years the state pays its generation incentive, once verified; null if none or unverified. */
+function incentiveYears(state: StateId): number | null {
+  const record = solarDataFor(state).generationIncentiveYears;
+  return record && record.status === 'verified' ? record.value : null;
+}
+
 /** The form before the visitor types anything, with the state's verified figures. */
 export const solarStartForm = (state: StateId): SolarForm => ({
   systemKW: null,
@@ -54,7 +66,8 @@ export const solarStartForm = (state: StateId): SolarForm => ({
   inverterCost: null,
   horizonYears: 25,
   ppacRate: null,
-  gbiYears: null,
+  // The state's generation incentive counts for its verified years (Delhi: 5).
+  gbiYears: incentiveYears(state),
   subsidyOptIn: true,
 });
 export const SOLAR_START_FORM = solarStartForm('UP');

@@ -2,6 +2,10 @@
   "entries": [
     {
       "date": "2026-10-26",
+      "change": "Set rooftop solar panel degradation to 0.77% a year, the steady rate matching a Tata Power Solar module's warranty floor (83.1% at year 25), and Delhi's generation-based incentive to 5 years from installation (Delhi Solar Policy 2024). Delhi's export credit is still to be verified, so it counts as nil."
+    },
+    {
+      "date": "2026-10-26",
       "change": "Added income-tax deduction limits (80C, 80CCD(1B), 80D, home-loan interest, 80TTA, employer NPS) from the Income Tax Department's e-filing portal, and the house rent allowance rule with the eight 50% cities from tax year 2026-27, for the tax regime tool."
     },
     {

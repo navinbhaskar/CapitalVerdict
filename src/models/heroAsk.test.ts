@@ -39,13 +39,17 @@ describe('home page sentence card: the starting answers match the tools and the 
     expect(carAsk({ ...CAR_ASK_START, km: 600 })!.verdict.kind).toBe('never');
   });
 
-  it("solar, Delhi: 300 units, 3 kW for ₹1.8 lakh pays back in month 134, as the tool's example", () => {
-    // Subsidy ₹84,000, net cost ₹96,000; the subsidised bill falls from ₹718.35 to nil.
+  it("solar, Delhi: 300 units, 3 kW for ₹1.8 lakh pays back in month 68, as the tool's example", () => {
+    // Subsidy ₹84,000, net cost ₹96,000. The subsidised bill falls from ₹718.35 to nil, and the
+    // ₹3 a unit incentive on 270 units (less 0.77% a year as panels age) adds
+    // ₹9,720 × (1 + 0.9923 + 0.9847 + 0.9771 + 0.9696) = ₹47,858 over 5 years. After 60 months:
+    // 43,101 + 47,858 = 90,959; the last 5,041 takes just over 7 months at ₹718.35.
     expect(SOLAR_ASK_START).toEqual({ units: 300, kw: 3, cost: 180_000 });
     const a = solarAsk(SOLAR_ASK_START)!;
     expect(a.subsidy).toBe(84_000);
-    expect(a.payback!.months).toBe(134);
+    expect(a.payback!.months).toBe(68);
     const tool = solarPayback(toSolarInput(solarExampleForm('DL'), tariffFor('DL'), 'DL')!);
+    expect(tool.incentive.slice(0, 60).reduce((x, y) => x + y, 0)).toBeCloseTo(47_858, -1);
     expect(a.payback!.months).toBe(tool.payback!.months);
     expect(a.netAtHorizon).toBeCloseTo(tool.netAtHorizon, 6);
   });

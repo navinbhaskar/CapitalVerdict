@@ -1914,7 +1914,7 @@
   "solar.in.ppac": "PPAC on your bill",
   "solar.note.ppac": "Optional. The power purchase adjustment on your bill, as a percentage; it changes through the year.",
   "solar.in.gbiYears": "Years the generation incentive is paid",
-  "solar.note.gbiYears": "Optional. Delhi pays {rate} a unit generated for a system this size. How many years it is paid is not yet verified, so it counts only if you enter it.",
+  "solar.note.gbiYears": "Delhi pays {rate} a unit generated for a system this size, for 5 years from installation (Delhi Solar Policy 2024). Leave it empty to leave it out.",
   "solar.w.incentive": "Generation incentive",
   "solar.col.incentive": "Incentive",
   "solar.subsidyNote": "Delhi's subsidy already brings your bill from {gross} to {paid} a month, so that is all solar can save on it.",
