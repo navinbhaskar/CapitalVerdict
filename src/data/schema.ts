@@ -214,6 +214,38 @@ export const incomeTaxSchema = z.object({
     effectiveDate: z.iso.date(),
     status: verificationStatus,
   }),
+  /** Deduction limits for the itemised tax regime tool (₹ a year unless a share). */
+  deductions: z.object({
+    section80C: z.number().min(0),
+    nps80CCD1B: z.number().min(0),
+    health80D: z.object({
+      self: z.number().min(0),
+      selfSenior: z.number().min(0),
+      parents: z.number().min(0),
+      parentsSenior: z.number().min(0),
+      checkupWithin: z.number().min(0),
+    }),
+    homeLoanInterestSelfOccupied: z.number().min(0),
+    savingsInterest80TTA: z.number().min(0),
+    employerNps80CCD2: z.object({
+      new: z.number().min(0).max(1),
+      old: z.number().min(0).max(1),
+      oldGovernmentEmployer: z.number().min(0).max(1),
+    }),
+    source: z.string().min(1),
+    effectiveDate: z.iso.date(),
+    status: verificationStatus,
+  }),
+  /** House rent allowance exemption, old regime only. */
+  hra: z.object({
+    rentAboveShareOfSalary: z.number().min(0).max(1),
+    largeCityShare: z.number().min(0).max(1),
+    otherShare: z.number().min(0).max(1),
+    largeCities: z.array(z.string().regex(/^[a-z]+$/)).min(1),
+    source: z.string().min(1),
+    effectiveDate: z.iso.date(),
+    status: verificationStatus,
+  }),
   source: z.string().min(1),
   effectiveDate: z.iso.date(),
   status: verificationStatus,
