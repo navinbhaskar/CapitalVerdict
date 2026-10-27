@@ -2266,5 +2266,6 @@
   "assumptions.usedByCount": "Used by {n} calculators",
   "assumptions.usedByOne": "Used by 1 calculator",
   "assumptions.stateFromCity": "State: {state}, from your city.",
-  "assumptions.stateDefault": "Until you choose one, calculators use {state}."
+  "assumptions.stateDefault": "Until you choose one, calculators use {state}.",
+  "tool.section.guides": "Guides on this question"
 }

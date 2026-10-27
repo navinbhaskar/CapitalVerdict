@@ -341,3 +341,9 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | [x] `assumptions.what.city`, `.inflation`, `.carLoanRate`, `.homeLoanRate` | One line under each setting on what it changes     |
 | [x] `assumptions.usedByCount`, `assumptions.usedByOne`                     | The folded list of calculators under each setting  |
 | [x] `assumptions.stateFromCity`, `assumptions.stateDefault`                | Under the city, in place of the separate State row |
+
+## Tool pages: guides and related tools (drafted 2026-10-27)
+
+| Key                                                   | Where it shows                                                  |
+| ----------------------------------------------------- | --------------------------------------------------------------- |
+| [ ] `tool.section.guides` ("Guides on this question") | New section on tool pages that have guides, above Related tools |

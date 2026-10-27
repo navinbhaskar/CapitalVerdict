@@ -12,6 +12,11 @@
 import BaseLayout from './BaseLayout.astro';
 import { t, type Locale } from '@/i18n/t';
 import { reportErrorHref } from '@/config/site';
+import { getCollection } from 'astro:content';
+import Icon from '@/components/layout/Icon.astro';
+import GuideCard from '@/components/blog/GuideCard.astro';
+import { TOOL_GROUPS, toolKey } from '@/lib/tools';
+import { TOOL_PATHS, byDateDesc } from '@/lib/blog';
 
 interface Props {
   locale: Locale;
@@ -51,6 +56,23 @@ if (faq.length > 0) {
     })),
   });
 }
+
+// Each related tool with its icon and one-line answer, from the tools list.
+const entries = TOOL_GROUPS.flatMap((g) => g.tools);
+const relatedTools = related.map((r) => {
+  const entry = entries.find((e) => r.href.endsWith(e.path));
+  return {
+    ...r,
+    icon: entry?.icon,
+    gives: entry ? t(locale, toolKey(entry, 'gives')) : null,
+  };
+});
+// Guides that lead to this calculator, newest first.
+const path = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const toolId = (Object.entries(TOOL_PATHS) as [string, string][]).find(([, p]) => p === path)?.[0];
+const guides = toolId
+  ? (await getCollection('blog', (post) => post.data.tool === toolId)).sort(byDateDesc).slice(0, 3)
+  : [];
 
 const sections = [
   { slot: 'explanation', heading: t(locale, 'tool.section.explanation') },
@@ -93,7 +115,24 @@ const sections = [
         </section>
       ))}
 
-      {related.length > 0 && (
+      {guides.length > 0 && (
+        <section
+          class="mt-8 border-t border-line pt-5"
+          aria-labelledby="s-guides"
+          data-pagefind-ignore="all"
+        >
+          <h2 id="s-guides" class="font-display text-2xl font-medium">
+            {t(locale, 'tool.section.guides')}
+          </h2>
+          <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
+            {guides.map((post) => (
+              <GuideCard locale={locale} post={post} />
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {relatedTools.length > 0 && (
         <nav
           class="mt-8 border-t border-line pt-5"
           aria-labelledby="s-related"
@@ -102,14 +141,32 @@ const sections = [
           <h2 id="s-related" class="font-display text-2xl font-medium">
             {t(locale, 'tool.section.related')}
           </h2>
-          <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" role="list">
-            {related.map((r) => (
+          <ul
+            class={`mt-4 grid gap-3 sm:grid-cols-2 ${relatedTools.length % 3 === 0 ? 'lg:grid-cols-3' : ''}`}
+            role="list"
+          >
+            {relatedTools.map((r) => (
               <li>
                 <a
                   href={r.href}
-                  class="flex min-h-11 items-center rounded-lg border border-line px-4 py-3 font-medium transition-colors duration-(--duration-fast) ease-out-quart hover:border-line-strong hover:bg-surface"
+                  class="group flex h-full min-h-11 items-start gap-3 rounded-xl border border-line bg-raised p-4 transition-colors duration-(--duration-fast) ease-out-quart hover:border-accent"
                 >
-                  {r.label}
+                  {r.icon && (
+                    <span class="band-dark inline-flex size-9 shrink-0 items-center justify-center rounded-full text-accent">
+                      <Icon name={r.icon} size={18} />
+                    </span>
+                  )}
+                  <span class="min-w-0 flex-1">
+                    <span class="block font-medium text-ink group-hover:text-accent-strong">
+                      {r.label}
+                    </span>
+                    {r.gives && <span class="mt-0.5 block text-sm text-ink-muted">{r.gives}</span>}
+                  </span>
+                  <Icon
+                    name="arrowRight"
+                    size={18}
+                    class="nudge mt-0.5 shrink-0 text-accent-strong"
+                  />
                 </a>
               </li>
             ))}
