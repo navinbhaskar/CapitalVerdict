@@ -51,7 +51,8 @@ export const solarData = solarJson as unknown as SolarData & { subsidy: DataReco
 export const dlTariff = dlTariffJson as unknown as TariffData;
 export const dlSolarData = dlSolarJson as unknown as SolarData;
 
-export type StateId = 'DL' | 'UP';
+export type StateId = 'DL' | 'UP' | 'MH' | 'KA' | 'TS' | 'TN' | 'WB' | 'GJ';
+export const STATE_IDS: readonly StateId[] = ['DL', 'UP', 'MH', 'KA', 'TS', 'TN', 'WB', 'GJ'];
 
 /** The state a city is in; the example city (Delhi) when none is chosen. */
 export function stateOfCity(cityId: string | null): StateId {
@@ -71,11 +72,28 @@ export function verifiedTariff(data: TariffData = upTariff): Tariff | null {
   };
 }
 
+/** The state's verified tariff, or null: tools then ask for a price per unit instead. */
 export const tariffFor = (state: StateId): Tariff | null =>
-  verifiedTariff(state === 'DL' ? dlTariff : upTariff);
+  state === 'DL' ? verifiedTariff(dlTariff) : state === 'UP' ? verifiedTariff(upTariff) : null;
+
+const notYet = (what: string) => ({
+  value: null,
+  unit: '—',
+  source: `TODO_VERIFY: no verified ${what} for this state yet.`,
+  effectiveDate: '2026-10-28',
+  status: 'TODO_VERIFY' as const,
+});
+/** A state without solar data: everything is the visitor's to enter, except panel degradation. */
+const noSolarData = (state: StateId): SolarData => ({
+  state: state as SolarData['state'],
+  subsidy: notYet('rooftop solar subsidy'),
+  generationPerKWPerDay: notYet('generation per kW'),
+  degradationPerYear: dlSolarData.degradationPerYear,
+  exportRatePerKWh: notYet('export rate'),
+});
 
 export const solarDataFor = (state: StateId): SolarData =>
-  state === 'DL' ? dlSolarData : solarData;
+  state === 'DL' ? dlSolarData : state === 'UP' ? solarData : noSolarData(state);
 
 type SolarValueKey =
   'generationPerKWPerDay' | 'degradationPerYear' | 'exportRatePerKWh' | 'subsidy';

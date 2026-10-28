@@ -143,6 +143,132 @@
         "effectiveDate": "2026-10-19",
         "status": "TODO_VERIFY"
       }
+    },
+    {
+      "id": "mumbai",
+      "state": "MH",
+      "petrol": {
+        "value": 111.21,
+        "unit": "₹/L",
+        "source": "Mumbai retail price on 28 Oct 2026: ₹111.21 a litre in the Goodreturns city page, 28 Oct 2026 (goodreturns.in/petrol-price-in-mumbai.html) and HDFC Sky's 28 Oct 2026 city-wise report (hdfcsky.com). Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-10-28",
+        "status": "verified"
+      },
+      "cng": {
+        "value": 89,
+        "unit": "₹/kg",
+        "source": "Mahanagar Gas Limited (MGL), the city gas distributor for Mumbai: raised by ₹1 to ₹89/kg from 1 Oct 2026 (Lokmat Times report of the MGL revision, 1 Oct 2026), after ₹88 from 1 Sep 2026 (PSU Connect report of MGL's notice). Still ₹89 on 28 Oct 2026 per Goodreturns. MGL's own site could not be read.",
+        "effectiveDate": "2026-10-01",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "pune",
+      "state": "MH",
+      "petrol": {
+        "value": 111.9,
+        "unit": "₹/L",
+        "source": "Pune retail price on 28 Oct 2026: ₹111.90 a litre in the Goodreturns city page, 28 Oct 2026 (goodreturns.in/petrol-price-in-pune.html) and CarDekho's Pune page (26 Oct 2026). Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-10-28",
+        "status": "verified"
+      },
+      "cng": {
+        "value": 97.75,
+        "unit": "₹/kg",
+        "source": "Maharashtra Natural Gas Limited (MNGL), the city gas distributor for Pune, CNG rate card (mngl.in/cng/rate-card): Pune GA ₹97.75 per kg, inclusive of all taxes, revised w.e.f. midnight of 1 Sep 2026. Some price sites show ₹100.50; the distributor's own rate card is used.",
+        "effectiveDate": "2026-09-01",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "bengaluru",
+      "state": "KA",
+      "petrol": {
+        "value": 111.68,
+        "unit": "₹/L",
+        "source": "Bengaluru retail price on 28 Oct 2026: ₹111.68 a litre in the Goodreturns city page, 28 Oct 2026 (goodreturns.in/petrol-price-in-bangalore.html) and HDFC Sky's 28 Oct 2026 city-wise report (hdfcsky.com). Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-10-28",
+        "status": "verified"
+      },
+      "cng": {
+        "value": null,
+        "unit": "₹/kg",
+        "source": "TODO_VERIFY: GAIL Gas is the city gas distributor for Bengaluru; its price page could not be read. Price sites show ₹98/kg (Goodreturns, 28 Oct 2026) and ₹97 a month earlier. Needs the distributor's notice or a news report of it.",
+        "effectiveDate": "2026-10-28",
+        "status": "TODO_VERIFY"
+      }
+    },
+    {
+      "id": "hyderabad",
+      "state": "TS",
+      "petrol": {
+        "value": 116.15,
+        "unit": "₹/L",
+        "source": "Hyderabad retail price on 28 Oct 2026: ₹116.15 a litre in the Goodreturns city page, 28 Oct 2026 (goodreturns.in/petrol-price-in-hyderabad.html) and HDFC Sky's 28 Oct 2026 city-wise report (hdfcsky.com). Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-10-28",
+        "status": "verified"
+      },
+      "cng": {
+        "value": 114.5,
+        "unit": "₹/kg",
+        "source": "Bhagyanagar Gas Limited, the city gas distributor for Hyderabad, price tag (bglgas.com/price-tag): CNG Hyderabad ₹114.50 per kg, inclusive of taxes, effective 16.10.2026. Price sites still show ₹112; the distributor's own table is used.",
+        "effectiveDate": "2026-10-16",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "chennai",
+      "state": "TN",
+      "petrol": {
+        "value": 107.76,
+        "unit": "₹/L",
+        "source": "Chennai retail price on 28 Oct 2026: ₹107.76 a litre in the Goodreturns city page, 28 Oct 2026 (goodreturns.in/petrol-price-in-chennai.html) and HDFC Sky's 28 Oct 2026 city-wise report (hdfcsky.com). Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-10-28",
+        "status": "verified"
+      },
+      "cng": {
+        "value": null,
+        "unit": "₹/kg",
+        "source": "TODO_VERIFY: Torrent Gas is a city gas distributor for Chennai; its price page could not be read. Price sites show ₹99.50/kg (Goodreturns, 25 Oct 2026), ₹97 and ₹96. Needs the distributor's notice or a news report of it.",
+        "effectiveDate": "2026-10-28",
+        "status": "TODO_VERIFY"
+      }
+    },
+    {
+      "id": "kolkata",
+      "state": "WB",
+      "petrol": {
+        "value": 113.51,
+        "unit": "₹/L",
+        "source": "Kolkata retail price on 28 Oct 2026: ₹113.51 a litre in the Goodreturns city page, 28 Oct 2026 (goodreturns.in/petrol-price-in-kolkata.html) and HDFC Sky's 28 Oct 2026 city-wise report (hdfcsky.com). Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-10-28",
+        "status": "verified"
+      },
+      "cng": {
+        "value": 103,
+        "unit": "₹/kg",
+        "source": "Bengal Gas Company Limited, the city gas distributor for Kolkata, tariff page (bgcl.co.in/TariffRate.html): all CNG stations ₹103.00 per kg w.e.f. 06:00 hrs, 16 Aug 2026. Some price sites still show ₹93.50.",
+        "effectiveDate": "2026-08-16",
+        "status": "verified"
+      }
+    },
+    {
+      "id": "ahmedabad",
+      "state": "GJ",
+      "petrol": {
+        "value": 102.15,
+        "unit": "₹/L",
+        "source": "Ahmedabad retail price on 28 Oct 2026: ₹102.15 a litre in the Goodreturns city page, 28 Oct 2026 (goodreturns.in/petrol-price-in-ahmedabad.html) and CarDekho's India page (28 Oct 2026). Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-10-28",
+        "status": "verified"
+      },
+      "cng": {
+        "value": 98.47,
+        "unit": "₹/kg",
+        "source": "Adani Total Gas, the city gas distributor for Ahmedabad, CNG page (adanigas.com/cng): Ahmedabad ₹98.47 per kg, inclusive of all taxes, w.e.f. 23/10/2026 (raised by ₹4.45, DeshGujarat, 23 Oct 2026).",
+        "effectiveDate": "2026-10-23",
+        "status": "verified"
+      }
     }
   ]
 }

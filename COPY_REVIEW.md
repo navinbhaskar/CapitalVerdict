@@ -347,3 +347,10 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | Key                                                   | Where it shows                                                  |
 | ----------------------------------------------------- | --------------------------------------------------------------- |
 | [ ] `tool.section.guides` ("Guides on this question") | New section on tool pages that have guides, above Related tools |
+
+## More cities (drafted 2026-10-28)
+
+| Key                                                                                                                                         | Where it shows                                  |
+| ------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| [ ] `city.mumbai`, `.pune`, `.bengaluru`, `.hyderabad`, `.chennai`, `.kolkata`, `.ahmedabad`; `state.MH`, `.KA`, `.TS`, `.TN`, `.WB`, `.GJ` | City dropdown and the state line in Assumptions |
+| [ ] Changed: `solar.note.averageRate`, `solar.faq.2.*`, `note.homeRate` no longer name UP as the only state without a tariff                | Solar and car tools                             |

@@ -213,10 +213,9 @@ export default function AssumptionsPanel({ locale }: Props) {
                   options={[
                     { value: '', label: t(locale, 'assumptions.cityNone') },
                     // Only cities whose prices are verified are offered; the rest appear once they are.
-                    ...verifiedCityIds.map((id) => ({
-                      value: id,
-                      label: t(locale, `city.${id}` as MessageKey),
-                    })),
+                    ...verifiedCityIds
+                      .map((id) => ({ value: id, label: t(locale, `city.${id}` as MessageKey) }))
+                      .sort((a, b) => a.label.localeCompare(b.label)),
                   ]}
                   onChange={(v) => set('city', v === '' ? null : v)}
                 />

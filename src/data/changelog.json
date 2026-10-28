@@ -1,6 +1,10 @@
 {
   "entries": [
     {
+      "date": "2026-10-28",
+      "change": "Added petrol and CNG prices for Mumbai, Pune, Hyderabad, Kolkata and Ahmedabad, each CNG price from the city's gas distributor, so these cities can now be chosen. Bengaluru and Chennai have verified petrol prices, but their CNG prices are still to be verified, so they are not offered yet. Electricity tariffs for these states are not in the tools yet: the solar, AC and scooter tools ask for your price per unit there."
+    },
+    {
       "date": "2026-10-26",
       "change": "Added purchase incentives for electric two-wheelers: the central PM E-DRIVE incentive (₹2,500 a kWh up to ₹5,000, to 31 March 2028, Gazette S.O. 4424(E) of 10 August 2026) and Delhi's EV Policy 2026 (₹10,000 a kWh up to ₹30,000 in its first year, a ₹10,000 scrapping bonus and a full road-tax waiver, Delhi Gazette of 30 June 2026). For the coming e-scooter tool."
     },

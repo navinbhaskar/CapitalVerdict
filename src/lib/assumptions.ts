@@ -2,11 +2,11 @@
  * Global assumptions: set once, read by every tool, kept only in this browser.
  * Rates are decimals. Storage access is always wrapped; a broken or blocked store means defaults.
  */
-import { defaults, verifiedCityIds } from '@/data';
+import { STATE_IDS, defaults, verifiedCityIds, type StateId } from '@/data';
 
 export interface GlobalAssumptions {
   /** Follows the city: Delhi until the visitor picks a city elsewhere. */
-  state: 'DL' | 'UP';
+  state: StateId;
   city: string | null;
   taxRegime: 'new' | 'old';
   /** Including cess. Entered by the user; null until they do. */
@@ -46,7 +46,7 @@ const isRate = (max: number, nullable: boolean) => (v: unknown) =>
 
 /** One validator per field. Hand-written so the browser bundle does not need a schema library. */
 const validators: { [K in AssumptionKey]: (v: unknown) => boolean } = {
-  state: (v) => v === 'DL' || v === 'UP',
+  state: (v) => typeof v === 'string' && (STATE_IDS as readonly string[]).includes(v),
   // A city whose prices are not verified cannot be chosen; a stored one falls back to none.
   city: (v) => v === null || (typeof v === 'string' && verifiedCityIds.includes(v)),
   taxRegime: (v) => v === 'new' || v === 'old',

@@ -2265,5 +2265,18 @@
   "assumptions.usedByOne": "TODO_COPY_HI",
   "assumptions.stateFromCity": "TODO_COPY_HI",
   "assumptions.stateDefault": "TODO_COPY_HI",
-  "tool.section.guides": "TODO_COPY_HI"
+  "tool.section.guides": "TODO_COPY_HI",
+  "city.mumbai": "TODO_COPY_HI",
+  "city.pune": "TODO_COPY_HI",
+  "city.bengaluru": "TODO_COPY_HI",
+  "city.hyderabad": "TODO_COPY_HI",
+  "city.chennai": "TODO_COPY_HI",
+  "city.kolkata": "TODO_COPY_HI",
+  "city.ahmedabad": "TODO_COPY_HI",
+  "state.MH": "TODO_COPY_HI",
+  "state.KA": "TODO_COPY_HI",
+  "state.TS": "TODO_COPY_HI",
+  "state.TN": "TODO_COPY_HI",
+  "state.WB": "TODO_COPY_HI",
+  "state.GJ": "TODO_COPY_HI"
 }

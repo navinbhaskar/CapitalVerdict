@@ -58,8 +58,9 @@ export const defaultsSchema = z.object({
 });
 export type Defaults = z.infer<typeof defaultsSchema>;
 
-/** States with data: Delhi and Uttar Pradesh. */
-export const stateId = z.enum(['DL', 'UP']);
+/** States with data: Delhi, Uttar Pradesh and the metros' states. Tariffs exist only for DL and UP. */
+export const STATE_IDS = ['DL', 'UP', 'MH', 'KA', 'TS', 'TN', 'WB', 'GJ'] as const;
+export const stateId = z.enum(STATE_IDS);
 
 export const fuelPricesSchema = z.object({
   cities: z
