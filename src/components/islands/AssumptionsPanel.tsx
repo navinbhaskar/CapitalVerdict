@@ -1,7 +1,7 @@
 import { useId, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
-import { cityIds, fuelPrices, verifiedCityIds, verifiedFuelPrices } from '@/data';
+import { fuelPrices, verifiedCityIds } from '@/data';
 import { EXAMPLE_PRICE_CITY } from '@/models/carFuel.example';
 import {
   DEFAULT_ASSUMPTIONS,
@@ -140,8 +140,6 @@ export default function AssumptionsPanel({ locale }: Props) {
     );
   };
 
-  const cityPricesVerified = verifiedFuelPrices(assumptions.city) !== null;
-
   return (
     <>
       <button
@@ -202,9 +200,7 @@ export default function AssumptionsPanel({ locale }: Props) {
                 <SelectRow
                   label={t(locale, 'assumptions.city')}
                   note={[
-                    assumptions.city && !cityPricesVerified
-                      ? t(locale, 'assumptions.cityUnverified')
-                      : noteFor('city', null),
+                    noteFor('city', null),
                     t(
                       locale,
                       assumptions.city ? 'assumptions.stateFromCity' : 'assumptions.stateDefault',
@@ -216,16 +212,11 @@ export default function AssumptionsPanel({ locale }: Props) {
                   value={assumptions.city ?? ''}
                   options={[
                     { value: '', label: t(locale, 'assumptions.cityNone') },
-                    // Cities without verified prices are listed but cannot be chosen yet.
-                    ...cityIds.map((id) => {
-                      const city = t(locale, `city.${id}` as MessageKey);
-                      const verified = verifiedCityIds.includes(id);
-                      return {
-                        value: id,
-                        label: verified ? city : t(locale, 'assumptions.cityNotVerified', { city }),
-                        disabled: !verified,
-                      };
-                    }),
+                    // Only cities whose prices are verified are offered; the rest appear once they are.
+                    ...verifiedCityIds.map((id) => ({
+                      value: id,
+                      label: t(locale, `city.${id}` as MessageKey),
+                    })),
                   ]}
                   onChange={(v) => set('city', v === '' ? null : v)}
                 />

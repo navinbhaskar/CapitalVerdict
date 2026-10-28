@@ -210,7 +210,7 @@ A new tool at `/tools/plan-return/` (`src/models/planReturn.ts`), in the "Saving
 | [x] `carFuel.faq.3.a`                                                                                    | Car tool FAQ: resale, insurance and one-off costs can be entered            |
 | [x] `checklist.carFuel.3`, `checklist.ev.4`                                                              | "Not modelled" lists: replace "Resale value difference"                     |
 | [x] `source` of the scenario variables and car rate in `src/data/defaults.json`, and the changelog entry | Assumptions tables on every tool; assumptions changelog                     |
-| [x] `assumptions.cityNotVerified`                                                                        | Assumptions panel: "Kanpur: prices not verified yet" (cannot be chosen)     |
+| [x] `assumptions.cityNotVerified`                                                                        | Removed 2026-10-28: unverified cities are no longer listed                  |
 
 ## EMI calculator (drafted 2026-10-26)
 
