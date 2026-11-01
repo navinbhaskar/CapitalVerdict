@@ -2,6 +2,10 @@
   "entries": [
     {
       "date": "2026-11-01",
+      "change": "Added ELSS's three-year lock-in and 80C rules from SEBI's investor guide and the Ministry of Finance's ELSS Scheme 2005, for the guide on ELSS, PPF or insurance under 80C."
+    },
+    {
+      "date": "2026-11-01",
       "change": "Added car ownership figures for the coming new vs used car tool: the India Motor Tariff schedule for a car's insured value by age (5% to 50% over five years), the third-party premium by engine size from the 2022 rules (₹2,094, ₹3,416, ₹7,897), and Delhi's one-time road tax (4%, 7%, 10% by price)."
     },
     {

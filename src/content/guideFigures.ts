@@ -21,6 +21,7 @@ import { monthlySaving, type MonthlySavingInput } from '@/models/monthlySaving';
 import { plotVs, type PlotVsInput } from '@/models/plotVs';
 import { payback } from '@/models/payback';
 import { payoutScaleAt, planReturn, type PlanInput } from '@/models/planReturn';
+import { planExampleForm, toPlanInput } from '@/models/planReturnForm';
 import { prepayOrInvest, type PrepayInput } from '@/models/prepay';
 import { breakEvenRise, rateChange } from '@/models/rateChange';
 import { rentBuyFlips, rentVsBuy } from '@/models/rentBuy';
@@ -1102,3 +1103,83 @@ export const planFigures = {
     ],
   } satisfies LineData,
 };
+
+/* ---------- 80C: ELSS, PPF or insurance ---------- */
+
+/**
+ * ₹1 lakh a year for 12 years under 80C, valued at year 20: the plan return calculator's
+ * endowment example (₹20 lakh at year 20), the same premiums at PPF's rate, and in an ELSS at an
+ * illustrative 10% before tax, all sold in year 20.
+ */
+const endowment = planReturn(toPlanInput(planExampleForm('endowment'))!);
+const endowmentPayout = 2_000_000;
+const elssReturn = 0.1;
+const elssGross = endowmentPayout * payoutScaleAt(endowment, elssReturn)!;
+const elssGain = elssGross - endowment.paid;
+const elssTax =
+  Math.max(0, elssGain - incomeTax.capitalGains.equityLongTermExemption) *
+  incomeTax.capitalGains.longTermRate *
+  cess;
+const taxSavedYearly = 100_000 * 0.3 * cess;
+
+export const eightyC = {
+  paid: endowment.paid,
+  planReturn: endowment.annualReturn!,
+  plan: endowmentPayout,
+  ppf: endowmentPayout * payoutScaleAt(endowment, smallSavings.ppf.rate)!,
+  elssGross,
+  elssTax,
+  elss: elssGross - elssTax,
+  elssReturn,
+  taxSavedYearly,
+  taxSavedTotal: taxSavedYearly * 12,
+  bars: [] as CompareItem[],
+  table: {} as TableData,
+};
+eightyC.bars = [
+  {
+    label: 'Endowment plan (example)',
+    value: eightyC.plan,
+    display: money(eightyC.plan),
+    note: `${(eightyC.planReturn * 100).toFixed(1)}% a year`,
+  },
+  {
+    label: `PPF at ${pct(smallSavings.ppf.rate)}`,
+    value: eightyC.ppf,
+    display: money(eightyC.ppf),
+    note: 'Tax-free',
+  },
+  {
+    label: `ELSS at an illustrative ${pct(elssReturn)}`,
+    value: eightyC.elss,
+    display: money(eightyC.elss),
+    tax: elssTax,
+    note: `After ${money(elssTax)} tax on gains. Not guaranteed.`,
+    best: true,
+  },
+];
+eightyC.table = {
+  head: ['', 'ELSS', 'PPF', 'Endowment plan'],
+  rows: [
+    ['Counts for 80C', 'Yes', 'Yes', 'Yes'],
+    [
+      'Locked in for',
+      `${smallSavings.elss.lockInYears} years per instalment`,
+      `${smallSavings.ppf.termYears} years`,
+      'The policy term',
+    ],
+    [
+      'Return',
+      'Not guaranteed',
+      `${pct(smallSavings.ppf.rate)}, set each quarter`,
+      'What it guarantees',
+    ],
+    [
+      'Tax on what you get',
+      `${pct(incomeTax.capitalGains.longTermRate)} above ${short(incomeTax.capitalGains.equityLongTermExemption)} of gains`,
+      'None',
+      'Depends on the policy',
+    ],
+    ['Life cover', 'No', 'No', 'Yes'],
+  ],
+} satisfies TableData;

@@ -9,5 +9,13 @@
     "source": "National Savings Institute (Ministry of Finance), Public Provident Fund Account page and PPF Scheme 2019 rules: 7.1% a year on deposits and balances from 1 April 2020; ₹500 minimum and ₹1,50,000 maximum deposit in a financial year; matures after fifteen years; interest calculated monthly on the lowest balance between the close of the fifth day and the end of the month and credited at the end of each year; interest free from income tax under Section 10. Rate unchanged for October-December 2026 (Department of Economic Affairs announcement, 30 September 2026, as reported by Business Standard).",
     "effectiveDate": "2026-10-21",
     "status": "verified"
+  },
+  "elss": {
+    "lockInYears": 3,
+    "minEquityShare": 0.8,
+    "maxDeduction80C": 150000,
+    "source": "SEBI investor website, 'A Guide to ELSS (Equity-Linked Savings Scheme)' (investor.sebi.gov.in/elss.html): a diversified equity mutual fund with at least 80% of its corpus in equity and equity-related instruments; up to ₹1.5 lakh a financial year qualifies for the Section 80C deduction; a lock-in of three years, the shortest of the 80C options. Set by the Ministry of Finance's Equity Linked Savings Scheme, 2005 (S.O. 1563(E), 3 November 2005), as cited in fund scheme information documents: units cannot be redeemed for three years from allotment, so each SIP instalment has its own three years. The 80C deduction applies only under the old tax regime.",
+    "effectiveDate": "2026-11-01",
+    "status": "verified"
   }
 }

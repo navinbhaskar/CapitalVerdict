@@ -21,7 +21,7 @@ import { carLoanFlips, cashOrLoan } from '@/models/carLoan';
 import { irr } from '@/engine/irr';
 import { fundPlan, maxWithdrawal } from '@/models/fund';
 import { payoutScaleAt, planReturn } from '@/models/planReturn';
-import { rateRise } from '@/content/guideFigures';
+import { eightyC, rateRise } from '@/content/guideFigures';
 
 describe('posts: CNG payback, break-even, Lucknow update', () => {
   const lucknow = verifiedFuelPrices('lucknow')!;
@@ -627,5 +627,39 @@ describe('post: what a 1% rate rise does to your EMI', () => {
 
   it('break-even floating rates for a fixed 9.5% and 10%', () => {
     expect(f.breakEven.map((b) => Math.round(b.floating * 10_000) / 100)).toEqual([9.65, 10.31]);
+  });
+});
+
+describe('post: ₹1 lakh a year in 80C', () => {
+  const lakh = (x: number) => Math.round(x / 1e3) / 100;
+  const e = eightyC;
+
+  it('the same tax saved: ₹31,200 a year, ₹3.74 lakh over 12 years', () => {
+    // ₹1 lakh × 30% × 1.04.
+    expect(Math.round(e.taxSavedYearly)).toBe(31_200);
+    expect(lakh(e.taxSavedTotal)).toBe(3.74);
+  });
+
+  it('the endowment example: ₹12 lakh paid, ₹20 lakh back, 3.5% a year', () => {
+    expect(e.paid).toBe(1_200_000);
+    expect(e.plan).toBe(2_000_000);
+    expect(Math.round(e.planReturn * 1000) / 10).toBe(3.5);
+  });
+
+  it('PPF: ₹1 lakh at the start of years 1 to 12, at 7.1% to the end of year 20: ₹33.36 lakh', () => {
+    const direct = Array.from({ length: 12 }, (_, k) => 100_000 * Math.pow(1.071, 20 - k)).reduce(
+      (a, b) => a + b,
+      0,
+    );
+    expect(e.ppf).toBeCloseTo(direct, 2);
+    expect(lakh(e.ppf)).toBe(33.36);
+  });
+
+  it('ELSS at 10%: ₹50.42 lakh, ₹4.83 lakh tax, ₹45.59 lakh kept', () => {
+    // Gain 50.42 − 12 = 38.42 lakh; (38.42 − 1.25) × 12.5% × 1.04 = 4.83 lakh.
+    expect(lakh(e.elssGross)).toBe(50.42);
+    expect(e.elssTax).toBeCloseTo((e.elssGross - 1_200_000 - 125_000) * 0.125 * 1.04, 4);
+    expect(lakh(e.elssTax)).toBe(4.83);
+    expect(lakh(e.elss)).toBe(45.59);
   });
 });

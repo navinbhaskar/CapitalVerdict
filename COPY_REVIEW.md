@@ -354,3 +354,11 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | ------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
 | [ ] `city.mumbai`, `.pune`, `.bengaluru`, `.hyderabad`, `.chennai`, `.kolkata`, `.ahmedabad`; `state.MH`, `.KA`, `.TS`, `.TN`, `.WB`, `.GJ` | City dropdown and the state line in Assumptions |
 | [ ] Changed: `solar.note.averageRate`, `solar.faq.2.*`, `note.homeRate` no longer name UP as the only state without a tariff                | Solar and car tools                             |
+
+## Guide: ₹1 lakh a year in 80C (drafted 2026-11-01)
+
+| Item                                                                                                                                                      | Where it shows                          |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| [ ] `src/content/blog/elss-ppf-or-insurance-for-80c.mdx` (title, description, takeaway, all text)                                                         | /guides/elss-ppf-or-insurance-for-80c/  |
+| [ ] Bar and table labels in `eightyC` in `src/content/guideFigures.ts`                                                                                    | The guide's bars and side-by-side table |
+| [ ] The ELSS figure uses an illustrative 10% a year, labelled as not guaranteed; the insurance figures are the plan return calculator's endowment example | Labelled in the text and chart notes    |

@@ -347,6 +347,15 @@ export const smallSavingsSchema = z.object({
     effectiveDate: z.iso.date(),
     status: verificationStatus,
   }),
+  /** Equity-linked savings schemes: the tax-saving equity fund under Section 80C. */
+  elss: z.object({
+    lockInYears: z.number().int().positive(),
+    minEquityShare: z.number().min(0).max(1),
+    maxDeduction80C: z.number().positive(),
+    source: z.string().min(1),
+    effectiveDate: z.iso.date(),
+    status: verificationStatus,
+  }),
 });
 export type SmallSavingsData = z.infer<typeof smallSavingsSchema>;
 
