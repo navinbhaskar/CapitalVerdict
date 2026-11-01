@@ -28,6 +28,7 @@ import { rentBuyFlips, rentVsBuy } from '@/models/rentBuy';
 import { RENT_BUY_EXAMPLE_FORM, toRentBuyInput } from '@/models/rentBuyForm';
 import { solarPayback, type SolarInput } from '@/models/solar';
 import { breakEvenDeductions, compareRegimes, regimeTax } from '@/models/taxRegime';
+import { hraExemption } from '@/models/taxDeductions';
 
 export interface TableData {
   head: string[];
@@ -1182,4 +1183,44 @@ eightyC.table = {
     ],
     ['Life cover', 'No', 'No', 'Yes'],
   ],
+} satisfies TableData;
+
+/* ---------- HRA in the eight cities ---------- */
+
+/**
+ * One salary in a city newly at 50% (Bengaluru, Hyderabad, Pune, Ahmedabad): ₹8 lakh a year of
+ * basic pay and DA, ₹4 lakh of HRA, at several rents. The exemption before (40%) and from tax
+ * year 2026-27 (50%), and the tax that saves at the old regime's 30% rate with cess.
+ */
+export const hraCase = { basicPlusDa: 800_000, hraReceived: 400_000 };
+const hraAt = (monthlyRent: number, largeCity: boolean) =>
+  hraExemption({ ...hraCase, rentPaid: monthlyRent * 12, largeCity }, incomeTax.hra);
+const hraRow = (monthlyRent: number) => {
+  const before = hraAt(monthlyRent, false);
+  const now = hraAt(monthlyRent, true);
+  return { monthlyRent, before, now, extra: now - before, taxSaved: (now - before) * 0.3 * cess };
+};
+const hraRents = [20_000, 30_000, 35_000, 40_000, 50_000];
+
+export const hraFigures = {
+  newCities: incomeTax.hra.largeCities.filter((c) => !incomeTax.hra.largeCitiesBefore.includes(c)),
+  rows: hraRents.map(hraRow),
+  example: hraRow(40_000),
+  /** Rent a month above which the 50% limit helps: when rent − 10% of salary passes 40% of it. */
+  gainsAbove:
+    ((incomeTax.hra.otherShare + incomeTax.hra.rentAboveShareOfSalary) * hraCase.basicPlusDa) / 12,
+  /** The most it can add: the 10 points between 40% and 50% of salary. */
+  maxExtra: (incomeTax.hra.largeCityShare - incomeTax.hra.otherShare) * hraCase.basicPlusDa,
+  table: {} as TableData,
+};
+hraFigures.table = {
+  head: ['Rent a month', 'Exempt at 40%', 'Exempt at 50%', 'More exempt', 'Tax saved a year'],
+  rows: hraFigures.rows.map((r) => [
+    formatINR(r.monthlyRent),
+    formatINR(r.before),
+    formatINR(r.now),
+    r.extra > 0 ? formatINR(r.extra) : '₹0',
+    r.taxSaved > 0 ? formatINR(r.taxSaved) : '₹0',
+  ]),
+  highlight: 3,
 } satisfies TableData;

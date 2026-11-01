@@ -116,8 +116,9 @@
       "pune",
       "ahmedabad"
     ],
-    "source": "House rent allowance exemption (old regime only): the least of HRA received, rent paid minus 10% of salary, and 50% of salary in the large cities or 40% elsewhere, salary meaning basic pay, dearness allowance that counts for retirement benefits, and commission at a fixed percentage of turnover (incometaxindia.gov.in, 'Deductions/Allowances allowed to a salaried employee'). From tax year 2026-27 the 50% cities are Delhi, Mumbai, Kolkata, Chennai, Bengaluru, Hyderabad, Pune and Ahmedabad under the Income-tax Rules, 2026 notified by CBDT on 20 Mar 2026 (Business Standard, 25 Mar 2026); the rule text itself could not be opened to cross-check.",
+    "source": "House rent allowance exemption (old regime only), Income-tax Rules, 2026, Rule 279 (Limits for the purposes of Schedule III, Table Sl. No. 11, to the Income-tax Act, 2025), on the Income Tax Department's site (incometaxindia.gov.in/w/rule-279-1, last reviewed 26 Oct 2026): the least of the allowance received, rent paid above one-tenth of salary, and 50% of salary for accommodation in Mumbai, Kolkata, Delhi, Chennai, Hyderabad, Pune, Ahmedabad and Bengaluru or 40% anywhere else; salary includes dearness allowance if provided under the terms of employment and excludes all other allowances and perquisites. Applies from tax year 2026-27. Before that, under Rule 2A of the Income-tax Rules, 1962, only Delhi, Mumbai, Kolkata and Chennai had the 50% limit (incometaxindia.gov.in, 'Deductions/Allowances allowed to a salaried employee').",
     "effectiveDate": "2026-04-01",
-    "status": "verified"
+    "status": "verified",
+    "largeCitiesBefore": ["delhi", "mumbai", "kolkata", "chennai"]
   }
 }

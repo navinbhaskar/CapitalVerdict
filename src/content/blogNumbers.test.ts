@@ -21,7 +21,7 @@ import { carLoanFlips, cashOrLoan } from '@/models/carLoan';
 import { irr } from '@/engine/irr';
 import { fundPlan, maxWithdrawal } from '@/models/fund';
 import { payoutScaleAt, planReturn } from '@/models/planReturn';
-import { eightyC, rateRise } from '@/content/guideFigures';
+import { eightyC, hraFigures, rateRise } from '@/content/guideFigures';
 
 describe('posts: CNG payback, break-even, Lucknow update', () => {
   const lucknow = verifiedFuelPrices('lucknow')!;
@@ -661,5 +661,36 @@ describe('post: ₹1 lakh a year in 80C', () => {
     expect(e.elssTax).toBeCloseTo((e.elssGross - 1_200_000 - 125_000) * 0.125 * 1.04, 4);
     expect(lakh(e.elssTax)).toBe(4.83);
     expect(lakh(e.elss)).toBe(45.59);
+  });
+});
+
+describe('post: HRA in the 8 cities', () => {
+  const h = hraFigures;
+  const at = (rent: number) => h.rows.find((r) => r.monthlyRent === rent)!;
+
+  it('the four new 50% cities', () => {
+    expect(h.newCities).toEqual(['bengaluru', 'hyderabad', 'pune', 'ahmedabad']);
+  });
+
+  it('₹30,000 rent: rent − 10% of salary (₹2.8 lakh) already set the limit, so nothing changes', () => {
+    // 3,60,000 − 80,000 = 2,80,000, below 40% of 8 lakh (3,20,000).
+    expect(at(30_000)).toMatchObject({ before: 280_000, now: 280_000, extra: 0 });
+  });
+
+  it('₹35,000 rent: ₹3.2 lakh to ₹3.4 lakh', () => {
+    // 4,20,000 − 80,000 = 3,40,000, between 40% (3.2 lakh) and 50% (4 lakh).
+    expect(at(35_000)).toMatchObject({ before: 320_000, now: 340_000, extra: 20_000 });
+  });
+
+  it('₹40,000 rent: ₹80,000 more exempt, ₹24,960 less tax', () => {
+    // 4,80,000 − 80,000 = 4,00,000; 50% of salary 4,00,000; HRA 4,00,000. 80,000 × 30% × 1.04.
+    expect(at(40_000)).toMatchObject({ before: 320_000, now: 400_000, extra: 80_000 });
+    expect(Math.round(at(40_000).taxSaved)).toBe(24_960);
+  });
+
+  it('the change starts to help above ₹33,333 rent, and adds at most ₹80,000', () => {
+    expect(Math.round(h.gainsAbove)).toBe(33_333);
+    expect(Math.round(h.maxExtra)).toBe(80_000);
+    expect(at(50_000).extra).toBe(80_000);
   });
 });

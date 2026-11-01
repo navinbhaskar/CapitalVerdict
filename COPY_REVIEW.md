@@ -362,3 +362,11 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | [ ] `src/content/blog/elss-ppf-or-insurance-for-80c.mdx` (title, description, takeaway, all text)                                                         | /guides/elss-ppf-or-insurance-for-80c/  |
 | [ ] Bar and table labels in `eightyC` in `src/content/guideFigures.ts`                                                                                    | The guide's bars and side-by-side table |
 | [ ] The ELSS figure uses an illustrative 10% a year, labelled as not guaranteed; the insurance figures are the plan return calculator's endowment example | Labelled in the text and chart notes    |
+
+## Guide: HRA in the 8 cities (drafted 2026-11-01)
+
+| Item                                                                                                 | Where it shows               |
+| ---------------------------------------------------------------------------------------------------- | ---------------------------- |
+| [ ] `src/content/blog/hra-in-the-8-cities.mdx` (title, description, takeaway, all text)              | /guides/hra-in-the-8-cities/ |
+| [ ] Table labels in `hraFigures` in `src/content/guideFigures.ts`                                    | The guide's table            |
+| [ ] Example: ₹8 lakh basic pay and DA, ₹4 lakh HRA, rents of ₹20,000 to ₹50,000; tax at the 30% rate | Labelled in the text         |

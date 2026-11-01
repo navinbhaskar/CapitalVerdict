@@ -324,6 +324,8 @@ export const incomeTaxSchema = z.object({
     largeCityShare: z.number().min(0).max(1),
     otherShare: z.number().min(0).max(1),
     largeCities: z.array(z.string().regex(/^[a-z]+$/)).min(1),
+    /** The 50% cities before tax year 2026-27, for comparison. */
+    largeCitiesBefore: z.array(z.string().regex(/^[a-z]+$/)).min(1),
     source: z.string().min(1),
     effectiveDate: z.iso.date(),
     status: verificationStatus,
