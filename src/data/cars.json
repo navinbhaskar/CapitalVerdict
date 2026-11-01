@@ -1,0 +1,47 @@
+{
+  "idvDepreciation": {
+    "bands": [
+      { "upToMonths": 6, "share": 0.05 },
+      { "upToMonths": 12, "share": 0.15 },
+      { "upToMonths": 24, "share": 0.2 },
+      { "upToMonths": 36, "share": 0.3 },
+      { "upToMonths": 48, "share": 0.4 },
+      { "upToMonths": 60, "share": 0.5 }
+    ],
+    "unit": "share of the manufacturer's listed selling price, by the car's age",
+    "source": "The schedule of depreciation for fixing the insured's declared value (IDV) of a private car, from the India Motor Tariff, as printed in IRDAI-filed private car policy wordings, e.g. Shriram General Insurance, Stand-alone Motor Own Damage Private Car Policy, UIN IRDAN137RP0002V01201920 (irdai.gov.in): not exceeding 6 months 5%; 6 months to 1 year 15%; 1 to 2 years 20%; 2 to 3 years 30%; 3 to 4 years 40%; 4 to 5 years 50%. Beyond 5 years, and for models no longer made, the IDV is agreed between insurer and insured. This is the value an insurer pays on a total loss, not a market resale price; used cars often sell for more or less.",
+    "effectiveDate": "2026-11-01",
+    "status": "verified"
+  },
+  "thirdPartyPremium": {
+    "privateCar": [
+      { "upToCC": 1000, "premium": 2094 },
+      { "upToCC": 1500, "premium": 3416 },
+      { "upToCC": null, "premium": 7897 }
+    ],
+    "electricCar": [
+      { "upToKW": 30, "premium": 1780 },
+      { "upToKW": 65, "premium": 2904 },
+      { "upToKW": null, "premium": 6712 }
+    ],
+    "hybridDiscount": 0.075,
+    "unit": "₹ a year, base premium before GST",
+    "source": "Ministry of Road Transport and Highways, Motor Vehicles (Third Party Insurance Base Premium and Liability) Rules, 2022, G.S.R. 394(E), Gazette of India Extraordinary, 25 May 2022, in force from 1 June 2022 (irdai.gov.in): private cars not exceeding 1000 cc ₹2,094, 1000 to 1500 cc ₹3,416, above 1500 cc ₹7,897; electric private cars up to 30 kW ₹1,780, 30 to 65 kW ₹2,904, above 65 kW ₹6,712; 7.5% off for hybrid electric vehicles. The same for every insurer. No later notification was found as of 1 Nov 2026; revisions have been proposed but not notified.",
+    "effectiveDate": "2022-06-01",
+    "status": "verified"
+  },
+  "roadTax": [
+    {
+      "state": "DL",
+      "bands": [
+        { "upToPrice": 600000, "rate": 0.04 },
+        { "upToPrice": 1000000, "rate": 0.07 },
+        { "upToPrice": null, "rate": 0.1 }
+      ],
+      "unit": "share of the car's cost price, paid once at registration",
+      "source": "Delhi Motor Vehicles Taxation Act, 1962 (as amended), Schedule I, Part B, as published by the Delhi Transport Department (transport.delhi.gov.in): four-wheeled vehicles costing up to ₹6 lakh 4% of the cost price; above ₹6 lakh and up to ₹10 lakh 7%; above ₹10 lakh 10%. Cost price is the basic manufacturing cost with duties and taxes, without any discount. Paid once, so a used car bought in Delhi does not pay it again. Electric cars up to ₹30 lakh ex-showroom are exempt to 31 March 2030 (Delhi EV Policy 2026, para 4.7.2). Some price sites list higher rates for diesel cars; the Act does not, so none is applied here.",
+      "effectiveDate": "2026-11-01",
+      "status": "verified"
+    }
+  ]
+}

@@ -1,6 +1,10 @@
 {
   "entries": [
     {
+      "date": "2026-11-01",
+      "change": "Added car ownership figures for the coming new vs used car tool: the India Motor Tariff schedule for a car's insured value by age (5% to 50% over five years), the third-party premium by engine size from the 2022 rules (₹2,094, ₹3,416, ₹7,897), and Delhi's one-time road tax (4%, 7%, 10% by price)."
+    },
+    {
       "date": "2026-10-28",
       "change": "Added petrol and CNG prices for Mumbai, Pune, Hyderabad, Kolkata and Ahmedabad, each CNG price from the city's gas distributor, so these cities can now be chosen. Bengaluru and Chennai have verified petrol prices, but their CNG prices are still to be verified, so they are not offered yet. Electricity tariffs for these states are not in the tools yet: the solar, AC and scooter tools ask for your price per unit there."
     },

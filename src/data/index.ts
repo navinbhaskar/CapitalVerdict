@@ -13,9 +13,11 @@ import changelogJson from './changelog.json';
 import incomeTaxJson from './incomeTax.json';
 import smallSavingsJson from './smallSavings.json';
 import evTwoWheelerJson from './evTwoWheeler.json';
+import carsJson from './cars.json';
 import type {
   DataRecord,
   EvTwoWheelerData,
+  CarsData,
   Changelog,
   Defaults,
   FuelPrices,
@@ -180,4 +182,31 @@ export function stateEv2wIncentive(
   if (!p || p.status !== 'verified' || exShowroomPrice > p.maxExShowroomPrice) return 0;
   const year = p.years.find((y) => onDate >= y.from && onDate <= y.until);
   return year ? Math.max(0, Math.min(batteryKWh * year.perKWh, year.cap)) : 0;
+}
+
+export const cars = carsJson as unknown as CarsData;
+
+/**
+ * The share of the listed price an insurer takes off a car of `ageMonths` when fixing its insured
+ * value (the India Motor Tariff schedule). Null beyond five years, where it is agreed instead, or
+ * while unverified. Not a market resale price.
+ */
+export function idvDepreciationShare(ageMonths: number): number | null {
+  const d = cars.idvDepreciation;
+  if (d.status !== 'verified' || ageMonths < 0) return null;
+  return d.bands.find((b) => ageMonths <= b.upToMonths)?.share ?? null;
+}
+
+/** The yearly third-party base premium for a private car of `cc`, ₹ before GST; null if unverified. */
+export function thirdPartyPremium(cc: number): number | null {
+  const p = cars.thirdPartyPremium;
+  if (p.status !== 'verified') return null;
+  return p.privateCar.find((b) => b.upToCC === null || cc <= b.upToCC)!.premium;
+}
+
+/** One-time road tax on a car of `costPrice` registered in `state`, ₹; null without verified rates. */
+export function carRoadTax(state: StateId, costPrice: number): number | null {
+  const t = cars.roadTax.find((r) => r.state === state);
+  if (!t || t.status !== 'verified') return null;
+  return costPrice * t.bands.find((b) => b.upToPrice === null || costPrice <= b.upToPrice)!.rate;
 }

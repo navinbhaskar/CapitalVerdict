@@ -18,6 +18,7 @@ import incomeTaxJson from './incomeTax.json';
 import smallSavingsJson from './smallSavings.json';
 import changelogJson from './changelog.json';
 import evTwoWheelerJson from './evTwoWheeler.json';
+import carsJson from './cars.json';
 
 export const verificationStatus = z.enum(['TODO_VERIFY', 'verified']);
 
@@ -225,6 +226,41 @@ export const evTwoWheelerSchema = z.object({
 });
 export type EvTwoWheelerData = z.infer<typeof evTwoWheelerSchema>;
 
+/**
+ * Car ownership figures: the insurance depreciation schedule by age, the third-party premium by
+ * engine size, and each state's one-time road tax by price.
+ */
+export const carsSchema = z.object({
+  idvDepreciation: z.object({
+    bands: z
+      .array(z.object({ upToMonths: z.number().int().positive(), share: z.number().min(0).max(1) }))
+      .min(1),
+    ...sourced,
+  }),
+  thirdPartyPremium: z.object({
+    privateCar: z
+      .array(z.object({ upToCC: z.number().positive().nullable(), premium: z.number().min(0) }))
+      .min(1),
+    electricCar: z
+      .array(z.object({ upToKW: z.number().positive().nullable(), premium: z.number().min(0) }))
+      .min(1),
+    hybridDiscount: z.number().min(0).max(1),
+    ...sourced,
+  }),
+  roadTax: z.array(
+    z.object({
+      state: stateId,
+      bands: z
+        .array(
+          z.object({ upToPrice: z.number().positive().nullable(), rate: z.number().min(0).max(1) }),
+        )
+        .min(1),
+      ...sourced,
+    }),
+  ),
+});
+export type CarsData = z.infer<typeof carsSchema>;
+
 export const propertySchema = z.object({
   state: z.string().min(1),
   stampDutyAndRegistration: dataRecord,
@@ -333,5 +369,6 @@ export function validateAllData(): void {
   incomeTaxSchema.parse(incomeTaxJson);
   smallSavingsSchema.parse(smallSavingsJson);
   evTwoWheelerSchema.parse(evTwoWheelerJson);
+  carsSchema.parse(carsJson);
   changelogSchema.parse(changelogJson);
 }
