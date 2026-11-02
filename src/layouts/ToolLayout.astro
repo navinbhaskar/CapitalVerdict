@@ -174,13 +174,16 @@ const sections = [
         </nav>
       )}
 
-      {reportHref && (
-        <p class="mt-6 text-sm" data-pagefind-ignore="all">
-          <a href={reportHref} class="link">
+      <p class="mt-6 flex flex-wrap gap-x-5 gap-y-1 text-sm" data-pagefind-ignore="all">
+        {reportHref && (
+          <a href={reportHref} class="link inline-flex min-h-11 items-center">
             {t(locale, 'tool.reportError')}
           </a>
-        </p>
-      )}
+        )}
+        <a href="/how-we-check/" class="link inline-flex min-h-11 items-center">
+          {t(locale, 'footer.link.checks')}
+        </a>
+      </p>
     </article>
   </div>
 </BaseLayout>

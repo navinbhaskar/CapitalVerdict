@@ -1,0 +1,80 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageIntro from '@/components/layout/PageIntro.astro';
+import { t, type MessageKey } from '@/i18n/t';
+import { site } from '@/config/site';
+
+const locale = 'en';
+const email = site.contactEmail;
+/** One card per kind of message; each opens the visitor's email app with its subject filled in. */
+const cards: { key: 'error' | 'idea' | 'other'; template?: MessageKey }[] = [
+  { key: 'error', template: 'contact.error.template' },
+  { key: 'idea', template: 'contact.idea.template' },
+  { key: 'other' },
+];
+const mailto = (subject: MessageKey, template?: MessageKey) =>
+  `mailto:${email}?subject=${encodeURIComponent(t(locale, subject))}${
+    template ? `&body=${encodeURIComponent(t(locale, template))}` : ''
+  }`;
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: t(locale, 'page.contact.title'),
+  url: pageUrl,
+  mainEntity: {
+    '@type': 'Organization',
+    name: t(locale, 'site.name'),
+    url: new URL('/', Astro.site).href,
+    ...(email
+      ? { email, contactPoint: { '@type': 'ContactPoint', email, contactType: 'customer support' } }
+      : {}),
+  },
+};
+---
+
+<BaseLayout
+  locale={locale}
+  title={t(locale, 'page.contact.title')}
+  description={t(locale, 'page.contact.description')}
+  jsonLd={[jsonLd]}
+>
+  <PageIntro title={t(locale, 'page.contact.title')} lead={t(locale, 'page.contact.intro')} />
+  <div class="container-page pt-6 pb-10 sm:pb-12">
+    {email && (
+      <ul class="grid gap-3 sm:grid-cols-3" role="list">
+        {cards.map(({ key, template }) => (
+          <li class="flex flex-col rounded-xl border border-line bg-raised p-4 sm:p-5">
+            <h2 class="font-display text-xl font-medium">
+              {t(locale, `contact.${key}.title` as MessageKey)}
+            </h2>
+            <p class="mt-1.5 flex-1 text-sm text-ink-muted">
+              {t(locale, `contact.${key}.body` as MessageKey)}
+            </p>
+            <a
+              href={mailto(`contact.${key}.subject` as MessageKey, template)}
+              class="btn btn-outline mt-4 min-h-11 self-start px-4 text-sm"
+            >
+              {t(locale, 'contact.write')}
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+    {email && (
+      <p class="mt-5 text-sm text-ink-muted">
+        <a href={`mailto:${email}`} class="link num">
+          {email}
+        </a>
+      </p>
+    )}
+    <p class="mt-2 max-w-(--container-prose) text-sm text-ink-muted">
+      {t(locale, 'contact.privacy')}
+    </p>
+    <p class="mt-4 text-sm">
+      <a href="/how-we-check/" class="link inline-flex min-h-11 items-center">
+        {t(locale, 'contact.checks')}
+      </a>
+    </p>
+  </div>
+</BaseLayout>

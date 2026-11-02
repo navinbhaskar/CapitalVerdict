@@ -1,0 +1,31 @@
+---
+import ProsePage from '@/layouts/ProsePage.astro';
+import { t } from '@/i18n/t';
+---
+
+<ProsePage
+  locale="en"
+  page="checks"
+  sections={[
+    { key: 'sources' },
+    { key: 'disagree' },
+    { key: 'unverified' },
+    { key: 'dates' },
+    { key: 'maths' },
+    { key: 'limits' },
+    { key: 'corrections' },
+  ]}
+>
+  <ul class="mt-6 flex max-w-3xl flex-col gap-1 border-t border-line pt-5" role="list">
+    <li>
+      <a href="/assumptions-changelog/" class="link inline-flex min-h-11 items-center">
+        {t('en', 'page.checks.linkChangelog')}
+      </a>
+    </li>
+    <li>
+      <a href="/contact/" class="link inline-flex min-h-11 items-center">
+        {t('en', 'page.checks.linkContact')}
+      </a>
+    </li>
+  </ul>
+</ProsePage>

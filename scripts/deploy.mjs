@@ -4,7 +4,7 @@
  * redirects www and http to https://capitalverdict.com (a redirect rule and "Always Use HTTPS").
  *
  *   npm run build:site   build dist/ for the domain only
- *   npm run deploy       build, then upload dist/ with Wrangler
+ *   npm run deploy       run the tests, build, then upload dist/ with Wrangler
  *
  * Search engines may index the site (its own robots.txt, with the sitemap). Pass --block-indexing
  * to publish a robots.txt that blocks them instead.
@@ -20,6 +20,8 @@ const npx = (...args) =>
   execFileSync('npx', args, { stdio: 'inherit', env, shell: process.platform === 'win32' });
 const indexing = !process.argv.includes('--block-indexing');
 
+// No deploy with a failing test: every formula and every guide figure is checked first.
+npx('vitest', 'run');
 npx('astro', 'build');
 if (!indexing) writeFileSync(join('dist', 'robots.txt'), 'User-agent: *\nDisallow: /\n');
 console.log(`Built for https://${DOMAIN}/ (indexing ${indexing ? 'allowed' : 'blocked'}).`);
