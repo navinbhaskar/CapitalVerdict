@@ -8,6 +8,7 @@ import BaseLayout from './BaseLayout.astro';
 import PageIntro from '@/components/layout/PageIntro.astro';
 import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { published } from '@/lib/draft';
+import { formulaLines } from '@/lib/formula';
 
 interface Props {
   locale: Locale;
@@ -38,10 +39,19 @@ const shown = sections
           ))}
         </div>
         {formula && (
-          <pre
-            class="num mt-4 overflow-x-auto rounded-lg bg-surface px-4 py-3 text-sm text-ink"
-            set:text={k(`${key}.formula`)}
-          />
+          <div
+            class="formula-block mt-4 overflow-x-auto rounded-lg bg-surface px-4 py-3 text-ink"
+            role="group"
+            aria-label={k(`${key}.title`)}
+          >
+            {formulaLines(k(`${key}.formula`)).map(({ lhs, rhs }) => (
+              <>
+                <span class="formula-lhs" set:html={lhs} />
+                <span class="formula-eq">{lhs ? '=' : ''}</span>
+                <span class="formula-rhs" set:html={rhs} />
+              </>
+            ))}
+          </div>
         )}
       </section>
     ))}

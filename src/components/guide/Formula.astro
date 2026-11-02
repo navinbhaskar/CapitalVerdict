@@ -1,0 +1,20 @@
+---
+/** A formula in a guide, drawn as maths: powers raised, divisions stacked. */
+import { formulaLines } from '@/lib/formula';
+
+interface Props {
+  /** One or more lines in the site's formula notation, e.g. "EMI = P × r × (1 + r)^n ÷ …". */
+  text: string;
+}
+const { text } = Astro.props;
+---
+
+<div class="formula-block my-4 overflow-x-auto rounded-lg bg-surface px-4 py-3 text-ink">
+  {formulaLines(text).map(({ lhs, rhs }) => (
+    <>
+      <span class="formula-lhs" set:html={lhs} />
+      <span class="formula-eq">{lhs ? '=' : ''}</span>
+      <span class="formula-rhs" set:html={rhs} />
+    </>
+  ))}
+</div>

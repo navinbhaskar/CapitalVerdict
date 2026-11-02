@@ -1,4 +1,5 @@
 import type { ComponentChildren } from 'preact';
+import { formulaMathML, hasMaths } from '@/lib/formula';
 
 /** One line of "how the answer is worked out": a label, optional arithmetic, and the value. */
 export interface WorkingRow {
@@ -28,9 +29,16 @@ export default function WorkingBlock({
           <div key={row.label} class="flex items-baseline justify-between gap-4 py-2">
             <dt class="min-w-0">
               <span class={row.strong ? 'font-medium' : ''}>{row.label}</span>
-              {row.formula && (
-                <span class="mt-0.5 block text-xs text-ink-muted num">{row.formula}</span>
-              )}
+              {row.formula &&
+                (hasMaths(row.formula) ? (
+                  <span
+                    class="formula-inline mt-0.5 block text-xs text-ink-muted num"
+                    // Our own formula copy with the visitor's numbers, drawn as MathML.
+                    dangerouslySetInnerHTML={{ __html: formulaMathML(row.formula) }}
+                  />
+                ) : (
+                  <span class="mt-0.5 block text-xs text-ink-muted num">{row.formula}</span>
+                ))}
             </dt>
             <dd
               class={`shrink-0 text-right num ${row.strong ? 'text-base font-semibold' : ''} ${

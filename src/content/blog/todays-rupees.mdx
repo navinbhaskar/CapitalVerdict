@@ -5,6 +5,7 @@ date: 2026-10-20
 kind: basics
 ---
 
+import Formula from '@/components/guide/Formula.astro';
 import InShort from '@/components/guide/InShort.astro';
 import Table from '@/components/guide/Table.astro';
 import LineChart from '@/components/guide/LineChart.astro';
@@ -25,7 +26,7 @@ Long-term calculators produce big numbers. A house worth ₹1 crore in 15 years,
 
 Divide the future amount by inflation, compounded over the same years:
 
-today's rupees = future amount ÷ (1 + inflation)^years
+<Formula text="today's rupees = future amount ÷ (1 + inflation)^years" />
 
 At 6% inflation, prices roughly multiply by 2.40 over 15 years. So **₹1 crore in 15 years is worth about ₹41.73 lakh today.**
 

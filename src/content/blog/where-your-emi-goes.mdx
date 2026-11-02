@@ -7,6 +7,7 @@ tool: emi-calculator
 ---
 
 import InShort from '@/components/guide/InShort.astro';
+import Formula from '@/components/guide/Formula.astro';
 import Table from '@/components/guide/Table.astro';
 import Bars from '@/components/guide/Bars.astro';
 import LineChart from '@/components/guide/LineChart.astro';
@@ -27,7 +28,7 @@ An EMI (equated monthly instalment) is the same amount every month, but what it 
 
 Banks quote a yearly rate and charge a twelfth of it each month. If r is that monthly rate and n the number of months:
 
-EMI = loan × r × (1 + r)ⁿ ÷ ((1 + r)ⁿ − 1)
+<Formula text="EMI = loan × r × (1 + r)^n ÷ ((1 + r)^n − 1)" />
 
 For ₹40 lakh at 9% over 20 years, r = 0.75% and n = 240, which gives an EMI of **₹35,989**.
 
