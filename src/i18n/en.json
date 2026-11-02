@@ -2278,5 +2278,8 @@
   "state.TS": "Telangana",
   "state.TN": "Tamil Nadu",
   "state.WB": "West Bengal",
-  "state.GJ": "Gujarat"
+  "state.GJ": "Gujarat",
+  "blog.all": "All",
+  "blog.loadMore": "Show more guides",
+  "blog.showing": "Showing {shown} of {total}"
 }

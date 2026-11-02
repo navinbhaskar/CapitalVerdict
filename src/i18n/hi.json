@@ -2278,5 +2278,8 @@
   "state.TS": "TODO_COPY_HI",
   "state.TN": "TODO_COPY_HI",
   "state.WB": "TODO_COPY_HI",
-  "state.GJ": "TODO_COPY_HI"
+  "state.GJ": "TODO_COPY_HI",
+  "blog.all": "TODO_COPY_HI",
+  "blog.loadMore": "TODO_COPY_HI",
+  "blog.showing": "TODO_COPY_HI"
 }

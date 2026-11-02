@@ -1,26 +1,31 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import PageIntro from '@/components/layout/PageIntro.astro';
 import GuideCard from '@/components/blog/GuideCard.astro';
-import { t } from '@/i18n/t';
+import { t, type MessageKey } from '@/i18n/t';
 import { areaId, byDateDesc, guideArea } from '@/lib/blog';
 import { TOOL_GROUPS } from '@/lib/tools';
 
 const locale = 'en';
 const posts = (await getCollection('blog')).sort(byDateDesc);
-const KIND_ORDER = { decision: 0, basics: 1, update: 2 } as const;
-// Within an area: the worked decisions first, then the basics, then dated updates; newest first.
-const inArea = (index: number | null) =>
-  posts
-    .filter((p) => guideArea(p.data.tool) === index)
-    .sort((a, b) => KIND_ORDER[a.data.kind] - KIND_ORDER[b.data.kind]);
-const areas = TOOL_GROUPS.map((group, index) => ({
-  id: areaId(index),
-  title: group.title,
-  posts: inArea(index),
-})).filter((a) => a.posts.length > 0);
-const general: CollectionEntry<'blog'>[] = inArea(null);
+// Every guide carries its area of life; guides without a calculator are money basics.
+const BASICS = 'basics';
+const areaOf = (tool: Parameters<typeof guideArea>[0]) => {
+  const index = guideArea(tool);
+  return index === null
+    ? { id: BASICS, title: 'blog.kind.basics' as MessageKey }
+    : { id: areaId(index), title: TOOL_GROUPS[index]!.title };
+};
+const items = posts.map((post) => ({ post, area: areaOf(post.data.tool) }));
+const areas = [
+  ...TOOL_GROUPS.map((g, i) => ({ id: areaId(i), title: g.title })),
+  { id: BASICS, title: 'blog.kind.basics' as MessageKey },
+]
+  .map((a) => ({ ...a, count: items.filter((x) => x.area.id === a.id).length }))
+  .filter((a) => a.count > 0);
+const chip =
+  'chip relative inline-flex min-h-8 items-center gap-1.5 rounded-full border border-line-strong bg-raised px-3 text-sm font-medium text-ink transition-colors duration-(--duration-fast) ease-out-quart hover:border-accent hover:text-accent-strong aria-pressed:border-accent-strong aria-pressed:bg-accent-soft aria-pressed:text-accent-strong';
 ---
 
 <BaseLayout
@@ -29,60 +34,96 @@ const general: CollectionEntry<'blog'>[] = inArea(null);
   description={t(locale, 'blog.description')}
 >
   <PageIntro title={t(locale, 'blog.title')} lead={t(locale, 'blog.intro')} />
-  <div class="container-page pt-2 pb-10 sm:pb-12">
-    <nav aria-label={t(locale, 'blog.topics')} class="mt-6">
-      <ul class="flex flex-wrap gap-2" role="list">
-        {areas.map((area) => (
-          <li>
-            <a
-              href={`#${area.id}`}
-              class="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong bg-raised px-4 text-sm font-medium text-ink transition-colors duration-(--duration-fast) ease-out-quart hover:border-accent hover:text-accent-strong"
-            >
-              {t(locale, area.title)}
-              <span class="num text-ink-muted">{area.posts.length}</span>
-            </a>
-          </li>
-        ))}
-        {general.length > 0 && (
-          <li>
-            <a
-              href="#basics"
-              class="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong bg-raised px-4 text-sm font-medium text-ink transition-colors duration-(--duration-fast) ease-out-quart hover:border-accent hover:text-accent-strong"
-            >
-              {t(locale, 'blog.kind.basics')}
-              <span class="num text-ink-muted">{general.length}</span>
-            </a>
-          </li>
-        )}
-      </ul>
-    </nav>
-
-    {areas.map((area) => (
-      <section id={area.id} class="mt-10 scroll-mt-24" aria-labelledby={`${area.id}-h`}>
-        <span class="rule-brass" aria-hidden="true" />
-        <h2 id={`${area.id}-h`} class="mt-3 font-display text-2xl font-medium">
+  <div
+    class="container-page pt-2 pb-10 sm:pb-12"
+    data-guides
+    data-count-template={t(locale, 'blog.showing')}
+  >
+    <!-- Topic chips filter the list. Without JavaScript every guide simply shows. -->
+    <div role="group" aria-label={t(locale, 'blog.topics')} class="mt-6 flex flex-wrap gap-2">
+      <button type="button" class={chip} data-area="" aria-pressed="true">
+        {t(locale, 'blog.all')}
+        <span class="num text-ink-muted">{items.length}</span>
+      </button>
+      {areas.map((area) => (
+        <button type="button" class={chip} data-area={area.id} aria-pressed="false">
           {t(locale, area.title)}
-        </h2>
-        <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
-          {area.posts.map((post) => (
-            <GuideCard locale={locale} post={post} />
-          ))}
-        </ul>
-      </section>
-    ))}
+          <span class="num text-ink-muted">{area.count}</span>
+        </button>
+      ))}
+    </div>
 
-    {general.length > 0 && (
-      <section id="basics" class="mt-10 scroll-mt-24" aria-labelledby="basics-h">
-        <span class="rule-brass" aria-hidden="true" />
-        <h2 id="basics-h" class="mt-3 font-display text-2xl font-medium">
-          {t(locale, 'blog.kind.basics')}
-        </h2>
-        <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
-          {general.map((post) => (
-            <GuideCard locale={locale} post={post} />
-          ))}
-        </ul>
-      </section>
-    )}
+    <ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" role="list" data-guide-list>
+      {items.map(({ post, area }) => (
+        <GuideCard
+          locale={locale}
+          post={post}
+          compact
+          area={t(locale, area.title)}
+          data-area={area.id}
+        />
+      ))}
+    </ul>
+
+    <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2" data-more-row hidden>
+      <button type="button" class="btn btn-outline min-h-11 px-4 text-sm" data-more>
+        {t(locale, 'blog.loadMore')}
+      </button>
+      <p class="num text-sm text-ink-muted" aria-live="polite" data-count></p>
+    </div>
   </div>
 </BaseLayout>
+
+<script>
+  // Three rows at a time, however many columns the grid has, filtered by topic.
+  const root = document.querySelector<HTMLElement>('[data-guides]');
+  const list = root?.querySelector<HTMLElement>('[data-guide-list]');
+  const moreRow = root?.querySelector<HTMLElement>('[data-more-row]');
+  const more = root?.querySelector<HTMLButtonElement>('[data-more]');
+  const count = root?.querySelector<HTMLElement>('[data-count]');
+  if (root && list && moreRow && more && count) {
+    const cards = [...list.children] as HTMLElement[];
+    const chips = [...root.querySelectorAll<HTMLButtonElement>('[data-area]')].filter(
+      (el) => el.tagName === 'BUTTON',
+    );
+    const ROWS = 3;
+    let area = '';
+    let pages = 1;
+    const columns = () => getComputedStyle(list).gridTemplateColumns.split(' ').length;
+    const render = () => {
+      const matching = cards.filter((c) => !area || c.dataset.area === area);
+      const limit = columns() * ROWS * pages;
+      for (const c of cards) c.hidden = true;
+      matching.forEach((c, i) => (c.hidden = i >= limit));
+      const shown = Math.min(limit, matching.length);
+      moreRow.hidden = shown >= matching.length;
+      count.textContent = (count.dataset.template ?? '')
+        .replace('{shown}', String(shown))
+        .replace('{total}', String(matching.length));
+    };
+    count.dataset.template = root.dataset.countTemplate ?? '';
+    for (const chip of chips) {
+      chip.addEventListener('click', () => {
+        area = chip.dataset.area ?? '';
+        pages = 1;
+        for (const c of chips) c.setAttribute('aria-pressed', String(c === chip));
+        render();
+      });
+    }
+    more.addEventListener('click', () => {
+      const firstNew = cards.filter((c) => !area || c.dataset.area === area)[
+        columns() * ROWS * pages
+      ];
+      pages += 1;
+      render();
+      firstNew?.querySelector('a')?.focus({ preventScroll: true });
+    });
+    let width = window.innerWidth;
+    window.addEventListener('resize', () => {
+      if (window.innerWidth === width) return;
+      width = window.innerWidth;
+      render();
+    });
+    render();
+  }
+</script>

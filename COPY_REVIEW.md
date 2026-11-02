@@ -394,3 +394,9 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | [ ] `src/content/blog/what-a-10-lakh-car-really-costs.mdx` (title, description, takeaway, all text)                                                             | /guides/what-a-10-lakh-car-really-costs/ |
 | [ ] Bar and table labels in `carCost` in `src/content/guideFigures.ts`                                                                                          | The guide's bars and value table         |
 | [ ] Uses the insurers' IDV schedule as a stand-in for resale, labelled as such; counts only third-party insurance; 7% after-tax return as in the car loan guide | Labelled in the text and notes           |
+
+## Guides page (drafted 2026-11-02)
+
+| Key                                                                                                         | Where it shows                                           |
+| ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| [ ] `blog.all` ("All"), `blog.loadMore` ("Show more guides"), `blog.showing` ("Showing {shown} of {total}") | /guides/: the topic filter and the button below the list |
