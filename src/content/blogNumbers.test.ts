@@ -21,7 +21,14 @@ import { carLoanFlips, cashOrLoan } from '@/models/carLoan';
 import { irr } from '@/engine/irr';
 import { fundPlan, maxWithdrawal } from '@/models/fund';
 import { payoutScaleAt, planReturn } from '@/models/planReturn';
-import { eightyC, hraFigures, moneyBackFigures, rateRise, retire55 } from '@/content/guideFigures';
+import {
+  carCost,
+  eightyC,
+  hraFigures,
+  moneyBackFigures,
+  rateRise,
+  retire55,
+} from '@/content/guideFigures';
 
 describe('posts: CNG payback, break-even, Lucknow update', () => {
   const lucknow = verifiedFuelPrices('lucknow')!;
@@ -758,5 +765,44 @@ describe('post: how much to save to retire at 55', () => {
     expect(Math.round(at(0.08).flat)).toBe(68_571);
     expect(crore(at(0.12).pot)).toBe(3.66);
     expect(Math.round(at(0.12).flat)).toBe(24_044);
+  });
+});
+
+describe('post: what a ₹10 lakh car really costs', () => {
+  const c = carCost;
+  const lakh = (x: number) => Math.round(x / 1e3) / 100;
+
+  it('Delhi road tax: ₹70,000 at ₹10 lakh, ₹1,00,000 one rupee above', () => {
+    expect(Math.round(c.roadTax)).toBe(70_000);
+    expect(Math.round(c.roadTaxJustOver)).toBe(100_000);
+  });
+
+  it('insured value: 15%, 20%, 30%, 40%, 50% off; ₹5 lakh left at year 5', () => {
+    expect(c.value.rows.map((r) => r[2])).toEqual([
+      '₹8.50 lakh',
+      '₹8.00 lakh',
+      '₹7.00 lakh',
+      '₹6.00 lakh',
+      '₹5.00 lakh',
+    ]);
+    expect(c.valueEnd).toBe(500_000);
+  });
+
+  it('₹10.70 lakh at 7% for 5 years earns ₹4.31 lakh; ₹3,416 × 5 = ₹17,080', () => {
+    expect(c.cashOut).toBe(1_070_000);
+    expect(c.parts.forgone).toBeCloseTo(1_070_000 * (Math.pow(1.07, 5) - 1), 4);
+    expect(lakh(c.parts.forgone)).toBe(4.31);
+    expect(c.parts.insurance).toBe(17_080);
+  });
+
+  it('₹10.18 lakh in all, ₹16,964 a month', () => {
+    expect(lakh(c.total)).toBe(10.18);
+    expect(Math.round(c.perMonth)).toBe(16_964);
+  });
+
+  it('on a loan: EMI ₹16,607, ₹1.96 lakh interest, ₹67,298 behind cash', () => {
+    expect(Math.round(c.loan.emi)).toBe(16_607);
+    expect(lakh(c.loan.totalInterest)).toBe(1.96);
+    expect(Math.round(c.loan.atEnd.difference)).toBe(67_298);
   });
 });

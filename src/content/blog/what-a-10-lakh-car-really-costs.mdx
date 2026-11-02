@@ -1,0 +1,70 @@
+---
+title: 'What a ₹10 lakh car really costs over 5 years'
+description: Bought for cash in Delhi and kept 5 years, a ₹10 lakh car costs about ₹10.18 lakh before fuel and servicing, mostly in lost value and lost returns. A loan adds ₹67,298 more.
+date: 2026-11-02
+kind: decision
+tool: cash-or-car-loan
+takeaway:
+  figure: '₹16,964'
+  label: A month over 5 years, before fuel, servicing and full insurance
+---
+
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import Bars from '@/components/guide/Bars.astro';
+import { carCost } from '@/content/guideFigures';
+
+<InShort>
+
+- A ₹10 lakh car bought for cash in Delhi and kept 5 years costs about **₹10.18 lakh**: **₹16,964** a month, before fuel, servicing, parking and full insurance.
+- Most of it is not the bills you see: **₹5 lakh** of lost value and **₹4.31 lakh** that the cash could have earned.
+- Borrowing 80% at 9% over 5 years adds **₹67,298** more, if your savings earn 7% after tax.
+
+</InShort>
+
+A car's sticker price is the start of what it costs, not the end. The biggest costs never arrive as a bill: the car loses value, and the money in it stops earning. Here is a ₹10 lakh car, ex-showroom, registered in Delhi, paid for in cash and kept 5 years.
+
+## The money that goes out on day one
+
+- **₹10 lakh** for the car.
+- **₹70,000** road tax. Delhi charges 7% of the price for cars from ₹6 lakh to ₹10 lakh, once, at registration.
+- Registration fees, insurance and accessories on top, which vary by dealer and insurer.
+
+Watch the ₹10 lakh line: above it, Delhi's rate jumps to 10% of the whole price. A car priced at ₹10,00,001 pays **₹1,00,000** of road tax, ₹30,000 more for one rupee.
+
+## What it is worth as it ages
+
+When insurers set a car's insured value, they take a fixed share off the list price by its age. It is not a market resale price, and used cars often sell for more or less, but it is the one official yardstick.
+
+<Table
+  title="A ₹10 lakh car's insured value by age"
+  table={carCost.value}
+  note="The India Motor Tariff schedule for fixing insured value. Beyond 5 years, the value is agreed with the insurer."
+/>
+
+By the end of year 5, half the price, **₹5 lakh**, is gone.
+
+## What the cash could have earned
+
+The ₹10.70 lakh paid out on day one could have stayed invested. At 7% a year after tax, it would have grown by **₹4.31 lakh** in 5 years. That is a real cost of owning the car, even though no one sends you a bill for it.
+
+## Adding it up
+
+<Bars
+  title="Five years of a ₹10 lakh car, paid in cash"
+  items={carCost.breakdown}
+  note="Delhi, 1000–1500 cc. Not counted: fuel, servicing, parking, and insurance beyond third-party cover."
+/>
+
+That comes to about **₹10.18 lakh** over 5 years, or **₹16,964** a month. Fuel, servicing, parking and comprehensive insurance come on top. Third-party cover alone is ₹3,416 a year before GST for a 1,000 to 1,500 cc car; comprehensive cover costs more and depends on the insurer.
+
+## On a loan instead
+
+Borrow 80% at 9% over 5 years with a ₹5,000 fee, and the EMI is **₹16,607**. You pay **₹1.96 lakh** in interest. If your savings earn 7% after tax, you end up **₹67,298** behind someone who paid cash and invested the EMI instead. Our guide [Car loan or cash](/guides/car-loan-or-cash/) explains why: with the fee, the loan really costs 9.67% a year, more than the savings earn.
+
+## Ways to bring the cost down
+
+- **Keep it longer.** The first year takes the biggest bite, 15% of the price; after that the schedule takes 5% to 10% a year.
+- **Mind the ₹10 lakh line** in Delhi, where the road tax rate steps up from 7% to 10%.
+- **Pay cash if your savings earn less than the loan costs.** Our [cash or car loan calculator](/tools/cash-or-car-loan/) shows it for your own loan and returns.
+- **Consider a used car**: the first owner has already paid the steepest part of the fall in value, and the road tax.

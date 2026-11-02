@@ -3,7 +3,15 @@
  * here is typed in by hand: change a model or a data file and every figure follows. Labels are
  * guide copy (see COPY_REVIEW.md); the numbers are not.
  */
-import { defaults, incomeTax, smallSavings, verifiedFuelPrices } from '@/data';
+import {
+  carRoadTax,
+  defaults,
+  idvDepreciationShare,
+  incomeTax,
+  smallSavings,
+  thirdPartyPremium,
+  verifiedFuelPrices,
+} from '@/data';
 import { amortise } from '@/engine/loan';
 import { simpleTariff } from '@/engine/tariff';
 import { toTodaysRupees } from '@/engine/timeValue';
@@ -1357,5 +1365,79 @@ export const retire55 = {
       formatINR(r.stepped),
     ]),
     highlight: 1,
+  } satisfies TableData,
+};
+
+/* ---------- What a ₹10 lakh car really costs over 5 years ---------- */
+
+/**
+ * A ₹10 lakh (ex-showroom) car registered in Delhi, bought for cash and kept 5 years. Its value
+ * by age follows the insurers' IDV schedule (a stand-in for resale, labelled as such); road tax
+ * is Delhi's; insurance is only the third-party base premium for 1000–1500 cc; the cash could have
+ * earned 7% a year after tax, as in the car loan guide. Fuel, servicing, parking and comprehensive
+ * insurance are left out.
+ */
+const carPrice = 1_000_000;
+const ownYears = 5;
+const carRoad = carRoadTax('DL', carPrice)!;
+const carRoadJustOver = carRoadTax('DL', carPrice + 1)!;
+const carTp = thirdPartyPremium(1_200)!;
+const carCashOut = carPrice + carRoad;
+const carGrowth = Math.pow(1 + carCase.investmentReturn, ownYears) - 1;
+const carValueAt = (year: number) => carPrice * (1 - idvDepreciationShare(year * 12)!);
+const carValueEnd = carValueAt(ownYears);
+const carParts = {
+  valueLost: carPrice - carValueEnd,
+  roadTax: carRoad,
+  insurance: carTp * ownYears,
+  forgone: carCashOut * carGrowth,
+};
+const carTotal = carParts.valueLost + carParts.roadTax + carParts.insurance + carParts.forgone;
+const carOnLoan = cashOrLoan(carCase);
+
+export const carCost = {
+  price: carPrice,
+  roadTax: carRoad,
+  roadTaxJustOver: carRoadJustOver,
+  thirdParty: carTp,
+  cashOut: carCashOut,
+  valueEnd: carValueEnd,
+  parts: carParts,
+  total: carTotal,
+  perMonth: carTotal / (ownYears * 12),
+  loan: carOnLoan,
+  breakdown: [
+    {
+      label: 'Value lost',
+      value: carParts.valueLost,
+      display: money(carParts.valueLost),
+      note: 'Insurers’ IDV schedule: 50% of the price by year 5',
+    },
+    {
+      label: 'What the cash could have earned',
+      value: carParts.forgone,
+      display: money(carParts.forgone),
+      note: `${money(carCashOut)} at ${pct(carCase.investmentReturn)} a year after tax`,
+    },
+    {
+      label: 'Road tax, Delhi',
+      value: carParts.roadTax,
+      display: money(carParts.roadTax),
+      note: '7% of the price, paid once',
+    },
+    {
+      label: 'Third-party insurance',
+      value: carParts.insurance,
+      display: money(carParts.insurance),
+      note: `${formatINR(carTp)} a year before GST, the same at every insurer`,
+    },
+  ] satisfies CompareItem[],
+  value: {
+    head: ['End of year', 'Insurers take off', 'Value'],
+    rows: [1, 2, 3, 4, 5].map((y) => [
+      `Year ${y}`,
+      pct(idvDepreciationShare(y * 12)!),
+      money(carValueAt(y)),
+    ]),
   } satisfies TableData,
 };
