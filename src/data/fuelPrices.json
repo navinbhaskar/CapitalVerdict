@@ -6,34 +6,38 @@
       "petrol": {
         "value": 102.12,
         "unit": "₹/L",
-        "source": "Delhi retail price on 26 Oct 2026: ₹102.12 a litre in Goodreturns and Business Today, unchanged since at least 16 Oct (goodreturns.in/petrol-price-in-new-delhi.html, businesstoday.in/fuel-price/petrol-price-in-delhi-today). Indian Oil publishes city prices only by SMS (RSP 102090 to 92249 92249 for Delhi) and its app. Changes daily at 6 am; check at your pump.",
-        "effectiveDate": "2026-10-26",
-        "status": "verified"
+        "source": "Delhi retail price on 2 Nov 2026: ₹102.12 a litre in Goodreturns (goodreturns.in/petrol-price-in-new-delhi.html) and Punjab Kesari and Asianet Newsable city-wise reports of 2 Nov 2026. Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-11-02",
+        "status": "verified",
+        "checkedDate": "2026-11-02"
       },
       "cng": {
         "value": 86.98,
         "unit": "₹/kg",
-        "source": "Indraprastha Gas Limited (IGL), the city gas distributor for Delhi: raised to ₹86.98/kg from ₹83.09 with effect from 6 am on 29 Aug 2026 (PTI report, 29 Aug 2026, dtnext.in). Still ₹86.98 on 23 Oct 2026 per Goodreturns. IGL's own price page still shows its April 2023 notice.",
+        "source": "Indraprastha Gas Limited (IGL), the city gas distributor for Delhi: raised to ₹86.98/kg from ₹83.09 with effect from 6 am on 29 Aug 2026 (PTI report, 29 Aug 2026, dtnext.in). Still ₹86.98 on 23 Oct 2026 per Goodreturns. IGL's own price page still shows its April 2023 notice. Re-checked on 2 Nov 2026: unchanged.",
         "effectiveDate": "2026-08-29",
-        "status": "verified"
+        "status": "verified",
+        "checkedDate": "2026-11-02"
       }
     },
     {
       "id": "lucknow",
       "state": "UP",
       "petrol": {
-        "value": 101.86,
+        "value": 101.89,
         "unit": "₹/L",
-        "source": "Lucknow retail price on 19 Oct 2026: ₹101.86 a litre in Goodreturns, BankBazaar and Business Today (goodreturns.in/petrol-price-in-lucknow.html). Indian Oil publishes city prices only by SMS (RSP 155054 to 92249 92249) and its app. Changes daily at 6 am; check at your pump.",
-        "effectiveDate": "2026-10-19",
-        "status": "verified"
+        "source": "Lucknow retail price on 2 Nov 2026: ₹101.89 a litre in Goodreturns (goodreturns.in/petrol-price-in-lucknow.html) and Punjab Kesari's city-wise report of 2 Nov 2026. Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-11-02",
+        "status": "verified",
+        "checkedDate": "2026-11-02"
       },
       "cng": {
         "value": 107,
         "unit": "₹/kg",
-        "source": "Green Gas Limited, the city gas distributor for Lucknow (gglonline.net/cng-price): Rs 107.00/kg w.e.f. 6:00 hrs 03.10.2026.",
+        "source": "Green Gas Limited, the city gas distributor for Lucknow (gglonline.net/cng-price): Rs 107.00/kg w.e.f. 6:00 hrs 03.10.2026. Re-checked on 2 Nov 2026: unchanged.",
         "effectiveDate": "2026-10-03",
-        "status": "verified"
+        "status": "verified",
+        "checkedDate": "2026-11-02"
       }
     },
     {
@@ -150,16 +154,18 @@
       "petrol": {
         "value": 111.21,
         "unit": "₹/L",
-        "source": "Mumbai retail price on 28 Oct 2026: ₹111.21 a litre in the Goodreturns city page, 28 Oct 2026 (goodreturns.in/petrol-price-in-mumbai.html) and HDFC Sky's 28 Oct 2026 city-wise report (hdfcsky.com). Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
-        "effectiveDate": "2026-10-28",
-        "status": "verified"
+        "source": "Mumbai retail price on 2 Nov 2026: ₹111.21 a litre in Goodreturns (goodreturns.in/petrol-price-in-mumbai.html) and Punjab Kesari and Asianet Newsable city-wise reports of 2 Nov 2026. Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-11-02",
+        "status": "verified",
+        "checkedDate": "2026-11-02"
       },
       "cng": {
         "value": 89,
         "unit": "₹/kg",
-        "source": "Mahanagar Gas Limited (MGL), the city gas distributor for Mumbai: raised by ₹1 to ₹89/kg from 1 Oct 2026 (Lokmat Times report of the MGL revision, 1 Oct 2026), after ₹88 from 1 Sep 2026 (PSU Connect report of MGL's notice). Still ₹89 on 28 Oct 2026 per Goodreturns. MGL's own site could not be read.",
+        "source": "Mahanagar Gas Limited (MGL), the city gas distributor for Mumbai: raised by ₹1 to ₹89/kg from 1 Oct 2026 (Lokmat Times report of the MGL revision, 1 Oct 2026), after ₹88 from 1 Sep 2026 (PSU Connect report of MGL's notice). Still ₹89 on 28 Oct 2026 per Goodreturns. MGL's own site could not be read. Re-checked on 2 Nov 2026: unchanged.",
         "effectiveDate": "2026-10-01",
-        "status": "verified"
+        "status": "verified",
+        "checkedDate": "2026-11-02"
       }
     },
     {
@@ -168,16 +174,18 @@
       "petrol": {
         "value": 111.9,
         "unit": "₹/L",
-        "source": "Pune retail price on 28 Oct 2026: ₹111.90 a litre in the Goodreturns city page, 28 Oct 2026 (goodreturns.in/petrol-price-in-pune.html) and CarDekho's Pune page (26 Oct 2026). Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
-        "effectiveDate": "2026-10-28",
-        "status": "verified"
+        "source": "Pune retail price on 2 Nov 2026: ₹111.90 a litre in Goodreturns (goodreturns.in/petrol-price-in-pune.html) and CarDekho's Pune page (2 Nov 2026). Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-11-02",
+        "status": "verified",
+        "checkedDate": "2026-11-02"
       },
       "cng": {
         "value": 97.75,
         "unit": "₹/kg",
-        "source": "Maharashtra Natural Gas Limited (MNGL), the city gas distributor for Pune, CNG rate card (mngl.in/cng/rate-card): Pune GA ₹97.75 per kg, inclusive of all taxes, revised w.e.f. midnight of 1 Sep 2026. Some price sites show ₹100.50; the distributor's own rate card is used.",
+        "source": "Maharashtra Natural Gas Limited (MNGL), the city gas distributor for Pune, CNG rate card (mngl.in/cng/rate-card): Pune GA ₹97.75 per kg, inclusive of all taxes, revised w.e.f. midnight of 1 Sep 2026. Some price sites show ₹100.50; the distributor's own rate card is used. Re-checked on 2 Nov 2026: unchanged.",
         "effectiveDate": "2026-09-01",
-        "status": "verified"
+        "status": "verified",
+        "checkedDate": "2026-11-02"
       }
     },
     {
@@ -204,16 +212,18 @@
       "petrol": {
         "value": 116.15,
         "unit": "₹/L",
-        "source": "Hyderabad retail price on 28 Oct 2026: ₹116.15 a litre in the Goodreturns city page, 28 Oct 2026 (goodreturns.in/petrol-price-in-hyderabad.html) and HDFC Sky's 28 Oct 2026 city-wise report (hdfcsky.com). Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
-        "effectiveDate": "2026-10-28",
-        "status": "verified"
+        "source": "Hyderabad retail price on 2 Nov 2026: ₹116.15 a litre in Goodreturns (goodreturns.in/petrol-price-in-hyderabad.html) and CarDekho's Hyderabad page (2 Nov 2026). Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-11-02",
+        "status": "verified",
+        "checkedDate": "2026-11-02"
       },
       "cng": {
-        "value": 114.5,
+        "value": 115,
         "unit": "₹/kg",
-        "source": "Bhagyanagar Gas Limited, the city gas distributor for Hyderabad, price tag (bglgas.com/price-tag): CNG Hyderabad ₹114.50 per kg, inclusive of taxes, effective 16.10.2026. Price sites still show ₹112; the distributor's own table is used.",
-        "effectiveDate": "2026-10-16",
-        "status": "verified"
+        "source": "Bhagyanagar Gas Limited, the city gas distributor for Hyderabad, price tag (bglgas.com/price-tag): CNG Hyderabad ₹115.00 per kg, inclusive of taxes, effective 02.11.2026 (up from ₹114.50 on 16.10.2026).",
+        "effectiveDate": "2026-11-02",
+        "status": "verified",
+        "checkedDate": "2026-11-02"
       }
     },
     {
@@ -240,16 +250,18 @@
       "petrol": {
         "value": 113.51,
         "unit": "₹/L",
-        "source": "Kolkata retail price on 28 Oct 2026: ₹113.51 a litre in the Goodreturns city page, 28 Oct 2026 (goodreturns.in/petrol-price-in-kolkata.html) and HDFC Sky's 28 Oct 2026 city-wise report (hdfcsky.com). Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
-        "effectiveDate": "2026-10-28",
-        "status": "verified"
+        "source": "Kolkata retail price on 2 Nov 2026: ₹113.51 a litre in Goodreturns (goodreturns.in/petrol-price-in-kolkata.html) and Punjab Kesari and Asianet Newsable city-wise reports of 2 Nov 2026. Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-11-02",
+        "status": "verified",
+        "checkedDate": "2026-11-02"
       },
       "cng": {
         "value": 103,
         "unit": "₹/kg",
-        "source": "Bengal Gas Company Limited, the city gas distributor for Kolkata, tariff page (bgcl.co.in/TariffRate.html): all CNG stations ₹103.00 per kg w.e.f. 06:00 hrs, 16 Aug 2026. Some price sites still show ₹93.50.",
+        "source": "Bengal Gas Company Limited, the city gas distributor for Kolkata, tariff page (bgcl.co.in/TariffRate.html): all CNG stations ₹103.00 per kg w.e.f. 06:00 hrs, 16 Aug 2026. Some price sites still show ₹93.50. Re-checked on 2 Nov 2026: unchanged.",
         "effectiveDate": "2026-08-16",
-        "status": "verified"
+        "status": "verified",
+        "checkedDate": "2026-11-02"
       }
     },
     {
@@ -258,16 +270,18 @@
       "petrol": {
         "value": 102.15,
         "unit": "₹/L",
-        "source": "Ahmedabad retail price on 28 Oct 2026: ₹102.15 a litre in the Goodreturns city page, 28 Oct 2026 (goodreturns.in/petrol-price-in-ahmedabad.html) and CarDekho's India page (28 Oct 2026). Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
-        "effectiveDate": "2026-10-28",
-        "status": "verified"
+        "source": "Ahmedabad retail price on 2 Nov 2026: ₹102.15 a litre in Goodreturns (goodreturns.in/petrol-price-in-ahmedabad.html) and CarDekho's India page (2 Nov 2026). Indian Oil publishes city prices only by SMS and its app. Changes daily at 6 am; check at your pump.",
+        "effectiveDate": "2026-11-02",
+        "status": "verified",
+        "checkedDate": "2026-11-02"
       },
       "cng": {
         "value": 98.47,
         "unit": "₹/kg",
-        "source": "Adani Total Gas, the city gas distributor for Ahmedabad, CNG page (adanigas.com/cng): Ahmedabad ₹98.47 per kg, inclusive of all taxes, w.e.f. 23/10/2026 (raised by ₹4.45, DeshGujarat, 23 Oct 2026).",
+        "source": "Adani Total Gas, the city gas distributor for Ahmedabad, CNG page (adanigas.com/cng): Ahmedabad ₹98.47 per kg, inclusive of all taxes, w.e.f. 23/10/2026 (raised by ₹4.45, DeshGujarat, 23 Oct 2026). Re-checked on 2 Nov 2026: unchanged.",
         "effectiveDate": "2026-10-23",
-        "status": "verified"
+        "status": "verified",
+        "checkedDate": "2026-11-02"
       }
     }
   ]

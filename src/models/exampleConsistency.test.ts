@@ -1,11 +1,11 @@
 /**
  * The car example appears in four places: the home page card, the car tool before a city is chosen,
  * the tool page's worked example and the CNG guides. They must give the same answer, at the same
- * verified prices. A stale price in any one of them fails here.
+ * verified prices; the CNG guides keep the dated Lucknow prices they name (GUIDE_CNG_PRICES).
  */
 import { describe, expect, it } from 'vitest';
 import { verifiedFuelPrices } from '@/data';
-import { GUIDE_CNG_CITY, cngCase, cngFigures } from '@/content/guideFigures';
+import { GUIDE_CNG_CITY, GUIDE_CNG_PRICES, cngCase, cngFigures } from '@/content/guideFigures';
 import { carFuelFlips, compareCarFuel } from './carFuel';
 import { EXAMPLE_PRICE_CITY, carFuelCurrentExample, carFuelExample } from './carFuel.example';
 import { CAR_FUEL_START_FORM, toCarFuelInput } from './carFuelForm';
@@ -28,7 +28,19 @@ describe('one car example everywhere', () => {
 
   it("the CNG guides stay on Lucknow, with the tool's own cars, distance and premium", () => {
     expect(GUIDE_CNG_CITY).toBe('lucknow');
-    expect(cngCase).toEqual(carFuelCurrentExample('lucknow'));
+    // Same cars, distance and premium as the tool; prices pinned to the dates the guides name.
+    const live = carFuelCurrentExample('lucknow');
+    expect({
+      ...cngCase,
+      base: { ...cngCase.base, energyPrice: 0 },
+      alternative: { ...cngCase.alternative, energyPrice: 0 },
+    }).toEqual({
+      ...live,
+      base: { ...live.base, energyPrice: 0 },
+      alternative: { ...live.alternative, energyPrice: 0 },
+    });
+    expect(cngCase.base.energyPrice).toBe(GUIDE_CNG_PRICES.petrol);
+    // The guides' CNG price is still the distributor's current one.
     expect(cngCase.alternative.energyPrice).toBe(verifiedFuelPrices('lucknow')!.cng);
   });
 

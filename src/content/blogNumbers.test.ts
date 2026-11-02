@@ -22,6 +22,7 @@ import { irr } from '@/engine/irr';
 import { fundPlan, maxWithdrawal } from '@/models/fund';
 import { payoutScaleAt, planReturn } from '@/models/planReturn';
 import {
+  GUIDE_CNG_PRICES,
   carCost,
   eightyC,
   hraFigures,
@@ -31,7 +32,7 @@ import {
 } from '@/content/guideFigures';
 
 describe('posts: CNG payback, break-even, Lucknow update', () => {
-  const lucknow = verifiedFuelPrices('lucknow')!;
+  const lucknow = GUIDE_CNG_PRICES;
   const input = {
     ...carFuelExample,
     base: { ...carFuelExample.base, energyPrice: lucknow.petrol },
@@ -41,6 +42,8 @@ describe('posts: CNG payback, break-even, Lucknow update', () => {
 
   it('uses the prices the posts quote', () => {
     expect(lucknow).toEqual({ petrol: 101.86, cng: 107 });
+    // CNG is still the distributor's price; petrol has moved since, so the guides keep their date.
+    expect(verifiedFuelPrices('lucknow')!.cng).toBe(GUIDE_CNG_PRICES.cng);
     expect(r.costPerKm.base).toBeCloseTo(5.66, 2);
     expect(r.costPerKm.alternative).toBeCloseTo(4.12, 2);
     expect(r.firstMonthSaving).toBeCloseTo(2778, 0);

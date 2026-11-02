@@ -2281,5 +2281,6 @@
   "state.GJ": "Gujarat",
   "blog.all": "All",
   "blog.loadMore": "Show more guides",
-  "blog.showing": "Showing {shown} of {total}"
+  "blog.showing": "Showing {shown} of {total}",
+  "assumptionsTable.checked": "checked {date}"
 }

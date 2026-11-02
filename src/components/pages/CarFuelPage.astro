@@ -32,6 +32,7 @@ const rows: AssumptionRow[] = [
     value: `${t(locale, 'unit.perLitre', { n: c.petrol.value! })}, ${t(locale, 'unit.perKg', { n: c.cng.value! })}`,
     source: `${c.petrol.source} ${c.cng.source}`,
     date: c.petrol.effectiveDate,
+    checked: c.cng.checkedDate ?? c.petrol.checkedDate,
     verified: true,
   })),
   {

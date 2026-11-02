@@ -628,11 +628,22 @@ export const solarFigures = {
 
 /* ---------- CNG car payback, break-even, Lucknow update ---------- */
 
-/** The CNG guides are about Lucknow, so they stay on Lucknow's verified prices. */
+/** The CNG guides are about Lucknow. */
 export const GUIDE_CNG_CITY = 'lucknow';
-const lucknow = verifiedFuelPrices(GUIDE_CNG_CITY)!;
-/** The tool's own example (same cars, distance, premium) at Lucknow's verified prices. */
-export const cngCase: CarFuelInput = carFuelCurrentExample(GUIDE_CNG_CITY);
+/**
+ * The Lucknow prices the CNG guides were written with, and name with their dates: petrol on
+ * 19 October 2026, CNG (Green Gas Limited) from 3 October 2026. Pinned, so the monthly price
+ * check updates the tools without changing what these dated guides say. Update both together
+ * when a guide is revised.
+ */
+export const GUIDE_CNG_PRICES = { petrol: 101.86, cng: 107 } as const;
+const lucknow = GUIDE_CNG_PRICES;
+/** The tool's own example (same cars, distance, premium) at those Lucknow prices. */
+export const cngCase: CarFuelInput = {
+  ...carFuelExample,
+  base: { ...carFuelExample.base, energyPrice: lucknow.petrol },
+  alternative: { ...carFuelExample.alternative, energyPrice: lucknow.cng },
+};
 const cng = compareCarFuel(cngCase);
 const netByYear = (input: CarFuelInput) => {
   const r = compareCarFuel(input);

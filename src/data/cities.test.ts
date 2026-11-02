@@ -18,7 +18,7 @@ describe('cities offered', () => {
 
   it('the metros carry the prices from their sources', () => {
     expect(verifiedFuelPrices('mumbai')).toEqual({ petrol: 111.21, cng: 89 });
-    expect(verifiedFuelPrices('hyderabad')).toEqual({ petrol: 116.15, cng: 114.5 });
+    expect(verifiedFuelPrices('hyderabad')).toEqual({ petrol: 116.15, cng: 115 });
   });
 
   it('a state without a tariff or solar data falls back to the visitor entering them', () => {

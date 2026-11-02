@@ -400,3 +400,9 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | Key                                                                                                         | Where it shows                                           |
 | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | [ ] `blog.all` ("All"), `blog.loadMore` ("Show more guides"), `blog.showing` ("Showing {shown} of {total}") | /guides/: the topic filter and the button below the list |
+
+## Price check dates (drafted 2026-11-02)
+
+| Key                                               | Where it shows                                                                         |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| [ ] `assumptionsTable.checked` ("checked {date}") | Assumptions tables, under a value's date when it was checked later than it took effect |

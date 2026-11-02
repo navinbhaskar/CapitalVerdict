@@ -222,7 +222,8 @@ export default function CarFuelTool({ locale }: Props) {
     city && cityPrices && !pinned.current.has(fuel === 'petrol' ? 'petrolPrice' : 'cngPrice')
       ? t(locale, 'note.fuelPriceCity', {
           city: t(locale, `city.${city.id}` as MessageKey),
-          date: city[fuel].effectiveDate,
+          // A CNG price can hold for months: show when it was last checked, not when it took effect.
+          date: city[fuel].checkedDate ?? city[fuel].effectiveDate,
         })
       : t(locale, 'note.fuelPriceExample');
 

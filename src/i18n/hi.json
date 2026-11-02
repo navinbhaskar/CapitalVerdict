@@ -2281,5 +2281,6 @@
   "state.GJ": "TODO_COPY_HI",
   "blog.all": "TODO_COPY_HI",
   "blog.loadMore": "TODO_COPY_HI",
-  "blog.showing": "TODO_COPY_HI"
+  "blog.showing": "TODO_COPY_HI",
+  "assumptionsTable.checked": "TODO_COPY_HI"
 }

@@ -31,7 +31,12 @@ const provenance = {
 
 /** A single sourced value. `value` is null while it is still TODO_VERIFY. */
 export const dataRecord = z
-  .object({ value: z.number().nullable(), ...provenance })
+  .object({
+    value: z.number().nullable(),
+    ...provenance,
+    /** The last day the value was checked against its source, when that is later than it took effect. */
+    checkedDate: z.iso.date().optional(),
+  })
   .refine((r) => r.value !== null || r.status === 'TODO_VERIFY', {
     message: 'a verified record must have a value',
   });

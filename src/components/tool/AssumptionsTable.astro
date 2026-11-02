@@ -7,6 +7,8 @@ export interface AssumptionRow {
   value: string;
   source: string;
   date: string;
+  /** The last day the value was checked against its source, if later than `date`. */
+  checked?: string;
   verified: boolean;
 }
 
@@ -50,7 +52,14 @@ const { locale, rows } = Astro.props;
             )}
           </td>
           <td class="py-3 pr-4 text-ink-muted">{sourceNote(row.source)}</td>
-          <td class="num py-3 whitespace-nowrap text-ink-muted">{row.date}</td>
+          <td class="num py-3 whitespace-nowrap text-ink-muted">
+            {row.date}
+            {row.checked && row.checked !== row.date && (
+              <span class="block text-xs">
+                {t(locale, 'assumptionsTable.checked', { date: row.checked })}
+              </span>
+            )}
+          </td>
         </tr>
       ))}
     </tbody>
