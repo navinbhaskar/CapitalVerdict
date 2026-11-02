@@ -21,7 +21,10 @@ export type ToolIcon =
   | 'calendar'
   | 'shield'
   | 'sort'
-  | 'scooter';
+  | 'scooter'
+  | 'receipt'
+  | 'key'
+  | 'lock';
 
 export interface ToolEntry {
   /** i18n prefix: `tool.{key}.title`, `.question`, `.gives`. */
@@ -53,11 +56,12 @@ export const TOOL_GROUPS: { title: MessageKey; tools: ToolEntry[] }[] = [
     tools: [
       { key: 'plotVs', path: '/tools/plot-vs-fd-vs-mutual-fund/', icon: 'plot' },
       { key: 'saving', path: '/tools/sip-vs-ppf-vs-fd/', icon: 'piggy' },
-      { key: 'ppf', path: '/tools/ppf-calculator/', icon: 'piggy' },
+      { key: 'ppf', path: '/tools/ppf-calculator/', icon: 'lock' },
       { key: 'planReturn', path: '/tools/plan-return/', icon: 'exchange' },
       { key: 'termPlan', path: '/tools/term-plus-investing/', icon: 'shield' },
       { key: 'taxRegime', path: '/tools/old-or-new-tax-regime/', icon: 'percent' },
-      { key: 'hra', path: '/tools/hra-calculator/', icon: 'home' },
+      { key: 'incomeTax', path: '/tools/income-tax-calculator/', icon: 'receipt' },
+      { key: 'hra', path: '/tools/hra-calculator/', icon: 'key' },
     ],
   },
   {

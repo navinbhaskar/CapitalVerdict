@@ -443,3 +443,13 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | [ ] `ppf.w.*`, `ppf.chart*`, `ppf.table.*`, `ppf.checklist.*`, `page.methodology.ppf.*`              | Working, chart, year-by-year and monthly tables, checklist, methodology                                 |
 | [ ] `ppf.faq.1` to `.3`                                                                              | Questions (also FAQPage data). The worked example's figures are computed from the model at today's rate |
 | [ ] "The rate can change each quarter": from the quarterly rate announcement cited in the PPF source | Rate note and checklist                                                                                 |
+
+## Income tax calculator (drafted 2026-11-03)
+
+| Key                                                                                                      | Where it shows                                                                                                                          |
+| -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| [ ] `tool.incomeTax.*`, `itax.metaDescription`, `itax.explanation`                                       | /tools/income-tax-calculator/: title, search snippet, the plain-words explanation                                                       |
+| [ ] `itax.step.*`, `itax.in.regime`, `itax.regime.*`, `itax.unit.year`                                   | Inputs. Salary, other income and deductions reuse the regime tool's labels and notes                                                    |
+| [ ] `itax.verdict.*`, `itax.stat.*`, `itax.rebate`, `itax.relief`, `itax.other.*`, `itax.exampleNote`    | The answer card: tax a month, of income, on the next ₹100; the rebate or marginal relief; the other regime's tax with a link to compare |
+| [ ] `itax.slabs.*`, `itax.w.*`, `itax.checklist.*`, `itax.faq.1` to `.3`, `page.methodology.incomeTax.*` | Slab table, working, checklist, questions (figures computed from the data), methodology                                                 |
+| [ ] New icons: a receipt (income tax), a key (HRA), a lock (PPF)                                         | Calculators menu, home page list, related tools                                                                                         |

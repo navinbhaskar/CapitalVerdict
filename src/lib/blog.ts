@@ -35,6 +35,7 @@ export const TOOL_PATHS = {
   'swp-calculator': '/tools/swp-calculator/',
   'plan-return': '/tools/plan-return/',
   'emi-calculator': '/tools/emi-calculator/',
+  'income-tax-calculator': '/tools/income-tax-calculator/',
   'hra-calculator': '/tools/hra-calculator/',
   'ppf-calculator': '/tools/ppf-calculator/',
 } as const;

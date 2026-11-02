@@ -1,0 +1,83 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import Icon from '@/components/layout/Icon.astro';
+import AssumptionsTable, { type AssumptionRow } from '@/components/tool/AssumptionsTable.astro';
+import IncomeTaxTool from '@/components/islands/IncomeTaxTool';
+import { t, type MessageKey } from '@/i18n/t';
+import { localizePath } from '@/i18n/routes';
+import { incomeTax } from '@/data';
+import { formatINR } from '@/lib/format';
+import { formatPercent } from '@/lib/formatTool';
+import type { Regime } from '@/models/taxRegime';
+
+const locale = 'en';
+const slabText = (g: Regime) =>
+  incomeTax.regimes[g].slabs.map((s) => formatPercent(s.rate)).join(' / ');
+const row = (label: string, value: string): AssumptionRow => ({
+  label,
+  value,
+  source: incomeTax.source,
+  date: incomeTax.effectiveDate,
+  verified: incomeTax.status === 'verified',
+});
+const nr = incomeTax.regimes.new;
+const rows: AssumptionRow[] = [
+  row(t(locale, 'itax.regime.new'), slabText('new')),
+  row(t(locale, 'itax.regime.old'), slabText('old')),
+  row(
+    t(locale, 'itax.stat.taxable'),
+    `${formatINR(nr.rebate.incomeLimit)} / ${formatINR(incomeTax.regimes.old.rebate.incomeLimit)}`,
+  ),
+  row(t(locale, 'itax.w.cess'), formatPercent(incomeTax.cessRate)),
+];
+
+const faqParams = {
+  limit: formatINR(nr.rebate.incomeLimit),
+  standard: formatINR(nr.standardDeduction),
+  salary: formatINR(nr.rebate.incomeLimit + nr.standardDeduction),
+  cess: formatPercent(incomeTax.cessRate),
+};
+const FAQ = [1, 2, 3] as const;
+const faq = FAQ.map((n) => ({
+  q: t(locale, `itax.faq.${n}.q` as MessageKey, faqParams),
+  a: t(locale, `itax.faq.${n}.a` as MessageKey, faqParams),
+}));
+const related = [
+  {
+    href: localizePath('/tools/old-or-new-tax-regime/', locale),
+    label: t(locale, 'tool.taxRegime.title'),
+  },
+  { href: localizePath('/tools/hra-calculator/', locale), label: t(locale, 'tool.hra.title') },
+  { href: localizePath('/tools/ppf-calculator/', locale), label: t(locale, 'tool.ppf.title') },
+];
+---
+
+<ToolLayout
+  locale={locale}
+  title={t(locale, 'tool.incomeTax.question')}
+  description={t(locale, 'itax.metaDescription')}
+  related={related}
+  faq={faq}
+>
+  <IncomeTaxTool client:load locale={locale} />
+
+  <p slot="explanation">{t(locale, 'itax.explanation')}</p>
+
+  <AssumptionsTable slot="assumptions" locale={locale} rows={rows} />
+
+  <div slot="faq" class="divide-y divide-line border-y border-line">
+    {faq.map((item) => (
+      <details class="group">
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-2.5 font-medium text-ink">
+          {item.q}
+          <Icon
+            name="chevronDown"
+            size={18}
+            class="shrink-0 text-ink-muted transition-transform duration-(--duration-base) ease-out-quart group-open:rotate-180"
+          />
+        </summary>
+        <p class="max-w-(--container-prose) pb-3 text-sm">{item.a}</p>
+      </details>
+    ))}
+  </div>
+</ToolLayout>
