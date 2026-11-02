@@ -7,6 +7,7 @@ import { t, type Locale, type MessageKey } from '@/i18n/t';
 import { localizePath } from '@/i18n/routes';
 import { getCollection } from 'astro:content';
 import { byDateDesc } from '@/lib/blog';
+import { verifiedCityIds } from '@/data';
 import { TOOL_GROUPS, toolKey, type ToolIcon } from '@/lib/tools';
 
 interface Props {
@@ -64,11 +65,21 @@ const notes = [
   ...allGuides.filter((p) => !p.data.takeaway),
 ].slice(0, 3);
 
+/** The home page's questions, shown at the foot and repeated as FAQPage structured data. */
+const FAQ = [1, 2, 3, 4, 5, 6, 7] as const;
+/** Answers; the cities one lists whichever cities have verified prices today. */
+const cityList = new Intl.ListFormat('en-IN', { type: 'conjunction' }).format(
+  verifiedCityIds.map((id) => t(locale, `city.${id}` as MessageKey)),
+);
+const faqAnswer = (n: (typeof FAQ)[number]) =>
+  t(locale, `home.faq.${n}.a` as MessageKey, { cities: cityList });
 const principles: { title: MessageKey; body: MessageKey }[] = [
   { title: 'principle.assumptions.title', body: 'principle.assumptions.body' },
   { title: 'principle.conservative.title', body: 'principle.conservative.body' },
   { title: 'principle.realTerms.title', body: 'principle.realTerms.body' },
   { title: 'principle.noProducts.title', body: 'principle.noProducts.body' },
+  { title: 'principle.device.title', body: 'principle.device.body' },
+  { title: 'principle.checked.title', body: 'principle.checked.body' },
 ];
 ---
 
@@ -82,6 +93,15 @@ const principles: { title: MessageKey; body: MessageKey }[] = [
       url: new URL('/', Astro.site).href,
       description: t(locale, 'site.description'),
       inLanguage: 'en-IN',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: FAQ.map((n) => ({
+        '@type': 'Question',
+        name: t(locale, `home.faq.${n}.q` as MessageKey),
+        acceptedAnswer: { '@type': 'Answer', text: faqAnswer(n) },
+      })),
     },
   ]}
 >
@@ -204,11 +224,20 @@ const principles: { title: MessageKey; body: MessageKey }[] = [
           {t(locale, 'home.principles.heading')}
         </h2>
       </div>
-      <ul class="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-4" role="list" data-reveal>
+      <ul class="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2 lg:grid-cols-3" role="list" data-reveal>
         {principles.map((p) => (
           <li class="border-t border-line-strong pt-4">
             <h3 class="font-display text-xl font-medium">{t(locale, p.title)}</h3>
             <p class="mt-2 max-w-(--container-prose) text-sm text-ink-muted">{t(locale, p.body)}</p>
+            {p.title === 'principle.checked.title' && (
+              <a
+                href={localizePath('/how-we-check/', locale)}
+                class="link mt-1 inline-flex min-h-11 items-center gap-1.5 text-sm"
+              >
+                {t(locale, 'principle.checked.link')}
+                <Icon name="arrowRight" size={16} class="nudge" />
+              </a>
+            )}
           </li>
         ))}
       </ul>
@@ -242,4 +271,33 @@ const principles: { title: MessageKey; body: MessageKey }[] = [
       </ul>
     </section>
   )}
+
+  <section class="border-t border-line" aria-labelledby="home-faq">
+    <div class="container-page py-10 sm:py-12">
+      <div data-reveal>
+        <span class="rule-brass" aria-hidden="true"></span>
+        <h2
+          id="home-faq"
+          class="mt-3 font-display text-2xl font-medium tracking-(--tracking-display)"
+        >
+          {t(locale, 'home.faq.heading')}
+        </h2>
+      </div>
+      <div class="mt-5 max-w-3xl divide-y divide-line border-y border-line" data-reveal>
+        {FAQ.map((n) => (
+          <details class="group">
+            <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-2.5 font-medium text-ink">
+              {t(locale, `home.faq.${n}.q` as MessageKey)}
+              <Icon
+                name="chevronDown"
+                size={18}
+                class="shrink-0 text-ink-muted transition-transform duration-(--duration-base) ease-out-quart group-open:rotate-180"
+              />
+            </summary>
+            <p class="max-w-(--container-prose) pb-3 text-sm text-ink-muted">{faqAnswer(n)}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
 </BaseLayout>

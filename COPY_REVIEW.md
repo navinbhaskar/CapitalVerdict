@@ -415,3 +415,10 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | [ ] `page.contact.*`, `contact.*`                                                                                                                                                                     | /contact/: three email cards with pre-filled subjects, the privacy line (repeats the privacy page) |
 | [ ] `footer.link.checks`, `footer.link.contact`                                                                                                                                                       | Footer, and the "How we check every number" link on every tool page                                |
 | [ ] Commitments stated: fuel prices re-checked at least once a month; corrections logged in the changelog; tests run before every deploy (the deploy script now runs them). No response-time promise. | /how-we-check/                                                                                     |
+
+## Home page: trust cards and questions (drafted 2026-11-02)
+
+| Key                                             | Where it shows                                                                                            |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| [ ] `principle.device.*`, `principle.checked.*` | Home page "How we work": two new cards, the second linking to /how-we-check/                              |
+| [ ] `home.faq.heading`, `home.faq.1` to `.7`    | Home page questions, also FAQPage structured data. The cities answer lists verified cities from the data. |
