@@ -10,7 +10,6 @@ import {
   incomeTax,
   smallSavings,
   thirdPartyPremium,
-  verifiedFuelPrices,
 } from '@/data';
 import { amortise } from '@/engine/loan';
 import { simpleTariff } from '@/engine/tariff';
@@ -22,7 +21,7 @@ import type { CompareItem } from '@/components/tool/CompareBars';
 import { acPayback, type AcInput } from '@/models/ac';
 import { cashOrLoan, type CarLoanInput } from '@/models/carLoan';
 import { compareCarFuel, type CarFuelInput } from '@/models/carFuel';
-import { carFuelCurrentExample, carFuelExample } from '@/models/carFuel.example';
+import { carFuelExample } from '@/models/carFuel.example';
 import { flatToReducing } from '@/models/flatRate';
 import { fundPlan, maxWithdrawal, type FundInput } from '@/models/fund';
 import { monthlySaving, type MonthlySavingInput } from '@/models/monthlySaving';
