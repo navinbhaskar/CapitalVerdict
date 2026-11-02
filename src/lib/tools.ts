@@ -56,6 +56,7 @@ export const TOOL_GROUPS: { title: MessageKey; tools: ToolEntry[] }[] = [
       { key: 'planReturn', path: '/tools/plan-return/', icon: 'exchange' },
       { key: 'termPlan', path: '/tools/term-plus-investing/', icon: 'shield' },
       { key: 'taxRegime', path: '/tools/old-or-new-tax-regime/', icon: 'percent' },
+      { key: 'hra', path: '/tools/hra-calculator/', icon: 'home' },
     ],
   },
   {

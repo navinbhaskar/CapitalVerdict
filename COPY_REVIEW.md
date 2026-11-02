@@ -422,3 +422,13 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | [ ] `principle.device.*`, `principle.checked.*` | Home page "How we work": two new cards, the second linking to /how-we-check/                              |
 | [ ] `home.faq.heading`, `home.faq.1` to `.7`    | Home page questions, also FAQPage structured data. The cities answer lists verified cities from the data. |
+
+## HRA exemption calculator (drafted 2026-11-02)
+
+| Key                                                                                          | Where it shows                                                             |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [ ] `tool.hra.*`, `hra.metaDescription`, `hra.explanation`                                   | /tools/hra-calculator/: title, search snippet, the plain-words explanation |
+| [ ] `hra.step.*`, `hra.in.*`, `hra.note.*`, `hra.unit.*`, `hra.city.other`                   | The inputs and their notes                                                 |
+| [ ] `hra.limit.*`, `hra.least`, `hra.verdict.*`, `hra.newRegime`, `hra.exampleNote`          | The answer card: the three amounts, the least marked, the new-regime line  |
+| [ ] `hra.w.*`, `hra.checklist.*`, `hra.faq.1` to `.3`, `page.methodology.hra.*`              | Working, checklist, questions (also FAQPage data), the methodology entry   |
+| [ ] The HRA guide's "Run your numbers" link now goes to this calculator, not the regime tool | /guides/hra-in-the-8-cities/                                               |
