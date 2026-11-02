@@ -53,6 +53,7 @@ export const TOOL_GROUPS: { title: MessageKey; tools: ToolEntry[] }[] = [
     tools: [
       { key: 'plotVs', path: '/tools/plot-vs-fd-vs-mutual-fund/', icon: 'plot' },
       { key: 'saving', path: '/tools/sip-vs-ppf-vs-fd/', icon: 'piggy' },
+      { key: 'ppf', path: '/tools/ppf-calculator/', icon: 'piggy' },
       { key: 'planReturn', path: '/tools/plan-return/', icon: 'exchange' },
       { key: 'termPlan', path: '/tools/term-plus-investing/', icon: 'shield' },
       { key: 'taxRegime', path: '/tools/old-or-new-tax-regime/', icon: 'percent' },

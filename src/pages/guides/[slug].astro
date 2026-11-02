@@ -37,6 +37,7 @@ const toolTitle: Record<NonNullable<typeof tool>, MessageKey> = {
   'plan-return': 'tool.planReturn.question',
   'emi-calculator': 'tool.emi.question',
   'hra-calculator': 'tool.hra.question',
+  'ppf-calculator': 'tool.ppf.question',
 };
 const more = (await getCollection('blog'))
   .filter((p) => p.id !== post.id)

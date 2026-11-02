@@ -33,6 +33,7 @@ const blog = defineCollection({
         'plan-return',
         'emi-calculator',
         'hra-calculator',
+        'ppf-calculator',
       ])
       .optional(),
     /** The guide's headline figure for its listing card; must appear in the post's own text. */

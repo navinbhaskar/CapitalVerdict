@@ -36,6 +36,7 @@ export const TOOL_PATHS = {
   'plan-return': '/tools/plan-return/',
   'emi-calculator': '/tools/emi-calculator/',
   'hra-calculator': '/tools/hra-calculator/',
+  'ppf-calculator': '/tools/ppf-calculator/',
 } as const;
 
 /**

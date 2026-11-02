@@ -432,3 +432,14 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | [ ] `hra.limit.*`, `hra.least`, `hra.verdict.*`, `hra.newRegime`, `hra.exampleNote`          | The answer card: the three amounts, the least marked, the new-regime line  |
 | [ ] `hra.w.*`, `hra.checklist.*`, `hra.faq.1` to `.3`, `page.methodology.hra.*`              | Working, checklist, questions (also FAQPage data), the methodology entry   |
 | [ ] The HRA guide's "Run your numbers" link now goes to this calculator, not the regime tool | /guides/hra-in-the-8-cities/                                               |
+
+## PPF calculator (drafted 2026-11-02)
+
+| Key                                                                                                  | Where it shows                                                                                          |
+| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| [ ] `tool.ppf.*`, `ppf.metaDescription`, `ppf.explanation`                                           | /tools/ppf-calculator/: title, search snippet, the plain-words explanation                              |
+| [ ] `ppf.step.*`, `ppf.in.*`, `ppf.frequency.*`, `ppf.unit.*`, `ppf.note.*`, `ppf.years`             | The inputs and their notes                                                                              |
+| [ ] `ppf.verdict.headline`, `ppf.stat.*`, `ppf.taxFree`, `ppf.timing.*`, `ppf.exampleNote`           | The answer card, and what paying by 5 April instead of monthly is worth                                 |
+| [ ] `ppf.w.*`, `ppf.chart*`, `ppf.table.*`, `ppf.checklist.*`, `page.methodology.ppf.*`              | Working, chart, year-by-year and monthly tables, checklist, methodology                                 |
+| [ ] `ppf.faq.1` to `.3`                                                                              | Questions (also FAQPage data). The worked example's figures are computed from the model at today's rate |
+| [ ] "The rate can change each quarter": from the quarterly rate announcement cited in the PPF source | Rate note and checklist                                                                                 |

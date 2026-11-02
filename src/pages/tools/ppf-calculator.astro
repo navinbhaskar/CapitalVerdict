@@ -1,0 +1,95 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import Icon from '@/components/layout/Icon.astro';
+import AssumptionsTable, { type AssumptionRow } from '@/components/tool/AssumptionsTable.astro';
+import PpfTool from '@/components/islands/PpfTool';
+import { t, type MessageKey } from '@/i18n/t';
+import { localizePath } from '@/i18n/routes';
+import { smallSavings } from '@/data';
+import { formatINR } from '@/lib/format';
+import { formatPercent } from '@/lib/formatTool';
+import { ppfCalc } from '@/models/ppf';
+
+const locale = 'en';
+const ppf = smallSavings.ppf;
+const rows: AssumptionRow[] = [
+  {
+    label: t(locale, 'ppf.in.rate'),
+    value: formatPercent(ppf.rate),
+    source: ppf.source,
+    date: ppf.effectiveDate,
+    verified: ppf.status === 'verified',
+  },
+  {
+    label: t(locale, 'ppf.in.deposit.yearly'),
+    value: `${formatINR(ppf.minYearly)} – ${formatINR(ppf.maxYearly)}`,
+    source: ppf.source,
+    date: ppf.effectiveDate,
+    verified: ppf.status === 'verified',
+  },
+];
+
+// The worked example in the questions, from the model at today's rate.
+const byYear = ppfCalc(
+  { deposit: ppf.maxYearly, frequency: 'yearly', years: ppf.termYears, rate: ppf.rate },
+  ppf,
+);
+const byMonth = ppfCalc(
+  { deposit: ppf.maxYearly / 12, frequency: 'monthly', years: ppf.termYears, rate: ppf.rate },
+  ppf,
+);
+const faqParams = {
+  max: formatINR(ppf.maxYearly),
+  years: ppf.termYears,
+  rate: formatPercent(ppf.rate),
+  deposited: formatINR(byYear.deposited),
+  maturity: formatINR(byYear.maturity),
+  interest: formatINR(byYear.interest),
+  monthly: formatINR(ppf.maxYearly / 12),
+  maturityMonthly: formatINR(byMonth.maturity),
+};
+
+const FAQ = [1, 2, 3] as const;
+const faq = FAQ.map((n) => ({
+  q: t(locale, `ppf.faq.${n}.q` as MessageKey, faqParams),
+  a: t(locale, `ppf.faq.${n}.a` as MessageKey, faqParams),
+}));
+const related = [
+  { href: localizePath('/tools/sip-vs-ppf-vs-fd/', locale), label: t(locale, 'tool.saving.title') },
+  { href: localizePath('/tools/sip-calculator/', locale), label: t(locale, 'tool.sip.title') },
+  {
+    href: localizePath('/tools/old-or-new-tax-regime/', locale),
+    label: t(locale, 'tool.taxRegime.title'),
+  },
+];
+---
+
+<ToolLayout
+  locale={locale}
+  title={t(locale, 'tool.ppf.question')}
+  description={t(locale, 'ppf.metaDescription')}
+  related={related}
+  faq={faq}
+>
+  <PpfTool client:load locale={locale} />
+
+  <p slot="explanation">{t(locale, 'ppf.explanation')}</p>
+
+  <AssumptionsTable slot="assumptions" locale={locale} rows={rows} />
+
+  <div slot="faq" class="divide-y divide-line border-y border-line">
+    {faq.map((item) => (
+      <details class="group">
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-2.5 font-medium text-ink">
+          {item.q}
+          <Icon
+            name="chevronDown"
+            size={18}
+            class="shrink-0 text-ink-muted transition-transform duration-(--duration-base) ease-out-quart group-open:rotate-180"
+          />
+        </summary>
+        <p class="max-w-(--container-prose) pb-3 text-sm">{item.a}</p>
+      </details>
+    ))}
+  </div>
+</ToolLayout>
