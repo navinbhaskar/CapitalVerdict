@@ -3,7 +3,7 @@
  * here is typed in by hand: change a model or a data file and every figure follows. Labels are
  * guide copy (see COPY_REVIEW.md); the numbers are not.
  */
-import { incomeTax, smallSavings, verifiedFuelPrices } from '@/data';
+import { defaults, incomeTax, smallSavings, verifiedFuelPrices } from '@/data';
 import { amortise } from '@/engine/loan';
 import { simpleTariff } from '@/engine/tariff';
 import { toTodaysRupees } from '@/engine/timeValue';
@@ -1265,4 +1265,97 @@ export const moneyBackFigures = {
       best: true,
     },
   ] satisfies CompareItem[],
+};
+
+/* ---------- Saving to retire at 55 ---------- */
+
+/**
+ * Age 30 today, retiring at 55, money to last to 85. ₹50,000 a month in today's rupees, so at 6%
+ * inflation the first withdrawal at 55 is ₹50,000 × 1.06^25, rising 6% a year after that. One
+ * illustrative return for both phases; the pot at 55 is what the SIP leaves after selling (the
+ * cautious case: tax on the saving phase is paid at once, at 55).
+ */
+export const retireCase = {
+  ageNow: 30,
+  retireAt: 55,
+  lastsTo: 85,
+  todaysMonthly: 50_000,
+  inflation: defaults.scenarioVariables.inflation.values.base,
+};
+const saveYears = retireCase.retireAt - retireCase.ageNow;
+const spendYears = retireCase.lastsTo - retireCase.retireAt;
+const retireNeed = retireCase.todaysMonthly * Math.pow(1 + retireCase.inflation, saveYears);
+const bisect = (f: (x: number) => number, lo: number, hi: number) => {
+  for (let i = 0; i < 80; i++) {
+    const mid = (lo + hi) / 2;
+    if (f(mid) < 0) lo = mid;
+    else hi = mid;
+  }
+  return (lo + hi) / 2;
+};
+const fundBase: FundInput = {
+  lumpSum: 0,
+  monthly: 0,
+  stepUp: 0,
+  withdrawal: 0,
+  withdrawalRise: 0,
+  years: 1,
+  annualReturn: 0.1,
+  inflation: retireCase.inflation,
+};
+function retireAt(annualReturn: number) {
+  const pot = bisect(
+    (c) =>
+      maxWithdrawal(
+        {
+          ...fundBase,
+          lumpSum: c,
+          years: spendYears,
+          withdrawalRise: retireCase.inflation,
+          annualReturn,
+        },
+        incomeTax,
+      ) - retireNeed,
+    0,
+    1e10,
+  );
+  const sip = (stepUp: number) =>
+    bisect(
+      (m) =>
+        fundPlan({ ...fundBase, monthly: m, stepUp, years: saveYears, annualReturn }, incomeTax)
+          .kept - pot,
+      0,
+      1e8,
+    );
+  return {
+    annualReturn,
+    pot,
+    potToday: toTodaysRupees(pot, retireCase.inflation, saveYears * 12),
+    flat: sip(0),
+    stepped: sip(0.1),
+  };
+}
+const retireRows = [0.08, 0.1, 0.12].map(retireAt);
+
+export const retire55 = {
+  need: retireNeed,
+  saveYears,
+  spendYears,
+  base: retireRows[1]!,
+  rows: retireRows,
+  table: {
+    head: [
+      'Return a year',
+      'Pot needed at 55',
+      'SIP a month, flat',
+      'SIP to start, rising 10% a year',
+    ],
+    rows: retireRows.map((r) => [
+      pct(r.annualReturn),
+      money(r.pot),
+      formatINR(r.flat),
+      formatINR(r.stepped),
+    ]),
+    highlight: 1,
+  } satisfies TableData,
 };

@@ -21,7 +21,7 @@ import { carLoanFlips, cashOrLoan } from '@/models/carLoan';
 import { irr } from '@/engine/irr';
 import { fundPlan, maxWithdrawal } from '@/models/fund';
 import { payoutScaleAt, planReturn } from '@/models/planReturn';
-import { eightyC, hraFigures, moneyBackFigures, rateRise } from '@/content/guideFigures';
+import { eightyC, hraFigures, moneyBackFigures, rateRise, retire55 } from '@/content/guideFigures';
 
 describe('posts: CNG payback, break-even, Lucknow update', () => {
   const lucknow = verifiedFuelPrices('lucknow')!;
@@ -727,5 +727,36 @@ describe('post: money-back plans vs PPF', () => {
       '₹6.00 lakh',
       '₹6.00 lakh',
     ]);
+  });
+});
+
+describe('post: how much to save to retire at 55', () => {
+  const r = retire55;
+  const crore = (x: number) => Math.round(x / 1e5) / 100;
+  const at = (ret: number) => r.rows.find((x) => x.annualReturn === ret)!;
+
+  it('₹50,000 today is ₹2,14,594 a month at 55, 4.3 times as much', () => {
+    // 50,000 × 1.06^25.
+    expect(Math.round(r.need)).toBe(214_594);
+    expect(Math.round(Math.pow(1.06, 25) * 10) / 10).toBe(4.3);
+  });
+
+  it('at 10%: a ₹4.51 crore pot, ₹1.05 crore today, about 210 times ₹50,000', () => {
+    expect(crore(r.base.pot)).toBe(4.51);
+    expect(crore(r.base.potToday)).toBe(1.05);
+    expect(Math.round(r.base.potToday / 50_000)).toBe(210);
+  });
+
+  it('₹40,265 a month flat, or ₹15,770 rising 10% a year (over ₹1.5 lakh by 54)', () => {
+    expect(Math.round(r.base.flat)).toBe(40_265);
+    expect(Math.round(r.base.stepped)).toBe(15_770);
+    expect(r.base.stepped * Math.pow(1.1, 24)).toBeGreaterThan(150_000);
+  });
+
+  it('8% and 12%', () => {
+    expect(crore(at(0.08).pot)).toBe(5.73);
+    expect(Math.round(at(0.08).flat)).toBe(68_571);
+    expect(crore(at(0.12).pot)).toBe(3.66);
+    expect(Math.round(at(0.12).flat)).toBe(24_044);
   });
 });

@@ -378,3 +378,11 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | [ ] `src/content/blog/money-back-plan-vs-ppf.mdx` (title, description, takeaway, all text)                        | /guides/money-back-plan-vs-ppf/ |
 | [ ] Table and bar labels in `moneyBackFigures` in `src/content/guideFigures.ts`                                   | The guide's table and bars      |
 | [ ] Uses the plan return calculator's money-back example; says PPF's withdrawal rules differ without stating them | Labelled in the text            |
+
+## Guide: how much to save to retire at 55 (drafted 2026-11-02)
+
+| Item                                                                                                                        | Where it shows                            |
+| --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| [ ] `src/content/blog/how-much-to-save-to-retire-at-55.mdx` (title, description, takeaway, all text)                        | /guides/how-much-to-save-to-retire-at-55/ |
+| [ ] Table labels in `retire55` in `src/content/guideFigures.ts`                                                             | The guide's table                         |
+| [ ] Example: age 30, retire at 55, to 85; ₹50,000 a month in today's money; 6% inflation; illustrative 8%, 10%, 12% returns | Labelled in the text and table note       |
