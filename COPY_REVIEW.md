@@ -370,3 +370,11 @@ A new tool at `/tools/emi-calculator/` (`src/models/emi.ts`), in the "Your home 
 | [ ] `src/content/blog/hra-in-the-8-cities.mdx` (title, description, takeaway, all text)              | /guides/hra-in-the-8-cities/ |
 | [ ] Table labels in `hraFigures` in `src/content/guideFigures.ts`                                    | The guide's table            |
 | [ ] Example: ₹8 lakh basic pay and DA, ₹4 lakh HRA, rents of ₹20,000 to ₹50,000; tax at the 30% rate | Labelled in the text         |
+
+## Guide: money-back plans vs PPF (drafted 2026-11-02)
+
+| Item                                                                                                              | Where it shows                  |
+| ----------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| [ ] `src/content/blog/money-back-plan-vs-ppf.mdx` (title, description, takeaway, all text)                        | /guides/money-back-plan-vs-ppf/ |
+| [ ] Table and bar labels in `moneyBackFigures` in `src/content/guideFigures.ts`                                   | The guide's table and bars      |
+| [ ] Uses the plan return calculator's money-back example; says PPF's withdrawal rules differ without stating them | Labelled in the text            |

@@ -1,0 +1,68 @@
+---
+title: 'Money-back plans vs PPF, rupee for rupee'
+description: A money-back plan that turns ₹6 lakh of premiums into ₹9 lakh earns about 4.4% a year. At PPF's rate the same premiums would pay ₹1.25 lakh for every ₹1 lakh the plan pays back.
+date: 2026-11-02
+kind: decision
+tool: plan-return
+takeaway:
+  figure: '₹1.25 lakh'
+  label: At PPF's rate, for every ₹1 lakh the plan pays back
+---
+
+import InShort from '@/components/guide/InShort.astro';
+import Table from '@/components/guide/Table.astro';
+import Bars from '@/components/guide/Bars.astro';
+import { moneyBackFigures } from '@/content/guideFigures';
+
+<InShort>
+
+- A money-back plan pays you something every few years, which feels like the money is working. Judge it by its return a year instead.
+- Our example: ₹40,000 a year for 15 years, ₹1 lakh back in years 5, 10 and 15, and ₹6 lakh in year 20. ₹6 lakh in, ₹9 lakh out: about **4.4%** a year.
+- At PPF's 7.1%, the same premiums would pay **₹1.25 lakh** for every ₹1 lakh the plan pays, on the same dates: ₹11.28 lakh in all instead of ₹9 lakh.
+
+</InShort>
+
+A money-back plan is a life insurance policy that returns part of what you paid at set points along the way, then a larger sum at the end. Getting money back every five years is reassuring. But the payments are your own premiums coming back, and what matters is how much they grew on the way.
+
+## The example plan
+
+This is the money-back example in our [plan return calculator](/tools/plan-return/). It is an illustration, not any real plan's figures.
+
+- You pay **₹40,000** a year for 15 years: **₹6 lakh** in all.
+- It pays **₹1 lakh** at the end of years 5, 10 and 15, and **₹6 lakh** at the end of year 20: **₹9 lakh** in all.
+
+₹9 lakh back for ₹6 lakh paid sounds like a 50% gain. But it is spread over 20 years. The one yearly rate at which your premiums grow into exactly those payouts, the plan's return, is about **4.4%** a year. After 6% inflation that is about **−1.5%** a year: the payouts buy less than the premiums did.
+
+## The same premiums at PPF's rate
+
+Now suppose the same ₹40,000 a year earned PPF's 7.1%, tax-free, and paid out on the same dates. Every payment would be **25% larger**:
+
+<Table
+  title="What the plan pays, and the same premiums at PPF's rate"
+  table={moneyBackFigures.table}
+  note="Payouts on the plan's dates. PPF's rate is held at 7.1%; the government sets it each quarter."
+/>
+
+<Bars
+  title="Everything paid back over 20 years"
+  items={moneyBackFigures.bars}
+  note="₹6 lakh of premiums either way. The plan's figures are an example."
+/>
+
+This compares rates, not products. PPF has its own rules on when money can come out before it matures, so it won't hand back ₹1.25 lakh in year 5 the way this plan pays ₹1 lakh. What the comparison shows is how much growth the plan gives up to make those payments on schedule.
+
+## You get your money back last
+
+By the end of year 15 you have paid ₹6 lakh and had ₹3 lakh back. You only get all your premiums back with the final ₹6 lakh in year 20. Until then, stopping the plan means taking its surrender value, which can be far below what you paid.
+
+## What a money-back plan does give you
+
+- **Life cover** for the policy term. If you need cover, compare the plan with a term plan for the same cover plus investing the rest: our [term plus investing calculator](/tools/term-plus-investing/) does exactly that.
+- **Fixed dates** for the payouts, if you have known expenses at those points.
+- **No market risk** on the guaranteed amounts.
+
+## Before you buy one
+
+- Enter only the amounts the plan **guarantees** in the plan return calculator. Bonuses in a benefit illustration are not promised.
+- Look at the return a year, not the total it pays back.
+- Ask what you get if you stop paying after a few years.

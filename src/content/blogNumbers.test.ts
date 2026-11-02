@@ -21,7 +21,7 @@ import { carLoanFlips, cashOrLoan } from '@/models/carLoan';
 import { irr } from '@/engine/irr';
 import { fundPlan, maxWithdrawal } from '@/models/fund';
 import { payoutScaleAt, planReturn } from '@/models/planReturn';
-import { eightyC, hraFigures, rateRise } from '@/content/guideFigures';
+import { eightyC, hraFigures, moneyBackFigures, rateRise } from '@/content/guideFigures';
 
 describe('posts: CNG payback, break-even, Lucknow update', () => {
   const lucknow = verifiedFuelPrices('lucknow')!;
@@ -692,5 +692,40 @@ describe('post: HRA in the 8 cities', () => {
     expect(Math.round(h.gainsAbove)).toBe(33_333);
     expect(Math.round(h.maxExtra)).toBe(80_000);
     expect(at(50_000).extra).toBe(80_000);
+  });
+});
+
+describe('post: money-back plans vs PPF', () => {
+  const m = moneyBackFigures;
+  const lakh = (x: number) => Math.round(x / 1e3) / 100;
+
+  it('₹6 lakh in, ₹9 lakh out, about 4.4% a year, −1.5% after 6% inflation', () => {
+    expect(m.plan.paid).toBe(600_000);
+    expect(m.plan.received).toBe(900_000);
+    expect(Math.round(m.plan.annualReturn! * 1000) / 10).toBe(4.4);
+    expect(Math.round(m.plan.realReturn! * 1000) / 10).toBe(-1.5);
+  });
+
+  it('at PPF’s 7.1% every payout is 25% larger: ₹1.25 lakh, and ₹11.28 lakh in all', () => {
+    expect(Math.round(m.scale * 100) / 100).toBe(1.25);
+    expect(lakh(100_000 * m.scale)).toBe(1.25);
+    expect(lakh(m.plan.kept * m.scale)).toBe(11.28);
+  });
+
+  it('PPF check: the premiums grown at 7.1% to year 20 match the scaled payouts grown the same way', () => {
+    const fv = (amount: number, fromYear: number) => amount * Math.pow(1.071, 20 - fromYear);
+    const premiums = Array.from({ length: 15 }, (_, k) => fv(40_000, k)).reduce((a, b) => a + b, 0);
+    const payouts = [5, 10, 15].map((y) => fv(100_000, y)).reduce((a, b) => a + b, 600_000);
+    expect(premiums / payouts).toBeCloseTo(m.scale, 6);
+  });
+
+  it('₹3 lakh back of ₹6 lakh by year 15; all of it only in year 20', () => {
+    expect(m.plan.paybackYear).toBe(20);
+    expect(m.table.rows.map((r) => r[1])).toEqual([
+      '₹2.00 lakh',
+      '₹4.00 lakh',
+      '₹6.00 lakh',
+      '₹6.00 lakh',
+    ]);
   });
 });

@@ -1224,3 +1224,45 @@ hraFigures.table = {
   ]),
   highlight: 3,
 } satisfies TableData;
+
+/* ---------- Money-back plans vs PPF ---------- */
+
+/** The plan return calculator's money-back example, and the same premiums at PPF's rate. */
+const moneyBack = planReturn(toPlanInput(planExampleForm('moneyBack'))!);
+const moneyBackAtPpf = payoutScaleAt(moneyBack, smallSavings.ppf.rate)!;
+const moneyBackLumps = [
+  { year: 5, amount: 100_000 },
+  { year: 10, amount: 100_000 },
+  { year: 15, amount: 100_000 },
+  { year: 20, amount: 600_000 },
+];
+
+export const moneyBackFigures = {
+  plan: moneyBack,
+  scale: moneyBackAtPpf,
+  table: {
+    head: ['End of year', 'Paid so far', 'Plan pays', 'Same premiums at PPF’s rate'],
+    rows: moneyBackLumps.map(({ year, amount }) => [
+      `Year ${year}`,
+      money(moneyBack.years.slice(0, year).reduce((a, y) => a + y.paid, 0)),
+      money(amount),
+      money(amount * moneyBackAtPpf),
+    ]),
+    highlight: 3,
+  } satisfies TableData,
+  bars: [
+    {
+      label: 'Money-back plan (example)',
+      value: moneyBack.kept,
+      display: money(moneyBack.kept),
+      note: `${(moneyBack.annualReturn! * 100).toFixed(1)}% a year`,
+    },
+    {
+      label: `Same premiums at PPF’s ${pct(smallSavings.ppf.rate)}`,
+      value: moneyBack.kept * moneyBackAtPpf,
+      display: money(moneyBack.kept * moneyBackAtPpf),
+      note: 'Tax-free, paid on the same dates',
+      best: true,
+    },
+  ] satisfies CompareItem[],
+};
