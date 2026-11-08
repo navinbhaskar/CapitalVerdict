@@ -1,0 +1,93 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import Icon from '@/components/layout/Icon.astro';
+import AssumptionsTable, { type AssumptionRow } from '@/components/tool/AssumptionsTable.astro';
+import NewVsUsedTool from '@/components/islands/NewVsUsedTool';
+import { t, type MessageKey } from '@/i18n/t';
+import { localizePath } from '@/i18n/routes';
+import { cars, idvDepreciationShare } from '@/data';
+import { formatINR } from '@/lib/format';
+import { formatPercent } from '@/lib/formatTool';
+
+const locale = 'en';
+const idv = cars.idvDepreciation;
+const tp = cars.thirdPartyPremium;
+const delhi = cars.roadTax.find((r) => r.state === 'DL')!;
+const rows: AssumptionRow[] = [
+  {
+    label: t(locale, 'nvu.a.idv'),
+    value: idv.bands.map((b) => formatPercent(b.share)).join(' / '),
+    source: idv.source,
+    date: idv.effectiveDate,
+    verified: idv.status === 'verified',
+  },
+  {
+    label: t(locale, 'nvu.in.newInsurance'),
+    value: tp.privateCar.map((b) => formatINR(b.premium)).join(' / '),
+    source: tp.source,
+    date: tp.effectiveDate,
+    verified: tp.status === 'verified',
+  },
+  {
+    label: t(locale, 'nvu.in.newOneOff'),
+    value: delhi.bands.map((b) => formatPercent(b.rate)).join(' / '),
+    source: delhi.source,
+    date: delhi.effectiveDate,
+    verified: delhi.status === 'verified',
+  },
+];
+
+// Value left at 1 and 3 years, and lost from 3 to 5, from the same schedule the tool uses.
+const left = (years: number) => 1 - (idvDepreciationShare(years * 12) ?? 0);
+const faqParams = {
+  y1: formatPercent(left(1)),
+  y3: formatPercent(left(3)),
+  later: formatPercent(left(3) - left(5)),
+};
+const FAQ = [1, 2, 3] as const;
+const faq = FAQ.map((n) => ({
+  q: t(locale, `nvu.faq.${n}.q` as MessageKey, faqParams),
+  a: t(locale, `nvu.faq.${n}.a` as MessageKey, faqParams),
+}));
+const related = [
+  {
+    href: localizePath('/tools/cash-or-car-loan/', locale),
+    label: t(locale, 'tool.carLoan.title'),
+  },
+  { href: localizePath('/tools/car-fuel/', locale), label: t(locale, 'tool.carFuel.title') },
+  {
+    href: localizePath('/guides/what-a-10-lakh-car-really-costs/', locale),
+    label: t(locale, 'nvu.related.guide'),
+  },
+];
+---
+
+<ToolLayout
+  locale={locale}
+  title={t(locale, 'tool.newVsUsed.question')}
+  description={t(locale, 'nvu.metaDescription')}
+  related={related}
+  faq={faq}
+>
+  <NewVsUsedTool client:load locale={locale} />
+
+  <p slot="explanation">{t(locale, 'nvu.explanation')}</p>
+
+  <AssumptionsTable slot="assumptions" locale={locale} rows={rows} />
+
+  <div slot="faq" class="divide-y divide-line border-y border-line">
+    {faq.map((item) => (
+      <details class="group">
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-2.5 font-medium text-ink">
+          {item.q}
+          <Icon
+            name="chevronDown"
+            size={18}
+            class="shrink-0 text-ink-muted transition-transform duration-(--duration-base) ease-out-quart group-open:rotate-180"
+          />
+        </summary>
+        <p class="max-w-(--container-prose) pb-3 text-sm">{item.a}</p>
+      </details>
+    ))}
+  </div>
+</ToolLayout>

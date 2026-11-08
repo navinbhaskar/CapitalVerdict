@@ -32,6 +32,7 @@ const blog = defineCollection({
         'swp-calculator',
         'plan-return',
         'emi-calculator',
+        'new-or-used-car',
         'income-tax-calculator',
         'hra-calculator',
         'ppf-calculator',

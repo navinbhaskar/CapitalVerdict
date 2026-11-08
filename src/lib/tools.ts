@@ -24,7 +24,8 @@ export type ToolIcon =
   | 'scooter'
   | 'receipt'
   | 'key'
-  | 'lock';
+  | 'lock'
+  | 'tag';
 
 export interface ToolEntry {
   /** i18n prefix: `tool.{key}.title`, `.question`, `.gives`. */
@@ -39,6 +40,7 @@ export const TOOL_GROUPS: { title: MessageKey; tools: ToolEntry[] }[] = [
     tools: [
       { key: 'carFuel', path: '/tools/car-fuel/', icon: 'fuel' },
       { key: 'carLoan', path: '/tools/cash-or-car-loan/', icon: 'car' },
+      { key: 'newVsUsed', path: '/tools/new-or-used-car/', icon: 'tag' },
       { key: 'scooter', path: '/tools/electric-or-petrol-scooter/', icon: 'scooter' },
     ],
   },
