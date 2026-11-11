@@ -569,7 +569,7 @@ export default function TaxRegimeTool({ locale }: Props) {
 
       {r && input && (
         <>
-          <div class="mt-8 grid gap-6 border-t border-line pt-5 lg:grid-cols-2">
+          <div class="mt-8 grid grid-cols-[minmax(0,1fr)] gap-6 border-t border-line pt-5 lg:grid-cols-2">
             <SensitivityList locale={locale} lines={flipLines} />
             <NonMoneyChecklist locale={locale} items={CHECKLIST.map((k) => t(locale, k))} />
           </div>

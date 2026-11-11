@@ -33,6 +33,7 @@ const blog = defineCollection({
         'plan-return',
         'emi-calculator',
         'new-or-used-car',
+        'gold-etf-sgb-or-physical',
         'income-tax-calculator',
         'hra-calculator',
         'ppf-calculator',

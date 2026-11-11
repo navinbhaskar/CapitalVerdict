@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import type uPlotType from 'uplot';
 import 'uplot/dist/uPlot.min.css';
 import { t, type Locale } from '@/i18n/t';
+import { formatINR } from '@/lib/format';
 
 interface Props {
   locale: Locale;
@@ -94,10 +95,15 @@ export default function NetPositionChart(props: Props) {
       const line = cssVar('--color-line');
       const strong = cssVar('--color-line-strong');
       const accent = cssVar('--color-accent');
+      // Below a lakh, ticks like "₹0.1L" repeat and round to nothing, so show rupees there.
       const lakh = (v: number) =>
         v === 0
           ? '₹0'
-          : `${v < 0 ? '−' : ''}${t(locale, 'unit.lakhShort', { n: Number((Math.abs(v) / 1e5).toFixed(1)) })}`;
+          : `${v < 0 ? '−' : ''}${
+              Math.abs(v) < 1e5
+                ? formatINR(Math.round(Math.abs(v)))
+                : t(locale, 'unit.lakhShort', { n: Number((Math.abs(v) / 1e5).toFixed(1)) })
+            }`;
       const months = netWithInterest.map((_, m) => m);
 
       const dot = (u: uPlotType, month: number | null, series: number[], filled: boolean) => {

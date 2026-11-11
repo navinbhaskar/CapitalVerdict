@@ -36,6 +36,7 @@ export const TOOL_PATHS = {
   'plan-return': '/tools/plan-return/',
   'emi-calculator': '/tools/emi-calculator/',
   'new-or-used-car': '/tools/new-or-used-car/',
+  'gold-etf-sgb-or-physical': '/tools/gold-etf-sgb-or-physical/',
   'income-tax-calculator': '/tools/income-tax-calculator/',
   'hra-calculator': '/tools/hra-calculator/',
   'ppf-calculator': '/tools/ppf-calculator/',

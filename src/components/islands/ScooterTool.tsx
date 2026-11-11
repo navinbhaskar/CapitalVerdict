@@ -550,7 +550,7 @@ export default function ScooterTool({ locale }: Props) {
 
       {r && c && input && (
         <>
-          <div class="mt-8 grid gap-6 border-t border-line pt-5 lg:grid-cols-2">
+          <div class="mt-8 grid grid-cols-[minmax(0,1fr)] gap-6 border-t border-line pt-5 lg:grid-cols-2">
             <section aria-labelledby="scooter-distance">
               <h2 id="scooter-distance" class="font-display text-2xl font-medium">
                 {t(locale, 'scooter.distance.heading')}

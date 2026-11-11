@@ -487,7 +487,7 @@ export default function PlanReturnTool({ locale }: Props) {
 
       {r && input && (
         <>
-          <div class="mt-8 grid gap-6 border-t border-line pt-5 lg:grid-cols-2">
+          <div class="mt-8 grid grid-cols-[minmax(0,1fr)] gap-6 border-t border-line pt-5 lg:grid-cols-2">
             {byLength.length > 0 ? (
               <section aria-labelledby="plan-length">
                 <h2 id="plan-length" class="font-display text-2xl font-medium">

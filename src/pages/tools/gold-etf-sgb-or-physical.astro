@@ -1,0 +1,91 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro';
+import Icon from '@/components/layout/Icon.astro';
+import AssumptionsTable, { type AssumptionRow } from '@/components/tool/AssumptionsTable.astro';
+import GoldTool from '@/components/islands/GoldTool';
+import { t, type MessageKey } from '@/i18n/t';
+import { localizePath } from '@/i18n/routes';
+import { gold, incomeTax } from '@/data';
+import { formatPercent } from '@/lib/formatTool';
+
+const locale = 'en';
+const cg = incomeTax.capitalGains;
+const row = (label: string, value: string, r: (typeof gold)[keyof typeof gold]): AssumptionRow => ({
+  label,
+  value,
+  source: r.source,
+  date: r.effectiveDate,
+  verified: r.status === 'verified',
+});
+const rows: AssumptionRow[] = [
+  row(t(locale, 'gold.a.gst'), formatPercent(gold.gst.rate), gold.gst),
+  row(
+    t(locale, 'gold.a.holding'),
+    `${gold.holding.listedLongTermAfterMonths} / ${gold.holding.otherLongTermAfterMonths}`,
+    gold.holding,
+  ),
+  row(t(locale, 'gold.a.sgb'), formatPercent(gold.sgb.couponRate), gold.sgb),
+  row(t(locale, 'gold.a.digital'), t(locale, 'gold.a.no'), gold.digitalGold),
+  {
+    label: t(locale, 'gold.w.taxLong'),
+    value: formatPercent(cg.longTermRate),
+    source: cg.source,
+    date: cg.effectiveDate,
+    verified: cg.status === 'verified',
+  },
+];
+
+const faqParams = {
+  gst: formatPercent(gold.gst.rate),
+  listed: gold.holding.listedLongTermAfterMonths,
+  other: gold.holding.otherLongTermAfterMonths,
+  rate: formatPercent(cg.longTermRate),
+  coupon: formatPercent(gold.sgb.couponRate),
+};
+const FAQ = [1, 2, 3] as const;
+const faq = FAQ.map((n) => ({
+  q: t(locale, `gold.faq.${n}.q` as MessageKey, faqParams),
+  a: t(locale, `gold.faq.${n}.a` as MessageKey, faqParams),
+}));
+const related = [
+  {
+    href: localizePath('/tools/lumpsum-calculator/', locale),
+    label: t(locale, 'tool.lumpsum.title'),
+  },
+  { href: localizePath('/tools/ppf-calculator/', locale), label: t(locale, 'tool.ppf.title') },
+  {
+    href: localizePath('/tools/income-tax-calculator/', locale),
+    label: t(locale, 'tool.incomeTax.title'),
+  },
+];
+---
+
+<ToolLayout
+  locale={locale}
+  title={t(locale, 'tool.gold.question')}
+  description={t(locale, 'gold.metaDescription')}
+  related={related}
+  faq={faq}
+>
+  <GoldTool client:load locale={locale} />
+
+  <p slot="explanation">{t(locale, 'gold.explanation')}</p>
+
+  <AssumptionsTable slot="assumptions" locale={locale} rows={rows} />
+
+  <div slot="faq" class="divide-y divide-line border-y border-line">
+    {faq.map((item) => (
+      <details class="group">
+        <summary class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 py-2.5 font-medium text-ink">
+          {item.q}
+          <Icon
+            name="chevronDown"
+            size={18}
+            class="shrink-0 text-ink-muted transition-transform duration-(--duration-base) ease-out-quart group-open:rotate-180"
+          />
+        </summary>
+        <p class="max-w-(--container-prose) pb-3 text-sm">{item.a}</p>
+      </details>
+    ))}
+  </div>
+</ToolLayout>

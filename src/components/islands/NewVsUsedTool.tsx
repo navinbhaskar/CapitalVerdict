@@ -341,7 +341,7 @@ export default function NewVsUsedTool({ locale }: Props) {
 
       {r && input && (
         <>
-          <div class="mt-8 grid gap-6 border-t border-line pt-5 lg:grid-cols-2">
+          <div class="mt-8 grid grid-cols-[minmax(0,1fr)] gap-6 border-t border-line pt-5 lg:grid-cols-2">
             <WorkingBlock title={kindName('new')} rows={working('new', r.new)} />
             <WorkingBlock title={kindName('used')} rows={working('used', r.used)} />
           </div>

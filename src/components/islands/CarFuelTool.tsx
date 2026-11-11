@@ -834,7 +834,7 @@ export default function CarFuelTool({ locale }: Props) {
       </div>
 
       {hasResult && (
-        <div class="mt-8 grid gap-6 border-t border-line pt-5 lg:grid-cols-2">
+        <div class="mt-8 grid grid-cols-[minmax(0,1fr)] gap-6 border-t border-line pt-5 lg:grid-cols-2">
           <SensitivityList locale={locale} lines={flipLines} />
           <NonMoneyChecklist
             key={form.alt}

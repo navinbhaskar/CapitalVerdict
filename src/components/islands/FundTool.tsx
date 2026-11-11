@@ -452,7 +452,7 @@ export default function FundTool({ locale, mode }: Props) {
 
       {r && input && (
         <>
-          <div class="mt-8 grid gap-6 border-t border-line pt-5 lg:grid-cols-2">
+          <div class="mt-8 grid grid-cols-[minmax(0,1fr)] gap-6 border-t border-line pt-5 lg:grid-cols-2">
             {mode === 'sip' || (mode === 'lumpsum' && !fd) ? (
               <Returns locale={locale} runs={extras?.runs ?? []} mode={mode} />
             ) : (

@@ -286,7 +286,7 @@ export default function HraTool({ locale }: Props) {
       </div>
 
       {r && (
-        <div class="mt-8 grid gap-6 border-t border-line pt-5 lg:grid-cols-2">
+        <div class="mt-8 grid grid-cols-[minmax(0,1fr)] gap-6 border-t border-line pt-5 lg:grid-cols-2">
           <div class="max-w-xl">
             <WorkingBlock title={t(locale, 'hra.w.title')} rows={working} />
           </div>

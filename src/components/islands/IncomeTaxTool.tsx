@@ -312,7 +312,7 @@ export default function IncomeTaxTool({ locale }: Props) {
             </div>
           </section>
 
-          <div class="mt-8 grid gap-6 border-t border-line pt-5 lg:grid-cols-2">
+          <div class="mt-8 grid grid-cols-[minmax(0,1fr)] gap-6 border-t border-line pt-5 lg:grid-cols-2">
             <div class="max-w-xl">
               <WorkingBlock title={t(locale, 'itax.w.title')} rows={working} />
             </div>

@@ -452,7 +452,7 @@ export default function TermPlanTool({ locale }: Props) {
 
       {r && plan && input && (
         <>
-          <div class="mt-8 grid gap-6 border-t border-line pt-5 lg:grid-cols-2">
+          <div class="mt-8 grid grid-cols-[minmax(0,1fr)] gap-6 border-t border-line pt-5 lg:grid-cols-2">
             <section aria-labelledby="term-rates">
               <h2 id="term-rates" class="font-display text-2xl font-medium">
                 {t(locale, 'term.rates.heading')}

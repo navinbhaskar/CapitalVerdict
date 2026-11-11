@@ -25,7 +25,8 @@ export type ToolIcon =
   | 'receipt'
   | 'key'
   | 'lock'
-  | 'tag';
+  | 'tag'
+  | 'ingot';
 
 export interface ToolEntry {
   /** i18n prefix: `tool.{key}.title`, `.question`, `.gives`. */
@@ -59,6 +60,7 @@ export const TOOL_GROUPS: { title: MessageKey; tools: ToolEntry[] }[] = [
       { key: 'plotVs', path: '/tools/plot-vs-fd-vs-mutual-fund/', icon: 'plot' },
       { key: 'saving', path: '/tools/sip-vs-ppf-vs-fd/', icon: 'piggy' },
       { key: 'ppf', path: '/tools/ppf-calculator/', icon: 'lock' },
+      { key: 'gold', path: '/tools/gold-etf-sgb-or-physical/', icon: 'ingot' },
       { key: 'planReturn', path: '/tools/plan-return/', icon: 'exchange' },
       { key: 'termPlan', path: '/tools/term-plus-investing/', icon: 'shield' },
       { key: 'taxRegime', path: '/tools/old-or-new-tax-regime/', icon: 'percent' },
