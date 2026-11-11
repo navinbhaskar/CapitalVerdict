@@ -1,0 +1,30 @@
+{
+  "gst": {
+    "rate": 0.03,
+    "source": "Central tax 1.5% on gold (heading 7108), articles of jewellery (7113) and coins (7118): Notification No. 9/2025-Central Tax (Rate), Schedule IV, G.S.R. 641(E), Gazette of India, 17 September 2025, in force from 22 September 2025; state tax at the same rate, 3% in all. Later amendments (19/2025, 31 Dec 2025, tobacco; 1/2026, 30 Apr 2026, beverages and other goods) do not change these entries. On jewellery the 3% is on the whole value, making charges included, whether or not shown separately; 5% applies only to a registered job worker's charges: CBEC Gems & Jewellery GST FAQ, Questions 7 and 8.",
+    "effectiveDate": "2025-09-22",
+    "status": "verified"
+  },
+  "holding": {
+    "listedLongTermAfterMonths": 12,
+    "otherLongTermAfterMonths": 24,
+    "source": "Finance (No. 2) Act, 2024, section 2(42A) as amended from 23 July 2024: twelve months for a security listed on a recognised stock exchange in India, with the words '(other than a unit)' omitted, so listed units such as gold ETFs count; twenty-four months for other assets, including gold, gold bars, coins and jewellery (Memorandum to the Finance (No. 2) Bill, 2024: 'For all listed securities, the holding period is proposed to be 12 months ... The holding period for bonds, debentures, gold will reduce from 36 months to 24 months'). Gold ETFs and gold mutual funds are no longer 'specified mutual funds' taxed at slab rates however long they are held: from tax year 2025-26 that term covers only funds with more than 65% in debt and money-market instruments, or funds with 65% or more in such funds (same Memorandum, section 50AA, which names 'Gold Mutual Funds and Gold ETFs'). Carried into the Income-tax Act, 2025 (section 2(101)), in force from 1 April 2026; the long-term rate (12.5%, no indexation) is in incomeTax.json. Income Tax Department, 'Tax on long-term capital gains' (as amended by the Finance Act, 2026): 24 months, or 12 months for listed securities.",
+    "effectiveDate": "2024-07-23",
+    "status": "verified"
+  },
+  "sgb": {
+    "couponRate": 0.025,
+    "couponsPerYear": 2,
+    "tenorYears": 8,
+    "earlyRedemptionAfterYears": 5,
+    "source": "Reserve Bank of India, Sovereign Gold Bonds FAQ (rbi.org.in, updated 4 February 2019): interest at 2.50% a year (fixed) on the amount of initial investment, credited half-yearly and taxable under the Income-tax Act; tenor 8 years, with early redemption allowed after the fifth year on interest dates; issue and redemption prices are the simple average of the closing price of 999-purity gold published by the India Bullion and Jewellers Association over the previous 3 business days. Bonds are listed and traded on stock exchanges. Capital gains on redemption are exempt only for a bond 'held by an individual from the date of original issue till maturity': Finance Act, 2026 (No. 4 of 2026, assent 30 March 2026), section 43, substituting section 70(1)(x) of the Income-tax Act, 2025, from tax year 2026-27. So a bond bought on the exchange, or redeemed early, is taxed like any other listed security; the exemption in the 2019 FAQ no longer applies to them.",
+    "effectiveDate": "2026-04-01",
+    "status": "verified"
+  },
+  "digitalGold": {
+    "sebiRegulated": false,
+    "source": "SEBI, 'Caution to public regarding dealing in Digital Gold', PR No. 70/2025, 8 November 2025: digital gold products 'are neither notified as securities nor regulated as commodity derivatives. They operate entirely outside the purview of SEBI', may expose investors to counterparty and operational risks, and none of the securities-market investor protections apply. SEBI-regulated gold products are exchange-traded commodity derivatives, gold ETFs and Electronic Gold Receipts. Digital gold is a purchase of physical gold held for you, so it pays GST like gold and is taxed like gold (24 months to long-term).",
+    "effectiveDate": "2025-11-08",
+    "status": "verified"
+  }
+}

@@ -1,11 +1,13 @@
 import changelogJson from './changelog.json';
 import { describe, expect, it } from 'vitest';
-import { changelogSchema, dataRecord, tariffSchema, validateAllData } from './schema';
+import goldJson from './gold.json';
+import { changelogSchema, dataRecord, goldSchema, tariffSchema, validateAllData } from './schema';
 import {
   defaults,
   dlSolarData,
   dlTariff,
   fuelPrices,
+  gold,
   solarData,
   propertyData,
   upTariff,
@@ -181,5 +183,26 @@ describe('Delhi solar figures', () => {
   it('the generation incentive runs 5 years; the export credit is still to verify', () => {
     expect(dlSolarData.generationIncentiveYears).toMatchObject({ value: 5, status: 'verified' });
     expect(dlSolarData.exportRatePerKWh.status).toBe('TODO_VERIFY');
+  });
+});
+
+describe('gold.json', () => {
+  it('is verified, with the rates from its sources', () => {
+    const g = goldSchema.parse(goldJson);
+    // 1.5% central + 1.5% state tax (Notification 9/2025, Schedule IV).
+    expect(g.gst.rate).toBe(0.03);
+    expect(g.holding.listedLongTermAfterMonths).toBe(12);
+    expect(g.holding.otherLongTermAfterMonths).toBe(24);
+    expect(g.sgb).toMatchObject({ couponRate: 0.025, couponsPerYear: 2, tenorYears: 8 });
+    expect(g.digitalGold.sebiRegulated).toBe(false);
+    for (const r of [g.gst, g.holding, g.sgb, g.digitalGold]) {
+      expect(r.status).toBe('verified');
+      expect(r.source.length).toBeGreaterThan(80);
+    }
+  });
+
+  it('records that the SGB exemption needs original issue held to maturity', () => {
+    expect(gold.sgb.source).toContain('from the date of original issue till maturity');
+    expect(gold.sgb.source).toContain('Finance Act, 2026');
   });
 });

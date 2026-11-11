@@ -19,6 +19,7 @@ import smallSavingsJson from './smallSavings.json';
 import changelogJson from './changelog.json';
 import evTwoWheelerJson from './evTwoWheeler.json';
 import carsJson from './cars.json';
+import goldJson from './gold.json';
 
 export const verificationStatus = z.enum(['TODO_VERIFY', 'verified']);
 
@@ -366,6 +367,41 @@ export const smallSavingsSchema = z.object({
 });
 export type SmallSavingsData = z.infer<typeof smallSavingsSchema>;
 
+/** Gold: GST, holding periods for tax, Sovereign Gold Bond terms and digital gold's status. */
+export const goldSchema = z.object({
+  gst: z.object({
+    rate: z.number().min(0).max(1),
+    source: z.string().min(1),
+    effectiveDate: z.iso.date(),
+    status: verificationStatus,
+  }),
+  holding: z.object({
+    /** Listed securities, including gold ETF units and Sovereign Gold Bonds on the exchange. */
+    listedLongTermAfterMonths: z.number().int().positive(),
+    /** Everything else: physical and digital gold, unlisted gold funds. */
+    otherLongTermAfterMonths: z.number().int().positive(),
+    source: z.string().min(1),
+    effectiveDate: z.iso.date(),
+    status: verificationStatus,
+  }),
+  sgb: z.object({
+    couponRate: z.number().min(0).max(1),
+    couponsPerYear: z.number().int().positive(),
+    tenorYears: z.number().int().positive(),
+    earlyRedemptionAfterYears: z.number().int().positive(),
+    source: z.string().min(1),
+    effectiveDate: z.iso.date(),
+    status: verificationStatus,
+  }),
+  digitalGold: z.object({
+    sebiRegulated: z.boolean(),
+    source: z.string().min(1),
+    effectiveDate: z.iso.date(),
+    status: verificationStatus,
+  }),
+});
+export type GoldData = z.infer<typeof goldSchema>;
+
 export const changelogSchema = z.object({
   entries: z
     .array(z.object({ date: z.iso.date(), change: z.string().min(1) }))
@@ -386,5 +422,6 @@ export function validateAllData(): void {
   smallSavingsSchema.parse(smallSavingsJson);
   evTwoWheelerSchema.parse(evTwoWheelerJson);
   carsSchema.parse(carsJson);
+  goldSchema.parse(goldJson);
   changelogSchema.parse(changelogJson);
 }

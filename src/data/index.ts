@@ -14,10 +14,12 @@ import incomeTaxJson from './incomeTax.json';
 import smallSavingsJson from './smallSavings.json';
 import evTwoWheelerJson from './evTwoWheeler.json';
 import carsJson from './cars.json';
+import goldJson from './gold.json';
 import type {
   DataRecord,
   EvTwoWheelerData,
   CarsData,
+  GoldData,
   Changelog,
   Defaults,
   FuelPrices,
@@ -147,6 +149,7 @@ export const changelog = changelogJson as unknown as Changelog;
 
 export const incomeTax = incomeTaxJson as unknown as IncomeTaxData;
 export const smallSavings = smallSavingsJson as unknown as SmallSavingsData;
+export const gold = goldJson as unknown as GoldData;
 
 export const evTwoWheeler = evTwoWheelerJson as unknown as EvTwoWheelerData;
 
