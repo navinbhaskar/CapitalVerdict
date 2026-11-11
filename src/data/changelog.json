@@ -1,6 +1,10 @@
 {
   "entries": [
     {
+      "date": "2026-11-12",
+      "change": "Verified CNG prices for Bengaluru and Chennai from their gas distributors, so both cities can now be chosen: Bengaluru ₹99.00 a kg from 1 Nov 2026 (GAIL Gas rate card) and Chennai ₹99.50 a kg from 7 Oct 2026 (Torrent Gas price data)."
+    },
+    {
       "date": "2026-11-11",
       "change": "Added gold rules for the coming gold tool: 3% GST on gold, coins and jewellery, making charges included (Notification 9/2025-Central Tax (Rate) and CBIC's jewellery FAQ); long-term after 12 months for gold ETFs and other listed units, 24 months for physical and digital gold (Finance (No. 2) Act, 2024); Sovereign Gold Bond terms from RBI (2.5% a year, 8 years, early exit after 5) and the Finance Act, 2026 rule that redemption is tax-free only for a bond held from original issue to maturity; and SEBI's November 2025 caution that digital gold is outside its regulation."
     },

@@ -10,10 +10,24 @@ import {
 describe('cities offered', () => {
   it('only cities with both prices verified can be chosen', () => {
     expect([...verifiedCityIds].sort()).toEqual(
-      ['ahmedabad', 'delhi', 'hyderabad', 'kolkata', 'lucknow', 'mumbai', 'pune'].sort(),
+      [
+        'ahmedabad',
+        'bengaluru',
+        'chennai',
+        'delhi',
+        'hyderabad',
+        'kolkata',
+        'lucknow',
+        'mumbai',
+        'pune',
+      ].sort(),
     );
-    expect(verifiedFuelPrices('bengaluru')).toBeNull();
-    expect(verifiedFuelPrices('chennai')).toBeNull();
+  });
+
+  it('Bengaluru and Chennai carry the CNG prices from their distributors', () => {
+    // GAIL Gas from 1 Nov 2026; Torrent Gas from 7 Oct 2026.
+    expect(verifiedFuelPrices('bengaluru')).toEqual({ petrol: 111.68, cng: 99 });
+    expect(verifiedFuelPrices('chennai')).toEqual({ petrol: 107.76, cng: 99.5 });
   });
 
   it('the metros carry the prices from their sources', () => {

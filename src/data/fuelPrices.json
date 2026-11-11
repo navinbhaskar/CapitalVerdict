@@ -199,11 +199,12 @@
         "status": "verified"
       },
       "cng": {
-        "value": null,
+        "value": 99,
         "unit": "₹/kg",
-        "source": "TODO_VERIFY: GAIL Gas is the city gas distributor for Bengaluru; its price page could not be read. Price sites show ₹98/kg (Goodreturns, 28 Oct 2026) and ₹97 a month earlier. Needs the distributor's notice or a news report of it.",
-        "effectiveDate": "2026-10-28",
-        "status": "TODO_VERIFY"
+        "source": "GAIL Gas Limited, the city gas distributor for Bengaluru Urban & Rural District, CNG rate card on its Bengaluru page (gailgas.com/operation/bengaluru, 'CNG Rates'): CNG Retail Price (w.e.f. 01.11.2026-00.00Hrs), Retail Selling Price ₹99.00/kg.",
+        "effectiveDate": "2026-11-01",
+        "status": "verified",
+        "checkedDate": "2026-11-12"
       }
     },
     {
@@ -237,11 +238,12 @@
         "status": "verified"
       },
       "cng": {
-        "value": null,
+        "value": 99.5,
         "unit": "₹/kg",
-        "source": "TODO_VERIFY: Torrent Gas is a city gas distributor for Chennai; its price page could not be read. Price sites show ₹99.50/kg (Goodreturns, 25 Oct 2026), ₹97 and ₹96. Needs the distributor's notice or a news report of it.",
-        "effectiveDate": "2026-10-28",
-        "status": "TODO_VERIFY"
+        "source": "Torrent Gas, the city gas distributor for Chennai, CNG price in its own savings calculator (connect.torrentgas.com/SavingCalCNG, Tamil Nadu > Chennai): ₹99.50 per kg, price date 07.10.2026, as served by its price data on 12 Nov 2026.",
+        "effectiveDate": "2026-10-07",
+        "status": "verified",
+        "checkedDate": "2026-11-12"
       }
     },
     {
